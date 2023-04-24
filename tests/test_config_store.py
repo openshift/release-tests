@@ -1,14 +1,12 @@
 import unittest
 from oar.core.config_store import ConfigStore
-from oar.core.config_store import ConfigStoreException
+from oar.core.exceptions import ConfigStoreException
 
 
 class TestConfigStore(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         self.cs = ConfigStore("4.12.11")
-
-    def tearDown(self):
-        pass
 
     def test_init(self):
         self.assertRaises(ConfigStoreException, ConfigStore, "")
@@ -64,6 +62,13 @@ class TestConfigStore(unittest.TestCase):
         self.assertEqual(contact, "aos-qe@redhat.com")
 
         self.assertRaises(ConfigStoreException, self.cs.get_email_contact, "dummy")
+
+    def test_get_report_template(self):
+        template = self.cs.get_report_template()
+        self.assertEqual(template, "1Xv8qfYUwp61lOOMQaXNO7wnlo9b8mXACgug49cZHCTM")
+
+        cs = ConfigStore("4.9.10")
+        self.assertRaises(ConfigStoreException, cs.get_report_template)
 
 
 if __name__ == "__main__":

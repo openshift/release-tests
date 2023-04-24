@@ -3,12 +3,9 @@ import json
 import yaml
 import os
 import oar.core.util as util
+from oar.core.exceptions import ConfigStoreException
 from requests.exceptions import RequestException
 from yaml import YAMLError
-
-
-class ConfigStoreException(BaseException):
-    pass
 
 
 class ConfigStore:
@@ -124,3 +121,15 @@ class ConfigStore:
             )
 
         return email_contacts[team]
+
+    def get_report_template(self):
+        """
+        Get test report template doc id, every minor release
+        has its own report template file
+        """
+        templates = self._local_conf["report_templates"]
+        yr = util.get_y_release(self.release)
+        if yr not in templates.keys():
+            raise ConfigStoreException(f"this is no template found for {yr}")
+
+        return templates[yr]
