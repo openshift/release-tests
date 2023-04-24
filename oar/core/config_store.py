@@ -4,6 +4,7 @@ import yaml
 import os
 import oar.core.util as util
 from requests.exceptions import RequestException
+from yaml import YAMLError
 
 
 class ConfigStoreException(BaseException):
@@ -40,6 +41,7 @@ class ConfigStore:
 
         try:
             response = requests.get(url)
+            response.raise_for_status()
         except RequestException as e:
             raise ConfigStoreException(f"download ocp build data failed: {e}")
 
@@ -47,7 +49,7 @@ class ConfigStore:
             try:
                 self._build_data = yaml.safe_load(response.text)
             except yaml.YAMLError as ye:
-                raise ConfigStoreException(ye)
+                raise ConfigStoreException(f"ocp build data format is invalid: {ye}")
 
         self._assembly = self._build_data["releases"][self.release]["assembly"]
 
