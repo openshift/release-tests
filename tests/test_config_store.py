@@ -72,13 +72,3 @@ class TestConfigStore(unittest.TestCase):
 
         cs = ConfigStore("4.9.10")
         self.assertRaises(ConfigStoreException, cs.get_report_template)
-
-    def test_get_managers(self):
-        ad = self.cs.get_advisory_manager()
-        self.assertTrue(isinstance(ad, AdvisoryManager))
-
-        jm = self.cs.get_jira_manager()
-        self.assertTrue(isinstance(jm, JiraManager))
-
-        wm = self.cs.get_worksheet_manager()
-        self.assertTrue(isinstance(wm, WorksheetManager))

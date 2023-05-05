@@ -1,7 +1,5 @@
 import logging
 
-enable_debug = False
-
 
 def is_valid_z_release(version):
     strs = version.split(".")
