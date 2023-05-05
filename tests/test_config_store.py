@@ -1,6 +1,9 @@
 import unittest
-from oar.core.config_store import ConfigStore
 from oar.core.exceptions import ConfigStoreException
+from oar.core.advisory_mgr import AdvisoryManager
+from oar.core.jira_mgr import JiraManager
+from oar.core.worksheet_mgr import WorksheetManager
+from oar.core.config_store import ConfigStore
 
 
 class TestConfigStore(unittest.TestCase):
@@ -70,6 +73,12 @@ class TestConfigStore(unittest.TestCase):
         cs = ConfigStore("4.9.10")
         self.assertRaises(ConfigStoreException, cs.get_report_template)
 
+    def test_get_managers(self):
+        ad = self.cs.get_advisory_manager()
+        self.assertTrue(isinstance(ad, AdvisoryManager))
 
-if __name__ == "__main__":
-    unittest.main()
+        jm = self.cs.get_jira_manager()
+        self.assertTrue(isinstance(jm, JiraManager))
+
+        wm = self.cs.get_worksheet_manager()
+        self.assertTrue(isinstance(wm, WorksheetManager))

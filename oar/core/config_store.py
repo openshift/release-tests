@@ -2,10 +2,15 @@ import requests
 import json
 import yaml
 import os
+import logging
 import oar.core.util as util
 from oar.core.exceptions import ConfigStoreException
+from oar.core.const import *
 from requests.exceptions import RequestException
 from yaml import YAMLError
+
+# get module level logger
+logger = logging.getLogger(__name__)
 
 
 class ConfigStore:
@@ -32,6 +37,8 @@ class ConfigStore:
         with open(path) as f:
             self._local_conf = json.load(f)
 
+        logger.info("local config is loaded")
+
         # download ocp build data with release branch e.g. openshift-4.12
         branch = "openshift-%s" % util.get_y_release(self.release)
         url = self._local_conf["build_data_url"] % branch
@@ -39,14 +46,16 @@ class ConfigStore:
         try:
             response = requests.get(url)
             response.raise_for_status()
-        except RequestException as e:
-            raise ConfigStoreException(f"download ocp build data failed: {e}")
+        except RequestException as re:
+            raise ConfigStoreException("download ocp build data failed") from re
+
+        logger.info(f"ocp build data of {release} is downloaded")
 
         if response.text:
             try:
                 self._build_data = yaml.safe_load(response.text)
             except yaml.YAMLError as ye:
-                raise ConfigStoreException(f"ocp build data format is invalid: {ye}")
+                raise ConfigStoreException("ocp build data format is invalid") from ye
 
         self._assembly = self._build_data["releases"][self.release]["assembly"]
 
@@ -133,3 +142,33 @@ class ConfigStore:
             raise ConfigStoreException(f"this is no template found for {yr}")
 
         return templates[yr]
+
+    def get_jira_server(self):
+        """
+        Get jira server url
+        """
+        return self._local_conf["jira_server"]
+
+    def get_jira_token(self):
+        """
+        Get jira token from env var JIRA_TOKEN
+        """
+        return os.environ.get(ENV_VAR_JIRA_TOKEN)
+
+    def get_google_sa_file(self):
+        """
+        Get google service account file path
+        """
+        return os.environ.get(ENV_VAR_GCP_SA_FILE)
+
+    def get_slack_bot_token(self):
+        """
+        Get slack bot token
+        """
+        return os.environ.get(ENV_VAR_SLACK_BOT_TOKEN)
+
+    def get_slack_app_token(self):
+        """
+        Get slack app token
+        """
+        return os.environ.get(ENV_VAR_SLACK_APP_TOKEN)
