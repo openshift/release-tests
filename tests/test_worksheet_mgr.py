@@ -65,4 +65,4 @@ class TestWorksheetManager(unittest.TestCase):
         self.step_0_create_report()
         self.step_1_update_overall_status()
         self.step_2_update_tasks()
-        # self.step_n_delete_report()
+        self.step_n_delete_report()
