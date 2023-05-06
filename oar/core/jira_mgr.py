@@ -21,8 +21,10 @@ class JiraManager:
         try:
             self._svc.issue(self._cs.get_jira_ticket())
         except JIRAError as je:
-            if je.status_code == 401:
+            if je.status_code == 401 or je.status_code == 403:
                 raise JiraException("invalid token") from je
+            else:
+                raise JiraException("cannot talk to jira server") from je
 
     def get_issue(self, key):
         """

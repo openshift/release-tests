@@ -95,7 +95,7 @@ class WorksheetManager:
             am = AdvisoryManager(self._cs)
             self._report.generate_bug_list(am.get_jira_issues())
 
-        except GSpreadException as ge:
+        except Exception as ge:  # catch all the exceptions here
             raise WorksheetException("create test report failed") from ge
 
         return self._report
@@ -104,19 +104,25 @@ class WorksheetManager:
         """
         Get test report impl with release version in config store
         """
-        ws = self._doc.worksheet(self._cs.release)
-        if ws:
-            return TestReport(ws)
-        else:
+        try:
+            ws = self._doc.worksheet(self._cs.release)
+        except Exception as e:
             raise WorksheetException(
                 f"cannot find worksheet {self._cs.release} in report doc"
-            )
+            ) from e
+
+        return TestReport(ws)
 
     def delete_test_report(self):
         """
         Delete test report
         """
-        self._doc.del_worksheet(self._report._ws)
+        try:
+            self._doc.del_worksheet(self._report._ws)
+        except Exception as e:
+            raise WorksheetException(
+                f"delete worksheet {self._report._ws.title} failed"
+            ) from e
 
 
 class TestReport:
