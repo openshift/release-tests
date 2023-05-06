@@ -218,15 +218,6 @@ class JiraIssue:
 
         return summary.startswith("CVE") or label_check
 
-    def _update_issue_status(self, status):
-        """
-        Update issue status, e.g. Closed
-
-        Args:
-            status (str): issue status
-        """
-        self._issue.update(status={"name": status})
-
     def is_verified(self):
         """
         Bug status is `Verified`
