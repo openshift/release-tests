@@ -179,7 +179,7 @@ class TestReport:
         """
         self._ws.update_acell(
             LABEL_JIRA,
-            self._to_hyperlink("https://issues.redhat.com/browse/%s" % jira, jira),
+            self._to_hyperlink(self._to_jira_link(jira), jira),
         )
 
     def get_jira_info(self):
