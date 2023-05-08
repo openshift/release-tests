@@ -1,6 +1,9 @@
 import unittest
-from oar.core.config_store import ConfigStore
 from oar.core.exceptions import ConfigStoreException
+from oar.core.advisory_mgr import AdvisoryManager
+from oar.core.jira_mgr import JiraManager
+from oar.core.worksheet_mgr import WorksheetManager
+from oar.core.config_store import ConfigStore
 
 
 class TestConfigStore(unittest.TestCase):
@@ -69,7 +72,3 @@ class TestConfigStore(unittest.TestCase):
 
         cs = ConfigStore("4.9.10")
         self.assertRaises(ConfigStoreException, cs.get_report_template)
-
-
-if __name__ == "__main__":
-    unittest.main()
