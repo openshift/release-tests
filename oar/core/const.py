@@ -1,3 +1,5 @@
+CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
+
 # cell labels
 LABEL_ADVISORY = "B2"
 LABEL_BUILD = "B3"
@@ -38,3 +40,8 @@ JIRA_STATUS_CLOSED = "Closed"
 JIRA_STATUS_IN_PROGRESS = "In Progress"
 JIRA_STATUS_VERIFIED = "Verified"
 JIRA_STATUS_ON_QA = "ON_QA"
+JIRA_QE_TASK_SUMMARIES = [
+    "[Fri/Mon] QE moves advisories to REL_PREP",
+    "[Wed-Fri] QE does release verification",
+    "[Mon-Wed] QE notifies ON_QA bugzilla owners and analyze ci failures",
+]

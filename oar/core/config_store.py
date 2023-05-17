@@ -37,8 +37,6 @@ class ConfigStore:
         with open(path) as f:
             self._local_conf = json.load(f)
 
-        logger.info("local config is loaded")
-
         # download ocp build data with release branch e.g. openshift-4.12
         branch = "openshift-%s" % util.get_y_release(self.release)
         url = self._local_conf["build_data_url"] % branch
@@ -48,8 +46,6 @@ class ConfigStore:
             response.raise_for_status()
         except RequestException as re:
             raise ConfigStoreException("download ocp build data failed") from re
-
-        logger.info(f"ocp build data of {release} is downloaded")
 
         if response.text:
             try:
@@ -93,6 +89,15 @@ class ConfigStore:
         """
         return self._assembly["group"]["release_jira"]
 
+    def set_jira_ticket(self, key):
+        """
+        Overwrite default jira ticket
+
+        Args:
+            key (str): jira ticket created by art team
+        """
+        self._assembly["group"]["release_jira"] = key
+
     def get_owner(self):
         """
         Get advisory owner setting from local config
@@ -104,6 +109,14 @@ class ConfigStore:
             return o["default"]
         else:
             return o[yr]
+
+    def set_owner(self, email):
+        """
+        Overwrite owner
+        """
+        o = self._local_conf["owners"]
+        yr = util.get_y_release(self.release)
+        o[yr] = email
 
     def get_slack_contact(self, team):
         """

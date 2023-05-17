@@ -1,9 +1,12 @@
+import logging
 from oar.core.config_store import ConfigStore
 from oar.core.exceptions import JiraException
 from oar.core.const import *
 from jira import JIRA
 from jira import Issue
 from jira.exceptions import JIRAError
+
+logger = logging.getLogger(__name__)
 
 
 class JiraManager:
@@ -99,6 +102,54 @@ class JiraManager:
             self._svc.assign_issue(key, contact)
         except JIRAError as je:
             raise JiraException(f"assign issue {key} to {contact} failed") from je
+
+    def get_sub_tasks(self, parent_key):
+        """
+        Get jira subtasks by parent key
+
+        Args:
+            partent_key (str): parent issue key
+
+        Returns:
+            []JiraIssue: jira subtask list
+        """
+        subtasks = []
+        if not parent_key:
+            return subtasks
+
+        try:
+            parent = self._svc.issue(parent_key)
+            tasks = parent.fields.subtasks
+            if tasks and len(tasks) > 0:
+                for t in tasks:
+                    issue = JiraIssue(self._svc.issue(t.key))
+                    subtasks.append(issue)
+                    logger.info(
+                        f"found subtask {issue.get_key()} - {issue.get_summary()}"
+                    )
+        except JIRAError as je:
+            raise JiraException(f"get subtasks of {parent_key} failed") from je
+
+        return subtasks
+
+    def change_assignee_of_qe_subtasks(self):
+        """
+        Change assignee of all QE subtasks from ART ticket
+        """
+        try:
+            subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
+            if len(subtasks):
+                for st in subtasks:
+                    if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
+                        self.assign_issue(st.get_key(), self._cs.get_owner())
+                        logger.info(
+                            f"changed assignee of {st.get_key()} to {self._cs.get_owner()}"
+                        )
+                        if st.get_summary().startswith("[Wed-Fri]"):
+                            self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
+        except JiraException:
+            # all the funcs invoked here are internal funcs, JIRAError is catached, JiraException is raised.
+            raise
 
 
 class JiraIssue:
@@ -244,3 +295,9 @@ class JiraIssue:
             bool: is onqa or not
         """
         return self.get_status() == JIRA_STATUS_ON_QA
+
+    def is_qe_subtask(self):
+        """
+        check whether the issue is QE subtask.
+        """
+        return self.get_summary() in JIRA_QE_TASK_SUMMARIES

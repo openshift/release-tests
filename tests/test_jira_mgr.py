@@ -15,7 +15,7 @@ class TestJiraManager(unittest.TestCase):
         try:
             self.jm = JiraManager(ConfigStore("4.12.11"))
         except:
-            pass
+            raise
 
     @unittest.skipIf(not token_not_found, "token is found, skip this case")
     def test_init(self):
@@ -65,3 +65,24 @@ class TestJiraManager(unittest.TestCase):
 
         self.jm.transition_issue(key, JIRA_STATUS_CLOSED)
         self.assertEqual(self.jm.get_issue(key).get_status(), JIRA_STATUS_CLOSED)
+
+    @unittest.skipIf(
+        token_not_found or token_is_dummy, "token is not found, skip this case"
+    )
+    def test_get_subtasks(self):
+        key = "ART-6731"
+        subtasks = self.jm.get_sub_tasks(key)
+        self.assertIsNotNone(subtasks)
+        self.assertTrue(len(subtasks) > 0)
+        for st in subtasks:
+            if st.is_qe_subtask():
+                print(f"qe task: {st.get_key()} - {st.get_summary()}")
+                self.assertIn(st.get_summary(), JIRA_QE_TASK_SUMMARIES)
+
+    def test_change_assignee_of_qe_tasks(self):
+        key = "OCPQE-15027"
+        self.jm._cs.set_jira_ticket(key)
+        self.jm.change_assignee_of_qe_subtasks()
+        subtasks = self.jm.get_sub_tasks(key)
+        for st in subtasks:
+            self.assertEqual(st.get_assignee(), "rioliu@redhat.com")

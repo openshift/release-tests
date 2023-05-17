@@ -24,5 +24,4 @@ def create_test_report(ctx):
 
     logger.info(f"new test report is created: {report.get_url()}")
 
-    # TODO: update assignee of JIRA tasks
     # TODO: send email to QE and ART

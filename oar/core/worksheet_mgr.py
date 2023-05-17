@@ -46,20 +46,19 @@ class WorksheetManager:
         except Exception as ge:
             raise WorksheetException("gspread auth failed") from ge
 
+        # check template worksheet exists or not
+        try:
+            self._doc = self._gs.open_by_key(self._cs.get_report_template())
+            template = self._doc.worksheet("template")
+        except Exception as we:
+            raise WorksheetException("cannot find template worksheet") from we
+
     def create_test_report(self):
         """
         Create new report sheet from template
         Update test report with info in ConfigStore
         """
         try:
-            # duplicate template as new test report
-            self._doc = self._gs.open_by_key(self._cs.get_report_template())
-            # check template worksheet exists or not
-            try:
-                template = self._doc.worksheet("template")
-            except WorksheetNotFound as we:
-                raise WorksheetException("cannot find template worksheet") from we
-
             # check report worksheet exists or not, if yes, skip duplicating
             try:
                 existing_sheet = self._doc.worksheet(self._cs.release)
@@ -111,7 +110,7 @@ class WorksheetManager:
                 f"cannot find worksheet {self._cs.release} in report doc"
             ) from e
 
-        return TestReport(ws)
+        return TestReport(ws, self._cs)
 
     def delete_test_report(self):
         """
@@ -216,6 +215,8 @@ class TestReport:
             status (str): Pass/Fail/In Progress
         """
         self._ws.update_acell(label, status)
+        task_name = self._ws.acell("A" + label[1:]).value
+        logger.info(f"task [{task_name}] status is changed to [{status}]")
 
     def get_task_status(self, label):
         """
@@ -297,7 +298,6 @@ class TestReport:
             value_input_option=gspread.utils.ValueInputOption.user_entered,
         )
         # TODO: highlight the cell if the issue is critical
-        # TODO: send email/slack notification
 
         logger.info("bugs to be verified are updated")
 
