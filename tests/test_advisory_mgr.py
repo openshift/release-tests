@@ -20,4 +20,4 @@ class TestAdvisoryManager(unittest.TestCase):
     def test_change_qe_owner(self):
         self.am.change_ad_owners()
         for ad in self.am.get_advisories():
-            self.assertEqual(ad.get_qe_email(), "huirwang@redhat.com")
+            self.assertEqual(ad.get_qe_email(), "xx@redhat.com")
