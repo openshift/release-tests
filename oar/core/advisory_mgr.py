@@ -88,7 +88,7 @@ class Advisory(Erratum):
         """
         self.update(qe_email=email)
         self.commit()
-        logger.info(f"qe email of advisory {self.errata_id} is updated to {email}")
+        logger.info(f"QA Owner of advisory {self.errata_id} is updated to {email}")
 
     def get_qe_email(self):
         """
