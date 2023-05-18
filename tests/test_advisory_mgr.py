@@ -15,3 +15,9 @@ class TestAdvisoryManager(unittest.TestCase):
         jira_issues = self.am.get_jira_issues()
         self.assertIn("OCPBUGS-10973", jira_issues)
         self.assertIn("OCPBUGS-10225", jira_issues)
+
+    @unittest.skip("disable this case, will not update released advisory")
+    def test_change_qe_owner(self):
+        self.am.change_ad_owners()
+        for ad in self.am.get_advisories():
+            self.assertEqual(ad.get_qe_email(), "xx@redhat.com")
