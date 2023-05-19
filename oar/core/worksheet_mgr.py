@@ -192,12 +192,14 @@ class TestReport:
         Update overall status to Red
         """
         self._ws.update_acell(LABEL_OVERALL_STATUS, OVERALL_STATUS_RED)
+        logger.info("Overall status is updated to Red")
 
     def update_overall_status_to_green(self):
         """
         Update overall status to Green
         """
         self._ws.update_acell(LABEL_OVERALL_STATUS, OVERALL_STATUS_GREEN)
+        logger.info("Overall status is updated to Green")
 
     def get_overall_status(self):
         """
@@ -217,6 +219,9 @@ class TestReport:
         self._ws.update_acell(label, status)
         task_name = self._ws.acell("A" + label[1:]).value
         logger.info(f"task [{task_name}] status is changed to [{status}]")
+        # if any task is failed, update overall status to Red
+        if self.is_task_fail(label):
+            self.update_overall_status_to_red()
 
     def get_task_status(self, label):
         """

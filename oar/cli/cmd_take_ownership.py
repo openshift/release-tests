@@ -27,31 +27,20 @@ def take_ownership(ctx, email):
         logger.warn("email option is not set, will use default setting")
     else:
         cs.set_owner(email)
-    # init worksheet manager
+
     try:
+        # get existing report
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
+        # update task status to in progress
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_INPROGRESS)
-    except WorksheetException as we:
-        logger.exception("get test report failed")
-        raise
-
-    # update assignee of QE subtasks and change status of test verification ticket to in_progress
-    try:
+        # update assignee of QE subtasks and change status of test verification ticket to in_progress
         JiraManager(cs).change_assignee_of_qe_subtasks()
-    except JiraException as je:
-        logger.exception("change assignee of qe subtasks failed")
-        raise
-
-    # update owner of advisories which status is QE
-    try:
+        # update owner of advisories which status is QE
         AdvisoryManager(cs).change_ad_owners()
-    except AdvisoryException as ae:
-        logger.exception("change qe owner of advisory failed")
-        raise
-
-    try:
+        # update task status to pass
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_PASS)
-    except WorksheetException as we:
-        logger.exception("update task status failed")
+    except Exception as e:
+        logger.exception("take ownership of advisory and jira subtasks failed")
+        report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_FAIL)
         raise
