@@ -308,7 +308,8 @@ class TestReport:
 
     def update_bug_list(self, jira_issues: []):
         """
-        Plackholder for the func for bug status update
+        update existing bug status in report
+        append new ON_QA bugs
 
         Args:
             jira_issues ([]): updated jira issues
