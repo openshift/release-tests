@@ -119,7 +119,7 @@ class Jobs(object):
                 if tag['phase'] == 'Accepted':
                     new = Version.parse(tag['name'])
                     old = Version.parse(version)
-                    if new > old:
+                    if new >= old:
                         if new.minor == old.minor:
                             channel = version[:-2]
                             print("The latest version of %s is: %s" %(channel,tag['name']))
