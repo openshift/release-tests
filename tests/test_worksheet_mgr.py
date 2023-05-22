@@ -1,6 +1,7 @@
 import unittest
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet_mgr import WorksheetManager
+from oar.core.advisory_mgr import AdvisoryManager
 from oar.core.worksheet_mgr import TestReport
 from oar.core.config_store import ConfigStore
 from oar.core.const import *
@@ -9,7 +10,9 @@ from oar.core.const import *
 class TestWorksheetManager(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.wm = WorksheetManager(ConfigStore("4.12.11"))
+        cs = ConfigStore("4.12.18")
+        self.wm = WorksheetManager(cs)
+        self.am = AdvisoryManager(cs)
 
     def test_init(self):
         self.assertRaises(WorksheetException, WorksheetManager, None)
@@ -58,6 +61,9 @@ class TestWorksheetManager(unittest.TestCase):
             self.report.update_task_status(label, TASK_STATUS_NOT_STARTED)
             self.assertTrue(self.report.is_task_not_started(label))
 
+    def step_3_update_bug_list(self):
+        self.wm.get_test_report().update_bug_list(self.am.get_jira_issues())
+
     def step_n_delete_report(self):
         self.wm.delete_test_report()
 
@@ -65,4 +71,5 @@ class TestWorksheetManager(unittest.TestCase):
         self.step_0_create_report()
         self.step_1_update_overall_status()
         self.step_2_update_tasks()
+        self.step_3_update_bug_list()
         self.step_n_delete_report()
