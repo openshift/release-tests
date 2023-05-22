@@ -340,31 +340,36 @@ class TestReport:
             existing_bugs.append(bug_key)
             row_idx += 1
 
-        start_idx = row_idx
-        batch_vals = []
-        for key in jira_issues:
-            if key not in existing_bugs:
-                issue = jm.get_issue(key)
-                if issue.is_on_qa():
-                    logger.info(f"found new ON_QA bug {key}")
-                    row_vals = []
-                    row_vals.append(self._to_hyperlink(self._to_jira_link(key), key))
-                    row_vals.append(issue.get_qa_contact())
-                    row_vals.append(issue.get_status())
-                    batch_vals.append(row_vals)
-                    row_idx += 1
+        try:
+            start_idx = row_idx
+            batch_vals = []
+            for key in jira_issues:
+                if key not in existing_bugs:
+                    issue = jm.get_issue(key)
+                    if issue.is_on_qa():
+                        logger.info(f"found new ON_QA bug {key}")
+                        row_vals = []
+                        row_vals.append(
+                            self._to_hyperlink(self._to_jira_link(key), key)
+                        )
+                        row_vals.append(issue.get_qa_contact())
+                        row_vals.append(issue.get_status())
+                        batch_vals.append(row_vals)
+                        row_idx += 1
 
-        if len(batch_vals) > 0:
-            self._ws.batch_update(
-                [
-                    {
-                        "range": "C{}:E{}".format(str(start_idx), str(row_idx)),
-                        "values": batch_vals,
-                    }
-                ],
-                value_input_option=gspread.utils.ValueInputOption.user_entered,
-            )
-            logger.info("all new ON_QA bugs are appended to the report")
+            if len(batch_vals) > 0:
+                self._ws.batch_update(
+                    [
+                        {
+                            "range": "C{}:E{}".format(str(start_idx), str(row_idx)),
+                            "values": batch_vals,
+                        }
+                    ],
+                    value_input_option=gspread.utils.ValueInputOption.user_entered,
+                )
+                logger.info("all new ON_QA bugs are appended to the report")
+        except Exception as e:
+            raise WorksheetException("update new ON_QA bugs failed") from e
 
     def are_all_bugs_verified(self):
         """
