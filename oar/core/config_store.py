@@ -198,3 +198,5 @@ class ConfigStore:
         val = os.environ.get(var)
         if not var:
             raise ConfigStoreException(f"system environment variable {var} not found")
+
+        return val
