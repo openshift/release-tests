@@ -343,7 +343,7 @@ class TestReport:
         start_idx = row_idx
         batch_vals = []
         for key in jira_issues:
-            if not key in existing_bugs:
+            if key not in existing_bugs:
                 issue = jm.get_issue(key)
                 if issue.is_on_qa():
                     logger.info(f"found new ON_QA bug {key}")
