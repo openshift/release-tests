@@ -23,7 +23,7 @@ def print_version(ctx, param, value):
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.pass_context
 @click.option(
-    "-v",
+    "-V",
     "--version",
     is_flag=True,
     callback=print_version,
@@ -31,7 +31,7 @@ def print_version(ctx, param, value):
     is_eager=True,
 )
 @click.option("-r", "--release", help="z-stream releaes version", required=True)
-@click.option("-d", "--debug", help="enable debug logging", is_flag=True, default=False)
+@click.option("-v", "--debug", help="enable debug logging", is_flag=True, default=False)
 def cli(ctx, release, debug):
     util.init_logging(logging.DEBUG if debug else logging.INFO)
     try:
