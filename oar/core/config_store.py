@@ -166,22 +166,37 @@ class ConfigStore:
         """
         Get jira token from env var JIRA_TOKEN
         """
-        return os.environ.get(ENV_VAR_JIRA_TOKEN)
+        return self._get_env_var(ENV_VAR_JIRA_TOKEN)
 
     def get_google_sa_file(self):
         """
         Get google service account file path
         """
-        return os.environ.get(ENV_VAR_GCP_SA_FILE)
+
+        return self._get_env_var(ENV_VAR_GCP_SA_FILE)
 
     def get_slack_bot_token(self):
         """
         Get slack bot token
         """
-        return os.environ.get(ENV_VAR_SLACK_BOT_TOKEN)
+        return self._get_env_var(ENV_VAR_SLACK_BOT_TOKEN)
 
     def get_slack_app_token(self):
         """
         Get slack app token
         """
-        return os.environ.get(ENV_VAR_SLACK_APP_TOKEN)
+        return self._get_env_var(ENV_VAR_SLACK_APP_TOKEN)
+
+    def _get_env_var(self, var):
+        """
+        Internal func to get value of environment variable
+        if not found, throw exception
+
+        Args:
+            var (str): system environment variable name
+        """
+        val = os.environ.get(var)
+        if not var:
+            raise ConfigStoreException(f"system environment variable {var} not found")
+
+        return val

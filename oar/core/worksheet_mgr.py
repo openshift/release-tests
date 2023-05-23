@@ -27,7 +27,7 @@ class WorksheetManager:
 
         # init gspread instance with scopes an sa file
         sa_file_path = self._cs.get_google_sa_file()
-        if os.path.isfile(sa_file_path):
+        if sa_file_path and os.path.isfile(sa_file_path):
             try:
                 cred = Credentials.from_service_account_file(
                     sa_file_path,
@@ -49,7 +49,7 @@ class WorksheetManager:
         # check template worksheet exists or not
         try:
             self._doc = self._gs.open_by_key(self._cs.get_report_template())
-            template = self._doc.worksheet("template")
+            self._template = self._doc.worksheet("template")
         except Exception as we:
             raise WorksheetException("cannot find template worksheet") from we
 
@@ -64,7 +64,7 @@ class WorksheetManager:
                 existing_sheet = self._doc.worksheet(self._cs.release)
                 self._report = TestReport(existing_sheet, self._cs)
             except WorksheetNotFound:
-                new_sheet = self._doc.duplicate_sheet(template.id)
+                new_sheet = self._doc.duplicate_sheet(self._template.id)
                 new_sheet.update_title(self._cs.release)
                 self._report = TestReport(new_sheet, self._cs)
 
@@ -308,12 +308,93 @@ class TestReport:
 
     def update_bug_list(self, jira_issues: []):
         """
-        Plackholder for the func for bug status update
+        update existing bug status in report
+        append new ON_QA bugs
 
         Args:
             jira_issues ([]): updated jira issues
         """
-        pass
+        jm = JiraManager(self._cs)
+        # iterate cell value from C8 in colum C, update existing bug status
+        existing_bugs = []
+        row_idx = 8
+        while True:
+            bug_key = self._ws.acell("C" + str(row_idx)).value
+            bug_status = self._ws.acell("E" + str(row_idx)).value
+            # if bug_key is empty exit the loop. i.e. at the end of bug list
+            if not bug_key:
+                break
+            logger.info(f"found existing bug {bug_key} in report, checking...")
+            try:
+                issue = jm.get_issue(bug_key)
+                # check bug status is updated or not. if yes, update it accordingly
+                if bug_status != issue.get_status():
+                    self._ws.update_acell("E" + str(row_idx), issue.get_status())
+                    logger.info(
+                        f"status of bug {issue.get_key()} is updated to {issue.get_status()}"
+                    )
+                else:
+                    logger.info(f"bug status of {bug_key} is not changed")
+            except Exception as e:
+                raise WorksheetException(f"update bug {bug_key} status failed") from e
+
+            existing_bugs.append(bug_key)
+            row_idx += 1
+
+        try:
+            start_idx = row_idx
+            batch_vals = []
+            for key in jira_issues:
+                if key not in existing_bugs:
+                    issue = jm.get_issue(key)
+                    if issue.is_on_qa():
+                        logger.info(f"found new ON_QA bug {key}")
+                        row_vals = []
+                        row_vals.append(
+                            self._to_hyperlink(self._to_jira_link(key), key)
+                        )
+                        row_vals.append(issue.get_qa_contact())
+                        row_vals.append(issue.get_status())
+                        batch_vals.append(row_vals)
+                        row_idx += 1
+
+            if len(batch_vals) > 0:
+                self._ws.batch_update(
+                    [
+                        {
+                            "range": "C{}:E{}".format(str(start_idx), str(row_idx)),
+                            "values": batch_vals,
+                        }
+                    ],
+                    value_input_option=gspread.utils.ValueInputOption.user_entered,
+                )
+                logger.info("all new ON_QA bugs are appended to the report")
+        except Exception as e:
+            raise WorksheetException("update new ON_QA bugs failed") from e
+
+    def are_all_bugs_verified(self):
+        """
+        Check all bugs are verified
+        """
+        logger.info("checking all bugs are verified")
+        row_idx = 8
+        verified = True
+        try:
+            while True:
+                status = self._ws.acell("E" + str(row_idx)).value
+                if not status:
+                    break
+                if status not in [JIRA_STATUS_VERIFIED, JIRA_STATUS_CLOSED]:
+                    verified = False
+                    bug_key = self._ws.acell("C" + str(row_idx)).value
+                    logger.debug(f"found not verified bug {bug_key}:{status}")
+                    break
+        except Exception as e:
+            raise WorksheetException("iterate bug status failed") from e
+
+        logger.info("result is: {}".format("yes" if verified else "no"))
+
+        return verified
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
