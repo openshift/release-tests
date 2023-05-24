@@ -1,6 +1,8 @@
 import click
 import logging
+import sys
 import oar.core.util as util
+from oar import version
 from oar.cli.cmd_create_test_report import create_test_report
 from oar.cli.cmd_take_ownership import take_ownership
 from oar.cli.cmd_update_bug_list import update_bug_list
@@ -10,8 +12,24 @@ from oar.core.const import CONTEXT_SETTINGS
 logger = logging.getLogger(__name__)
 
 
+def print_version(ctx, param, value):
+    if not value or ctx.resilient_parsing:
+        return
+    click.echo("oar v{}".format(version()))
+    click.echo("python v{}".format(sys.version))
+    ctx.exit()
+
+
 @click.group(context_settings=CONTEXT_SETTINGS)
 @click.pass_context
+@click.option(
+    "-V",
+    "--version",
+    is_flag=True,
+    callback=print_version,
+    expose_value=False,
+    is_eager=True,
+)
 @click.option("-r", "--release", help="z-stream releaes version", required=True)
 @click.option("-v", "--debug", help="enable debug logging", is_flag=True, default=False)
 def cli(ctx, release, debug):
