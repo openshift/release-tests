@@ -4,9 +4,9 @@ import job
 
 
 setup(
-    name='release-tests',
+    name='job',
     version=job.version,
-    url='https://github.com/openshift/release-tests',
+    url='https://github.com/openshift/release-tests/prow/job',
     license='GPLv3',
     author='Jian Zhang',
     author_email='jiazha@redhat.com',

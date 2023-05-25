@@ -1,2 +1,4 @@
-version_info = (1, 0, 2)
-version = '.'.join(str(c) for c in version_info)
+from semver import VersionInfo
+
+version_string = "1.0.7"
+version = VersionInfo.parse(version_string)

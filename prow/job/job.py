@@ -3,7 +3,7 @@
 import requests
 import time
 import json
-from semver.version import Version
+from semver import VersionInfo
 import yaml
 import base64
 import os
@@ -60,7 +60,7 @@ class Jobs(object):
         res = requests.get(url=url, headers=self.get_github_headers())
         if res.status_code == 200:
             oldVersion = self.get_recored_version(url)
-            if Version.parse(oldVersion) < Version.parse(content): 
+            if VersionInfo.parse(oldVersion) < VersionInfo.parse(content): 
                 sha = self.get_sha(url)
                 # sha is Required if you are updating a file.
                 data = {"sha": sha,"content": base64Content,"branch": "master", "message":"got the latest version %s" % content,"committer":{"name":"Release Bot","email":"jianzhanbjz@github.com"}}
@@ -118,8 +118,8 @@ class Jobs(object):
             print("getting the latest payload of %s" % version)
             for tag in dict['tags']:
                 if tag['phase'] == 'Accepted':
-                    new = Version.parse(tag['name'])
-                    old = Version.parse(version)
+                    new = VersionInfo.parse(tag['name'])
+                    old = VersionInfo.parse(version)
                     if new >= old:
                         if new.minor == old.minor:
                             channel = version[:-2]
@@ -308,10 +308,10 @@ class Jobs(object):
 
 job = Jobs()
 @click.group()
+@click.version_option(package_name='job')
 @click.option('--debug/--no-debug', default=False)
 def cli(debug):
     click.echo('Debug mode is %s' % ('on' if debug else 'off'))
-
 
 @cli.command("get_results")
 @click.argument("job_id")
