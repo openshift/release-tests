@@ -45,3 +45,10 @@ JIRA_QE_TASK_SUMMARIES = [
     "[Wed-Fri] QE does release verification",
     "[Mon-Wed] QE notifies ON_QA bugzilla owners and analyze ci failures",
 ]
+
+# greenwave CVP test status
+CVP_TEST_STATUS_PASSED = "PASSED"
+CVP_TEST_STATUS_PENDING = "PENDING"
+CVP_TEST_STATUS_FAILED = "FAILED"
+CVP_TEST_STATUS_WAIVED = "WAIVED"
+CVP_TEST_STATUS_INELIGIBLE = "INELIGIBLE"

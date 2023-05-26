@@ -6,6 +6,7 @@ from oar import version
 from oar.cli.cmd_create_test_report import create_test_report
 from oar.cli.cmd_take_ownership import take_ownership
 from oar.cli.cmd_update_bug_list import update_bug_list
+from oar.cli.cmd_check_greenwave_cvp_tests import check_greenwave_cvp_tests
 from oar.core.config_store import ConfigStore, ConfigStoreException
 from oar.core.const import CONTEXT_SETTINGS
 
@@ -46,3 +47,4 @@ def cli(ctx, release, debug):
 cli.add_command(create_test_report)
 cli.add_command(take_ownership)
 cli.add_command(update_bug_list)
+cli.add_command(check_greenwave_cvp_tests)
