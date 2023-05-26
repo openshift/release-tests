@@ -1,11 +1,71 @@
 { 
-    "4.12" : {
+    "4.11" : {
         "amd64" : {
-            "jobs" : ["aws-ipi-proxy-cco-manual-sts-p2-f14", "azure-ipi-proxy-workers-rhcos-rhel8-p2-f7", "vsphere-ipi-proxy-workers-rhel8-p2-f14", "gcp-ipi-ovn-p2-f7"]
+            "jobs" : [
+                "aws-c2s-ipi-disconnected-private-p2-f14",
+                "azure-ipi-disconnected-fullyprivate-p2-f14",
+                "gcp-ipi-proxy-private-p2-f14",
+                "vsphere-ipi-proxy-fips-p2-f14"
+                    ]
         },
         "arm64" : {
-            "jobs" : ["aws-ipi-p2-f14"]
+            "jobs" : [
+                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
+                "aws-ipi-ovn-fips-p2-f28",
+                "aws-ipi-proxy-cco-manual-sts-p2-f28"
+            ]
+        }
+    },
+    "4.12" : {
+        "amd64" : {
+            "jobs" : [
+                "aws-ipi-proxy-cco-manual-sts-p2-f14", 
+                "azure-ipi-proxy-workers-rhcos-rhel8-p2-f7",
+                "vsphere-ipi-proxy-workers-rhel8-p2-f14", 
+                "gcp-ipi-ovn-p2-f7",
+                "gcp-ipi-ovn-ipsec-p2-f14",
+                "nutanix-ipi-fips-p2-f14",
+                "aws-c2s-ipi-disconnected-private-p2-f14",
+                "azure-ipi-fips-p2-f30",
+                "aws-rosa-sts-hypershift-guest-integration-critical-p1-f2",
+                "azure-ipi-disconnected-fullyprivate-p2-f28"
+                    ]
+        },
+        "arm64" : {
+            "jobs" : [
+                "aws-ipi-p2-f14",
+                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
+                "aws-ipi-ovn-fips-p2-f28",
+                "aws-ipi-proxy-cco-manual-sts-p2-f28",
+                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
+                "aws-ipi-ovn-fips-p2-f28"
+            ]
+        }
+    },
+    "4.13" : {
+        "amd64" : {
+            "jobs" : [
+                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
+                "aws-c2s-ipi-disconnected-private-p2-f14",
+                "aws-ipi-ovn-fips-p2-f28",
+                "vsphere-ipi-proxy-fips-p2-f14",
+                "nutanix-ipi-proxy-fips-p2-f14",
+                "ibmcloud-ipi-private-fips-p2-f14",
+                "gcp-ipi-proxy-private-p2-f14",
+                "azure-ipi-fullyprivate-proxy-p2-f28",
+                "azure-ipi-fips-p2-f28",
+                "azure-ipi-baselinecaps-v412-to-multiarch-p2-f14",
+                "aws-rosa-sts-p2-f7"
+                    ]
+        },
+        "arm64" : {
+            "jobs" : [
+                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
+                "azure-ipi-disconnected-fullyprivate-p2-f28",
+                "azure-ipi-fips-p2-f28",
+                "aws-ipi-ovn-ipsec-to-multiarch-p2-f14",
+                "baremetal-upi-to-multiarch-p2-f7"
+            ]
         }
     }
 }
-
