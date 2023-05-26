@@ -75,9 +75,9 @@ class AdvisoryManager:
             AdvisoryException: error found when checking CVP test result
 
         Returns:
-            bool: True if all test are passed otherwise False
+            []test: abnormal test list
         """
-        abnoraml_tests = []
+        abnormal_tests = []
         try:
             ads = self.get_advisories()
             for ad in ads:
@@ -96,7 +96,7 @@ class AdvisoryManager:
                             logger.error(
                                 f"Greenwave CVP test {t['id']} status is not {valid_status}"
                             )
-                            abnoraml_tests.append(t)
+                            abnormal_tests.append(t)
                     logger.info(
                         f"Greenwave CVP tests in advisory {ad.errata_id} are {'all' if all_passed else 'not all'} passed"
                     )
@@ -107,10 +107,10 @@ class AdvisoryManager:
         except ErrataException as e:
             raise AdvisoryException("Get greenwave cvp test failed") from e
 
-        if len(abnoraml_tests):
+        if len(abnormal_tests):
             logger.error(f"NOT all Greenwave CVP tests are passed")
 
-        return abnoraml_tests
+        return abnormal_tests
 
 
 class Advisory(Erratum):
