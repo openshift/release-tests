@@ -120,8 +120,8 @@ class AdvisoryManager:
             AdvisoryException: error when communicate with errata
         """
 
-        # check if all the push jobs are completed, if any of them are failed
-        # trigger new push job
+        # check if all the push jobs are completed, if no, trigger new push job with default value [stage]
+        # request with default value will not redo any push which has already successfully completed since the last respin of the advisory. It will redo failed pushes
 
         try:
             ads = self.get_advisories()
@@ -220,7 +220,10 @@ class Advisory(Erratum):
 
     def are_all_push_jobs_completed(self):
         """
-        Check all push jobs for different types e.g. cdn_stage, cdn_docker etc.
+        Check all push jobs status for different types  e.g. cdn_stage, cdn_docker_stage etc.
+
+        Returns:
+            bool: True if jobs for different types are all complete, otherwise False
         """
         logger.info(f"checking push job status for advisory {self.errata_id} ...")
         job_result = {}
