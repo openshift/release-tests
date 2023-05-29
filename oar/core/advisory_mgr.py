@@ -112,6 +112,25 @@ class AdvisoryManager:
 
         return abnormal_tests
 
+    def push_to_cdn_staging(self):
+        """
+        Trigger push job for stage, if job is triggered, check the result
+
+        Raises:
+            AdvisoryException: error when communicate with errata
+        """
+
+        # check if all the push jobs are completed, if any of them are failed
+        # trigger new push job
+
+        try:
+            ads = self.get_advisories()
+            for ad in ads:
+                if not ad.are_all_push_jobs_completed():
+                    ad.push_to_cdn()
+        except Exception as e:
+            raise AdvisoryException("push to cdn failed") from e
+
 
 class Advisory(Erratum):
     """
@@ -176,5 +195,53 @@ class Advisory(Erratum):
         """
         Get Greenwave CVP test result
         """
-
         return self.externalTests(test_type="greenwave_cvp")
+
+    def push_to_cdn(self, target):
+        """
+        Trigger push job with default target. e.g. stage or live
+        """
+        if target and target in ["stage", "live"]:
+            self.push(target=target)
+        else:
+            self.push()
+
+    def get_push_job_status(self):
+        """
+        Get push jobs' status
+        """
+
+        url = "/api/v1/erratum/" + str(self.errata_id) + "/push"
+        json = self._get(url)
+
+        return json
+
+    def are_all_push_jobs_completed(self):
+        """
+        Check all push jobs for different types e.g. cdn_stage, cdn_docker etc.
+        """
+        logger.info(f"checking push job status for advisory {self.errata_id} ...")
+        job_result = {}
+        json = self.get_push_job_status()
+        for cached_job in json:
+            job_id = cached_job["id"]
+            job_status = cached_job["status"]
+            job_target = cached_job["target"]["name"]
+
+            if job_target in job_result:
+                cached_job = job_result[job_target]
+                cached_id = cached_job["id"]
+                if job_id > cached_id:
+                    cached_job["status"] = job_status
+            else:
+                job_result[job_target] = {"id": job_id, "status": job_status}
+
+        completed = True
+        for cached_target, cached_job in job_result.items():
+            cached_id = cached_job["id"]
+            cached_status = cached_job["status"]
+            logger.info(f"push job for target <{cached_target}> is {cached_status}")
+            if cached_status != PUSH_JOB_STATUS_COMPLETE:
+                completed = False
+
+        return completed
