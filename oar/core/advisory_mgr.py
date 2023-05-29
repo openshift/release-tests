@@ -234,6 +234,7 @@ class Advisory(Erratum):
                 cached_job = job_result[job_target]
                 cached_id = cached_job["id"]
                 if job_id > cached_id:
+                    cached_job["id"] = job_id
                     cached_job["status"] = job_status
             else:
                 job_result[job_target] = {"id": job_id, "status": job_status}
