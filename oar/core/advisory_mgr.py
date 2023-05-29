@@ -239,7 +239,7 @@ class Advisory(Erratum):
             else:
                 job_result[job_target] = {"id": job_id, "status": job_status}
 
-        completed = True
+        completed = True if len(job_result) else False
         for cached_target, cached_job in job_result.items():
             cached_id = cached_job["id"]
             cached_status = cached_job["status"]
