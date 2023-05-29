@@ -206,6 +206,8 @@ class Advisory(Erratum):
         else:
             self.push()
 
+        logger.info(f"push job for advisory {self.errata_id} is triggered")
+
     def get_push_job_status(self):
         """
         Get push jobs' status
