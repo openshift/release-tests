@@ -21,3 +21,7 @@ class TestAdvisoryManager(unittest.TestCase):
         self.am.change_ad_owners()
         for ad in self.am.get_advisories():
             self.assertEqual(ad.get_qe_email(), "xx@redhat.com")
+
+    def test_check_greenwave_cvp_test(self):
+        abnormal_tests = self.am.check_greenwave_cvp_tests()
+        self.assertTrue(len(abnormal_tests) == 0)
