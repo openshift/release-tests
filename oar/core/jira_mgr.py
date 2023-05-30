@@ -149,7 +149,9 @@ class JiraManager:
             for st in subtasks:
                 if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
                     self.assign_issue(st.get_key(), self._cs.get_owner())
-                    if st.get_summary().startswith("[Wed-Fri]"):
+                    if st.get_summary().startswith(
+                        "[Wed-Fri]"
+                    ) or st.get_summary().startswith("[Mon-Wed]"):
                         self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
 
     def close_qe_subtasks(self):
