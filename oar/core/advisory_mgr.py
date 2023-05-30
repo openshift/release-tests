@@ -118,18 +118,25 @@ class AdvisoryManager:
 
         Raises:
             AdvisoryException: error when communicate with errata
+
+        Returns:
+            bool: job is triggered or not
         """
 
         # check if all the push jobs are completed, if no, trigger new push job with default value [stage]
         # request with default value will not redo any push which has already successfully completed since the last respin of the advisory. It will redo failed pushes
 
+        triggered = False
         try:
             ads = self.get_advisories()
             for ad in ads:
                 if not ad.are_all_push_jobs_completed():
                     ad.push_to_cdn()
+                    triggered = True
         except Exception as e:
             raise AdvisoryException("push to cdn failed") from e
+
+        return triggered
 
 
 class Advisory(Erratum):
