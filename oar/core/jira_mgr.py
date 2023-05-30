@@ -144,20 +144,23 @@ class JiraManager:
         """
         Change assignee of all QE subtasks from ART ticket
         """
-        try:
-            subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
-            if len(subtasks):
-                for st in subtasks:
-                    if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
-                        self.assign_issue(st.get_key(), self._cs.get_owner())
-                        logger.info(
-                            f"changed assignee of {st.get_key()} to {self._cs.get_owner()}"
-                        )
-                        if st.get_summary().startswith("[Wed-Fri]"):
-                            self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
-        except JiraException:
-            # all the funcs invoked here are internal funcs, JIRAError is catached, JiraException is raised.
-            raise
+        subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
+        if len(subtasks):
+            for st in subtasks:
+                if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
+                    self.assign_issue(st.get_key(), self._cs.get_owner())
+                    if st.get_summary().startswith("[Wed-Fri]"):
+                        self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
+
+    def close_qe_subtasks(self):
+        """
+        Close all QE subtasks under ART story
+        """
+        subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
+        if len(subtasks):
+            for st in subtasks:
+                if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
+                    self.transition_issue(st.get_key(), JIRA_STATUS_CLOSED)
 
 
 class JiraIssue:

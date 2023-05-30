@@ -34,10 +34,7 @@ def change_advisory_status(ctx, status):
         am.change_advisory_status(status)
         # close jira tickets
         jm = JiraManager(cs)
-        sub_tasks = jm.get_sub_tasks(cs.get_jira_ticket())
-        for sub_task in sub_tasks:
-            if sub_task.get_summary() in JIRA_QE_TASK_SUMMARIES:
-                jm.transition_issue(sub_task.get_key(), JIRA_STATUS_CLOSED)
+        jm.close_qe_subtasks()
         # if no exception occurred, update task status to pass
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
     except Exception as e:
