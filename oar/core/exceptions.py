@@ -12,3 +12,6 @@ class JiraException(BaseException):
 
 class AdvisoryException(BaseException):
     """Exception class to raise error in AdvisoryManager"""
+
+class NotificationException(BaseException):
+    """Exception class to raise error in notificationManager"""

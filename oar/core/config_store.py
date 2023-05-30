@@ -200,3 +200,9 @@ class ConfigStore:
             raise ConfigStoreException(f"system environment variable {var} not found")
 
         return val
+
+    def get_google_app_passwd(self):
+        """
+        Get google account application password
+        """
+        return self._get_env_var(ENV_APP_PASSWD)
