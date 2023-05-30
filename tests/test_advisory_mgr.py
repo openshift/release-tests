@@ -25,3 +25,6 @@ class TestAdvisoryManager(unittest.TestCase):
     def test_check_greenwave_cvp_test(self):
         abnormal_tests = self.am.check_greenwave_cvp_tests()
         self.assertTrue(len(abnormal_tests) == 0)
+
+    def test_push_to_cdn(self):
+        self.am.push_to_cdn_staging()
