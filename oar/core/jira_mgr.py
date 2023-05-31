@@ -82,10 +82,14 @@ class JiraManager:
         Raises:
             JiraException: error when communicate with jira server
         """
+        logger.info(f"updating jira issue {key} status ...")
+
         try:
             self._svc.transition_issue(key, transition=status)
         except JIRAError as je:
             raise JiraException("transition issue failed") from je
+
+        logger.info(f"jira issue {key} is updated to {status}")
 
     def assign_issue(self, key, contact):
         """
@@ -98,10 +102,14 @@ class JiraManager:
         Raises:
             JiraException: error when communicate with jira server
         """
+        logger.info(f"updating jira issue {key} assignee")
+
         try:
             self._svc.assign_issue(key, contact)
         except JIRAError as je:
             raise JiraException(f"assign issue {key} to {contact} failed") from je
+
+        logger.info(f"jira issue {key} assignee is updated to {contact}")
 
     def get_sub_tasks(self, parent_key):
         """
@@ -136,20 +144,25 @@ class JiraManager:
         """
         Change assignee of all QE subtasks from ART ticket
         """
-        try:
-            subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
-            if len(subtasks):
-                for st in subtasks:
-                    if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
-                        self.assign_issue(st.get_key(), self._cs.get_owner())
-                        logger.info(
-                            f"changed assignee of {st.get_key()} to {self._cs.get_owner()}"
-                        )
-                        if st.get_summary().startswith("[Wed-Fri]"):
-                            self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
-        except JiraException:
-            # all the funcs invoked here are internal funcs, JIRAError is catached, JiraException is raised.
-            raise
+        subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
+        if len(subtasks):
+            for st in subtasks:
+                if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
+                    self.assign_issue(st.get_key(), self._cs.get_owner())
+                    if st.get_summary().startswith(
+                        "[Wed-Fri]"
+                    ) or st.get_summary().startswith("[Mon-Wed]"):
+                        self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
+
+    def close_qe_subtasks(self):
+        """
+        Close all QE subtasks under ART story
+        """
+        subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
+        if len(subtasks):
+            for st in subtasks:
+                if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
+                    self.transition_issue(st.get_key(), JIRA_STATUS_CLOSED)
 
 
 class JiraIssue:
