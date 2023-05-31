@@ -200,7 +200,7 @@ class AdvisoryManager:
 
                 if len(bug_list):
                     all_dropped_bugs += bug_list
-                    # ad.remove_bugs(bug_list)
+                    ad.remove_bugs(bug_list)
                     logger.info(
                         f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
                     )
