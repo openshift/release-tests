@@ -32,3 +32,7 @@ class TestAdvisoryManager(unittest.TestCase):
     @unittest.skip("disable this case by default")
     def test_change_ad_status(self):
         self.am.change_advisory_status("REL_PREP")
+
+    @unittest.skip("disable this case by default")
+    def test_drop_bugs(self):
+        self.am.drop_bugs()
