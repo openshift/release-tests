@@ -333,6 +333,9 @@ class TestReport:
                     logger.info(
                         f"status of bug {issue.get_key()} is updated to {issue.get_status()}"
                     )
+                elif bug_key not in jira_issues:
+                    self._ws.update_acell("E" + str(row_idx), "Dropped")
+                    logger.info(f"bug {bug_key} is dropped")
                 else:
                     logger.info(f"bug status of {bug_key} is not changed")
             except Exception as e:

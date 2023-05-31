@@ -2,6 +2,7 @@ from errata_tool import Erratum
 from errata_tool import ErrataException
 from oar.core.config_store import ConfigStore
 from oar.core.exceptions import AdvisoryException
+from oar.core.jira_mgr import JiraManager, JiraException
 from oar.core.const import *
 import logging
 
@@ -22,7 +23,7 @@ class AdvisoryManager:
         Get all advisories
 
         Returns:
-            []Advisory: all advisoriy wrappers
+            []Advisory: all advisory wrappers
         """
         ads = []
         for k, v in self._cs.get_advisories().items():
@@ -159,6 +160,57 @@ class AdvisoryManager:
         except Exception as e:
             raise AdvisoryException(f"change advisory status failed") from e
 
+    def drop_bugs(self):
+        """
+        Go thru all attached bugs. drop the not verified bugs if they're not critical/blocker/customer_case
+
+        Raises:
+            AdvisoryException: error when dropping bugs from advisory
+
+        Returns:
+            []: bugs cannot be dropped
+        """
+        jm = JiraManager(self._cs)
+        ads = self.get_advisories()
+        all_dropped_bugs = []
+        for ad in ads:
+            bug_list = []
+            issues = ad.jira_issues
+            if len(issues):
+                for key in issues:
+                    issue = jm.get_issue(key)
+                    if issue.is_verified() or issue.is_closed():
+                        continue
+                    else:
+                        # check whether the issue must be verified
+                        if (
+                            issue.is_critical_issue()
+                            or issue.is_customer_case()
+                            or issue.is_cve_tracker()
+                        ):
+                            logger.warn(
+                                f"jira issue {key} is critical: {issue.is_critical_issue()} or customer case: {issue.is_customer_case()} or cve tracker: {issue.is_cve_tracker()}, it must be verified"
+                            )
+                        else:
+                            # issue can be dropped
+                            logger.info(
+                                f"jira issue {key} is {issue.get_status()} will be dropped from advisory {ad.errata_id}"
+                            )
+                            bug_list.append(key)
+
+                if len(bug_list):
+                    all_dropped_bugs += bug_list
+                    # ad.remove_bugs(bug_list)
+                    logger.info(
+                        f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
+                    )
+                else:
+                    logger.info(
+                        f"there is no bug in advisory {ad.errata_id} can be dropped"
+                    )
+
+        return all_dropped_bugs
+
 
 class Advisory(Erratum):
     """
@@ -207,14 +259,14 @@ class Advisory(Erratum):
         self.commit()
         logger.info(f"advisory {self.errata_id} state is updated to {state.upper()}")
 
-    def remove_bugs(self, bugs):
+    def remove_bugs(self, bug_list: []):
         """
         Drop bugs from advisory
 
         Args:
             bugs (str[]): bug list
         """
-        self.removeBugs(bugs)
+        self.removeJIRAIssues(bug_list)
         need_refresh = self.commit()
         if need_refresh:
             self.refresh()
