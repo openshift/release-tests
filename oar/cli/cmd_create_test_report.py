@@ -2,6 +2,7 @@ import click
 import logging
 import oar.core.util as util
 from oar.core.worksheet_mgr import WorksheetManager, WorksheetException
+from oar.core.notification_mgr import NotificationManager, NotificationException
 
 logger = logging.getLogger(__name__)
 
@@ -24,4 +25,10 @@ def create_test_report(ctx):
 
     logger.info(f"new test report is created: {report.get_url()}")
 
-    # TODO: send email to QE and ART
+    # send notification via email and slack
+    try:
+        nm = NotificationManager(cs)
+        nm.share_new_report(report)
+    except NotificationException as ne:
+        logger.exception("send notification failed")
+        raise

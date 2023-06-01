@@ -24,12 +24,12 @@ def drop_bugs(ctx):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
         # check the greenwave test results for all advisories
-        bug_list = am.drop_bugs()
+        dropped_bugs, must_verify_bugs = am.drop_bugs()
         # check if all bugs are verified
-        if len(bug_list):
+        if len(dropped_bugs):
             logger.info("updating test report")
             report.update_bug_list(am.get_jira_issues())
-            # TODO: send slack message for dropped bugs
+            # TODO: send slack message to notify dropped bugs and must verified bugs
             pass
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_PASS)
     except Exception as e:

@@ -79,7 +79,16 @@ class ConfigStore:
                 x86_64: 4.12.0-0.nightly-2023-04-18-151010
 
         """
-        return self._assembly["basis"]["reference_releases"]
+        # https://art-docs.engineering.redhat.com/assemblies/#building-an-updated-component
+        # according to above doc, it is possible that `reference_releases` can be removed from the yaml
+        # if it is true, return a empty dict instead
+        try:
+            reference_releases = self._assembly["basis"]["reference_releases"]
+        except KeyError:
+            logger.warn("<reference_releases> is not found in releases.yml")
+            reference_releases = {}
+
+        return reference_releases
 
     def get_jira_ticket(self):
         """
@@ -130,6 +139,30 @@ class ConfigStore:
             )
 
         return slack_contacts[team]
+
+    def get_slack_channel_from_contact(self, contact):
+        """
+        Get slack channel name from contact
+
+        Args:
+            contact (str): contact name e.g. qe
+
+        Returns:
+            str: slack channel name
+        """
+        return self.get_slack_contact(contact)["channel"]
+
+    def get_slack_user_group_from_contact(self, contact):
+        """
+        Get slack user/group name from contact
+
+        Args:
+            contact (str): contact name e.g. qe
+
+        Returns:
+            str: slack user/group name
+        """
+        return self.get_slack_contact(contact)["id"]
 
     def get_email_contact(self, team):
         """
@@ -187,6 +220,12 @@ class ConfigStore:
         """
         return self._get_env_var(ENV_VAR_SLACK_APP_TOKEN)
 
+    def get_google_app_passwd(self):
+        """
+        Get google account application password
+        """
+        return self._get_env_var(ENV_APP_PASSWD)
+
     def _get_env_var(self, var):
         """
         Internal func to get value of environment variable
@@ -196,13 +235,7 @@ class ConfigStore:
             var (str): system environment variable name
         """
         val = os.environ.get(var)
-        if not var:
+        if not val:
             raise ConfigStoreException(f"system environment variable {var} not found")
 
         return val
-
-    def get_google_app_passwd(self):
-        """
-        Get google account application password
-        """
-        return self._get_env_var(ENV_APP_PASSWD)
