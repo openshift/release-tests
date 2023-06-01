@@ -173,6 +173,7 @@ class AdvisoryManager:
         jm = JiraManager(self._cs)
         ads = self.get_advisories()
         all_dropped_bugs = []
+        all_must_verify_bugs = []
         for ad in ads:
             bug_list = []
             issues = ad.jira_issues
@@ -191,6 +192,7 @@ class AdvisoryManager:
                             logger.warn(
                                 f"jira issue {key} is critical: {issue.is_critical_issue()} or customer case: {issue.is_customer_case()} or cve tracker: {issue.is_cve_tracker()}, it must be verified"
                             )
+                            all_must_verify_bugs.append(key)
                         else:
                             # issue can be dropped
                             logger.info(
@@ -209,7 +211,7 @@ class AdvisoryManager:
                         f"there is no bug in advisory {ad.errata_id} can be dropped"
                     )
 
-        return all_dropped_bugs
+        return all_dropped_bugs, all_must_verify_bugs
 
 
 class Advisory(Erratum):
