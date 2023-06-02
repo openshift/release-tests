@@ -56,16 +56,26 @@ class AdvisoryManager:
         Change QA owner of all the advisories
 
         Raises:
-            AdvisoryException: _description_
+            AdvisoryException: error when communicate with errata tool
+
+        Returns:
+            updated_ads ([]): updated advisory id list
+            abnormal_ads ([]): advisory id list of the ones state are not QE
         """
+        updated_ads = []
+        abnormal_ads = []
         try:
             for ad in self.get_advisories():
                 # check advisory status, if it is not QE, log warn message
                 if ad.errata_state != "QE":
                     logger.warn(f"advisory state is not QE, it is {ad.errata_state}")
+                    abnormal_ads.append(ad.errata_id)
                 ad.change_qe_email(self._cs.get_owner())
+                updated_ads.append(ad.errata_id)
         except ErrataException as e:
             raise AdvisoryException("change advisory owner failed") from e
+
+        return updated_ads, abnormal_ads
 
     def check_greenwave_cvp_tests(self):
         """

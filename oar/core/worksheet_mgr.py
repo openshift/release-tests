@@ -2,6 +2,7 @@ import gspread
 import gspread_formatting
 import os
 import logging
+import oar.core.util as util
 from oar.core.exceptions import WorksheetException
 from oar.core.config_store import ConfigStore
 from oar.core.const import *
@@ -178,7 +179,7 @@ class TestReport:
         """
         self._ws.update_acell(
             LABEL_JIRA,
-            self._to_hyperlink(self._to_jira_link(jira), jira),
+            self._to_hyperlink(util.get_jira_link(jira), jira),
         )
 
     def get_jira_info(self):
@@ -284,7 +285,7 @@ class TestReport:
             if issue.is_on_qa():
                 logger.debug(f"jira issue {key} is ON_QA, updating")
                 row_vals = []
-                row_vals.append(self._to_hyperlink(self._to_jira_link(key), key))
+                row_vals.append(self._to_hyperlink(util.get_jira_link(key), key))
                 row_vals.append(issue.get_qa_contact())
                 row_vals.append(issue.get_status())
                 batch_vals.append(row_vals)
@@ -354,7 +355,7 @@ class TestReport:
                         logger.info(f"found new ON_QA bug {key}")
                         row_vals = []
                         row_vals.append(
-                            self._to_hyperlink(self._to_jira_link(key), key)
+                            self._to_hyperlink(util.get_jira_link(key), key)
                         )
                         row_vals.append(issue.get_qa_contact())
                         row_vals.append(issue.get_status())
@@ -401,6 +402,3 @@ class TestReport:
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
-
-    def _to_jira_link(self, key):
-        return "%s/browse/%s" % (self._cs.get_jira_server(), key)

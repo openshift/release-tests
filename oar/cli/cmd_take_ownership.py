@@ -5,6 +5,7 @@ from oar.core.worksheet_mgr import WorksheetManager, WorksheetException
 from oar.core.jira_mgr import JiraManager, JiraException
 from oar.core.advisory_mgr import AdvisoryManager, AdvisoryException
 from oar.core.config_store import ConfigStore
+from oar.core.notification_mgr import NotificationManager, NotificationException
 from oar.core.const import *
 
 logger = logging.getLogger(__name__)
@@ -35,11 +36,15 @@ def take_ownership(ctx, email):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_INPROGRESS)
         # update assignee of QE subtasks and change status of test verification ticket to in_progress
-        JiraManager(cs).change_assignee_of_qe_subtasks()
+        updated_subtasks = JiraManager(cs).change_assignee_of_qe_subtasks()
         # update owner of advisories which status is QE
-        AdvisoryManager(cs).change_ad_owners()
+        updated_ads, abnormal_ads = AdvisoryManager(cs).change_ad_owners()
         # update task status to pass
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_PASS)
+        # send notification
+        NotificationManager(cs).share_ownership_change_result(
+            updated_ads, abnormal_ads, updated_subtasks, cs.get_owner()
+        )
     except Exception as e:
         logger.exception("take ownership of advisory and jira subtasks failed")
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_FAIL)

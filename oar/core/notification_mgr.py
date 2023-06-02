@@ -1,5 +1,6 @@
 import os
 import smtplib
+import oar.core.util as util
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from oar.core.config_store import ConfigStore
@@ -44,6 +45,33 @@ class NotificationManager:
             )
         except Exception as e:
             raise NotificationException("share new report failed") from e
+
+    def share_ownership_change_result(
+        self, updated_ads, abnormal_ads, updated_subtasks, new_owner
+    ):
+        """
+        Send notification for take ownership result
+
+        Args:
+            updated_ads ([]): updated advisory list
+            abnormal_ads ([]): advisory list that state is not QE
+            updated_subtasks ([]): updated jira subtasks
+            new_owner ([]): email address of the new owner
+
+        Raises:
+            NotificationException: error when send message
+        """
+
+        try:
+            # Send slack message only
+            slack_msg = self.mh.get_slack_message_for_ownership_change(
+                updated_ads, abnormal_ads, updated_subtasks, new_owner
+            )
+            self.sc.post_message(
+                self.cs.get_slack_channel_from_contact("qe"), slack_msg
+            )
+        except Exception as e:
+            raise NotificationException("share ownership change result failed") from e
 
 
 class MailClient:
@@ -201,6 +229,37 @@ class MessageHelper:
         linked_text = self._to_link(report.get_url(), "test report")
         return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}"
 
+    def get_slack_message_for_ownership_change(
+        self, updated_ads, abnormal_ads, updated_subtasks, new_owner
+    ):
+        """
+        manipulate slack message for ownership change
+
+        Args:
+            updated_ads ([]): updated advisory list
+            abnormal_ads ([]): advisory list that state is not QE
+            updated_subtasks ([]): updated jira subtasks
+            new_owner ([]): email address of the new owner
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact("qe")
+        )
+
+        message = f"Hello {gid}, owner of [{self.cs.release}] advisories and jira subtasks are changed to {new_owner}\n"
+        message += "Updated advisories:\n"
+        for ad in updated_ads:
+            message += self._to_link(util.get_advisory_link(ad), ad) + " "
+        message += "\n"
+        message += "Updated jira subtasks:\n"
+        for key in updated_subtasks:
+            message += self._to_link(util.get_jira_link(key), key) + " "
+        message += "\n"
+        message += "Found some abnormal advisories that state is not QE\n"
+        for ad in abnormal_ads:
+            message += self._to_link(util.get_advisory_link(ad), ad) + " "
+
+        return message
+
     def _to_link(self, link, text):
         """
         private func to generate linked text
@@ -210,6 +269,6 @@ class MessageHelper:
             text (str): text
 
         Returns:
-            str: slack linked text
+            linked_text: slack linked text
         """
         return f"<{link}|{text}>"
