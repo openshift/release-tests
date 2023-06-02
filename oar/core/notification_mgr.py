@@ -61,7 +61,6 @@ class MailClient:
                 "cannot find google app password from env var GOOGLE_APP_PASSWD"
             )
 
-        logger.info("login email with google app password")
         try:
             self.session = smtplib.SMTP_SSL("smtp.gmail.com:465")
             self.session.login(self.from_addr, self.google_app_passwd)
@@ -74,13 +73,11 @@ class MailClient:
         """
         try:
             message = MIMEMultipart()
-            message["To"] = to_addrs
             message["Subject"] = subject
             message.attach(MIMEText(content, "plain"))
-            text = message.as_string()
             # Send email
             senderrs = self.session.sendmail(
-                message["From"], message["To"].split(","), text
+                self.from_addr, to_addrs.split(","), message.as_string()
             )
             if len(senderrs):
                 logger.warn(f"someone in the to_list is rejected: {senderrs}")
@@ -88,6 +85,8 @@ class MailClient:
             raise NotificationException("send email failed") from se
         finally:
             self.session.quit()
+
+        logger.info(f"sent email to {to_addrs} with subject: <{subject}>")
 
 
 class SlackClient:
@@ -104,6 +103,8 @@ class SlackClient:
             self.client.chat_postMessage(channel=channel, text=msg)
         except SlackApiError as e:
             raise NotificationException("send slack message failed") from e
+
+        logger.info(f"sent slack message to <{channel}>")
 
     def get_user_id_by_email(self, email):
         """
