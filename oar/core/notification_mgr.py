@@ -70,6 +70,13 @@ class NotificationManager:
             self.sc.post_message(
                 self.cs.get_slack_channel_from_contact("qe"), slack_msg
             )
+            if len(abnormal_ads):
+                slack_msg = self.mh.get_slack_message_for_abnormal_advisory(
+                    abnormal_ads
+                )
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                )
         except Exception as e:
             raise NotificationException("share ownership change result failed") from e
 
@@ -257,6 +264,27 @@ class MessageHelper:
         message += "Found some abnormal advisories that state is not QE\n"
         for ad in abnormal_ads:
             message += self._to_link(util.get_advisory_link(ad), ad) + " "
+
+        return message
+
+    def get_slack_message_for_abnormal_advisory(self, abnormal_ads):
+        """
+        manipulate slack message for abnormal advisories, raise this issue with ART team
+
+        Args:
+            abnormal_ads ([]): advisory list
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact("art")
+        )
+
+        message = f"Hello {gid}, Can you help to check following [{self.cs.release}] advisories, issue: state is not QE, thanks\n"
+        for ad in abnormal_ads:
+            message += self._to_link(util.get_advisory_link(ad), ad) + " "
+        message += "\n"
 
         return message
 
