@@ -143,16 +143,23 @@ class JiraManager:
     def change_assignee_of_qe_subtasks(self):
         """
         Change assignee of all QE subtasks from ART ticket
+
+        Returns:
+            updated_tasks([]): jira keys of updated subtasks
         """
+        updated_tasks = []
         subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
         if len(subtasks):
             for st in subtasks:
                 if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
                     self.assign_issue(st.get_key(), self._cs.get_owner())
+                    updated_tasks.append(st.get_key())
                     if st.get_summary().startswith(
                         "[Wed-Fri]"
                     ) or st.get_summary().startswith("[Mon-Wed]"):
                         self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
+
+        return updated_tasks
 
     def close_qe_subtasks(self):
         """
