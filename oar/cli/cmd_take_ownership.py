@@ -39,12 +39,12 @@ def take_ownership(ctx, email):
         updated_subtasks = JiraManager(cs).change_assignee_of_qe_subtasks()
         # update owner of advisories which status is QE
         updated_ads, abnormal_ads = AdvisoryManager(cs).change_ad_owners()
-        # update task status to pass
-        report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_PASS)
         # send notification
         NotificationManager(cs).share_ownership_change_result(
             updated_ads, abnormal_ads, updated_subtasks, cs.get_owner()
         )
+        # update task status to pass
+        report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_PASS)
     except Exception as e:
         logger.exception("take ownership of advisory and jira subtasks failed")
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_FAIL)

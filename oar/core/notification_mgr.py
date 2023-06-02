@@ -6,6 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from oar.core.config_store import ConfigStore
 from oar.core.exceptions import NotificationException
 from oar.core.worksheet_mgr import TestReport
+from oar.core.jira_mgr import JiraManager
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 import logging
@@ -31,6 +32,15 @@ class NotificationManager:
         self.mh = MessageHelper(self.cs)
 
     def share_new_report(self, report: TestReport):
+        """
+        Send email and slack messgae for new report info
+
+        Args:
+            report (TestReport): newly created test report
+
+        Raises:
+            NotificationException: error when share this info
+        """
         try:
             # Send email
             mail_subject = self.cs.release + " z-stream errata test status"
@@ -59,7 +69,7 @@ class NotificationManager:
             new_owner ([]): email address of the new owner
 
         Raises:
-            NotificationException: error when send message
+            NotificationException: error when share this info
         """
 
         try:
@@ -79,6 +89,24 @@ class NotificationManager:
                 )
         except Exception as e:
             raise NotificationException("share ownership change result failed") from e
+
+    def share_bugs_to_be_verified(self, jira_issues):
+        """
+        Send slack message to all QA Contacts, ask them to verify ON_QA bugs
+
+        Args:
+            jira_issues ([]): jira issue list
+
+        Raises:
+            NotificationException: error when share this info
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_bug_verification(jira_issues)
+            self.sc.post_message(
+                self.cs.get_slack_channel_from_contact("qe"), slack_msg
+            )
+        except Exception as e:
+            raise NotificationException("share bugs to be verified failed") from e
 
 
 class MailClient:
@@ -157,9 +185,8 @@ class SlackClient:
             )
             userid = resp["user"]["id"]
         except SlackApiError as e:
-            raise NotificationException(
-                f"query user id by email <{email}> error"
-            ) from e
+            logger.warn(f"cannot get slack user id for <{email}>: {e}")
+            return email
 
         return "<@%s>" % userid
 
@@ -200,6 +227,7 @@ class MessageHelper:
     def __init__(self, cs: ConfigStore):
         self.cs = cs
         self.sc = SlackClient(self.cs.get_slack_bot_token())
+        self.jm = JiraManager(cs)
 
     def get_mail_content_for_new_report(self, report: TestReport):
         """
@@ -264,6 +292,29 @@ class MessageHelper:
         message += "Found some abnormal advisories that state is not QE\n"
         for ad in abnormal_ads:
             message += self._to_link(util.get_advisory_link(ad), ad) + " "
+
+        return message
+
+    def get_slack_message_for_bug_verification(self, jira_issues):
+        """
+        manipulate slack message for bug verification
+
+        Args:
+            jira_issues ([]): jira issue list
+
+        Returns:
+            str: slack message
+        """
+        message = f"[{self.cs.release}] Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for the cooperation\n"
+        for key in jira_issues:
+            issue = self.jm.get_issue(key)
+            if issue.is_on_qa():
+                message += (
+                    self._to_link(util.get_jira_link(key), key)
+                    + " "
+                    + self.sc.get_user_id_by_email(issue.get_qa_contact())
+                    + "\n"
+                )
 
         return message
 
