@@ -5,6 +5,7 @@ from oar.core.worksheet_mgr import WorksheetManager, WorksheetException
 from oar.core.jira_mgr import JiraManager, JiraException
 from oar.core.advisory_mgr import AdvisoryManager, AdvisoryException
 from oar.core.config_store import ConfigStore
+from oar.core.notification_mgr import NotificationManager
 from oar.core.const import *
 
 logger = logging.getLogger(__name__)
@@ -24,7 +25,10 @@ def update_bug_list(ctx):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_INPROGRESS)
         # refresh bug list
-        report.update_bug_list(AdvisoryManager(cs).get_jira_issues())
+        jira_issues = AdvisoryManager(cs).get_jira_issues()
+        report.update_bug_list(jira_issues)
+        # send notification
+        NotificationManager(cs).share_bugs_to_be_verified(jira_issues)
         # check if all bugs are verified
         if report.are_all_bugs_verified():
             report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)
