@@ -30,8 +30,16 @@ class Jobs(object):
             print('No Prow API token found, exit...')
             sys.exit(0)
 
-    def get_job_data(self):
-        data = {'job_execution_type': '1'}
+    def get_job_data(self, payload):
+        if payload is None:
+            data = {'job_execution_type': '1'}
+        else:
+            data = {"job_execution_type": "1", 
+                    "pod_spec_options": 
+                    {"envs":  
+                     {"RELEASE_IMAGE_LATEST": payload} 
+                     } 
+                    }
         return data
     
     def get_sha(self, url):
@@ -176,7 +184,7 @@ class Jobs(object):
                             self.run_job(job)
 
     # run_job func runs job by calling the API
-    def run_job(self, jobName):
+    def run_job(self, jobName, payload):
         if jobName is None:
             print('Error! Please input the correct prow job name!')
         elif jobName.startswith("periodic-ci-"):
@@ -187,7 +195,7 @@ class Jobs(object):
 
         if periodicJob is not None:
             url = self.gangwayURL+periodicJob.strip()
-            res = requests.post(url=url, json=self.get_job_data(), headers=self.get_prow_headers())
+            res = requests.post(url=url, json=self.get_job_data(payload), headers=self.get_prow_headers())
             if res.status_code == 200:
                 # print(res.text)
                 job_id = json.loads(res.text)["id"]
@@ -306,6 +314,44 @@ class Jobs(object):
         else:
             print(req.reason)
 
+    def list_jobs(self, component, branch):
+        if component is None:
+            component = "openshift/openshift-tests-private"
+        if branch is None:
+            branch = "master"
+        baseURL = 'https://api.github.com/repos/openshift/release/contents/ci-operator/config/%s/?ref=%s' % (component, branch)
+        req = requests.get(url=baseURL, timeout=3)
+        if req.status_code == 200:
+            file_dict = yaml.load(req.text, Loader=yaml.FullLoader)
+            file_count = 0
+            for file in file_dict:
+                if file['name'].endswith('.yaml'):
+                    url = self.jobURL.format(file['name'].strip())
+                    print(url)
+                    self.get_jobs(url)
+                    file_count += 1
+            print("Total file number under %s folder is:%s" % (component, str(file_count)))
+        else:
+            print(req.reason)
+    def get_jobs(self,url):
+        try:
+            res=requests.get(url=url, headers=self.get_github_headers(), timeout=3)
+            if res.status_code == 200:
+                content = base64.b64decode(res.json()['content'].replace("\n", "")).decode('utf-8')
+                job_dict = yaml.load(content, Loader=yaml.FullLoader)
+                api_count = 0
+                for job in job_dict['tests']:
+                    api = 'false'
+                    if 'remote_api' in job.keys() and job['remote_api'] == 'true':
+                        api = 'true'
+                        api_count += 1
+                    print(job['as'] + "   " + api)
+                print('Total number of api job is: ' + str(api_count))
+            else:
+                print('warning:' + res.reason)
+        except Exception as e:
+            print(e)
+
 job = Jobs()
 @click.group()
 @click.version_option(package_name='job')
@@ -322,9 +368,17 @@ def get_cmd(job_id):
 
 @cli.command("run")
 @click.argument("job_name")
-def run_cmd(job_name):
+@click.option("--payload", help="specify a payload, if not, it will use the latest payload from https://amd64.ocp.releases.ci.openshift.org/")
+def run_cmd(job_name, payload):
     """Run a Prow job via API call."""
-    job.run_job(job_name)
+    job.run_job(job_name, payload)
+
+@cli.command("list")
+@click.option("--component", help="The detault is 'openshift/openshift-tests-private': https://github.com/openshift/release/tree/master/ci-operator/config/openshift/openshift-tests-private ")
+@click.option("--branch", help="the master branch is as default.")
+def run_cmd(component, branch):
+    """List the jobs which support the API call."""
+    job.list_jobs(component, branch)
 
 @cli.command("run_required")
 @click.option("--channel", help="The OCP minor version, if multi versions, comma spacing, such as 4.12,4.11")
@@ -343,8 +397,6 @@ def run_payloads(versions, push, run):
 
 if __name__ == '__main__':
     start=time.time()
-    # job = Jobs()
-    # job.get_payloads()
     cli()
     end=time.time()
     print('execute time cost:%.2f'%(end-start))
