@@ -143,9 +143,8 @@ class Jobs(object):
          # save it to the crrent CSV file
          with open('prow-jobs.csv', 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            L = [dict['time'].strip(), dict['jobID'].strip(), dict['jobURL'].strip()]
+            L = [dict['jobName'].strip(), dict['payload'].strip(), dict['time'].strip(), dict['jobID'].strip(), dict['jobURL'].strip()]
             writer.writerow(L)
-            # print(L)
 
     # get_github_headers func adds Github Token in case rate limit   
     def get_github_headers(self):
@@ -200,7 +199,7 @@ class Jobs(object):
                 # print(res.text)
                 job_id = json.loads(res.text)["id"]
                 print("Returned job id: %s" % job_id)
-                self.get_job_results(job_id)
+                self.get_job_results(job_id, jobName, payload)
             else:
                 print("Error code: %s, reason: %s" % (res.status_code, res.reason))
         else:
@@ -259,7 +258,7 @@ class Jobs(object):
         except Exception as e:
             print(e)
 
-    def get_job_results(self, jobID):
+    def get_job_results(self, jobID, jobName, payload):
         if jobID:
             req = requests.get(url=self.prowJobURL.format(jobID.strip()))
             if req.status_code == 200:
@@ -273,8 +272,10 @@ class Jobs(object):
                 if len(urlList) == 1 and len(timeList) == 1:
                     jobURL = urlList[0]
                     createTime = timeList[0]
-                    print(jobID, createTime, jobURL)
+                    print(jobName, payload, jobID, createTime, jobURL)
                     dict = {
+                        'jobName': jobName,
+                        'payload': payload,
                         'time' : createTime,
                         'jobID' : jobID,
                         'jobURL' : jobURL
@@ -357,6 +358,7 @@ job = Jobs()
 @click.version_option(package_name='job')
 @click.option('--debug/--no-debug', default=False)
 def cli(debug):
+    """"This job tool based on Prow REST API(https://github.com/kubernetes/test-infra/issues/27824), used to handle those remote_api jobs."""
     click.echo('Debug mode is %s' % ('on' if debug else 'off'))
 
 @cli.command("get_results")
@@ -370,7 +372,7 @@ def get_cmd(job_id):
 @click.argument("job_name")
 @click.option("--payload", help="specify a payload, if not, it will use the latest payload from https://amd64.ocp.releases.ci.openshift.org/")
 def run_cmd(job_name, payload):
-    """Run a Prow job via API call."""
+    """Run a job and save results to prow-jobs.csv"""
     job.run_job(job_name, payload)
 
 @cli.command("list")
