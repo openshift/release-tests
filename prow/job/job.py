@@ -30,16 +30,44 @@ class Jobs(object):
             print('No Prow API token found, exit...')
             sys.exit(0)
 
-    def get_job_data(self, payload):
-        if payload is None:
-            data = {'job_execution_type': '1'}
-        else:
+    def get_job_data(self, payload, upgrade_from, upgrade_to):
+        data = {'job_execution_type': '1'}
+        if payload is not None and upgrade_from is not None and upgrade_to is not None:
+            print("Error! You cannot run e2e and upgrade test at the same time!")
+            return None
+        if payload is not None:
             data = {"job_execution_type": "1", 
                     "pod_spec_options": 
                     {"envs":  
                      {"RELEASE_IMAGE_LATEST": payload} 
                      } 
-                    }
+                }
+        if upgrade_from is not None and upgrade_to is not None:
+            data = {"job_execution_type": "1", 
+                    "pod_spec_options": 
+                    {"envs":  
+                     {"RELEASE_IMAGE_LATEST": upgrade_from,
+                       "RELEASE_IMAGE_TARGET": upgrade_to
+                       }
+                     } 
+                }
+        if upgrade_from is None and upgrade_to is not None:
+            data = {"job_execution_type": "1", 
+                    "pod_spec_options": 
+                    {"envs":  
+                     {
+                       "RELEASE_IMAGE_TARGET": upgrade_to
+                       }
+                     } 
+                }
+        if upgrade_from is not None and upgrade_to is None:
+            data = {"job_execution_type": "1", 
+                    "pod_spec_options": 
+                    {"envs":  
+                     {"RELEASE_IMAGE_LATEST": upgrade_from
+                       }
+                     } 
+                }
         return data
     
     def get_sha(self, url):
@@ -143,7 +171,7 @@ class Jobs(object):
          # save it to the crrent CSV file
          with open('prow-jobs.csv', 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            L = [dict['jobName'].strip(), dict['payload'].strip(), dict['time'].strip(), dict['jobID'].strip(), dict['jobURL'].strip()]
+            L = [dict['jobName'], dict['payload'], dict['upgrade_from'], dict['upgrade_to'], dict['time'], dict['jobID'], dict['jobURL']]
             writer.writerow(L)
 
     # get_github_headers func adds Github Token in case rate limit   
@@ -183,7 +211,7 @@ class Jobs(object):
                             self.run_job(job)
 
     # run_job func runs job by calling the API
-    def run_job(self, jobName, payload):
+    def run_job(self, jobName, payload, upgrade_from, upgrade_to):
         if jobName is None:
             print('Error! Please input the correct prow job name!')
         elif jobName.startswith("periodic-ci-"):
@@ -194,12 +222,12 @@ class Jobs(object):
 
         if periodicJob is not None:
             url = self.gangwayURL+periodicJob.strip()
-            res = requests.post(url=url, json=self.get_job_data(payload), headers=self.get_prow_headers())
+            res = requests.post(url=url, json=self.get_job_data(payload, upgrade_from, upgrade_to), headers=self.get_prow_headers())
             if res.status_code == 200:
                 # print(res.text)
                 job_id = json.loads(res.text)["id"]
                 print("Returned job id: %s" % job_id)
-                self.get_job_results(job_id, jobName, payload)
+                self.get_job_results(job_id, jobName, payload, upgrade_from, upgrade_to)
             else:
                 print("Error code: %s, reason: %s" % (res.status_code, res.reason))
         else:
@@ -258,7 +286,7 @@ class Jobs(object):
         except Exception as e:
             print(e)
 
-    def get_job_results(self, jobID, jobName, payload):
+    def get_job_results(self, jobID, jobName=None, payload=None, upgrade_from=None, upgrade_to=None):
         if jobID:
             req = requests.get(url=self.prowJobURL.format(jobID.strip()))
             if req.status_code == 200:
@@ -276,6 +304,8 @@ class Jobs(object):
                     dict = {
                         'jobName': jobName,
                         'payload': payload,
+                        'upgrade_from': upgrade_from,
+                        'upgrade_to': upgrade_to,
                         'time' : createTime,
                         'jobID' : jobID,
                         'jobURL' : jobURL
@@ -370,10 +400,12 @@ def get_cmd(job_id):
 
 @cli.command("run")
 @click.argument("job_name")
-@click.option("--payload", help="specify a payload, if not, it will use the latest payload from https://amd64.ocp.releases.ci.openshift.org/")
-def run_cmd(job_name, payload):
+@click.option("--payload", help="specify a payload for e2e test, if not, it will use the latest payload from https://amd64.ocp.releases.ci.openshift.org/")
+@click.option("--upgrade_from", help="specify an original payload for upgrade test.")
+@click.option("--upgrade_to", help="specify a target payload for upgrade test.")
+def run_cmd(job_name, payload, upgrade_from, upgrade_to):
     """Run a job and save results to prow-jobs.csv"""
-    job.run_job(job_name, payload)
+    job.run_job(job_name, payload, upgrade_from, upgrade_to)
 
 @cli.command("list")
 @click.option("--component", help="The detault is 'openshift/openshift-tests-private': https://github.com/openshift/release/tree/master/ci-operator/config/openshift/openshift-tests-private ")
