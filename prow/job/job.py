@@ -169,7 +169,7 @@ class Jobs(object):
 
     def save_job_data(self, dict):
          # save it to the crrent CSV file
-         with open('prow-jobs.csv', 'a', newline='', encoding='utf-8') as f:
+         with open('/tmp/prow-jobs.csv', 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             L = [dict['jobName'], dict['payload'], dict['upgrade_from'], dict['upgrade_to'], dict['time'], dict['jobID'], dict['jobURL']]
             writer.writerow(L)
@@ -404,7 +404,7 @@ def get_cmd(job_id):
 @click.option("--upgrade_from", help="specify an original payload for upgrade test.")
 @click.option("--upgrade_to", help="specify a target payload for upgrade test.")
 def run_cmd(job_name, payload, upgrade_from, upgrade_to):
-    """Run a job and save results to prow-jobs.csv"""
+    """Run a job and save results to /tmp/prow-jobs.csv"""
     job.run_job(job_name, payload, upgrade_from, upgrade_to)
 
 @cli.command("list")
