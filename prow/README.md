@@ -26,7 +26,7 @@ Commands:
   get_payloads  Check the latest payload of each version.
   get_results   Return the Prow job executed info.
   list          List the jobs which support the API call.
-  run           Run a job and save results to prow-jobs.csv
+  run           Run a job and save results to /tmp/prow-jobs.csv
   run_required  Run required jobs from a file
 ```
 
