@@ -109,6 +109,25 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share bugs to be verified failed") from e
 
+    def share_new_cve_tracker_bugs(self, cve_tracker_bugs):
+        """
+        Send slack message to ART team with new CVE tracker bugs
+
+        Args:
+            cve_tracker_bugs ([]): list of new CVE tracker bug
+
+        Raises:
+            NotificationException: error when checking new CVE tracker bugs
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_cve_tracker_bugs(cve_tracker_bugs)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException("share missed CVE tracker bugs failed") from e
+
 
 class MailClient:
     """
@@ -338,6 +357,27 @@ class MessageHelper:
         message = f"Hello {gid}, Can you help to check following [{self.cs.release}] advisories, issue: state is not QE, thanks\n"
         for ad in abnormal_ads:
             message += self._to_link(util.get_advisory_link(ad), ad) + " "
+        message += "\n"
+
+        return message
+
+    def get_slack_message_for_cve_tracker_bugs(self, cve_tracker_bugs):
+        """
+        manipulate slack message for new CVE tracker bugs
+
+        Args:
+            cve_tracker_bugs ([]): list of new CVE tracker bug
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact("art")
+        )
+
+        message = f"Hello {gid}, Found new CVE tracker bugs not attached on advisories, could you take a look, thanks\n"
+        for bug in cve_tracker_bugs:
+            message += self._to_link(util.get_jira_link(bug), bug) + " "
         message += "\n"
 
         return message

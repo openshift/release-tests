@@ -36,3 +36,7 @@ class TestAdvisoryManager(unittest.TestCase):
     @unittest.skip("disable this case by default")
     def test_drop_bugs(self):
         self.am.drop_bugs()
+
+    def test_check_cve_tracker_bug(self):
+        tracker_bugs = self.am.check_cve_tracker_bug()
+        self.assertFalse(tracker_bugs)
