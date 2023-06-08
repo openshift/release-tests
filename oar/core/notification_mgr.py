@@ -102,9 +102,10 @@ class NotificationManager:
         """
         try:
             slack_msg = self.mh.get_slack_message_for_bug_verification(jira_issues)
-            self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe"), slack_msg
-            )
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("qe"), slack_msg
+                )
         except Exception as e:
             raise NotificationException("share bugs to be verified failed") from e
 
@@ -305,6 +306,7 @@ class MessageHelper:
         Returns:
             str: slack message
         """
+        has_onqa_issue = False
         message = f"[{self.cs.release}] Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for the cooperation\n"
         for key in jira_issues:
             issue = self.jm.get_issue(key)
@@ -315,8 +317,9 @@ class MessageHelper:
                     + self.sc.get_user_id_by_email(issue.get_qa_contact())
                     + "\n"
                 )
+                has_onqa_issue = True
 
-        return message
+        return message if has_onqa_issue else ""
 
     def get_slack_message_for_abnormal_advisory(self, abnormal_ads):
         """

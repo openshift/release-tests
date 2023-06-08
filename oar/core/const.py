@@ -41,6 +41,7 @@ JIRA_STATUS_CLOSED = "Closed"
 JIRA_STATUS_IN_PROGRESS = "In Progress"
 JIRA_STATUS_VERIFIED = "Verified"
 JIRA_STATUS_ON_QA = "ON_QA"
+JIRA_STATUS_DROPPED = "Dropped"
 JIRA_QE_TASK_SUMMARIES = [
     "[Fri/Mon] QE moves advisories to REL_PREP",
     "[Wed-Fri] QE does release verification",

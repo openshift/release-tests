@@ -335,7 +335,7 @@ class TestReport:
                         f"status of bug {issue.get_key()} is updated to {issue.get_status()}"
                     )
                 elif bug_key not in jira_issues:
-                    self._ws.update_acell("E" + str(row_idx), "Dropped")
+                    self._ws.update_acell("E" + str(row_idx), JIRA_STATUS_DROPPED)
                     logger.info(f"bug {bug_key} is dropped")
                 else:
                     logger.info(f"bug status of {bug_key} is not changed")
@@ -388,7 +388,11 @@ class TestReport:
                 status = self._ws.acell("E" + str(row_idx)).value
                 if not status:
                     break
-                if status not in [JIRA_STATUS_VERIFIED, JIRA_STATUS_CLOSED]:
+                if status not in [
+                    JIRA_STATUS_VERIFIED,
+                    JIRA_STATUS_CLOSED,
+                    JIRA_STATUS_DROPPED,
+                ]:
                     verified = False
                     bug_key = self._ws.acell("C" + str(row_idx)).value
                     logger.debug(f"found not verified bug {bug_key}:{status}")
