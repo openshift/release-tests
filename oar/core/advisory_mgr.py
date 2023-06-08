@@ -228,7 +228,7 @@ class AdvisoryManager:
 
     def check_cve_tracker_bug(self):
         """
-        Call elliott cmd to check if any CVE tracke bug is missed
+        Call elliott cmd to check if any new CVE tracke bug found
 
         Raises:
             AdvisoryException: error when invoke elliott cmd
