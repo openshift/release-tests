@@ -109,7 +109,7 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share bugs to be verified failed") from e
 
-    def share_missed_cve_tracker_bugs(self, cve_tracker_bugs):
+    def share_new_cve_tracker_bugs(self, cve_tracker_bugs):
         """
         Send slack message to ART team with new CVE tracker bugs
 

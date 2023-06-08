@@ -27,7 +27,7 @@ def check_cve_tracker_bug(ctx):
         # trigger push job for cdn stage targets
         cve_tracker_bugs = am.check_cve_tracker_bug()
         if cve_tracker_bugs:
-            NotificationManager(cs).share_missed_cve_tracker_bugs(cve_tracker_bugs)
+            NotificationManager(cs).share_new_cve_tracker_bugs(cve_tracker_bugs)
         else:
             logger.info("no new CVE tracker bug found")
         report.update_task_status(LABEL_TASK_CHECK_CVE_TRACKERS, TASK_STATUS_PASS)
