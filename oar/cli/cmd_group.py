@@ -1,6 +1,7 @@
 import click
 import logging
 import sys
+from oar.cli.cmd_stage_testing import stage_testing
 import oar.core.util as util
 from oar import version
 from oar.cli.cmd_create_test_report import create_test_report
@@ -56,3 +57,4 @@ cli.add_command(push_to_cdn_staging)
 cli.add_command(change_advisory_status)
 cli.add_command(drop_bugs)
 cli.add_command(check_cve_tracker_bug)
+cli.add_command(stage_testing)

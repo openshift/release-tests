@@ -201,6 +201,24 @@ class ConfigStore:
         """
         return self._get_env_var(ENV_VAR_JIRA_TOKEN)
 
+    def get_jenkins_server(self):
+        """
+        Get jenkins server url
+        """
+        return self._local_conf["jenkins_server"]
+
+    def get_jenkins_username(self):
+        """
+        Get jenkins username
+        """
+        return self._get_env_var(ENV_JENKINS_USER)
+
+    def get_jenkins_token(self):
+        """
+        Get jenkins user token
+        """
+        return self._get_env_var(ENV_JENKINS_TOKEN)
+
     def get_google_sa_file(self):
         """
         Get google service account file path
