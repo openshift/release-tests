@@ -4,7 +4,10 @@ from oar.core.config_store import ConfigStore
 from oar.core.exceptions import AdvisoryException
 from oar.core.jira_mgr import JiraManager, JiraException
 from oar.core.const import *
+import oar.core.util as util
 import logging
+import subprocess
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -222,6 +225,58 @@ class AdvisoryManager:
                     )
 
         return all_dropped_bugs, all_must_verify_bugs
+
+    def check_cve_tracker_bug(self):
+        """
+        Call elliott cmd to check if any CVE tracke bug is missed
+
+        Raises:
+            AdvisoryException: error when invoke elliott cmd
+
+        Returns:
+            json: missed CVE tracker bugs
+        """
+        cmd = [
+            "elliott",
+            "--data-path",
+            "https://github.com/openshift-eng/ocp-build-data.git",
+            "--group",
+            f"openshift-{util.get_y_release(self._cs.release)}",
+            "--assembly",
+            self._cs.release,
+            "find-bugs:sweep",
+            "--include-status",
+            "ON_QA",
+            "--include-status",
+            "MODIFIED",
+            "--include-status",
+            "VERIFIED",
+            "--cve-only",
+            "--report",
+            "--output",
+            "json",
+        ]
+
+        logger.debug(f"elliott cmd {cmd}")
+
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        if p.returncode != 0:
+            raise AdvisoryException(f"elliott cmd error:\n {stderr}")
+
+        cve_tracker_bugs = []
+        result = stdout.decode("utf-8")
+        if result:
+            logger.info("found new CVE tracker bug")
+            logger.debug(result)
+            json_obj = json.loads(result)
+            for tracker in json_obj:
+                id = tracker["id"]
+                summary = tracker["summary"]
+                logger.info(f"{id}: {summary}")
+                cve_tracker_bugs.append(id)
+
+        return cve_tracker_bugs
 
 
 class Advisory(Erratum):
