@@ -1,6 +1,8 @@
 import click
 import logging
 import sys
+from oar.cli.cmd_image_consistency_check import image_consistency_check
+from oar.cli.cmd_image_signed_check import image_signed_check
 from oar.cli.cmd_stage_testing import stage_testing
 import oar.core.util as util
 from oar import version
@@ -58,3 +60,5 @@ cli.add_command(change_advisory_status)
 cli.add_command(drop_bugs)
 cli.add_command(check_cve_tracker_bug)
 cli.add_command(stage_testing)
+cli.add_command(image_consistency_check)
+cli.add_command(image_signed_check)
