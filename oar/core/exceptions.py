@@ -15,3 +15,6 @@ class AdvisoryException(BaseException):
 
 class NotificationException(BaseException):
     """Exception class to raise error in notificationManager"""
+
+class JenkinsHelperException(BaseException):
+    """Exception class to raise error in JenkinsHelper"""
