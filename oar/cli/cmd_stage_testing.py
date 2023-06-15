@@ -20,7 +20,7 @@ def stage_testing(ctx, build_number):
     cs = ctx.obj["cs"] 
     jh = JenkinsHelper(cs) 
     if not build_number:
-        logger.warn("job id is not set, will trigger stage testing")
+        logger.info("job id is not set, will trigger stage testing")
         try:
             report = WorksheetManager(cs).get_test_report()
             stage_test_result = report.get_task_status(LABEL_TASK_STAGE_TEST)
@@ -36,7 +36,7 @@ def stage_testing(ctx, build_number):
                         logger.exception("trigger stage pipeline job failed")
                         raise
                     logger.info(f"triggerred stage pipeline job: <{build_url}>")
-                    nm.sc.post_message(cs.get_slack_channel_from_contact("qe"), "<"+cs.release+"> stage testing job: "+build_url)
+                    nm.sc.post_message(cs.get_slack_channel_from_contact("qe"), "["+cs.release+"] stage testing job: "+build_url)
                     report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
                 else:
                     logger.info("push to cdn stage is not completed, so will not trigger stage test")

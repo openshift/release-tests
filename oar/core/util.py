@@ -36,7 +36,9 @@ def init_logging(log_level=logging.INFO):
         if "requests" in k or "urllib3" in k or "gssapi" in k:
             logger = logging.getLogger(k)
             logger.setLevel(logging.WARNING)
-
+        if "requests_kerberos" in k:
+            logger = logging.getLogger(k)
+            logger.setLevel(logging.CRITICAL)
 
 def get_jira_link(key):
     return "%s/browse/%s" % ("https://issues.redhat.com", key)
