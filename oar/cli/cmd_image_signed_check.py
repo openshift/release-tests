@@ -1,41 +1,46 @@
 import click
 import logging
-from oar.core.config_store import ConfigStore
-from oar.core.exceptions import JenkinsHelperException
-from oar.core.jenkins_helper import JenkinsHelper
+import re
+import requests
+from requests.exceptions import RequestException
+from bs4 import BeautifulSoup
 from oar.core.const import *
-from oar.core.notification_mgr import NotificationManager
 from oar.core.worksheet_mgr import WorksheetManager
+
 
 logger = logging.getLogger(__name__)
 
 @click.command()
 @click.pass_context
-@click.option("-n","--build_number",type=int, help="provide build number to get job status")
-def image_signed_check(ctx,build_number):
+def image_signed_check(ctx):
     """
     Check payload image is well signed
     """
-    # get config store from context
     cs = ctx.obj["cs"] 
-    jh = JenkinsHelper(cs) 
-    if not build_number:
-        report = WorksheetManager(cs).get_test_report()
-        image_signed_check_result = report.get_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY)
-        if image_signed_check_result == TASK_STATUS_PASS:
-            logger.info("image signed check already pass, not need to trigger again")
-        elif image_signed_check_result == TASK_STATUS_INPROGRESS:   
-            logger.info("job[signature_check] already triggered and in progress, not need to trigger again")
-        else:
-            nm = NotificationManager(cs)
-            try: 
-                build_url = jh.call_signature_check_job()    
-            except JenkinsHelperException as jh:
-                logger.exception("trigger signature_check job failed")
-                raise
-            logger.info(f"triggerred signature_check job: {build_url}")
-            nm.sc.post_message(cs.get_slack_channel_from_contact("qe"), "["+cs.release+"] image signed check job: "+build_url)
-            report.update_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_INPROGRESS)
-    else: 
-        logger.info(f"check signature_check job status according to job id:{build_number}")
-        jh.get_job_status(jh.zstream_url, "signature_check", build_number)
+    report = WorksheetManager(cs).get_test_report()
+    image_signed_check_result = report.get_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY)
+    if image_signed_check_result == TASK_STATUS_PASS:
+        logger.info("image signed check already pass, not need to trigger again")
+    else:
+        report.update_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_INPROGRESS)
+        try:
+            res = requests.get(cs.get_release_url() + "/releasestream/4-stable/release/" + cs.release)
+            res.raise_for_status()
+            soup = BeautifulSoup(res.content, 'lxml')
+            # 1. get the digest
+            digest_sha = soup.find(string=re.compile("sha256:"))
+            if len(digest_sha) == 0:
+                logger.error("No image digest found!")
+            logger.info(f"found image digest: {digest_sha}")
+            reformatted_digest = digest_sha.replace(':', '=')
+            # 2. query the mirror location
+            mirror_url = cs.get_signature_url() + reformatted_digest + "/"
+            logger.info(f'Comparing digest from url: {mirror_url}')
+            rest = requests.get(mirror_url)
+            rest.raise_for_status()
+            if rest.status_code == 200:
+                logger.info("Signature check PASSED")
+                report.update_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_PASS)
+        except RequestException:
+            logger.error("Visit release/mirror url failed")
+            report.update_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_FAIL)  
