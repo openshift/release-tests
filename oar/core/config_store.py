@@ -243,6 +243,18 @@ class ConfigStore:
         Get google account application password
         """
         return self._get_env_var(ENV_APP_PASSWD)
+    
+    def get_release_url(self):
+        """
+        Get release url
+        """
+        return self._get_env_var(ENV_RELEASE_URL)
+
+    def get_signature_url(self):
+        """
+        Get release url
+        """
+        return self._get_env_var(ENV_SIGNATURE_URL)
 
     def _get_env_var(self, var):
         """

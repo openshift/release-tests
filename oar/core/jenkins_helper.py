@@ -38,17 +38,6 @@ class JenkinsHelper:
         if not last_build_number:
             raise JenkinsHelperException("Trigger image check job failed: cannot get latest build number")
         return self._cs.get_jenkins_server()+ "/job/image-consistency-check/" +str(last_build_number)  
-
-    def call_signature_check_job(self): 
-        try:
-            server = jenkins.Jenkins(self.zstream_url, username=self._cs.get_jenkins_username(), password=self._cs.get_jenkins_token())
-            server.build_job("signature_check",parameters={'ZSTREAM_OCP_VERSION': self._cs.release})
-        except jenkins.JenkinsException as ej:   
-            raise JenkinsHelperException("call signature check job failed") from ej
-        last_build_number = server.get_job_info("signature_check")['lastBuild']['number']
-        if not last_build_number:
-            raise JenkinsHelperException("Trigger signature_check job failed: cannot get latest build number")
-        return self.zstream_url+ "job/signature_check/" +str(last_build_number)
     
     def get_job_status(self, url, job_name, build_number):
         """
