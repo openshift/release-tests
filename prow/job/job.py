@@ -160,7 +160,7 @@ class Jobs(object):
                         if new.minor == old.minor:
                             channel = version[:-2]
                             print("The latest version of %s is: %s" %(channel,tag['name']))
-                            file = ".auto-OCP-%s.txt" % version[:-2]
+                            file = "Auto-OCP-%s.txt" % version[:-2]
                             if push:
                                 self.push_versions(content=tag['name'], file=file, run=run)
                             break
@@ -196,19 +196,26 @@ class Jobs(object):
             # print(json.loads(jobs)['arm64']['jobs'])
 
     # channel means minor version, such as 4.12
-    def run_required_jobs(self, channels, file_path):
+    def run_required_jobs(self, channels, file_path, type = 'stable'):
+        if type is None:
+            type = 'stable'
         job_dict = self.get_required_jobs(file_path)
         if channels is not None and job_dict is not None:
             channel_list = channels.split(",")
             for channel in channel_list:
                 print(channel)
+                exist_jobs = self.search_job(None, channel)
                 if channel in job_dict.keys():
                     if 'amd64' in job_dict[channel].keys():
                         for job in job_dict[channel]['amd64']['jobs']:
-                            self.run_job(job)
+                            for j in exist_jobs['periodics']:
+                                if job in j['name'] and type in j['name']:
+                                    self.run_job(j['name'], None, None, None)
                     if 'arm64' in job_dict[channel].keys():
                         for job in job_dict[channel]['arm64']['jobs']:
-                            self.run_job(job)
+                            for j in exist_jobs['periodics']:
+                                if job in j['name'] and type in j['name']:
+                                    self.run_job(j['name'], None, None, None)
 
     # run_job func runs job by calling the API
     def run_job(self, jobName, payload, upgrade_from, upgrade_to):
@@ -217,8 +224,8 @@ class Jobs(object):
         elif jobName.startswith("periodic-ci-"):
             periodicJob = jobName.strip()
         else:
-            # search full job name under the https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/ folder
-            periodicJob = self.get_periodic_job(jobName)
+            # it returns the first match job
+            periodicJob = self.search_job(jobName, None)
 
         if periodicJob is not None:
             url = self.gangwayURL+periodicJob.strip()
@@ -233,39 +240,37 @@ class Jobs(object):
         else:
             print("Warning! Couldn't find job:%s" % jobName)
 
-    def get_periodic_job(self, jobName):
-        baseURL = 'https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/?ref=master'
-        req = requests.get(url=baseURL, timeout=3)
+    def search_job(self, jobName, ocp_version):
+        print('Searching job...')
+        jobURLs = 'https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/?ref=master'
+        req = requests.get(url=jobURLs, timeout=3)
         if req.status_code == 200:
             file_dict = yaml.load(req.text, Loader=yaml.FullLoader)
             for file in file_dict:
                 fileName = file['name'].strip()
-                if fileName.endswith('.yaml'):
-                    if 'upgrade' in fileName or 'stable' in fileName:
-                        url = self.jobURL.format(fileName)
-                        try:
-                            res=requests.get(url=url, headers=self.get_github_headers(), timeout=3)
-                            if res.status_code == 200:
-                                content = base64.b64decode(res.json()['content'].replace("\n", "")).decode('utf-8')
-                                job_dict = yaml.load(content, Loader=yaml.FullLoader)
-                                for job in job_dict['tests']:
-                                    if jobName == job['as'] and ('remote_api' in job.keys()) and job['remote_api'] == True:
-                                        print("find %s in file %s" % (jobName, fileName))
-                                        periodicJobName = "periodic-ci-%s-%s" % (fileName.replace("__", "-").replace(".yaml", ""), jobName)
-                                        return periodicJobName
-                                #         break
-                                # else:
-                                #     continue
-                                # break
+                if ocp_version is not None and ocp_version not in fileName:
+                    continue
+                if fileName.endswith('.yaml') and 'periodics' in fileName:
+                    print(">>>> " + fileName)
+                    url = 'https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{}?ref=master'.format(fileName)
+                    res=requests.get(url=url, headers=self.get_github_headers(), timeout=3)
+                    if res.status_code == 200:
+                        # We have to get the git blobs when the size is very large, such as
+                        # git_url = 'https://api.github.com/repos/openshift/release/git/blobs/7546acab2fdc5fcde2df8d549df1d2886fcb4efc'
+                        git_url = res.json()['git_url']
+                        res = requests.get(url=git_url, headers=self.get_github_headers(), timeout=3)
+                        if res.status_code == 200:
+                            content = base64.b64decode(res.json()['content'].replace("\n", "")).decode('utf-8')
+                            job_dict = yaml.load(content, Loader=yaml.FullLoader)
+                            if job_dict is None:
+                                print("Warning! Couldn't get retunred JSON content when scanning %s!" % fileName)
+                                continue
+                            if jobName is not None:
+                                for job in job_dict['periodics']:
+                                    if jobName in job['name']:
+                                        return job['name']
                             else:
-                                print("Fail to get job: %s", res.status_code)
-                        except Exception as e:
-                            print(e)
-            return None
-        else:
-            print("Faile to get openshift-tests-private's files: %s" % req.status_code)
-            return None
-
+                                return job_dict
 
     def query_jobs(self,url, neededJobs):
         try:
@@ -274,12 +279,11 @@ class Jobs(object):
                 content = base64.b64decode(res.json()['content'].replace("\n", "")).decode('utf-8')
                 job_dict = yaml.load(content, Loader=yaml.FullLoader)
                 for job in job_dict['tests']:
-                    if 'remote_api' in job.keys() and job['remote_api'] == True:
-                        jobName = job['as']
-                        if jobName in neededJobs['amd64']['jobs'] or jobName in neededJobs['arm64']['jobs']:
-                            print(jobName)
-                        else:
-                            print("Warning %s is not list in the required JSON list, skip!!!" % jobName)
+                    jobName = job['as']
+                    if jobName in neededJobs['amd64']['jobs'] or jobName in neededJobs['arm64']['jobs']:
+                        print(jobName)
+                    else:
+                        print("Warning %s is not list in the required JSON list, skip!!!" % jobName)
             else:
                 print('warning:' + res.reason)
 
@@ -372,10 +376,8 @@ class Jobs(object):
                 job_dict = yaml.load(content, Loader=yaml.FullLoader)
                 api_count = 0
                 for job in job_dict['tests']:
-                    api = 'false'
-                    if 'remote_api' in job.keys() and job['remote_api'] == 'true':
-                        api = 'true'
-                        api_count += 1
+                    api = 'true'
+                    api_count += 1
                     print(job['as'] + "   " + api)
                 print('Total number of api job is: ' + str(api_count))
             else:
@@ -388,7 +390,7 @@ job = Jobs()
 @click.version_option(package_name='job')
 @click.option('--debug/--no-debug', default=False)
 def cli(debug):
-    """"This job tool based on Prow REST API(https://github.com/kubernetes/test-infra/issues/27824), used to handle those remote_api jobs."""
+    """"This job tool based on Prow REST API(https://github.com/kubernetes/test-infra/issues/27824), used to handle those prow jobs."""
     click.echo('Debug mode is %s' % ('on' if debug else 'off'))
 
 @cli.command("get_results")
@@ -417,9 +419,10 @@ def run_cmd(component, branch):
 @cli.command("run_required")
 @click.option("--channel", help="The OCP minor version, if multi versions, comma spacing, such as 4.12,4.11")
 @click.option("--file", help="a file that stores required jobs for all OCP versions.")
-def run_cmd(channel, file):
+@click.option("--type", help="stable or nightly test")
+def run_cmd(channel, file, type):
     """Run required jobs from a file"""
-    job.run_required_jobs(channel, file)
+    job.run_required_jobs(channel, file, type)
 
 @cli.command("get_payloads")
 @click.argument("versions")
