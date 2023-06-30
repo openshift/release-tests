@@ -1,71 +1,41 @@
 { 
-    "4.11" : {
-        "amd64" : {
-            "jobs" : [
-                "aws-c2s-ipi-disconnected-private-p2-f14",
-                "azure-ipi-disconnected-fullyprivate-p2-f14",
-                "gcp-ipi-proxy-private-p2-f14",
-                "vsphere-ipi-proxy-fips-p2-f14"
-                    ]
-        },
-        "arm64" : {
-            "jobs" : [
-                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
-                "aws-ipi-ovn-fips-p2-f28",
-                "aws-ipi-proxy-cco-manual-sts-p2-f28"
-            ]
-        }
-    },
-    "4.12" : {
-        "amd64" : {
-            "jobs" : [
-                "aws-ipi-proxy-cco-manual-sts-p2-f14", 
-                "azure-ipi-proxy-workers-rhcos-rhel8-p2-f7",
-                "vsphere-ipi-proxy-workers-rhel8-p2-f14", 
-                "gcp-ipi-ovn-p2-f7",
-                "gcp-ipi-ovn-ipsec-p2-f14",
-                "nutanix-ipi-fips-p2-f14",
-                "aws-c2s-ipi-disconnected-private-p2-f14",
-                "azure-ipi-fips-p2-f30",
-                "aws-rosa-sts-hypershift-guest-integration-critical-p1-f2",
-                "azure-ipi-disconnected-fullyprivate-p2-f28"
-                    ]
-        },
-        "arm64" : {
-            "jobs" : [
-                "aws-ipi-p2-f14",
-                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
-                "aws-ipi-ovn-fips-p2-f28",
-                "aws-ipi-proxy-cco-manual-sts-p2-f28",
-                "aws-ipi-disconnected-cco-manual-sts-ep-p2-f28",
-                "aws-ipi-ovn-fips-p2-f28"
-            ]
-        }
-    },
-    "4.13" : {
-        "amd64" : {
-            "jobs" : [
-                "aws-ipi-disconnected-cco-manual-sts-ep",
-                "aws-c2s-ipi-disconnected-private",
-                "aws-ipi-ovn-fips",
-                "vsphere-ipi-proxy-fips",
-                "nutanix-ipi-proxy-fips",
-                "ibmcloud-ipi-private-fips",
-                "gcp-ipi-proxy-private",
-                "azure-ipi-fullyprivate-proxy",
-                "azure-ipi-fips",
-                "azure-ipi-baselinecaps-v412-to-multiarch",
-                "aws-rosa-sts"
-                    ]
-        },
-        "arm64" : {
-            "jobs" : [
-                "aws-ipi-disconnected-cco-manual-sts-ep",
-                "azure-ipi-disconnected-fullyprivate",
-                "azure-ipi-fips",
-                "aws-ipi-ovn-ipsec-to-multiarch",
-                "baremetal-upi-to-multiarch"
-            ]
-        }
-    }
+    "4.10" : [
+        "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-aws-ipi-ovn-fips-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-azure-ipi-fips-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-gcp-ipi-proxy-private-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-vsphere-ipi-proxy-fips-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.10-arm64-stable-aws-ipi-ovn-p2-f28"
+    ],
+    "4.11" : [
+        "periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-stable-aws-c2s-ipi-disconnected-private-fips-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-stable-azure-ipi-disconnected-fullyprivate-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-stable-gcp-ipi-proxy-private-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-stable-vsphere-ipi-proxy-fips-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.11-arm64-stable-aws-ipi-ovn-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-aws-ipi-ovn-ingress-nlb-fips-p2-f14"
+    ],
+    "4.12" : [
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-stable-aws-ipi-ovn-fips-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-nightly-vsphere-ipi-proxy-workers-rhel8-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-nightly-4.12-upgrade-from-stable-4.11-gcp-ipi-ovn-ipsec-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-stable-4.12-upgrade-from-stable-4.11-nutanix-ipi-fips-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-stable-aws-rosa-sts-hypershift-guest-integration-critical-p1-f2",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-stable-azure-ipi-disconnected-fullyprivate-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-multi-nightly-aws-ipi-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.12-amd64-stable-4.12-upgrade-from-stable-4.11-aws-ipi-ovn-fips-p2-f28"
+    ],
+    "4.13" : [
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-nightly-aws-c2s-ipi-disconnected-private-fips-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-nightly-4.13-upgrade-from-stable-4.13-aws-ipi-ovn-fips-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-nightly-vsphere-ipi-proxy-fips-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-nightly-nutanix-ipi-proxy-fips-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-nightly-ibmcloud-ipi-private-fips-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-proxy-private-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-arm64-stable-4.13-upgrade-from-stable-4.12-azure-ipi-fullyprivate-proxy-p2-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-stable-azure-ipi-baselinecaps-v412-to-multiarch-p2-f14",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-amd64-stable-aws-rosa-sts-p2-f7",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-arm64-nightly-azure-ipi-disconnected-fullyprivate-tp-p3-f28",
+        "periodic-ci-openshift-openshift-tests-private-release-4.13-arm64-stable-aws-ipi-ovn-ipsec-to-multiarch-p2-f14",
+        " periodic-ci-openshift-openshift-tests-private-release-4.13-arm64-stable-baremetal-upi-to-multiarch-p2-f7"
+    ]
 }
