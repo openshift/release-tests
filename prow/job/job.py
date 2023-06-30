@@ -99,7 +99,7 @@ class Jobs(object):
             if VersionInfo.parse(oldVersion) < VersionInfo.parse(content): 
                 sha = self.get_sha(url)
                 # sha is Required if you are updating a file.
-                data = {"sha": sha,"content": base64Content,"branch": "master", "message":"got the latest version %s" % content,"committer":{"name":"Release Bot","email":"jianzhanbjz@github.com"}}
+                data = {"sha": sha,"content": base64Content,"branch": "record", "message":"got the latest version %s" % content,"committer":{"name":"Release Bot","email":"jianzhanbjz@github.com"}}
                 self.push_action(url, data)
                 if run:
                     default_file= "_releases/required-jobs.json"
@@ -109,7 +109,7 @@ class Jobs(object):
                 print("No update! since the recored version %s >= the new version %s" % (oldVersion, content))
         elif res.status_code == 404:
             print("file %s doesn't exist, create it." % url)
-            data = {"content":base64Content,"branch": "master", "message":"got the latest version %s" % content,"committer":{"name":"Release Bot","email":"jianzhanbjz@github.com"}}
+            data = {"content":base64Content,"branch": "record", "message":"got the latest version %s" % content,"committer":{"name":"Release Bot","email":"jianzhanbjz@github.com"}}
             self.push_action(url, data)
             if run:
                 default_file= "_releases/required-jobs.json"
@@ -206,16 +206,12 @@ class Jobs(object):
                 print(channel)
                 exist_jobs = self.search_job(None, channel)
                 if channel in job_dict.keys():
-                    if 'amd64' in job_dict[channel].keys():
-                        for job in job_dict[channel]['amd64']['jobs']:
-                            for j in exist_jobs['periodics']:
-                                if job in j['name'] and type in j['name']:
-                                    self.run_job(j['name'], None, None, None)
-                    if 'arm64' in job_dict[channel].keys():
-                        for job in job_dict[channel]['arm64']['jobs']:
-                            for j in exist_jobs['periodics']:
-                                if job in j['name'] and type in j['name']:
-                                    self.run_job(j['name'], None, None, None)
+                    print(channel)
+                    for job in job_dict[channel]:
+                        print(job)
+                        for j in exist_jobs['periodics']:
+                            if job in j['name'] and type in j['name']:
+                                self.run_job(j['name'], None, None, None)
 
     # run_job func runs job by calling the API
     def run_job(self, jobName, payload, upgrade_from, upgrade_to):
