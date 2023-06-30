@@ -103,7 +103,7 @@ class Jobs(object):
                 if run:
                     default_file= "_releases/required-jobs.json"
                     channel = content[:-2]
-                    self.run_required_jobs(channel, default_file)
+                    self.run_required_jobs(channel, default_file, content)
             else:
                 print("No update! since the recored version %s >= the new version %s" % (oldVersion, content))
         elif res.status_code == 404:
@@ -113,7 +113,7 @@ class Jobs(object):
             if run:
                 default_file= "_releases/required-jobs.json"
                 channel = content[:-2]
-                self.run_required_jobs(channel, default_file)
+                self.run_required_jobs(channel, default_file, content)
         else:
             print("Push error: %s, %s" % (res.status_code, res.reason))
     
@@ -184,33 +184,38 @@ class Jobs(object):
             sys.exit(0)
 
     def get_required_jobs(self, file_path):
-        # file_path = "/Users/jianzhang/goproject/src/github.com/openshift/release-tests/_releases/required-jobs.json"
         print("use file: %s" % file_path)
         if file_path is None:
             return None
         with open(file_path) as f:
             jobs = f.read()
             return json.loads(jobs)
-            # print(json.loads(jobs)['amd64']['jobs'])
-            # print(json.loads(jobs)['arm64']['jobs'])
 
-    # channel means minor version, such as 4.12
-    def run_required_jobs(self, channels, file_path, type = 'stable'):
-        if type is None:
-            type = 'stable'
+    # channel means OCP minor version, such as 4.12
+    # version means OCP version, such as 4.10.63
+    # file_path the path of the jobs file
+    def run_required_jobs(self, channels, file_path, version):
         job_dict = self.get_required_jobs(file_path)
         if channels is not None and job_dict is not None:
             channel_list = channels.split(",")
             for channel in channel_list:
-                print(channel)
-                exist_jobs = self.search_job(None, channel)
+                print("Hanling %s" % channel)
                 if channel in job_dict.keys():
-                    print(channel)
                     for job in job_dict[channel]:
-                        print(job)
-                        for j in exist_jobs['periodics']:
-                            if job in j['name'] and type in j['name']:
-                                self.run_job(j['name'], None, None, None)
+                        print("Hanling %s" % job)
+                        # amd64 as default
+                        payload = "quay.io/openshift-release-dev/ocp-release:{}-x86_64".format(version)
+                        if "arm64" in job:
+                            payload = "quay.io/openshift-release-dev/ocp-release:{}-aarch64".format(version)
+                        # specify the latest stable payload for upgrade test
+                        if "upgrade-from-stable" in job:
+                            self.run_job(job, None, None, upgrade_to=payload)
+                        # specify the latest stable payload for e2e test
+                        elif "upgrade" not in job:
+                            self.run_job(job, payload, None, None)
+                        # as default
+                        else:
+                            self.run_job(job, None, None, None)
 
     # run_job func runs job by calling the API
     def run_job(self, jobName, payload, upgrade_from, upgrade_to):
@@ -267,24 +272,6 @@ class Jobs(object):
                             else:
                                 return job_dict
 
-    def query_jobs(self,url, neededJobs):
-        try:
-            res=requests.get(url=url, headers=self.get_github_headers(), timeout=3)
-            if res.status_code == 200:
-                content = base64.b64decode(res.json()['content'].replace("\n", "")).decode('utf-8')
-                job_dict = yaml.load(content, Loader=yaml.FullLoader)
-                for job in job_dict['tests']:
-                    jobName = job['as']
-                    if jobName in neededJobs['amd64']['jobs'] or jobName in neededJobs['arm64']['jobs']:
-                        print(jobName)
-                    else:
-                        print("Warning %s is not list in the required JSON list, skip!!!" % jobName)
-            else:
-                print('warning:' + res.reason)
-
-        except Exception as e:
-            print(e)
-
     def get_job_results(self, jobID, jobName=None, payload=None, upgrade_from=None, upgrade_to=None):
         if jobID:
             req = requests.get(url=self.prowJobURL.format(jobID.strip()))
@@ -310,6 +297,7 @@ class Jobs(object):
                         'jobURL' : jobURL
                     }
                     self.save_job_data(dict=dict)
+                    print("Done.")
                 else:
                     print("Not found the url link or creationTimestamp...")
             else:
@@ -317,32 +305,6 @@ class Jobs(object):
         else:
             print('No job ID input, exit...')
             sys.exit(0)
-
-
-    # version is OCP stable payload x.y version, such as 4.12  
-    def query_files(self, version):
-        neededJobs = self.get_required_jobs()
-        baseURL = 'https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/?ref=master'
-        req = requests.get(url=baseURL, timeout=3)
-        if req.status_code == 200:
-            file_dict = yaml.load(req.text, Loader=yaml.FullLoader)
-            for file in file_dict:
-                fileName = file['name'].strip()
-                if fileName.endswith('.yaml') and (version in fileName):
-                    if 'upgrade' in fileName:
-                        # print('upgrade: ' + fileName)
-                        url = self.jobURL.format(fileName)
-                        self.query_jobs(url, neededJobs)
-                    elif 'stable' in fileName:
-                        # print('installation: ' + fileName)
-                        url = self.jobURL.format(fileName)
-                        self.query_jobs(url, neededJobs)
-                        pass
-                    else:
-                        # print('others: ' + fileName)
-                        pass
-        else:
-            print(req.reason)
 
     def list_jobs(self, component, branch):
         if component is None:
@@ -414,17 +376,19 @@ def run_cmd(component, branch):
 @cli.command("run_required")
 @click.option("--channel", help="The OCP minor version, if multi versions, comma spacing, such as 4.12,4.11")
 @click.option("--file", help="a file that stores required jobs for all OCP versions.")
-@click.option("--type", help="stable or nightly test")
-def run_cmd(channel, file, type):
-    """Run required jobs from a file"""
-    job.run_required_jobs(channel, file, type)
+@click.option("--version", help="OCP version, such as 4.10.63")
+def run_cmd(channel, file, version):
+    """Run required jobs from a file. Note that: this command only run stable payload, not nightly!
+    For example, $ job run_required --channel 4.10 --file _releases/required-jobs.json --version 4.10.63    
+    """
+    job.run_required_jobs(channel, file, version)
 
 @cli.command("get_payloads")
 @click.argument("versions")
 @click.option("--push", default=False, help="push the info to the https://api.github.com/repos/openshift/release-tests/contents/_releases/")
 @click.option("--run", default=False, help="Run the jobs stored in the _releases/required-jobs.json file if any updates. Note that: it won't be executed if --push is False")
 def run_payloads(versions, push, run):
-    """Check the latest payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
+    """Check the latest stable payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
     job.get_payloads(versions, push, run)
 
 if __name__ == '__main__':
