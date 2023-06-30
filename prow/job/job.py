@@ -88,8 +88,7 @@ class Jobs(object):
             print(res.status_code, res.reason)
 
     def push_versions(self, content, file, run):
-        # file = ".auto-OCP-4.12.txt"
-        url = "https://api.github.com/repos/openshift/release-tests/contents/_releases/" + file
+        url = "https://api.github.com/repos/openshift/release-tests/contents/_releases/{}?ref=record".format(file)
         base64Content = base64.b64encode(bytes(content, encoding='utf-8')).decode('utf-8')
         # print(base64Content)
         # check if the file exist
