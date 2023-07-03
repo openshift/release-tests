@@ -34,40 +34,87 @@ class Jobs(object):
         data = {'job_execution_type': '1'}
         if payload is not None and upgrade_from is not None and upgrade_to is not None:
             print("Error! You cannot run e2e and upgrade test at the same time!")
-            return None
+            sys.exit(1)
+        # amd_latest env is must no mater what platforms you run 
+        amd_latest = "RELEASE_IMAGE_LATEST"
+        amd_target = "RELEASE_IMAGE_TARGET"
+        arm_latest = "RELEASE_IMAGE_ARM64_LATEST"
+        arm_target = "RELEASE_IMAGE_ARM64_TARGET"
+        # it's for ARM test, now unable to find the 'cli' image in the provided ARM release image, but x86
+        # so hard code a x86 image here, see bug: https://issues.redhat.com/browse/DPTP-3538
+        base_image = "quay.io/openshift-release-dev/ocp-release:4.13.4-x86_64"
         if payload is not None:
-            data = {"job_execution_type": "1", 
-                    "pod_spec_options": 
-                    {"envs":  
-                     {"RELEASE_IMAGE_LATEST": payload} 
-                     } 
-                }
+            env = {"envs":  
+                     { 
+                         amd_latest: payload
+                    }
+            } 
+            if "arm64" in payload or "aarch64" in payload:
+                env = {"envs":  
+                     { 
+                        amd_latest: base_image,
+                        arm_latest: payload
+                    }
+                } 
+        
         if upgrade_from is not None and upgrade_to is not None:
-            data = {"job_execution_type": "1", 
-                    "pod_spec_options": 
-                    {"envs":  
-                     {"RELEASE_IMAGE_LATEST": upgrade_from,
-                       "RELEASE_IMAGE_TARGET": upgrade_to
-                       }
-                     } 
+            # x86 as default
+            env = { "envs":  
+                    { 
+                    amd_latest: upgrade_from,
+                    amd_target: upgrade_to
+                }
+            } 
+            # check if it's for ARM, and amd_latest env is must no mater what platforms you run           
+            if "arm64" in upgrade_from or "aarch64" in upgrade_from:
+                env = {"envs":  
+                     { amd_latest: base_image,
+                       arm_latest: upgrade_from
+                    }
+                } 
+            if "arm64" in upgrade_to or "aarch64" in upgrade_to:
+                env = {"envs":  
+                     { amd_latest: base_image,
+                       arm_target: upgrade_to
+                    }
+                }
+            if ("arm64" in upgrade_from or "aarch64" in upgrade_from) and ("arm64" in upgrade_to or "aarch64" in upgrade_to):
+                env = {"envs":  
+                     { amd_latest: base_image,
+                       arm_latest: upgrade_from,
+                       arm_target: upgrade_to
+                    }
                 }
         if upgrade_from is None and upgrade_to is not None:
-            data = {"job_execution_type": "1", 
-                    "pod_spec_options": 
-                    {"envs":  
-                     {
-                       "RELEASE_IMAGE_TARGET": upgrade_to
-                       }
-                     } 
+            env = { "envs":  
+                    { 
+                    amd_target: upgrade_to
+                }
+            } 
+            if "arm64" in upgrade_to or "aarch64" in upgrade_to:
+                env = {"envs":  
+                     { amd_latest: base_image,
+                       arm_target: upgrade_to
+                    }
                 }
         if upgrade_from is not None and upgrade_to is None:
-            data = {"job_execution_type": "1", 
-                    "pod_spec_options": 
-                    {"envs":  
-                     {"RELEASE_IMAGE_LATEST": upgrade_from
-                       }
-                     } 
+            env = { "envs":  
+                    { 
+                    amd_latest: upgrade_from
                 }
+            } 
+            if "arm64" in upgrade_from or "aarch64" in upgrade_from:
+                env = {"envs":  
+                     { amd_latest: base_image,
+                       arm_latest: upgrade_from
+                    }
+                } 
+
+        data = {"job_execution_type": "1", 
+                "pod_spec_options": 
+                env
+            }
+        print(data)
         return data
     
     def get_sha(self, url):
@@ -229,6 +276,7 @@ class Jobs(object):
 
         if periodicJob is not None:
             url = self.gangwayURL+periodicJob.strip()
+
             res = requests.post(url=url, json=self.get_job_data(payload, upgrade_from, upgrade_to), headers=self.get_prow_headers())
             if res.status_code == 200:
                 # print(res.text)
@@ -363,7 +411,9 @@ def get_cmd(job_id):
 @click.option("--upgrade_from", help="specify an original payload for upgrade test.")
 @click.option("--upgrade_to", help="specify a target payload for upgrade test.")
 def run_cmd(job_name, payload, upgrade_from, upgrade_to):
-    """Run a job and save results to /tmp/prow-jobs.csv"""
+    """Run a job and save results to /tmp/prow-jobs.csv. \n 
+    For ARM test, we hard code a x86 image as the base image. Details: https://issues.redhat.com/browse/DPTP-3538
+    """
     job.run_job(job_name, payload, upgrade_from, upgrade_to)
 
 @cli.command("list")
