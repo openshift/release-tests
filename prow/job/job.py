@@ -37,6 +37,7 @@ class Jobs(object):
 
     def get_job_data(self, payload, upgrade_from, upgrade_to):
         data = {"job_execution_type": "1"}
+        env = None
         if payload is not None and upgrade_from is not None and upgrade_to is not None:
             print("Error! You cannot run e2e and upgrade test at the same time!")
             sys.exit(1)
@@ -79,8 +80,8 @@ class Jobs(object):
             env = {"envs": {amd_latest: upgrade_from}}
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
                 env = {"envs": {amd_latest: base_image, arm_latest: upgrade_from}}
-
-        data = {"job_execution_type": "1", "pod_spec_options": env}
+        if env is not None:
+            data = {"job_execution_type": "1", "pod_spec_options": env}
         print(data)
         return data
 
