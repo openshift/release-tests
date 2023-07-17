@@ -94,7 +94,7 @@ class JenkinsHelper:
                 build_info = server.get_build_info(job_name, build_number)
             except jenkins.JenkinsException as je:
                 raise JenkinsHelperException(
-                    f"job[{job_name}] number [{build_number}] does not exist"
+                    f"job {job_name}/{build_number} not found"
                 ) from je
 
             if job_name == "signature_check":
@@ -122,9 +122,11 @@ class JenkinsHelper:
                     logger.info(f"{job_name} job: {build_number} status is: {status}")
             else:
                 logger.error(
-                    f"{url}job/{job_name}/{build_number} version is not [{self._cs.release}], please provide correct job id"
+                    f"release version in job {job_name}/{build_number} is not [{self._cs.release}], please check job id"
                 )
-        except:
+        except JenkinsHelperException:
+            raise
+        except Exception as e:
             raise JenkinsHelperException(
-                "get job{job_name}:{build_number} status failed"
-            )
+                f"get job{job_name}:{build_number} status failed"
+            ) from e
