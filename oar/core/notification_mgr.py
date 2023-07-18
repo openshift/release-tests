@@ -25,9 +25,9 @@ class NotificationManager:
         else:
             raise NotificationException("argument config store is required")
 
-        self.mc = MailClient(
-            self.cs.get_email_contact("trt"), self.cs.get_google_app_passwd()
-        )
+        # self.mc = MailClient(
+        #     self.cs.get_email_contact("trt"), self.cs.get_google_app_passwd()
+        # )
         self.sc = SlackClient(self.cs.get_slack_bot_token())
         self.mh = MessageHelper(self.cs)
 
@@ -43,11 +43,11 @@ class NotificationManager:
         """
         try:
             # Send email
-            mail_subject = self.cs.release + " z-stream errata test status"
-            mail_content = self.mh.get_mail_content_for_new_report(report)
-            self.mc.send_email(
-                self.cs.get_email_contact("qe"), mail_subject, mail_content
-            )
+            # mail_subject = self.cs.release + " z-stream errata test status"
+            # mail_content = self.mh.get_mail_content_for_new_report(report)
+            # self.mc.send_email(
+            #     self.cs.get_email_contact("qe"), mail_subject, mail_content
+            # )
             # Send slack message
             slack_msg = self.mh.get_slack_message_for_new_report(report)
             self.sc.post_message(
