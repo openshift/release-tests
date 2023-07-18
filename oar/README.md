@@ -2,7 +2,7 @@
 ## OAR Commandline Tool (CLI)
 - Install
 ```
-clone git@github.com:openshift/release-tests.git
+git clone git@github.com:openshift/release-tests.git
 cd release-tests
 pip3 install -e .
 ```
