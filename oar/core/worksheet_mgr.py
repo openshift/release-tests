@@ -63,7 +63,10 @@ class WorksheetManager:
             # check report worksheet exists or not, if yes, skip duplicating
             try:
                 existing_sheet = self._doc.worksheet(self._cs.release)
-                self._report = TestReport(existing_sheet, self._cs)
+                if existing_sheet:
+                    raise WorksheetException(
+                        f"test report of {self._cs.release} already exists, url: {existing_sheet.url}"
+                    )
             except WorksheetNotFound:
                 new_sheet = self._doc.duplicate_sheet(self._template.id)
                 new_sheet.update_title(self._cs.release)
