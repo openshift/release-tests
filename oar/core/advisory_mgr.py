@@ -145,7 +145,7 @@ class AdvisoryManager:
             ads = self.get_advisories()
             for ad in ads:
                 if not ad.are_all_push_jobs_completed():
-                    ad.push_to_cdn()
+                    ad.push_to_cdn("stage")
                     triggered = True
         except Exception as e:
             raise AdvisoryException("push to cdn failed") from e
