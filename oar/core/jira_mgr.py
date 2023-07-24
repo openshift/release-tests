@@ -219,9 +219,12 @@ class JiraIssue:
 
     def get_release_blocker(self):
         """
-        Get issue field `Release Blocker`, e.g. Rejected, Approved, Proposed
+        Get issue field `Release Blocker`, e.g. None, Rejected, Approved, Proposed
         """
-        return self._issue.fields.customfield_12319743.value
+        release_blocker = "None"
+        if self._issue.fields.customfield_12319743:
+            release_blocker = self._issue.fields.customfield_12319743.value
+        return release_blocker
 
     def get_summary(self):
         """
