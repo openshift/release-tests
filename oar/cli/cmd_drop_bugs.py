@@ -32,6 +32,7 @@ def drop_bugs(ctx):
             # TODO: send slack message to notify dropped bugs and must verified bugs
             pass
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_PASS)
+        report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)
     except Exception as e:
         logger.exception("Drop bugs from advisories failed")
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_FAIL)

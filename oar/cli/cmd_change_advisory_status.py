@@ -36,6 +36,8 @@ def change_advisory_status(ctx, status):
         jm = JiraManager(cs)
         jm.close_qe_subtasks()
         # if no exception occurred, update task status to pass
+        report.update_task_status(LABEL_TASK_NIGHTLY_BUILD_TEST, TASK_STATUS_PASS)
+        report.update_task_status(LABEL_TASK_SIGNED_BUILD_TEST, TASK_STATUS_PASS)   
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
     except Exception as e:
         logger.exception(f"change advisory status to {status} failed")
