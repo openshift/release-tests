@@ -226,6 +226,23 @@ class TestReport:
         # if any task is failed, update overall status to Red
         if self.is_task_fail(label):
             self.update_overall_status_to_red()
+        else:
+            # if no failed cases, update overall status to Green
+            if status != TASK_STATUS_INPROGRESS:
+                has_failed_task = False
+                for label in ALL_TASKS:
+                    if self.is_task_fail(label):
+                        has_failed_task = True
+                        break
+                if not has_failed_task:
+                    logger.debug(
+                        "there is no failed task, will update overall status to Green"
+                    )
+                    self.update_overall_status_to_green()
+                else:
+                    logger.debug(
+                        "there is failed task in the list, will not update overall status"
+                    )
 
     def get_task_status(self, label):
         """
