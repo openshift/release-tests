@@ -104,7 +104,7 @@ class AdvisoryManager:
                     for t in tests:
                         status = t["attributes"]["status"]
                         logger.debug(f"Greenwave CVP test {t['id']} status is {status}")
-                        valid_status = [CVP_TEST_STATUS_PASSED, CVP_TEST_STATUS_PENDING]
+                        valid_status = [CVP_TEST_STATUS_PASSED, CVP_TEST_STATUS_WAIVED]
                         if status not in valid_status:
                             all_passed = False
                             logger.error(
