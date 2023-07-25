@@ -1,12 +1,12 @@
 # OAR (Openshift Automatic Release)
 ## OAR Commandline Tool (CLI)
-- Install
+### Install
 ```
 git clone git@github.com:openshift/release-tests.git
 cd release-tests
 pip3 install -e .
 ```
-- Configuration
+### Configuration
   - We need to export some system environment variables, you can find shared variables from https://vault.bitwarden.com/, search *openshift-qe-trt-env-vars* <br>
   Below variables can be customized by user
   - JIRA token, used to communicate with jira system. [How to create personal access token](https://confluence.atlassian.com/enterprise/using-personal-access-tokens-1026032365.html#UsingPersonalAccessTokens)
@@ -18,10 +18,9 @@ pip3 install -e .
     export JENKINS_USER=<$your-mail-id>
     export JENKINS_TOKEN=xxx
     ``` 
-  
-- Command help
+### Command help
 ```
-oar -h
+$ oar -h
 Usage: oar [OPTIONS] COMMAND [ARGS]...
 
 Options:
@@ -43,83 +42,57 @@ Commands:
   drop-bugs                  Drop bugs from advisories
   change-advisory-status     Change advisory status e.g.
 ```
-- Sub command help
+### Sub command help
 ```
-oar -r $release-version $sub-cmd -h
-
-- For example
-$oar -r 4.13.6 create-test-report -h
-Usage: cli create-test-report [OPTIONS]
-  Create test report for z-stream release
-Options:
-  -h, --help  Show this message and exit.
-note: the command will create a 4.13.6 sheet from template sheet.
-
-$oar -r 4.13.6 take-ownership -h
-Usage: cli take-ownership [OPTIONS]
-  Take ownership for advisory and jira subtasks
-Options:
-  -e, --email TEXT  email address of the owner, if option is not set, will use
-                    default owner setting instead
-  -h, --help        Show this message and exit.
-
-$ oar -r 4.13.6 update-bug-list -h
-Usage: cli update-bug-list [OPTIONS]
-Update bug status listed in report, update existing bug status and append new ON_QA bug
-Options:
-  -h, --help  Show this message and exit.
-note: the command will update bug latest status in related sheet.
-
-$ oar -r 4.13.6 image-consistency-check -h
-Usage: cli image-consistency-check [OPTIONS]
-  Check if images in advisories and payload are consistent
-Options:
-  -n, --build_number INTEGER  provide build number to get job status
-  -h, --help                  Show this message and exit.
-note: if add -n option, will check Stage-Pipeline job result.
-
-$oar -r 4.13.6 check-greenwave-cvp-tests -h
-Usage: cli check-greenwave-cvp-tests [OPTIONS]
-  Check Greenwave CVP test results for all advisories
-Options:
-  -h, --help  Show this message and exit.
-
-$oar -r 4.13.6 check-cve-tracker-bug -h
-Usage: cli check-cve-tracker-bug [OPTIONS]
-  Check if there is any missed CVE tracker bug
-Options:
-  -h, --help  Show this message and exit.
-note: the command will list cve bugs missed attached in advisories.
-
-$oar -r 4.13.6 push-to-cdn-staging -h
-Usage: cli push-to-cdn-staging [OPTIONS]
-  Trigger push job for cdn stage targets
-Options:
-  -h, --help  Show this message and exit.
-
-$oar -r 4.13.6 stage-testing -h
-Usage: cli stage-testing [OPTIONS]
-  Trigger stage pipeline test
-Options:
-  -n, --build_number INTEGER  provide build number to get job status
-  -h, --help                  Show this message and exit.
-notes: if add -n options, will return Stage-Pipeline job result.
-
-$oar -r 4.13.6 image-signed-check -h
-Usage: cli image-signed-check [OPTIONS]
-  Check payload image is well signed
-Options:
-  -h, --help  Show this message and exit.
-
-$oar -r 4.13.6 drop-bugs -h
-Usage: cli drop-bugs [OPTIONS]
-  Drop bugs from advisories
-Options:
-  -h, --help  Show this message and exit.
-
-$oar -r 4.13.6 change-advisory-status -h
-Usage: cli change-advisory-status [OPTIONS]
-  Change advisory status e.g. QE, REL_PREP
-Options:
-  -s, --status TEXT  Valid advisory status, default is REL_PREP
-  -h, --help         Show this message and exit.
+$ oar -r $release-version $sub-cmd -h
+```
+### Examples
+- Common functions
+  - release-version: e.g. 4.13.6
+  - every command is related to QE task in checklist, every task status will be updated to `In Progress` when execution is started, and the tasks tatus will be updated to `Pass` or `Fail` when execution is completed. If any task is failed, `Overall Status` will be updated to `Green` or `Red`
+1. Create test report for z-stream release in spreadsheet, you can get new report url when execution is completed. new report contains advisory, candidate nightly build, ART JIRA ticket, QE checklist, ONQA bugs etc.
+```
+$ oar -r $release-version create-test-report
+```
+2. This command will help us to take ownership of advisory and JIRA subtasks created by ART team. just need to provide owner email as command option
+```
+$ oar -r $release-version take-ownership -e foo@bar.com
+```
+3. This command needs to be ran multiple times, it can update ONQA bugs' with latest status in test report, e.g. Verified/Closed, and append newly attached bugs to the report as well, slack notification will be sent out to QA Contacts finally
+```
+$ oar -r $release-version update-bug-list
+```
+4. This command will trigger image-consistency-check jenkins job to verify images in release payload, build number will be returned with first run, the build number can be used as option for subsequent run to check jenkins job status
+```
+$ oar -r $release-version image-consistency-check
+$ oar -r $release-version image-consistency-check -n 123
+```
+5. This command will check all the Greenwave CVP tests of all advisories, expected result is all the tests are `PASSED/WAVIED`, if any of the tests is failed, you can get test id and corresponding advisory number from the output, you can trigger `Refetch` for it, if the test is still failed after refetch, contact CVP team via Google Spaces [CVP]
+```
+$ oar -r $release-version check-greenwave-cvp-tests
+```
+6. This command will call `rh-elliott` to check if any CVE tracker bug is missed for current release. it will send out slack notification to ART team if any bug found
+```
+$ oar -r $release-version check-cve-tracker-bug
+```
+7. If all the Greenwave CVP tests are `PASSED/WAIVED`, this command can trigger push job for default target `stage`, it will not interrupt existing running jobs
+```
+$ oar -r $release-version push-to-cdn-staging
+```
+8. This command will trigger stage pipeline to do stage testing, build number will be returned with first run, the build number can be used as option for subsequent run to check jenkins job status
+```
+$ oar -r $release-version stage-testing
+$ oar -r $release-version stage-testing -n 123
+```
+9. This command will verify whether payload is well-signed. it can get digest of stable build automatically and check out whether it can be found on mirror site
+```
+$ oar -r $release-version image-signed-check
+```
+10. This command will check all the not verified bugs from advisories, if any bug is `Critical` or `Blocker` or `Customer Case` it is must-verify bug, need to confirm with bug owner, slack notification will be sent out. the rest of the bugs will be dropped automatically
+```
+$ oar -r $release-version drop-bugs
+```
+11. This command will change advisory status e.g. REL_PREP, and close QE related JIRA subtasks
+```
+$ oar -r $release-version change-advisory-status
+```
