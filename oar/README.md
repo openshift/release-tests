@@ -49,7 +49,7 @@ $ oar -r $release-version $sub-cmd -h
 ### Examples
 - Common functions
   - release-version: e.g. 4.13.6
-  - every command is related to QE task in checklist, every task status will be updated to `In Progress` when execution is started, and the task status will be updated to `Pass` or `Fail` when execution is completed. If any task is failed, `Overall Status` will be updated to `Green` or `Red`
+  - every command is related to QE task in checklist, every task status will be updated to `In Progress` when execution is started, and the task status will be updated to `Pass` or `Fail` when execution is completed. If any task is failed, `Overall Status` will be updated to `Red`
 1. Create test report for z-stream release in spreadsheet, you can get new report url when execution is completed. new report contains advisory, candidate nightly build, ART JIRA ticket, QE checklist, ONQA bugs etc.
 ```
 $ oar -r $release-version create-test-report
