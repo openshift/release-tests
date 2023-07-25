@@ -261,13 +261,13 @@ class ConfigStore:
         """
         Get release url
         """
-        return self._get_env_var(ENV_RELEASE_URL)
+        return self._local_conf["release_url"]
 
     def get_signature_url(self):
         """
         Get release url
         """
-        return self._get_env_var(ENV_SIGNATURE_URL)
+        return self._local_conf["signature_url"]
 
     def _get_env_var(self, var):
         """
