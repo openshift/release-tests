@@ -169,7 +169,6 @@ class AdvisoryManager:
             ads = self.get_advisories()
             for ad in ads:
                 ad.set_state(status.strip())
-                logger.info(f"advisory {ad.errata_id} status is changed to {status}")
         except Exception as e:
             raise AdvisoryException(f"change advisory status failed") from e
 
