@@ -58,7 +58,7 @@ $ oar -r $release-version create-test-report
 ```
 $ oar -r $release-version take-ownership -e foo@bar.com
 ```
-3. This command needs to be ran multiple times, it can update ONQA bugs' with latest status in test report, e.g. Verified/Closed, and append newly attached bugs to the report as well, slack notification will be sent out to QA Contacts finally
+3. This command needs to be ran multiple times, it can update ONQA bugs with latest status in test report, e.g. Verified/Closed, and append newly attached bugs to the report as well, slack notification will be sent out to QA Contacts finally
 ```
 $ oar -r $release-version update-bug-list
 ```
