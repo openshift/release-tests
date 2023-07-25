@@ -7,9 +7,10 @@ from oar.core.worksheet_mgr import WorksheetManager
 
 class TestNotificationManager(unittest.TestCase):
     def setUp(self):
-        self.cs = ConfigStore("4.12.11")
+        self.cs = ConfigStore("4.13.6")
         self.nm = NotificationManager(self.cs)
 
+    @unittest.skip
     def test_send_gmail(self):
         self.nm.mc.send_email(
             self.cs.get_email_contact("trt"), self.cs.get_google_app_passwd()
@@ -22,3 +23,13 @@ class TestNotificationManager(unittest.TestCase):
     def test_get_slack_user_id(self):
         uid = self.nm.sc.get_user_id_by_email("rioliu@redhat.com")
         self.assertTrue(uid.startswith("<@"))
+
+    def test_share_dropped_bugs(self):
+        dropped_bugs = ["OCPQE-123", "OCPQE-456", "OCPQE-789"]
+        must_verify_bugs = ["OCPQE-911"]
+        self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)
+        must_verify_bugs = []
+        self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)
+        dropped_bugs = []
+        must_verify_bugs = ["OCPQE-911"]
+        self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)

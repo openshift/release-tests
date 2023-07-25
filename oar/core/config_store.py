@@ -152,7 +152,7 @@ class ConfigStore:
         """
         return self.get_slack_contact(contact)["channel"]
 
-    def get_slack_user_group_from_contact(self, contact):
+    def get_slack_user_group_from_contact_by_id(self, contact):
         """
         Get slack user/group name from contact
 
@@ -162,7 +162,20 @@ class ConfigStore:
         Returns:
             str: slack user/group name
         """
-        return self.get_slack_contact(contact)["id"]
+        return self.get_slack_user_group_from_contact(contact, "id")
+
+    def get_slack_user_group_from_contact(self, contact, attribute):
+        """
+        Get slack user/group name from contact by json attribute
+
+        Args:
+            contact (str): contact name
+            attribute (str): json attribute name
+
+        Returns:
+            str: slack user/group name
+        """
+        return self.get_slack_contact(contact)[attribute]
 
     def get_email_contact(self, team):
         """
@@ -243,7 +256,7 @@ class ConfigStore:
         Get google account application password
         """
         return self._get_env_var(ENV_APP_PASSWD)
-    
+
     def get_release_url(self):
         """
         Get release url
