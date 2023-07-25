@@ -229,20 +229,16 @@ class TestReport:
         else:
             # if no failed cases, update overall status to Green
             if status != TASK_STATUS_INPROGRESS:
-                has_failed_task = False
+                no_failed_task = True
                 for label in ALL_TASKS:
                     if self.is_task_fail(label):
-                        has_failed_task = True
+                        no_failed_task = False
                         break
-                if not has_failed_task:
+                if no_failed_task and self.is_overall_status_red():
                     logger.debug(
-                        "there is no failed task, will update overall status to Green"
+                        "there is no failed task and overall status is Red, will update overall status to Green"
                     )
                     self.update_overall_status_to_green()
-                else:
-                    logger.debug(
-                        "there is failed task in the list, will not update overall status"
-                    )
 
     def get_task_status(self, label):
         """
@@ -288,6 +284,24 @@ class TestReport:
             label (str): cell label of different tasks
         """
         return TASK_STATUS_NOT_STARTED == self.get_task_status(label)
+
+    def is_overall_status_green(self):
+        """
+        Check whether overall status is Green
+
+        Returns:
+            bool: boolean value of the result
+        """
+        return OVERALL_STATUS_GREEN == self.get_overall_status()
+
+    def is_overall_status_red(self):
+        """
+        Check whether overall status is Red
+
+        Returns:
+            bool: boolean value of the result
+        """
+        return OVERALL_STATUS_RED == self.get_overall_status()
 
     def generate_bug_list(self, jira_issues: []):
         """
