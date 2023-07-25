@@ -128,6 +128,30 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share missed CVE tracker bugs failed") from e
 
+    def share_dropped_and_must_verify_bugs(self, dropped_bugs, must_verify_bugs):
+        """
+        Send slack message to QE release lead with dropped and must verified bugs
+
+        Args:
+            dropped_bugs ([]): list of dropped bugs
+            must_verified_bugs ([]): list of must verify bugs, could be [Critical/Blocker/Customer Case]
+
+        Raises:
+            NotificationException: error when sending message
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_dropped_and_must_verify_bugs(
+                dropped_bugs, must_verify_bugs
+            )
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share dropped and must verified bugs failed"
+            ) from e
+
 
 class MailClient:
     """
@@ -279,7 +303,7 @@ class MessageHelper:
             str: slack message for new test report
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact("qe")
+            self.cs.get_slack_user_group_from_contact_by_id("qe")
         )
         linked_text = self._to_link(report.get_url(), "test report")
         return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}"
@@ -297,7 +321,7 @@ class MessageHelper:
             new_owner ([]): email address of the new owner
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact("qe")
+            self.cs.get_slack_user_group_from_contact_by_id("qe")
         )
 
         message = f"Hello {gid}, owner of [{self.cs.release}] advisories and jira subtasks are changed to {new_owner}\n"
@@ -351,7 +375,7 @@ class MessageHelper:
             str: slack message
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact("art")
+            self.cs.get_slack_user_group_from_contact_by_id("art")
         )
 
         message = f"Hello {gid}, Can you help to check following [{self.cs.release}] advisories, issue: state is not QE, thanks\n"
@@ -372,13 +396,46 @@ class MessageHelper:
             str: slack message
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact("art")
+            self.cs.get_slack_user_group_from_contact_by_id("art")
         )
 
         message = f"Hello {gid}, Found new CVE tracker bugs not attached on advisories, could you take a look, thanks\n"
         for bug in cve_tracker_bugs:
             message += self._to_link(util.get_jira_link(bug), bug) + " "
         message += "\n"
+
+        return message
+
+    def get_slack_message_for_dropped_and_must_verify_bugs(
+        self, dropped_bugs, must_verify_bugs
+    ):
+        """
+        manipulate slacke message for dropped bugs and must verified bugs
+
+        Args:
+            dropped_bugs ([]): list of dropped bugs
+            must_verify_bugs ([]): list of must verify bugs
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+
+        message = ""
+        if len(dropped_bugs):
+            message = f"[{self.cs.release}] Hello {gid}, following bugs are dropped from advisories\n"
+            for bug in dropped_bugs:
+                message += self._to_link(util.get_jira_link(bug), bug) + "\n"
+
+        if len(must_verify_bugs):
+            message += "\n" if len(message) else ""
+            message += f"[{self.cs.release}] Hello {gid}, following bugs are Critical/Blocker/Customer Case, must be verified, if any of them can be dropped, let us (#release-tests) know, thanks\n"
+            for bug in must_verify_bugs:
+                message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
         return message
 

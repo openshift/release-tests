@@ -3,6 +3,7 @@ import logging
 from oar.core.worksheet_mgr import WorksheetManager
 from oar.core.advisory_mgr import AdvisoryManager
 from oar.core.config_store import ConfigStore
+from oar.core.notification_mgr import NotificationManager
 from oar.core.const import *
 
 logger = logging.getLogger(__name__)
@@ -26,11 +27,13 @@ def drop_bugs(ctx):
         # check the greenwave test results for all advisories
         dropped_bugs, must_verify_bugs = am.drop_bugs()
         # check if all bugs are verified
-        if len(dropped_bugs):
+        nm = NotificationManager(cs)
+        if len(dropped_bugs) or len(must_verify_bugs):
             logger.info("updating test report")
             report.update_bug_list(am.get_jira_issues())
-            # TODO: send slack message to notify dropped bugs and must verified bugs
-            pass
+            NotificationManager(cs).share_dropped_and_must_verify_bugs(
+                dropped_bugs, must_verify_bugs
+            )
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_PASS)
         report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)
     except Exception as e:
