@@ -438,5 +438,27 @@ class TestReport:
 
         return verified
 
+    def append_missed_cve_tracker_bugs(self, cve_tracker_bugs):
+        """
+        Append missed cve tracker bugs
+        """
+        if len(cve_tracker_bugs) == 0:
+            logger.warn("no cve bugs found, won't update report")
+            return
+
+        row_idx = 8
+        while True:
+            cell_value = self._ws.acell("F" + str(row_idx)).value
+            if not cell_value:
+                break
+            row_idx += 1
+
+        for bug in cve_tracker_bugs:
+            self._ws.update_acell(
+                "F" + str(row_idx), self._to_hyperlink(util.get_jira_link(bug), bug)
+            )
+            row_idx += 1
+            logger.info(f"append missed CVE tracker bug {bug} to test report")
+
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'

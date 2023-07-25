@@ -22,12 +22,15 @@ def check_cve_tracker_bug(ctx):
         report = WorksheetManager(cs).get_test_report()
         # init advisory manager
         am = AdvisoryManager(cs)
+        # init notification manager
+        nm = NotificationManager(cs)
         # update task status to in progress
         report.update_task_status(LABEL_TASK_CHECK_CVE_TRACKERS, TASK_STATUS_INPROGRESS)
         # trigger push job for cdn stage targets
         cve_tracker_bugs = am.check_cve_tracker_bug()
-        if cve_tracker_bugs:
-            NotificationManager(cs).share_new_cve_tracker_bugs(cve_tracker_bugs)
+        if len(cve_tracker_bugs):
+            report.append_missed_cve_tracker_bugs(cve_tracker_bugs)
+            nm.share_new_cve_tracker_bugs(cve_tracker_bugs)
         else:
             logger.info("no new CVE tracker bug found")
         report.update_task_status(LABEL_TASK_CHECK_CVE_TRACKERS, TASK_STATUS_PASS)
