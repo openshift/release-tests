@@ -51,7 +51,7 @@ class NotificationManager:
             # Send slack message
             slack_msg = self.mh.get_slack_message_for_new_report(report)
             self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe"), slack_msg
+                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
             )
         except Exception as e:
             raise NotificationException("share new report failed") from e
@@ -78,7 +78,7 @@ class NotificationManager:
                 updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
             self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe"), slack_msg
+                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
             )
             if len(abnormal_ads):
                 slack_msg = self.mh.get_slack_message_for_abnormal_advisory(
@@ -104,7 +104,7 @@ class NotificationManager:
             slack_msg = self.mh.get_slack_message_for_bug_verification(jira_issues)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("qe"), slack_msg
+                    self.cs.get_slack_channel_from_contact("qe-forum"), slack_msg
                 )
         except Exception as e:
             raise NotificationException("share bugs to be verified failed") from e
@@ -303,7 +303,9 @@ class MessageHelper:
             str: slack message for new test report
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact_by_id("qe")
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
         )
         linked_text = self._to_link(report.get_url(), "test report")
         return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}"
@@ -321,7 +323,9 @@ class MessageHelper:
             new_owner ([]): email address of the new owner
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact_by_id("qe")
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
         )
 
         message = f"Hello {gid}, owner of [{self.cs.release}] advisories and jira subtasks are changed to {new_owner}\n"
