@@ -290,7 +290,7 @@ class TestReport:
         Check whether overall status is Green
 
         Returns:
-            bol: boolean value of the result
+            bool: boolean value of the result
         """
         return OVERALL_STATUS_GREEN == self.get_overall_status()
 
@@ -299,7 +299,7 @@ class TestReport:
         Check whether overall status is Red
 
         Returns:
-            bol: boolean value of the result
+            bool: boolean value of the result
         """
         return OVERALL_STATUS_RED == self.get_overall_status()
 
