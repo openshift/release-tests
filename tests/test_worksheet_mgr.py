@@ -64,6 +64,11 @@ class TestWorksheetManager(unittest.TestCase):
     def step_3_update_bug_list(self):
         self.wm.get_test_report().update_bug_list(self.am.get_jira_issues())
 
+    def step_4_update_cve_bug_list(self):
+        self.wm.get_test_report().append_missed_cve_tracker_bugs(
+            ["OCPQE-123", "OCPQE-456"]
+        )
+
     def step_n_delete_report(self):
         self.wm.delete_test_report()
 
@@ -72,4 +77,5 @@ class TestWorksheetManager(unittest.TestCase):
         self.step_1_update_overall_status()
         self.step_2_update_tasks()
         self.step_3_update_bug_list()
+        self.step_4_update_cve_bug_list()
         self.step_n_delete_report()
