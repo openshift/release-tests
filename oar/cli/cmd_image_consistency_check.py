@@ -22,9 +22,10 @@ def image_consistency_check(ctx, build_number):
     # get config store from context
     cs = ctx.obj["cs"]
     jh = JenkinsHelper(cs)
+    report = WorksheetManager(cs).get_test_report()
+
     if not build_number:
         logger.info("job id is not set, will trigger image consistency check job")
-        report = WorksheetManager(cs).get_test_report()
         image_consistency_result = report.get_task_status(
             LABEL_TASK_IMAGE_CONSISTENCY_TEST
         )
@@ -45,7 +46,7 @@ def image_consistency_check(ctx, build_number):
                 raise
             logger.info(f"triggerred image consistency check job: <{build_url}>")
             nm.sc.post_message(
-                cs.get_slack_channel_from_contact("qe"),
+                cs.get_slack_channel_from_contact("qe-release"),
                 "[" + cs.release + "] image-consistency-check job: " + build_url,
             )
             report.update_task_status(
@@ -55,6 +56,12 @@ def image_consistency_check(ctx, build_number):
         logger.info(
             f"check image-consistency-check job status with job id:{build_number}"
         )
-        jh.get_job_status(
+        job_status = jh.get_job_status(
             cs.get_jenkins_server(), "image-consistency-check", build_number
         )
+        if job_status == "SUCCESS":
+            report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
+        elif job_status == "In Progress":
+            report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS)
+        else: 
+            report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)
