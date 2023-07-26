@@ -1,6 +1,5 @@
 import click
 import logging
-from oar.core.config_store import ConfigStore
 from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins_helper import JenkinsHelper
 from oar.core.const import *
@@ -19,10 +18,10 @@ def stage_testing(ctx, build_number):
     # get config store from context
     cs = ctx.obj["cs"] 
     jh = JenkinsHelper(cs) 
+    report = WorksheetManager(cs).get_test_report()
     if not build_number:
         logger.info("job id is not set, will trigger stage testing")
         try:
-            report = WorksheetManager(cs).get_test_report()
             stage_test_result = report.get_task_status(LABEL_TASK_STAGE_TEST)
             if stage_test_result == TASK_STATUS_PASS:
                 logger.info("stage testing already pass, not need to trigger again")
@@ -36,7 +35,7 @@ def stage_testing(ctx, build_number):
                         logger.exception("trigger stage pipeline job failed")
                         raise
                     logger.info(f"triggerred stage pipeline job: <{build_url}>")
-                    nm.sc.post_message(cs.get_slack_channel_from_contact("qe"), "["+cs.release+"] stage testing job: "+build_url)
+                    nm.sc.post_message(cs.get_slack_channel_from_contact("qe-release"), "["+cs.release+"] stage testing job: "+build_url)
                     report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
                 else:
                     logger.info("push to cdn stage is not completed, so will not trigger stage test")
@@ -44,4 +43,11 @@ def stage_testing(ctx, build_number):
             logger.exception("trigger stage testing failed")
     else: 
         logger.info(f"check stage job status according to job id:{build_number}")
-        jh.get_job_status(jh.zstream_url, "Stage-Pipeline", build_number)
+        job_status= jh.get_job_status(jh.zstream_url, "Stage-Pipeline", build_number)
+        if job_status == "SUCCESS":
+            report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_PASS)
+        elif job_status == "In Progress":
+            report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
+        else: 
+            report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_FAIL)
+

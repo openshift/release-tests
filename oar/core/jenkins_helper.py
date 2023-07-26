@@ -7,7 +7,6 @@ from oar.core.exceptions import JenkinsHelperException
 
 logger = logging.getLogger(__name__)
 
-
 class JenkinsHelper:
     def __init__(self, cs: ConfigStore):
         self._cs = cs
@@ -83,6 +82,7 @@ class JenkinsHelper:
         """
         get job status via build_number
         """
+        job_status = ""
         try:
             server = jenkins.Jenkins(
                 url,
@@ -97,29 +97,36 @@ class JenkinsHelper:
                     f"job {job_name}/{build_number} not found"
                 ) from je
 
-            if job_name == "signature_check":
-                zstream_version = build_info["actions"][0]["parameters"][0]["value"]
-            else:
-                pattern = "4.\d+.\d+"
-                if (
-                    build_info["actions"][0]["_class"]
-                    == "hudson.model.ParametersAction"
-                ):
+            pattern = "4.\d+.\d*"
+            if (
+                build_info["actions"][0]["_class"]
+                == "hudson.model.ParametersAction"
+            ):
+                if job_name == "Stage-Pipeline":
+                    payload = build_info["actions"][0]["parameters"][3]["value"]
+                else:
                     payload = build_info["actions"][0]["parameters"][2]["value"]
+            else:
+                if job_name == "Stage-Pipeline":
+                    payload = build_info["actions"][1]["parameters"][3]["value"]
                 else:
                     payload = build_info["actions"][1]["parameters"][2]["value"]
-                match = re.search(pattern, payload)
-                if match:
-                    zstream_version = match.group()
+
+            match = re.search(pattern, payload)
+            if match:
+                zstream_version = match.group()
             if zstream_version.find(self._cs.release) != -1:
                 # the job is in progress or already finished
                 if build_info["building"]:
                     logger.info(
                         f"{job_name} job: {build_number} status is: In Progress"
                     )
+                    job_status = "In Progress"
                 else:
                     status = server.get_build_info(job_name, build_number)["result"]
+                    job_status = status
                     logger.info(f"{job_name} job: {build_number} status is: {status}")
+                return job_status
             else:
                 logger.error(
                     f"release version in job {job_name}/{build_number} is not [{self._cs.release}], please check job id"
