@@ -43,10 +43,10 @@ def print_version(ctx, param, value):
 def cli(ctx, release, debug):
     util.init_logging(logging.DEBUG if debug else logging.INFO)
     try:
-        cs = ConfigStore(release)
+        ConfigStore(release)
     except ConfigStoreException as cse:
         logger.exception("config store initialization failed")
-
+    cs = ConfigStore(release)
     ctx.ensure_object(dict)
     ctx.obj["cs"] = cs
 
