@@ -84,7 +84,7 @@ class WorksheetManager:
             # update advisory info
             ad_cell_value = ""
             for k, v in self._cs.get_advisories().items():
-                ad_cell_value += f"{k}: {v}\n"
+                ad_cell_value += f"{k}: https://errata.devel.redhat.com/advisory/{v}\n"
             self._report.update_advisory_info(ad_cell_value[:-1])
             logger.info("advisory info is updated")
             logger.debug(f"advisory info:\n{ad_cell_value}")
@@ -310,6 +310,7 @@ class TestReport:
         Args:
             jira_issues (str[]): jira issue keys from advisories
         """
+        logger.info("waiting for the bugs to be verified to update in sheet")
         jm = JiraManager(self._cs)
         row_idx = 8
         batch_vals = []
