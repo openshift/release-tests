@@ -55,7 +55,7 @@ class ConfigStore:
         if self.release in self._build_data["releases"]:
             self._assembly = self._build_data["releases"][self.release]["assembly"]
         else:
-            raise ConfigStoreException(f"[{self.release}] advisories are not ready, cannot create test report, you can check:{url}")
+            raise ConfigStoreException(f"[{self.release}] build data is not ready, cannot create test report, you can check:{url}")
 
     def get_advisories(self):
         """
