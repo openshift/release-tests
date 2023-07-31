@@ -52,8 +52,10 @@ class ConfigStore:
                 self._build_data = yaml.safe_load(response.text)
             except yaml.YAMLError as ye:
                 raise ConfigStoreException("ocp build data format is invalid") from ye
-
-        self._assembly = self._build_data["releases"][self.release]["assembly"]
+        if self.release in self._build_data["releases"]:
+            self._assembly = self._build_data["releases"][self.release]["assembly"]
+        else:
+            raise ConfigStoreException(f"[{self.release}] build data is not ready, cannot create test report, you can check:{url}")
 
     def get_advisories(self):
         """

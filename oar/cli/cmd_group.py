@@ -42,11 +42,7 @@ def print_version(ctx, param, value):
 @click.option("-v", "--debug", help="enable debug logging", is_flag=True, default=False)
 def cli(ctx, release, debug):
     util.init_logging(logging.DEBUG if debug else logging.INFO)
-    try:
-        cs = ConfigStore(release)
-    except ConfigStoreException as cse:
-        logger.exception("config store initialization failed")
-
+    cs = ConfigStore(release)
     ctx.ensure_object(dict)
     ctx.obj["cs"] = cs
 
