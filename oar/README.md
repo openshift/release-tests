@@ -2,6 +2,7 @@
 ## OAR Commandline Tool (CLI)
 ### Install
 ```
+python3 -m pip install --upgrade pip
 git clone git@github.com:openshift/release-tests.git
 cd release-tests
 pip3 install -e .
