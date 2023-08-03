@@ -40,3 +40,9 @@ class TestAdvisoryManager(unittest.TestCase):
     def test_check_cve_tracker_bug(self):
         tracker_bugs = self.am.check_cve_tracker_bug()
         self.assertFalse(tracker_bugs)
+
+    @unittest.skip("disable this case by default")
+    def test_get_doc_security_approved_ads(self):
+        doc_appr, prodsec_appr = self.am.get_doc_security_approved_ads()
+        self.assertTrue(len(doc_appr) == 2)
+        self.assertTrue(len(prodsec_appr) == 0)

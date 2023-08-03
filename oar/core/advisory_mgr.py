@@ -277,6 +277,22 @@ class AdvisoryManager:
 
         return cve_tracker_bugs
 
+    def get_doc_prodsec_approved_ads(self):
+        """
+        get Docs and product security approved advisories
+        """
+        try:
+            approved_doc_ads = []
+            approved_prodsec_ads = []
+            ads = self.get_advisories()
+            for ad in ads:
+                if ad.is_doc_approved():
+                    approved_doc_ads.append(ad)
+                if ad.errata_type == "RHSA" and ad.is_prodsec_approved():
+                    approved_prodsec_ads.append(ad) 
+            return approved_doc_ads, approved_prodsec_ads        
+        except Exception as e:
+            raise AdvisoryException(f"get request Docs and Prodsec approved advisories failed") from e
 
 class Advisory(Erratum):
     """
@@ -397,3 +413,55 @@ class Advisory(Erratum):
                 completed = False
 
         return completed
+
+    def is_doc_approved(self):
+        """
+        Check if doc is approved for a advisory
+        Returns:
+        bool: True if doc for a advisory is approved, otherwise False
+        """
+        return  self.get_erratum_data()["doc_complete"] == 1
+    
+    def is_prodsec_approved(self):
+        """
+        Check if prodsec is approved for a advisory
+        Returns:
+        bool: True if prodsec is approved, otherwise False
+        """
+        return self.get_erratum_data()["security_approved"] == True
+           
+
+    def is_doc_requested(self):
+        """
+        Check if doc for a advisory is requested 
+        Returns:
+        bool: True if doc for a advisory is requested, otherwise False        
+        """
+        return self.get_erratum_data()["text_ready"] == 1
+    
+    def is_prodsec_requested(self):
+        """
+        Check if prodsec for a advisory is requested 
+        Returns:
+        bool: False if prodsec for a advisory is requested, otherwise False        
+        """
+        return self.get_erratum_data()["security_approved"] == False
+
+
+    def request_doc_approval(self):
+        """
+        send doc approval request for a advisory
+        """
+        pdata = {'advisory[text_ready]':1}
+        url = "/api/v1/erratum/%i" % self.errata_id
+        r = self._put(url, data=pdata)
+        self._processResponse(r)
+           
+    def request_prodsec_approval(self):
+        """
+        send product security approval request for a advisory
+        """
+        pdata = {'advisory[security_approved]': False}
+        url = "/api/v1/erratum/%i" % self.errata_id
+        r = self._put(url, data=pdata)
+        self._processResponse(r)
