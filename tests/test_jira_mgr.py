@@ -96,3 +96,7 @@ class TestJiraManager(unittest.TestCase):
     def test_add_comment(self):
         key = "OCPQE-15027"
         self.jm.add_comment(key, "test result url is https://xxx")
+        self.assertRaises(JiraException, self.jm.add_comment, None, "dummy comment")
+        self.assertRaises(JiraException, self.jm.add_comment, key, "")
+        self.assertRaises(JiraException, self.jm.add_comment, "", "")
+        self.assertRaises(JiraException, self.jm.add_comment, None, None)

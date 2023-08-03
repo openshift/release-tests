@@ -178,10 +178,13 @@ class JiraManager:
         Args:
             comment (str): description
         """
-        try:
-            self._svc.add_comment(key, comment)
-        except JIRAError as je:
-            raise JiraException(f"add comment for jira issue {key} failed") from je
+        if key and comment:
+            try:
+                self._svc.add_comment(key, comment)
+            except JIRAError as je:
+                raise JiraException(f"add comment for jira issue {key} failed") from je
+        else:
+            raise JiraException("invalid input argument key or comment is empty")
 
 
 class JiraIssue:
