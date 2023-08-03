@@ -79,6 +79,9 @@ class TestJiraManager(unittest.TestCase):
                 print(f"qe task: {st.get_key()} - {st.get_summary()}")
                 self.assertIn(st.get_summary(), JIRA_QE_TASK_SUMMARIES)
 
+    @unittest.skipIf(
+        token_not_found or token_is_dummy, "token is not found, skip this case"
+    )
     def test_change_assignee_of_qe_tasks(self):
         key = "OCPQE-15027"
         self.jm._cs.set_jira_ticket(key)
@@ -86,3 +89,14 @@ class TestJiraManager(unittest.TestCase):
         subtasks = self.jm.get_sub_tasks(key)
         for st in subtasks:
             self.assertEqual(st.get_assignee(), "rioliu@redhat.com")
+
+    @unittest.skipIf(
+        token_not_found or token_is_dummy, "token is not found, skip this case"
+    )
+    def test_add_comment(self):
+        key = "OCPQE-15027"
+        self.jm.add_comment(key, "test result url is https://xxx")
+        self.assertRaises(JiraException, self.jm.add_comment, None, "dummy comment")
+        self.assertRaises(JiraException, self.jm.add_comment, key, "")
+        self.assertRaises(JiraException, self.jm.add_comment, "", "")
+        self.assertRaises(JiraException, self.jm.add_comment, None, None)
