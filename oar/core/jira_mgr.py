@@ -171,6 +171,18 @@ class JiraManager:
                 if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
                     self.transition_issue(st.get_key(), JIRA_STATUS_CLOSED)
 
+    def add_comment(self, key, comment):
+        """
+        Add comment for jira issue
+
+        Args:
+            comment (str): description
+        """
+        try:
+            self._svc.add_comment(key, comment)
+        except JIRAError as je:
+            raise JiraException(f"add comment for jira issue {key} failed") from je
+
 
 class JiraIssue:
     """
