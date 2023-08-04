@@ -18,7 +18,11 @@ pip3 install -e .
     ```
     export JENKINS_USER=<$your-mail-id>
     export JENKINS_TOKEN=xxx
-    ``` 
+    ```
+- Kerberos ticket is required to access Errata Tool
+```
+kinit $kid@$domain
+```
 ### Command help
 ```
 $ oar -h
