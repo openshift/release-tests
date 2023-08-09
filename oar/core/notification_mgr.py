@@ -152,6 +152,23 @@ class NotificationManager:
                 "share dropped and must verified bugs failed"
             ) from e
 
+    def share_doc_prodsec_approval_result(self, doc_appr, prodsec_appr):
+        """
+        send notification for request doc or security approval
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_docs_and_prodsec_approval(
+                doc_appr, prodsec_appr
+            )
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("approver"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share doc and prodsec approval failed"
+            ) from e
+
 
 class MailClient:
     """
@@ -194,7 +211,6 @@ class MailClient:
             self.session.quit()
 
         logger.info(f"sent email to {to_addrs} with subject: <{subject}>")
-
 
 class SlackClient:
     def __init__(self, bot_token):
@@ -442,6 +458,45 @@ class MessageHelper:
                 message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
         return message
+
+    def get_slack_message_for_docs_and_prodsec_approval(
+        self, doc_appr, prodsec_appr
+    ):
+        """
+        manipulate slacke message for docs and prodsec approval
+
+        Args:
+            doc_appr ([]): list of no doc approved advisories
+            prodsec_appr ([]): list of no product security approved advisories
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "approver", "doc_id"
+            )
+        )
+        userid = []
+        email_contact = self.cs.get_prodsec_id().split(",")
+        if len(email_contact) > 1:
+            for email in email_contact:
+                userid.append(self.sc.get_user_id_by_email(email))
+        else:
+            userid = email_contact
+        userid = " ".join(userid)
+        message = ""
+        if len(doc_appr):
+            logger.info(
+                f"send message for doc approval"
+                ) 
+            message = f"[{self.cs.release}] Hello {gid}, Could you approve doc for advisories:{str(doc_appr)}, thanks!"
+        if len(prodsec_appr):
+            logger.info(
+                f"send message for Prodsec approval"
+                ) 
+            message += f"\n[{self.cs.release}] Hello {userid}, Could you approve Prodsec for advisories:{str(prodsec_appr)}, thanks!"
+        return message  
 
     def _to_link(self, link, text):
         """
