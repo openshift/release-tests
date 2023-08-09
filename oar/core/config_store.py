@@ -191,6 +191,12 @@ class ConfigStore:
             )
 
         return email_contacts[team]
+    
+    def get_prodsec_id(self):
+        """
+        Get prodsec email from local config
+        """
+        return self._local_conf["contacts"]["slack"]["approver"]["prodsec_id"]
 
     def get_report_template(self):
         """
@@ -284,3 +290,5 @@ class ConfigStore:
             raise ConfigStoreException(f"system environment variable {var} not found")
 
         return val
+    
+    
