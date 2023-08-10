@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
     "-e",
     "--email",
     required=True,
-    help="email address of the owner, if option is not set, will use default owner setting instead",
+    help="email address of the owner",
 )
 @click.pass_context
 def take_ownership(ctx, email):
