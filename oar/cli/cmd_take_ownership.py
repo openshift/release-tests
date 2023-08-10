@@ -15,7 +15,8 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-e",
     "--email",
-    help="email address of the owner, if option is not set, will use default owner setting instead",
+    required=True,
+    help="email address of the owner",
 )
 @click.pass_context
 def take_ownership(ctx, email):
@@ -24,10 +25,7 @@ def take_ownership(ctx, email):
     """
     # get config store from context
     cs = ctx.obj["cs"]
-    if not email:
-        logger.warn("email option is not set, will use default setting")
-    else:
-        cs.set_owner(email)
+    cs.set_owner(email)
 
     try:
         # get existing report
