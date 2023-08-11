@@ -44,7 +44,7 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                     text="I'm qe release bot",
                 )
 
-            if message.startswith("oar") or "oar " in message:
+            if message.startswith("oar") or message.startswith("<@U0546N1SBB2> oar"):
                 cmd = message[message.index("oar") :]
                 result = subprocess.run(cmd.split(" "), capture_output=True, text=True)
                 client.web_client.chat_postMessage(
