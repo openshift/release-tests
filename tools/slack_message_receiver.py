@@ -1,10 +1,11 @@
 from threading import Event
 from slack_sdk.socket_mode.request import SocketModeRequest
 from slack_sdk.socket_mode.response import SocketModeResponse
-import os
-import logging
 from slack_sdk.web import WebClient
 from slack_sdk.socket_mode import SocketModeClient
+import os
+import logging
+import re
 import subprocess
 
 logging.basicConfig(level=logging.DEBUG)
@@ -44,7 +45,7 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                     text="I'm qe release bot",
                 )
 
-            if message.startswith("oar") or "oar " in message:
+            if message.startswith("oar") or re.search("^<\@.*>\ oar\ ", message):
                 cmd = message[message.index("oar") :]
                 result = subprocess.run(cmd.split(" "), capture_output=True, text=True)
                 client.web_client.chat_postMessage(
