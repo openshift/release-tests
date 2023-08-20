@@ -23,6 +23,10 @@ pip3 install -e .
 ```
 kinit $kid@$domain
 ```
+- Bugzilla login api-key, the credentail will be cached to ~/.config/python-bugzilla/bugzillarc. 
+```
+bugzilla login --api-key xxx
+```
 ### Command help
 ```
 $ oar -h
