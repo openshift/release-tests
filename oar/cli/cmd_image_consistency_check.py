@@ -35,23 +35,27 @@ def image_consistency_check(ctx, build_number):
             )
         elif image_consistency_result == TASK_STATUS_INPROGRESS:
             logger.info(
-                "job[image-consistency-check] already triggered and in progress, not need to trigger again"
+                "job[image-consistency-check] already triggered and in progress, no need to trigger again"
             )
         else:
             nm = NotificationManager(cs)
             try:
-                build_url = jh.call_image_consistency_job()
+                block_status = jh.pre_check_build_queue("image-consistency-check")
+                if (block_status):
+                    logger.warning(f"there is pending job in the queue, please try again later")
+                else:
+                    build_url = jh.call_image_consistency_job()
+                    logger.info(f"triggered image consistency check job: <{build_url}>")
+                    nm.sc.post_message(
+                    cs.get_slack_channel_from_contact("qe-release"),
+                        "[" + cs.release + "] image-consistency-check job: " + build_url,
+                    )
+                    report.update_task_status(
+                        LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS
+                    )
             except JenkinsHelperException as jh:
                 logger.exception("trigger image-consistency-check job failed")
                 raise
-            logger.info(f"triggerred image consistency check job: <{build_url}>")
-            nm.sc.post_message(
-                cs.get_slack_channel_from_contact("qe-release"),
-                "[" + cs.release + "] image-consistency-check job: " + build_url,
-            )
-            report.update_task_status(
-                LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS
-            )
     else:
         logger.info(
             f"check image-consistency-check job status with job id:{build_number}"

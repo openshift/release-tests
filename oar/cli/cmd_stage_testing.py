@@ -24,19 +24,27 @@ def stage_testing(ctx, build_number):
         try:
             stage_test_result = report.get_task_status(LABEL_TASK_STAGE_TEST)
             if stage_test_result == TASK_STATUS_PASS:
-                logger.info("stage testing already pass, not need to trigger again")
+                logger.info("stage testing already pass, no need to trigger again")
+            elif stage_test_result == TASK_STATUS_INPROGRESS:
+                logger.info(
+                "job[Stage-Pipeline] already triggered and in progress, not need to trigger again"
+            )
             else:
                 cdn_result = report.get_task_status(LABEL_TASK_PUSH_TO_CDN)
                 if cdn_result == TASK_STATUS_PASS:
                     try:
                         nm = NotificationManager(cs)
-                        build_url = jh.call_stage_job()    
+                        block_status = jh.pre_check_build_queue("Stage-Pipeline")
+                        if (block_status):
+                            logger.info(f"there is pending job in the queue, please try again later")
+                        else:
+                            build_url = jh.call_stage_job()
+                            logger.info(f"triggered stage pipeline job: <{build_url}>")
+                            nm.sc.post_message(cs.get_slack_channel_from_contact("qe-release"), "["+cs.release+"] stage testing job: "+build_url)
+                            report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
                     except JenkinsHelperException as jh:
                         logger.exception("trigger stage pipeline job failed")
                         raise
-                    logger.info(f"triggerred stage pipeline job: <{build_url}>")
-                    nm.sc.post_message(cs.get_slack_channel_from_contact("qe-release"), "["+cs.release+"] stage testing job: "+build_url)
-                    report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
                 else:
                     logger.info("push to cdn stage is not completed, so will not trigger stage test")
         except Exception as we:
