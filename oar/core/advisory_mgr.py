@@ -70,7 +70,9 @@ class AdvisoryManager:
         try:
             for ad in self.get_advisories():
                 # check advisory status, if it is not QE, log warn message
-                if ad.errata_state != "QE":
+                # if the advisory is released, the state is like [REP_PREP/SHIPPED LIVE], it is not [QE], we should not send alert to ART
+                # only check if the state is [NEW_FILES]
+                if ad.errata_state == AD_STATUS_NEW_FILES:
                     logger.warn(f"advisory state is not QE, it is {ad.errata_state}")
                     abnormal_ads.append(ad.errata_id)
                 ad.change_qe_email(self._cs.get_owner())
@@ -289,10 +291,13 @@ class AdvisoryManager:
                 if ad.is_doc_approved():
                     approved_doc_ads.append(ad)
                 if ad.errata_type == "RHSA" and ad.is_prodsec_approved():
-                    approved_prodsec_ads.append(ad) 
-            return approved_doc_ads, approved_prodsec_ads        
+                    approved_prodsec_ads.append(ad)
+            return approved_doc_ads, approved_prodsec_ads
         except Exception as e:
-            raise AdvisoryException(f"get request Docs and Prodsec approved advisories failed") from e
+            raise AdvisoryException(
+                f"get request Docs and Prodsec approved advisories failed"
+            ) from e
+
 
 class Advisory(Erratum):
     """
@@ -420,8 +425,8 @@ class Advisory(Erratum):
         Returns:
         bool: True if doc for a advisory is approved, otherwise False
         """
-        return  self.get_erratum_data()["doc_complete"] == 1
-    
+        return self.get_erratum_data()["doc_complete"] == 1
+
     def is_prodsec_approved(self):
         """
         Check if prodsec is approved for a advisory
@@ -429,39 +434,37 @@ class Advisory(Erratum):
         bool: True if prodsec is approved, otherwise False
         """
         return self.get_erratum_data()["security_approved"] == True
-           
 
     def is_doc_requested(self):
         """
-        Check if doc for a advisory is requested 
+        Check if doc for a advisory is requested
         Returns:
-        bool: True if doc for a advisory is requested, otherwise False        
+        bool: True if doc for a advisory is requested, otherwise False
         """
         return self.get_erratum_data()["text_ready"] == 1
-    
+
     def is_prodsec_requested(self):
         """
-        Check if prodsec for a advisory is requested 
+        Check if prodsec for a advisory is requested
         Returns:
-        bool: False if prodsec for a advisory is requested, otherwise False        
+        bool: False if prodsec for a advisory is requested, otherwise False
         """
         return self.get_erratum_data()["security_approved"] == False
-
 
     def request_doc_approval(self):
         """
         send doc approval request for a advisory
         """
-        pdata = {'advisory[text_ready]':1}
+        pdata = {"advisory[text_ready]": 1}
         url = "/api/v1/erratum/%i" % self.errata_id
         r = self._put(url, data=pdata)
         self._processResponse(r)
-           
+
     def request_prodsec_approval(self):
         """
         send product security approval request for a advisory
         """
-        pdata = {'advisory[security_approved]': False}
+        pdata = {"advisory[security_approved]": False}
         url = "/api/v1/erratum/%i" % self.errata_id
         r = self._put(url, data=pdata)
         self._processResponse(r)
