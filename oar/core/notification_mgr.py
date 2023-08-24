@@ -165,9 +165,7 @@ class NotificationManager:
                     self.cs.get_slack_channel_from_contact("approver"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException(
-                "share doc and prodsec approval failed"
-            ) from e
+            raise NotificationException("share doc and prodsec approval failed") from e
 
 
 class MailClient:
@@ -211,6 +209,7 @@ class MailClient:
             self.session.quit()
 
         logger.info(f"sent email to {to_addrs} with subject: <{subject}>")
+
 
 class SlackClient:
     def __init__(self, bot_token):
@@ -398,7 +397,7 @@ class MessageHelper:
             self.cs.get_slack_user_group_from_contact_by_id("art")
         )
 
-        message = f"Hello {gid}, Can you help to check following [{self.cs.release}] advisories, issue: state is not QE, thanks\n"
+        message = f"Hello {gid}, Can you help to check following [{self.cs.release}] advisories, issue: state is NEW_FILES, thanks\n"
         for ad in abnormal_ads:
             message += self._to_link(util.get_advisory_link(ad), ad) + " "
         message += "\n"
@@ -459,9 +458,7 @@ class MessageHelper:
 
         return message
 
-    def get_slack_message_for_docs_and_prodsec_approval(
-        self, doc_appr, prodsec_appr
-    ):
+    def get_slack_message_for_docs_and_prodsec_approval(self, doc_appr, prodsec_appr):
         """
         manipulate slacke message for docs and prodsec approval
 
@@ -473,9 +470,7 @@ class MessageHelper:
             str: slack message
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact(
-                "approver", "doc_id"
-            )
+            self.cs.get_slack_user_group_from_contact("approver", "doc_id")
         )
         userid = []
         email_contact = self.cs.get_prodsec_id().split(",")
@@ -487,16 +482,12 @@ class MessageHelper:
         userid = " ".join(userid)
         message = ""
         if len(doc_appr):
-            logger.info(
-                f"send message for doc approval"
-                ) 
+            logger.info(f"send message for doc approval")
             message = f"[{self.cs.release}] Hello {gid}, Could you approve doc for advisories:{str(doc_appr)}, thanks!"
         if len(prodsec_appr):
-            logger.info(
-                f"send message for Prodsec approval"
-                ) 
+            logger.info(f"send message for Prodsec approval")
             message += f"\n[{self.cs.release}] Hello {userid}, Could you approve Prodsec for advisories:{str(prodsec_appr)}, thanks!"
-        return message  
+        return message
 
     def _to_link(self, link, text):
         """
