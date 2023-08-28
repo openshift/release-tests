@@ -1,4 +1,5 @@
 import re
+import time
 import jenkins
 import logging
 from oar.core.config_store import ConfigStore
@@ -21,62 +22,22 @@ class JenkinsHelper:
             "quay.io/openshift-release-dev/ocp-release:" + self._cs.release + "-x86_64"
         )
         self.zstream_url = self._cs.get_jenkins_server() + "/job/zstreams/"
-
+        self.server = self.init_jenkins_server()
     def call_stage_job(self):
         try:
-            server = jenkins.Jenkins(
-                self.zstream_url,
-                username=self._cs.get_jenkins_username(),
-                password=self._cs.get_jenkins_token(),
-            )
-            server.build_job(
-                "Stage-Pipeline",
-                parameters={
-                    "VERSION": self.version,
-                    "METADATA_AD": self.metadata_ad,
-                    "PULL_SPEC": self.pull_spec,
-                },
-            )
+            build_url = self.call_build_job("Stage-Pipeline")
         except jenkins.JenkinsException as ej:
             raise JenkinsHelperException("call stage pipeline job failed") from ej
-        last_build_number = server.get_job_info("Stage-Pipeline")["lastBuild"]["number"]
-        if not last_build_number:
-            raise JenkinsHelperException(
-                "Trigger stage pipeline job failed: cannot get latest build number"
-            )
-        return self.zstream_url + "job/Stage-Pipeline/" + str(last_build_number)
-
+        return build_url
+    
     def call_image_consistency_job(self):
         try:
-            server = jenkins.Jenkins(
-                self._cs.get_jenkins_server(),
-                username=self._cs.get_jenkins_username(),
-                password=self._cs.get_jenkins_token(),
-            )
-            server.build_job(
-                "image-consistency-check",
-                parameters={
-                    "VERSION": self.vversion,
-                    "ERRATA_NUMBERS": self.errata_numbers,
-                    "PAYLOAD_URL": self.pull_spec,
-                },
-            )
+            build_url = self.call_build_job("image-consistency-check")
         except jenkins.JenkinsException as ej:
             raise JenkinsHelperException(
                 "call image-consistency-check pipeline job failed"
             ) from ej
-        last_build_number = server.get_job_info("image-consistency-check")["lastBuild"][
-            "number"
-        ]
-        if not last_build_number:
-            raise JenkinsHelperException(
-                "Trigger image check job failed: cannot get latest build number"
-            )
-        return (
-            self._cs.get_jenkins_server()
-            + "/job/image-consistency-check/"
-            + str(last_build_number)
-        )
+        return  build_url
 
     def get_job_status(self, url, job_name, build_number):
         """
@@ -137,3 +98,76 @@ class JenkinsHelper:
             raise JenkinsHelperException(
                 f"get job{job_name}:{build_number} status failed"
             ) from e
+
+    def pre_check_build_queue(self,job_name):
+        """
+        check the job if it's in queue
+        """
+        try:
+            queue_info = self.server.get_queue_info()
+            for item in queue_info:
+			            if 'name' in item['task'] and item['task']['name'] == job_name:
+                                        return True
+            return False
+        except Exception as e:
+            raise JenkinsHelperException(
+                f"check build status failed"
+            ) from e
+
+    def call_build_job(self,job_name):
+        """
+        trigger build job and return build url
+        """  
+        try: 
+            if(job_name == "image-consistency-check"):
+                parameters_value = {
+                    "VERSION": self.vversion,
+                    "ERRATA_NUMBERS": self.errata_numbers,
+                    "PAYLOAD_URL": self.pull_spec,
+                }
+            elif(job_name == "Stage-Pipeline"):
+                parameters_value = {
+                    "VERSION": self.version,
+                    "METADATA_AD": self.metadata_ad,
+                    "PULL_SPEC": self.pull_spec,
+                }
+                job_name = "zstreams/" +job_name
+            else:
+                logger.info("please provide correct job name")
+            res = self.server.build_job(
+                job_name,
+                parameters=parameters_value,
+            )
+            queue_item_info = self.server.get_queue_item(res)
+            queue_item_link = self._cs.get_jenkins_server() +"/queue/item/"+ str(res) +"/api/json?depth=0"
+            if(queue_item_info['blocked']):
+                return f"a new job triggered by you is pending, you can check queue item link: {queue_item_link}"
+            else:
+                try: 
+                    max_count = 3
+                    internval = 30
+                    for x in range(max_count):
+                        queue_item_info = self.server.get_queue_item(res)
+                        if ('executable' in queue_item_info):
+                            return queue_item_info['executable']['url']
+                            break
+                        else:
+                            time.sleep(internval)
+                except:
+                    raise JenkinsHelperException(f"visit {queue_item_link} failed")
+        except jenkins.JenkinsException as ej:
+            raise JenkinsHelperException(
+                f"call {job_name} job failed"
+            ) from ej
+    
+    def init_jenkins_server(self):
+        try: 
+            return jenkins.Jenkins(
+                self._cs.get_jenkins_server(),
+                username=self._cs.get_jenkins_username(),
+                password=self._cs.get_jenkins_token(),
+            ) 
+        except jenkins.JenkinsException as ej:
+            raise JenkinsHelperException(
+                "failed to init jenkins server"
+            ) from ej
