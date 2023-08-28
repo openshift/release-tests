@@ -73,6 +73,7 @@ class JenkinsHelper:
             for param in params_action[JENKINS_ATTR_PARAMS]:
                 if param[JENKINS_ATTR_CLASS] == JENKINS_CLASS_STRING and param[JENKINS_ATTR_NAME] in [JENKINS_PARAM_PAYLOAD_URL, JENKINS_PARAM_PULL_SPEC]:
                     payload_url = param[JENKINS_ATTR_VALUE]
+                    break
 
             if not payload_url:
                 raise JenkinsHelperException(
