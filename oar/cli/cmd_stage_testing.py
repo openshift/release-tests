@@ -8,54 +8,65 @@ from oar.core.worksheet_mgr import WorksheetManager
 
 logger = logging.getLogger(__name__)
 
+
 @click.command()
 @click.pass_context
-@click.option("-n","--build_number",type=int, help="provide build number to get job status")
+@click.option("-n", "--build_number", type=int, help="provide build number to get job status")
 def stage_testing(ctx, build_number):
     """
     Trigger stage pipeline test
     """
     # get config store from context
-    cs = ctx.obj["cs"] 
-    jh = JenkinsHelper(cs) 
+    cs = ctx.obj["cs"]
+    jh = JenkinsHelper(cs)
+    nm = NotificationManager(cs)
     report = WorksheetManager(cs).get_test_report()
     if not build_number:
         logger.info("job id is not set, will trigger stage testing")
         try:
-            stage_test_result = report.get_task_status(LABEL_TASK_STAGE_TEST)
-            if stage_test_result == TASK_STATUS_PASS:
-                logger.info("stage testing already pass, no need to trigger again")
-            elif stage_test_result == TASK_STATUS_INPROGRESS:
+            task_status = report.get_task_status(LABEL_TASK_STAGE_TEST)
+            if task_status == TASK_STATUS_PASS:
                 logger.info(
-                "job[Stage-Pipeline] already triggered and in progress, not need to trigger again"
-            )
+                    "stage testing already pass, no need to trigger again")
+            elif task_status == TASK_STATUS_INPROGRESS:
+                logger.info(
+                    "job [Stage-Pipeline] already triggered and in progress, not need to trigger again"
+                )
             else:
                 cdn_result = report.get_task_status(LABEL_TASK_PUSH_TO_CDN)
                 if cdn_result == TASK_STATUS_PASS:
+                    build_url = ""
                     try:
-                        nm = NotificationManager(cs)
-                        block_status = jh.pre_check_build_queue("Stage-Pipeline")
-                        if (block_status):
-                            logger.info(f"there is pending job in the queue, please try again later")
+                        if jh.is_job_enqueue(JENKINS_JOB_STAGE_PIPELINE):
+                            logger.info(
+                                f"there is pending job in the queue, please try again later")
                         else:
                             build_url = jh.call_stage_job()
-                            logger.info(f"triggered stage pipeline job: <{build_url}>")
-                            nm.sc.post_message(cs.get_slack_channel_from_contact("qe-release"), "["+cs.release+"] stage testing job: "+build_url)
-                            report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
+                            logger.info(
+                                f"triggered stage pipeline job: <{build_url}>")
                     except JenkinsHelperException as jh:
                         logger.exception("trigger stage pipeline job failed")
                         raise
+
+                    if build_url:
+                        nm.share_jenkins_build_url(
+                            JENKINS_JOB_STAGE_PIPELINE[9:], build_url)
+                        report.update_task_status(
+                            LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
                 else:
-                    logger.info("push to cdn stage is not completed, so will not trigger stage test")
+                    logger.info(
+                        "push to cdn stage is not completed, will not trigger stage test")
         except Exception as we:
             logger.exception("trigger stage testing failed")
-    else: 
-        logger.info(f"check stage job status according to job id:{build_number}")
-        job_status= jh.get_job_status(jh.zstream_url, "Stage-Pipeline", build_number)
-        if job_status == "SUCCESS":
+    else:
+        logger.info(
+            f"check stage job status according to job id:{build_number}")
+        job_status = jh.get_build_status(
+            JENKINS_JOB_STAGE_PIPELINE, build_number)
+        if job_status == JENKINS_JOB_STATUS_SUCCESS:
             report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_PASS)
-        elif job_status == "In Progress":
-            report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
-        else: 
+        elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:
+            report.update_task_status(
+                LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
+        else:
             report.update_task_status(LABEL_TASK_STAGE_TEST, TASK_STATUS_FAIL)
-
