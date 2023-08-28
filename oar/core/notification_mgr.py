@@ -88,7 +88,8 @@ class NotificationManager:
                     self.cs.get_slack_channel_from_contact("art"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException("share ownership change result failed") from e
+            raise NotificationException(
+                "share ownership change result failed") from e
 
     def share_bugs_to_be_verified(self, jira_issues):
         """
@@ -101,13 +102,16 @@ class NotificationManager:
             NotificationException: error when share this info
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_bug_verification(jira_issues)
+            slack_msg = self.mh.get_slack_message_for_bug_verification(
+                jira_issues)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("qe-forum"), slack_msg
+                    self.cs.get_slack_channel_from_contact(
+                        "qe-forum"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException("share bugs to be verified failed") from e
+            raise NotificationException(
+                "share bugs to be verified failed") from e
 
     def share_new_cve_tracker_bugs(self, cve_tracker_bugs):
         """
@@ -120,13 +124,15 @@ class NotificationManager:
             NotificationException: error when checking new CVE tracker bugs
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_cve_tracker_bugs(cve_tracker_bugs)
+            slack_msg = self.mh.get_slack_message_for_cve_tracker_bugs(
+                cve_tracker_bugs)
             if len(slack_msg):
                 self.sc.post_message(
                     self.cs.get_slack_channel_from_contact("art"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException("share missed CVE tracker bugs failed") from e
+            raise NotificationException(
+                "share missed CVE tracker bugs failed") from e
 
     def share_dropped_and_must_verify_bugs(self, dropped_bugs, must_verify_bugs):
         """
@@ -145,7 +151,8 @@ class NotificationManager:
             )
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                    self.cs.get_slack_channel_from_contact(
+                        "qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
@@ -162,10 +169,26 @@ class NotificationManager:
             )
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("approver"), slack_msg
+                    self.cs.get_slack_channel_from_contact(
+                        "approver"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException("share doc and prodsec approval failed") from e
+            raise NotificationException(
+                "share doc and prodsec approval failed") from e
+
+    def share_jenkins_build_url(self, job_name, build_url):
+        """
+        share notification for new jenkins build info
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_jenkins_build(
+                job_name, build_url)
+            if len(slack_msg):
+                self.sc.post_message(self.cs.get_slack_channel_from_contact(
+                    "qe-release"), slack_msg)
+        except Exception as e:
+            raise NotificationException(
+                "share jenkins build url failed") from e
 
 
 class MailClient:
@@ -270,10 +293,12 @@ class SlackClient:
                         ret_id = gid
                         break
         except SlackApiError as e:
-            raise NotificationException(f"query group id by name {name} error") from e
+            raise NotificationException(
+                f"query group id by name {name} error") from e
 
         if not ret_id:
-            raise NotificationException(f"cannot find slack group id by name {name}")
+            raise NotificationException(
+                f"cannot find slack group id by name {name}")
 
         return "<!subteam^%s>" % ret_id
 
@@ -460,7 +485,7 @@ class MessageHelper:
 
     def get_slack_message_for_docs_and_prodsec_approval(self, doc_appr, prodsec_appr):
         """
-        manipulate slacke message for docs and prodsec approval
+        manipulate slack message for docs and prodsec approval
 
         Args:
             doc_appr ([]): list of no doc approved advisories
@@ -487,6 +512,31 @@ class MessageHelper:
         if len(prodsec_appr):
             logger.info(f"send message for Prodsec approval")
             message += f"\n[{self.cs.release}] Hello {userid}, Could you approve Prodsec for advisories:{str(prodsec_appr)}, thanks!"
+        return message
+
+    def get_slack_message_for_jenkins_build(self, job_name, build_info):
+        """
+        manipulate slack message for jenkins build
+
+        Args:
+            job_name (str): jenkins job name
+            build_url (str): jenkins build url
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+
+        message = ""
+        if build_info.startswith("http"):
+            message += f"[{self.cs.release}] Hello {gid}, triggered jenkins build for job [{job_name}], url is {build_info}"
+        else:
+            message += f"[{self.cs.release}] Hello {gid}, {build_info}"
+
         return message
 
     def _to_link(self, link, text):
