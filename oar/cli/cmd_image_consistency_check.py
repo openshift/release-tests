@@ -38,22 +38,22 @@ def image_consistency_check(ctx, build_number):
                 "job [image-consistency-check] already triggered and in progress, no need to trigger again"
             )
         else:
-            build_url = ""
+            build_info = ""
             try:
                 if (jh.is_job_enqueue(JENKINS_JOB_IMAGE_CONSISTENCY_CHECK)):
                     logger.warning(
                         f"there is pending job in the queue, please try again later")
                 else:
-                    build_url = jh.call_image_consistency_job()
+                    build_info = jh.call_image_consistency_job()
                     logger.info(
-                        f"triggered image consistency check job: <{build_url}>")
+                        f"triggered image consistency check job: <{build_info}>")
             except JenkinsHelperException as jh:
                 logger.exception("trigger image-consistency-check job failed")
                 raise
             # send out notification to share new job url
-            if build_url:
+            if build_info:
                 nm.share_jenkins_build_url(
-                    JENKINS_JOB_IMAGE_CONSISTENCY_CHECK, build_url)
+                    JENKINS_JOB_IMAGE_CONSISTENCY_CHECK, build_info)
                 report.update_task_status(
                     LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS
                 )
