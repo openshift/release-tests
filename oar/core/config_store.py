@@ -28,7 +28,8 @@ class ConfigStore:
             raise ConfigStoreException("argument release is required")
 
         if not util.is_valid_z_release(release):
-            raise ConfigStoreException(f"invalid zstream release format {release}")
+            raise ConfigStoreException(
+                f"invalid zstream release format {release}")
 
         self.release = release
 
@@ -45,17 +46,21 @@ class ConfigStore:
             response = requests.get(url)
             response.raise_for_status()
         except RequestException as re:
-            raise ConfigStoreException("download ocp build data failed") from re
+            raise ConfigStoreException(
+                "download ocp build data failed") from re
 
         if response.text:
             try:
                 self._build_data = yaml.safe_load(response.text)
             except yaml.YAMLError as ye:
-                raise ConfigStoreException("ocp build data format is invalid") from ye
+                raise ConfigStoreException(
+                    "ocp build data format is invalid") from ye
+
         if self.release in self._build_data["releases"]:
             self._assembly = self._build_data["releases"][self.release]["assembly"]
         else:
-            raise ConfigStoreException(f"[{self.release}] build data is not ready, cannot create test report, you can check:{url}")
+            raise ConfigStoreException(
+                f"[{self.release}] ocp build data is not ready you can check file:{url}")
 
     def get_advisories(self):
         """
@@ -191,7 +196,7 @@ class ConfigStore:
             )
 
         return email_contacts[team]
-    
+
     def get_prodsec_id(self):
         """
         Get prodsec email from local config
@@ -287,8 +292,7 @@ class ConfigStore:
         """
         val = os.environ.get(var)
         if not val:
-            raise ConfigStoreException(f"system environment variable {var} not found")
+            raise ConfigStoreException(
+                f"system environment variable {var} not found")
 
         return val
-    
-    
