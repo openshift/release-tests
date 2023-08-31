@@ -83,6 +83,13 @@ AD_STATUS_QE = "QE"
 AD_STATUS_REL_PREP = "REL_PREP"
 AD_STATUS_NEW_FILES = "NEW_FILES"
 
+# advisory impetus
+AD_IMPETUS_EXTRAS = "extras"
+AD_IMPETUS_IMAGE = "image"
+AD_IMPETUS_METADATA = "metadata"
+AD_IMPETUS_MICROSHIFT = "microshift"
+AD_IMPETUS_RPM = "rpm"
+
 # jenkins related properties
 JENKINS_JOB_IMAGE_CONSISTENCY_CHECK = "image-consistency-check"
 JENKINS_JOB_STAGE_PIPELINE = "zstreams/Stage-Pipeline"
