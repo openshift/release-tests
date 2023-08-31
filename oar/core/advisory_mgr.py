@@ -50,7 +50,8 @@ class AdvisoryManager:
             for ad in self.get_advisories():
                 all_jira_issues += ad.jira_issues
         except ErrataException as e:
-            raise AdvisoryException("get jira issue from advisory failed") from e
+            raise AdvisoryException(
+                "get jira issue from advisory failed") from e
 
         return all_jira_issues
 
@@ -72,8 +73,10 @@ class AdvisoryManager:
                 # check advisory status, if it is not QE, log warn message
                 # if the advisory is released, the state is like [REP_PREP/SHIPPED LIVE], it is not [QE], we should not send alert to ART
                 # only check if the state is [NEW_FILES]
-                if ad.errata_state == AD_STATUS_NEW_FILES:
-                    logger.warn(f"advisory state is not QE, it is {ad.errata_state}")
+                # talked with ART, microshift advisory should be excluded from this check
+                if ad.errata_state == AD_STATUS_NEW_FILES and ad.impetus != AD_IMPETUS_MICROSHIFT:
+                    logger.warn(
+                        f"advisory state is not QE, it is {ad.errata_state}")
                     abnormal_ads.append(ad.errata_id)
                 ad.change_qe_email(self._cs.get_owner())
                 updated_ads.append(ad.errata_id)
@@ -105,8 +108,10 @@ class AdvisoryManager:
                 if len(tests):
                     for t in tests:
                         status = t["attributes"]["status"]
-                        logger.debug(f"Greenwave CVP test {t['id']} status is {status}")
-                        valid_status = [CVP_TEST_STATUS_PASSED, CVP_TEST_STATUS_WAIVED]
+                        logger.debug(
+                            f"Greenwave CVP test {t['id']} status is {status}")
+                        valid_status = [CVP_TEST_STATUS_PASSED,
+                                        CVP_TEST_STATUS_WAIVED]
                         if status not in valid_status:
                             all_passed = False
                             logger.error(
@@ -260,7 +265,8 @@ class AdvisoryManager:
 
         logger.debug(f"elliott cmd {cmd}")
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise AdvisoryException(f"elliott cmd error:\n {stderr}")
@@ -321,7 +327,8 @@ class Advisory(Erratum):
         """
         self.update(qe_email=email)
         self.commit()
-        logger.info(f"QA Owner of advisory {self.errata_id} is updated to {email}")
+        logger.info(
+            f"QA Owner of advisory {self.errata_id} is updated to {email}")
 
     def get_qe_email(self):
         """
@@ -344,7 +351,8 @@ class Advisory(Erratum):
         """
         self.setState(state.upper())
         self.commit()
-        logger.info(f"advisory {self.errata_id} state is updated to {state.upper()}")
+        logger.info(
+            f"advisory {self.errata_id} state is updated to {state.upper()}")
 
     def remove_bugs(self, bug_list: []):
         """
@@ -392,7 +400,8 @@ class Advisory(Erratum):
         Returns:
             bool: True if jobs for different types are all complete, otherwise False
         """
-        logger.info(f"checking push job status for advisory {self.errata_id} ...")
+        logger.info(
+            f"checking push job status for advisory {self.errata_id} ...")
         job_result = {}
         json = self.get_push_job_status()
         for cached_job in json:
@@ -413,7 +422,8 @@ class Advisory(Erratum):
         for cached_target, cached_job in job_result.items():
             cached_id = cached_job["id"]
             cached_status = cached_job["status"]
-            logger.info(f"push job for target <{cached_target}> is {cached_status}")
+            logger.info(
+                f"push job for target <{cached_target}> is {cached_status}")
             if cached_status != PUSH_JOB_STATUS_COMPLETE:
                 completed = False
 
