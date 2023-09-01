@@ -38,12 +38,15 @@ class WorksheetManager:
                     ],
                 )
             except Exception as ce:
-                raise WorksheetException("init cred with SA file failed") from ce
+                raise WorksheetException(
+                    "init cred with SA file failed") from ce
         else:
-            raise WorksheetException(f"SA file path is invalid: {sa_file_path}")
+            raise WorksheetException(
+                f"SA file path is invalid: {sa_file_path}")
 
         try:
-            self._gs = gspread.authorize(cred)
+            self._gs = gspread.authorize(
+                cred, client_factory=gspread.client.BackoffClient)
         except Exception as ge:
             raise WorksheetException("gspread auth failed") from ge
 
@@ -320,7 +323,8 @@ class TestReport:
             if issue.is_on_qa():
                 logger.debug(f"jira issue {key} is ON_QA, updating")
                 row_vals = []
-                row_vals.append(self._to_hyperlink(util.get_jira_link(key), key))
+                row_vals.append(self._to_hyperlink(
+                    util.get_jira_link(key), key))
                 row_vals.append(issue.get_qa_contact())
                 row_vals.append(issue.get_status())
                 batch_vals.append(row_vals)
@@ -365,17 +369,20 @@ class TestReport:
                 issue = jm.get_issue(bug_key)
                 # check bug status is updated or not. if yes, update it accordingly
                 if bug_status != issue.get_status():
-                    self._ws.update_acell("E" + str(row_idx), issue.get_status())
+                    self._ws.update_acell(
+                        "E" + str(row_idx), issue.get_status())
                     logger.info(
                         f"status of bug {issue.get_key()} is updated to {issue.get_status()}"
                     )
                 elif bug_key not in jira_issues:
-                    self._ws.update_acell("E" + str(row_idx), JIRA_STATUS_DROPPED)
+                    self._ws.update_acell(
+                        "E" + str(row_idx), JIRA_STATUS_DROPPED)
                     logger.info(f"bug {bug_key} is dropped")
                 else:
                     logger.info(f"bug status of {bug_key} is not changed")
             except Exception as e:
-                raise WorksheetException(f"update bug {bug_key} status failed") from e
+                raise WorksheetException(
+                    f"update bug {bug_key} status failed") from e
 
             existing_bugs.append(bug_key)
             row_idx += 1
