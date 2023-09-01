@@ -20,17 +20,18 @@ class TestWorksheetManager(unittest.TestCase):
 
     def step_0_create_report(self):
         self.report = self.wm.create_test_report()
-        self.assertRegex(self.report.get_advisory_info(), "112393")
+        self.assertRegex(self.report.get_advisory_info(), "114397")
         self.assertRegex(
-            self.report.get_build_info(), "4.12.0-0.nightly-2023-04-04-050651"
+            self.report.get_build_info(), "4.12.0-0.nightly-2023-05-17-133811"
         )
-        self.assertRegex(self.report.get_jira_info(), "ART-6489")
+        self.assertRegex(self.report.get_jira_info(), "ART-6821")
 
     def step_1_update_overall_status(self):
         self.report.update_overall_status_to_red()
         self.assertEqual(self.report.get_overall_status(), OVERALL_STATUS_RED)
         self.report.update_overall_status_to_green()
-        self.assertEqual(self.report.get_overall_status(), OVERALL_STATUS_GREEN)
+        self.assertEqual(self.report.get_overall_status(),
+                         OVERALL_STATUS_GREEN)
 
     def step_2_update_tasks(self):
         task_list = [
