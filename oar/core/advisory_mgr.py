@@ -159,7 +159,7 @@ class AdvisoryManager:
 
         return triggered
 
-    def change_advisory_status(self, status=AD_STATUS_REL_PREP):
+    def change_advisory_status(self, target_status=AD_STATUS_REL_PREP):
         """
         Change advisories status, e.g. REL_PREP
 
@@ -175,7 +175,11 @@ class AdvisoryManager:
         try:
             ads = self.get_advisories()
             for ad in ads:
-                ad.set_state(status.strip())
+                if target_status == AD_STATUS_REL_PREP and ad.get_state() != AD_STATUS_QE:
+                    logger.warn(
+                        f"cannot change state of advisory {ad.errata_id} from {target_status} to {ad.get_state()}, skip")
+                    continue
+                ad.set_state(target_status.strip())
         except Exception as e:
             raise AdvisoryException(f"change advisory status failed") from e
 
@@ -478,3 +482,6 @@ class Advisory(Erratum):
         url = "/api/v1/erratum/%i" % self.errata_id
         r = self._put(url, data=pdata)
         self._processResponse(r)
+
+    def has_dependency(self):
+        pass
