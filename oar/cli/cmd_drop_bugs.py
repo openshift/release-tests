@@ -29,14 +29,14 @@ def drop_bugs(ctx):
         dropped_bugs, must_verify_bugs = am.drop_bugs()
         # check if all bugs are verified
         nm = NotificationManager(cs)
+        requested_doc_ads=[]
+        requested_prodsec_ads=[]
         if len(dropped_bugs) or len(must_verify_bugs):
             logger.info("updating test report")
             report.update_bug_list(am.get_jira_issues())
             NotificationManager(cs).share_dropped_and_must_verify_bugs(
                 dropped_bugs, must_verify_bugs
             )
-            requested_doc_ads=[]
-            requested_prodsec_ads=[]
             if len(approved_doc_ads):
                 for ad in approved_doc_ads:
                     ad.refresh()
