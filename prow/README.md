@@ -36,7 +36,7 @@ Commands:
 
 Login https://console-openshift-console.apps.ci.l2s4.p1.openshiftapps.com/ and then, click **your-personal-account** -> `Copy login command` -> `Display Token`, you will get it like below:
 ```console
-oc login --token=sha256~<your-prow-token> --server=https://api.ci.l2s4.p1.openshiftapps.com:6443
+oc login --token=<your-prow-token> --server=https://api.ci.l2s4.p1.openshiftapps.com:6443
 ```
 
 - Get the Github token
