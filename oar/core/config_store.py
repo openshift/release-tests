@@ -94,7 +94,6 @@ class ConfigStore:
         except KeyError:
             logger.warn("<reference_releases> is not found in releases.yml")
             reference_releases = {}
-
         return reference_releases
 
     def get_jira_ticket(self):

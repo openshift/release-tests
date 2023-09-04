@@ -15,7 +15,10 @@ logger = logging.getLogger(__name__)
 @click.option(
     "-n", "--build_number", type=int, help="provide build number to get job status"
 )
-def image_consistency_check(ctx, build_number):
+@click.option(
+    "--for_nightly", is_flag=True, help="if has the flag, use candidate nightly build to test, else use stable build to test"
+)
+def image_consistency_check(ctx, build_number, for_nightly):
     """
     Check if images in advisories and payload are consistent
     """
@@ -44,7 +47,20 @@ def image_consistency_check(ctx, build_number):
                     logger.warning(
                         f"there is pending job in the queue, please try again later")
                 else:
-                    build_info = jh.call_image_consistency_job()
+                    if for_nightly:
+                        if "x86_64" in cs.get_candidate_builds():
+                            pull_spec = (
+                                "registry.ci.openshift.org/ocp/release:" + cs.get_candidate_builds().get("x86_64") 
+                            )
+                        else: 
+                            raise JenkinsHelperException(
+                                f"no candidate nightly build for x86_64 architecture"
+                                )
+                    else:
+                        pull_spec = (
+                            "quay.io/openshift-release-dev/ocp-release:" + cs.release + "-x86_64" 
+                        )  
+                    build_info = jh.call_image_consistency_job(pull_spec)
                     logger.info(
                         f"triggered image consistency check job: <{build_info}>")
             except JenkinsHelperException as jh:
@@ -58,18 +74,21 @@ def image_consistency_check(ctx, build_number):
                     LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS
                 )
     else:
-        logger.info(
-            f"check image-consistency-check job status with job id:{build_number}"
-        )
-        job_status = jh.get_build_status(
-            "image-consistency-check", build_number)
+        if(for_nightly):
+            logger.error(f"no need to add '--for_nightly' option,if just want to check job status")
+        else: 
+            logger.info(
+                f"check image-consistency-check job status with job id:{build_number}"
+            )
+            job_status = jh.get_build_status(
+                "image-consistency-check", build_number)
 
-        if job_status == JENKINS_JOB_STATUS_SUCCESS:
-            report.update_task_status(
-                LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
-        elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:
-            report.update_task_status(
-                LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS)
-        else:
-            report.update_task_status(
-                LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)
+            if job_status == JENKINS_JOB_STATUS_SUCCESS:
+                report.update_task_status(
+                    LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
+            elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:
+                report.update_task_status(
+                    LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS)
+            else:
+                report.update_task_status(
+                    LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)

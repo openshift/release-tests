@@ -34,9 +34,10 @@ class JenkinsHelper:
                 "call stage pipeline job failed") from ej
         return build_url
 
-    def call_image_consistency_job(self):
+    def call_image_consistency_job(self, pull_spec):
         try:
-            build_url = self.call_build_job("image-consistency-check")
+            logger.info(f"triggered a job with {pull_spec}")
+            build_url = self.call_build_job("image-consistency-check", pull_spec)
         except JenkinsException as ej:
             raise JenkinsHelperException(
                 "call image-consistency-check pipeline job failed"
@@ -121,7 +122,7 @@ class JenkinsHelper:
 
         return False
 
-    def call_build_job(self, job_name):
+    def call_build_job(self, job_name, pull_spec):
         """
         trigger build job and return build url
         """
@@ -132,7 +133,7 @@ class JenkinsHelper:
                 parameters_value = {
                     "VERSION": "v" + self.version,
                     "ERRATA_NUMBERS": self.errata_numbers,
-                    "PAYLOAD_URL": self.pull_spec,
+                    "PAYLOAD_URL": pull_spec,
                 }
             elif (job_name == JENKINS_JOB_STAGE_PIPELINE):
                 parameters_value = {
