@@ -46,3 +46,11 @@ class TestAdvisoryManager(unittest.TestCase):
         doc_appr, prodsec_appr = self.am.get_doc_security_approved_ads()
         self.assertTrue(len(doc_appr) == 2)
         self.assertTrue(len(prodsec_appr) == 0)
+
+    def test_get_dependent_advisories(self):
+        ad_id = 121862
+        dependent_ad_id = 121861
+        ad = Advisory(errata_id=ad_id)
+        self.assertTrue(ad.has_dependency())
+        self.assertEqual(ad.get_dependent_advisories()[
+                         0].errata_id, dependent_ad_id)

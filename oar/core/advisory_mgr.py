@@ -147,17 +147,26 @@ class AdvisoryManager:
         # check if all the push jobs are completed, if no, trigger new push job with default value [stage]
         # request with default value will not redo any push which has already successfully completed since the last respin of the advisory. It will redo failed pushes
 
-        triggered = False
+        triggered_ads = []
         try:
             ads = self.get_advisories()
             for ad in ads:
-                if not ad.are_all_push_jobs_completed():
-                    ad.push_to_cdn("stage")
-                    triggered = True
+                # filter out triggered
+                if ad.errata_id in triggered_ads:
+                    continue
+                # trigger push job for dependent advisories
+                if ad.has_dependency():
+                    dependent_ads = ad.get_dependent_advisories()
+                    for dependent_ad in dependent_ads:
+                        if (dependent_ad.push_to_cdn("stage")):
+                            triggered_ads.append(dependent_ad.errata_id)
+                # trigger push job for current advisory
+                if (ad.push_to_cdn("stage")):
+                    triggered_ads.append(ad.errata_id)
         except Exception as e:
             raise AdvisoryException("push to cdn failed") from e
 
-        return triggered
+        return len(triggered_ads) > 0
 
     def change_advisory_status(self, target_status=AD_STATUS_REL_PREP):
         """
@@ -380,12 +389,15 @@ class Advisory(Erratum):
         """
         Trigger push job with default target. e.g. stage or live
         """
-        if target and target in ["stage", "live"]:
-            self.push(target=target)
+        if self.are_all_push_jobs_completed():
+            return False
         else:
-            self.push()
-
-        logger.info(f"push job for advisory {self.errata_id} is triggered")
+            if target and target in ["stage", "live"]:
+                self.push(target=target)
+            else:
+                self.push()
+            logger.info(f"push job for advisory {self.errata_id} is triggered")
+            return True
 
     def get_push_job_status(self):
         """
@@ -484,4 +496,23 @@ class Advisory(Erratum):
         self._processResponse(r)
 
     def has_dependency(self):
-        pass
+        """
+        Check whether there is any dependent advisories
+        """
+        dependent_ads = self.get_erratum_data()['dependent_advisories']
+        logger.info(
+            f"advisory {self.errata_id} has dependent advisory {dependent_ads}")
+        return len(dependent_ads) > 0
+
+    def get_dependent_advisories(self):
+        """
+        Get dependent advisory list
+        """
+        dependent_ads = []
+        ad_list = self.get_erratum_data()['dependent_advisories']
+        if len(ad_list) > 0:
+            for id in ad_list:
+                ad = Advisory(errata_id=id)
+                dependent_ads.append(ad)
+
+        return dependent_ads
