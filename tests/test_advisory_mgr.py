@@ -7,7 +7,7 @@ from oar.core.const import *
 
 class TestAdvisoryManager(unittest.TestCase):
     def setUp(self):
-        self.am = AdvisoryManager(ConfigStore("4.12.11"))
+        self.am = AdvisoryManager(ConfigStore("4.13.15"))
 
     def test_init(self):
         pass
