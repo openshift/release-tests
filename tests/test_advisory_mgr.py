@@ -54,3 +54,8 @@ class TestAdvisoryManager(unittest.TestCase):
         self.assertTrue(ad.has_dependency())
         self.assertEqual(ad.get_dependent_advisories()[
                          0].errata_id, dependent_ad_id)
+
+    def test_check_ad_state(self):
+        ad_id = 121343
+        ad = Advisory(errata_id=ad_id)
+        self.assertEqual(ad.errata_state,'DROPPED_NO_SHIP')
