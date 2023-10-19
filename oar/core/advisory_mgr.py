@@ -34,7 +34,7 @@ class AdvisoryManager:
                 errata_id=v,
                 impetus=k,
             )
-            if ad.errata_state != "DROPPED_NO_SHIP":
+            if ad.errata_state != AD_STATUS_DROPPED_NO_SHIP:
                 ads.append(ad)
 
         return ads

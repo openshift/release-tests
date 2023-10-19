@@ -2,6 +2,7 @@ import unittest
 from oar.core.advisory_mgr import AdvisoryManager
 from oar.core.advisory_mgr import Advisory
 from oar.core.config_store import ConfigStore
+from oar.core.const import *
 
 
 class TestAdvisoryManager(unittest.TestCase):
@@ -58,4 +59,4 @@ class TestAdvisoryManager(unittest.TestCase):
     def test_check_ad_state(self):
         ad_id = 121343
         ad = Advisory(errata_id=ad_id)
-        self.assertEqual(ad.errata_state,'DROPPED_NO_SHIP')
+        self.assertEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP)
