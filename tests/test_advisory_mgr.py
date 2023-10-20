@@ -2,6 +2,7 @@ import unittest
 from oar.core.advisory_mgr import AdvisoryManager
 from oar.core.advisory_mgr import Advisory
 from oar.core.config_store import ConfigStore
+from oar.core.const import *
 
 
 class TestAdvisoryManager(unittest.TestCase):
@@ -54,3 +55,9 @@ class TestAdvisoryManager(unittest.TestCase):
         self.assertTrue(ad.has_dependency())
         self.assertEqual(ad.get_dependent_advisories()[
                          0].errata_id, dependent_ad_id)
+
+    def test_check_ad_state(self):
+        self.me = AdvisoryManager(ConfigStore("4.13.15"))
+        ads = self.me.get_advisories()
+        for ad in ads:
+            self.assertNotEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP, "AD with DROOPED NO SHIP hasn't been fileter out")
