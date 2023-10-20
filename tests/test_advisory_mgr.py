@@ -7,7 +7,7 @@ from oar.core.const import *
 
 class TestAdvisoryManager(unittest.TestCase):
     def setUp(self):
-        self.am = AdvisoryManager(ConfigStore("4.13.15"))
+        self.am = AdvisoryManager(ConfigStore("4.12.11"))
 
     def test_init(self):
         pass
@@ -60,7 +60,8 @@ class TestAdvisoryManager(unittest.TestCase):
         ad_id = 121343
         ad = Advisory(errata_id=ad_id)
         self.assertEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP)
-        ads = self.am.get_advisories()
+        self.me = AdvisoryManager(ConfigStore("4.12.11"))
+        ads = self.me.get_advisories()
         for ad in ads:
             self.assertNotEqual(ad.errata_id, 121343, "AD with DROOPED NO SHIP hasn't been fileter out")
             self.assertNotEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP, "AD with DROOPED NO SHIP hasn't been fileter out")
