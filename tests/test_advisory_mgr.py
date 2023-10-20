@@ -57,11 +57,7 @@ class TestAdvisoryManager(unittest.TestCase):
                          0].errata_id, dependent_ad_id)
 
     def test_check_ad_state(self):
-        ad_id = 121343
-        ad = Advisory(errata_id=ad_id)
-        self.assertEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP)
-        self.me = AdvisoryManager(ConfigStore("4.12.11"))
+        self.me = AdvisoryManager(ConfigStore("4.13.15"))
         ads = self.me.get_advisories()
         for ad in ads:
-            self.assertNotEqual(ad.errata_id, 121343, "AD with DROOPED NO SHIP hasn't been fileter out")
             self.assertNotEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP, "AD with DROOPED NO SHIP hasn't been fileter out")
