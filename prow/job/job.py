@@ -55,20 +55,35 @@ class Jobs(object):
             print("Error! You cannot run e2e and upgrade test at the same time!")
             sys.exit(1)
         # amd_latest env is must no mater what platforms you run
+        # support platforms: https://github.com/openshift/release-controller/blob/master/cmd/release-controller/sync_verify_prow.go#L203
         amd_latest = "RELEASE_IMAGE_LATEST"
         amd_target = "RELEASE_IMAGE_TARGET"
         arm_latest = "RELEASE_IMAGE_ARM64_LATEST"
         arm_target = "RELEASE_IMAGE_ARM64_TARGET"
+        multi_latest = "RELEASE_IMAGE_MULTI_LATEST"
+        multi_target = "RELEASE_IMAGE_MULTI_TARGET"
+        ppc64le_latest = "RELEASE_IMAGE_PPC64LE_LATEST"
+        ppc64le_target = "RELEASE_IMAGE_PPC64LE_TARGET"
 
         if payload is not None:
             env = {"envs": {amd_latest: payload}}
             if "arm64" in payload or "aarch64" in payload:
                 self.get_amdBaseImage_for_arm(payload)
                 env = {"envs": {amd_latest: self.base_image, arm_latest: payload}}
+            if "multi" in payload:
+                env = {"envs": {multi_latest: payload}}
+            if "ppc64le" in payload:
+                env = {"envs": {ppc64le_latest: payload}}
+            if "ppc64le" in payload:
+                env = {"envs": {ppc64le_latest: payload}}
 
         if upgrade_from is not None and upgrade_to is not None:
             # x86 as default
             env = {"envs": {amd_latest: upgrade_from, amd_target: upgrade_to}}
+            if "multi" in upgrade_from and "multi" in upgrade_to:
+                env = {"envs": {multi_latest: upgrade_from, multi_target: upgrade_to}}
+            if "ppc64le" in upgrade_from and "ppc64le" in upgrade_to:
+                env = {"envs": {ppc64le_latest: upgrade_from, ppc64le_target: upgrade_to}}
             # check if it's for ARM, and amd_latest env is must no mater what platforms you run
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
                 self.get_amdBaseImage_for_arm(upgrade_from)
@@ -89,11 +104,19 @@ class Jobs(object):
                 }
         if upgrade_from is None and upgrade_to is not None:
             env = {"envs": {amd_target: upgrade_to}}
+            if "multi" in upgrade_to:
+                env = {"envs": {multi_target: upgrade_to}}
+            if "ppc64le" in upgrade_to:
+                env = {"envs": {ppc64le_target: upgrade_to}}
             if "arm64" in upgrade_to or "aarch64" in upgrade_to:
                 self.get_amdBaseImage_for_arm(upgrade_to)
                 env = {"envs": {amd_latest: self.base_image, arm_target: upgrade_to}}
         if upgrade_from is not None and upgrade_to is None:
             env = {"envs": {amd_latest: upgrade_from}}
+            if "multi" in upgrade_from:
+                env = {"envs": {multi_latest: upgrade_from}}
+            if "ppc64le" in upgrade_from:
+                env = {"envs": {ppc64le_latest: upgrade_from}}
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
                 self.get_amdBaseImage_for_arm(upgrade_from)
                 env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
