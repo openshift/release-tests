@@ -24,6 +24,7 @@ class Jobs(object):
             "https://gangway-ci.apps.ci.l2s4.p1.openshiftapps.com/v1/executions/"
         )
         self.prowJobURL = "https://prow.ci.openshift.org/prowjob?prowjob={}"
+        self.base_image = "quay.io/openshift-release-dev/ocp-release:4.13.4-x86_64"
 
     # get_prow_headers func adds the Prow Token
     def get_prow_headers(self):
@@ -34,6 +35,18 @@ class Jobs(object):
         else:
             print("No Prow API token found, exit...")
             sys.exit(0)
+
+    # it's for ARM test, now unable to find the 'cli' image in the provided ARM release image, but x86
+    # so extract the corresponding amd64 version from the arm64 build, 
+    # see bug: https://issues.redhat.com/browse/DPTP-3538, https://issues.redhat.com/browse/OCPQE-17600
+    def get_amdBaseImage_for_arm(self, payload):
+        versionPattern = re.compile(":(\d*\.\d{2}\.\d)-")
+        version = versionPattern.findall(payload)
+        if len(version) > 0:
+            self.base_image = "quay.io/openshift-release-dev/ocp-release:%s-x86_64" % version[0]
+            print("Use amd64 base image: %s" % self.base_image)
+        else:
+            print("Warning! Fail to get the corresponding amd64 base image, use the default one:%s" % self.base_image)
 
     def get_job_data(self, payload, upgrade_from, upgrade_to):
         data = {"job_execution_type": "1"}
@@ -46,28 +59,30 @@ class Jobs(object):
         amd_target = "RELEASE_IMAGE_TARGET"
         arm_latest = "RELEASE_IMAGE_ARM64_LATEST"
         arm_target = "RELEASE_IMAGE_ARM64_TARGET"
-        # it's for ARM test, now unable to find the 'cli' image in the provided ARM release image, but x86
-        # so hard code a x86 image here, see bug: https://issues.redhat.com/browse/DPTP-3538
-        base_image = "quay.io/openshift-release-dev/ocp-release:4.13.4-x86_64"
+
         if payload is not None:
             env = {"envs": {amd_latest: payload}}
             if "arm64" in payload or "aarch64" in payload:
-                env = {"envs": {amd_latest: base_image, arm_latest: payload}}
+                self.get_amdBaseImage_for_arm(payload)
+                env = {"envs": {amd_latest: self.base_image, arm_latest: payload}}
 
         if upgrade_from is not None and upgrade_to is not None:
             # x86 as default
             env = {"envs": {amd_latest: upgrade_from, amd_target: upgrade_to}}
             # check if it's for ARM, and amd_latest env is must no mater what platforms you run
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
-                env = {"envs": {amd_latest: base_image, arm_latest: upgrade_from}}
+                self.get_amdBaseImage_for_arm(upgrade_from)
+                env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
             if "arm64" in upgrade_to or "aarch64" in upgrade_to:
-                env = {"envs": {amd_latest: base_image, arm_target: upgrade_to}}
+                self.get_amdBaseImage_for_arm(upgrade_to)
+                env = {"envs": {amd_latest: self.base_image, arm_target: upgrade_to}}
             if ("arm64" in upgrade_from or "aarch64" in upgrade_from) and (
                 "arm64" in upgrade_to or "aarch64" in upgrade_to
             ):
+                self.get_amdBaseImage_for_arm(upgrade_from)
                 env = {
                     "envs": {
-                        amd_latest: base_image,
+                        amd_latest: self.base_image,
                         arm_latest: upgrade_from,
                         arm_target: upgrade_to,
                     }
@@ -75,11 +90,13 @@ class Jobs(object):
         if upgrade_from is None and upgrade_to is not None:
             env = {"envs": {amd_target: upgrade_to}}
             if "arm64" in upgrade_to or "aarch64" in upgrade_to:
-                env = {"envs": {amd_latest: base_image, arm_target: upgrade_to}}
+                self.get_amdBaseImage_for_arm(upgrade_to)
+                env = {"envs": {amd_latest: self.base_image, arm_target: upgrade_to}}
         if upgrade_from is not None and upgrade_to is None:
             env = {"envs": {amd_latest: upgrade_from}}
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
-                env = {"envs": {amd_latest: base_image, arm_latest: upgrade_from}}
+                self.get_amdBaseImage_for_arm(upgrade_from)
+                env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
         if env is not None:
             data = {"job_execution_type": "1", "pod_spec_options": env}
         print(data)
