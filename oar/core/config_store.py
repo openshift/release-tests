@@ -67,12 +67,13 @@ class ConfigStore:
         Get advisories info from build data e.g.
         group:
             advisories:
-            extras: 113027
-            image: 113026
-            metadata: 113028
-            rpm: 113025
+                extras: 113027
+                image: 113026
+                metadata: 113028
+                rpm: 113025
         """
-        return self._assembly["group"]["advisories"]
+            
+        return self._get_assembly_attr("group/advisories")
 
     def get_candidate_builds(self):
         """
@@ -89,12 +90,8 @@ class ConfigStore:
         # https://art-docs.engineering.redhat.com/assemblies/#building-an-updated-component
         # according to above doc, it is possible that `reference_releases` can be removed from the yaml
         # if it is true, return a empty dict instead
-        try:
-            reference_releases = self._assembly["basis"]["reference_releases"]
-        except KeyError:
-            logger.warn("<reference_releases> is not found in releases.yml")
-            reference_releases = {}
-        return reference_releases
+        
+        return self._get_assembly_attr("basis/reference_releases")
 
     def get_jira_ticket(self):
         """
@@ -295,3 +292,46 @@ class ConfigStore:
                 f"system environment variable {var} not found")
 
         return val
+    
+    def _get_assembly_attr(self, keypath):
+        """
+        Get attribute with key names followed inheritance rule
+        
+        e.g. if advisory! or advisories does not exist in 4.14.1, 
+        we should get advisory's from parent assembly i.e. 4.14.0
+
+        Args:
+            keypath (_str_): attribute key path e.g. group/advisories!
+        """
+        attr_val = None
+        basis = self._assembly["basis"]
+        parent_assembly = self._get_value_by_path(self._build_data["releases"], f"{basis['assembly']}/assembly")
+        child_keypath = "%s!" % keypath
+        
+        attr_val = self._get_value_by_path(self._assembly, child_keypath)
+        if attr_val == None: # no child key found, i.e. suffixed with !
+            attr_val = self._get_value_by_path(self._assembly, keypath)
+        if attr_val == None and parent_assembly: # no key found, try to get it from parent assembly
+            attr_val = self._get_value_by_path(parent_assembly, keypath)
+            
+        return attr_val
+            
+    def _get_value_by_path(self, json, path):
+        """
+        Get value from json path delimited by slash
+        e.g. releases/4.14.1/assembly
+
+        Args:
+            json (_dict_): json object
+            path (_str_): attribute path based on current json object
+        """
+        tmp = json
+        if tmp:
+            for key in path.split("/"):
+                if key in tmp:
+                    tmp = tmp[key]
+                else:
+                    logger.debug(f"cannot find key {key} in json object {tmp}")
+                    return None
+        
+        return tmp
