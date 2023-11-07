@@ -72,3 +72,15 @@ class TestConfigStore(unittest.TestCase):
 
         cs = ConfigStore("4.9.10")
         self.assertRaises(ConfigStoreException, cs.get_report_template)
+        
+    def test_get_inheritance_rule(self):
+        cs = ConfigStore("4.13.21")
+        ads = cs.get_advisories()
+        self.assertEqual(123314, ads["extras"])
+        
+        cs = ConfigStore("4.14.1")
+        ads = cs.get_advisories()
+        self.assertEqual(123024, ads["rpm"])
+        builds = cs.get_candidate_builds()
+        self.assertEqual(len(builds), 0)
+  
