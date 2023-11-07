@@ -319,7 +319,7 @@ class ConfigStore:
     def _get_value_by_path(self, json, path):
         """
         Get value from json path delimited by slash
-        e.g. releases/4.1.4.1/assembly
+        e.g. releases/4.14.1/assembly
 
         Args:
             json (_dict_): json object
