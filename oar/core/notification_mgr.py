@@ -376,10 +376,12 @@ class MessageHelper:
         message += "Updated jira subtasks:\n"
         for key in updated_subtasks:
             message += self._to_link(util.get_jira_link(key), key) + " "
-        message += "\n"
-        message += "Found some abnormal advisories that state is not QE\n"
-        for ad in abnormal_ads:
-            message += self._to_link(util.get_advisory_link(ad), ad) + " "
+            
+        if len(abnormal_ads):
+            message += "\n"
+            message += "Found some abnormal advisories that state is not QE\n"
+            for ad in abnormal_ads:
+                message += self._to_link(util.get_advisory_link(ad), ad) + " "
 
         return message
 
