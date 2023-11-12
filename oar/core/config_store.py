@@ -305,7 +305,8 @@ class ConfigStore:
         """
         attr_val = None
         basis = self._assembly["basis"]
-        parent_assembly = self._get_value_by_path(self._build_data["releases"], f"{basis['assembly']}/assembly")
+        if "assembly" in basis:
+            parent_assembly = self._get_value_by_path(self._build_data["releases"], f"{basis['assembly']}/assembly")
         child_keypath = "%s!" % keypath
         
         attr_val = self._get_value_by_path(self._assembly, child_keypath)
