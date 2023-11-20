@@ -98,6 +98,7 @@ class AdvisoryManager:
             []test: abnormal test list
         """
         abnormal_tests = []
+        valid_status = [CVP_TEST_STATUS_PASSED, CVP_TEST_STATUS_WAIVED]
         try:
             ads = self.get_advisories()
             for ad in ads:
@@ -109,10 +110,8 @@ class AdvisoryManager:
                 if len(tests):
                     for t in tests:
                         status = t["attributes"]["status"]
-                        logger.debug(
+                        logger.info(
                             f"Greenwave CVP test {t['id']} status is {status}")
-                        valid_status = [CVP_TEST_STATUS_PASSED,
-                                        CVP_TEST_STATUS_WAIVED]
                         if status not in valid_status:
                             all_passed = False
                             logger.error(
