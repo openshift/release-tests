@@ -151,22 +151,12 @@ class AdvisoryManager:
         try:
             ads = self.get_advisories()
             for ad in ads:
-                # filter out triggered
-                if ad.errata_id in triggered_ads:
-                    continue
-                # trigger push job for dependent advisories
-                if ad.has_dependency():
-                    dependent_ads = ad.get_dependent_advisories()
-                    for dependent_ad in dependent_ads:
-                        if (dependent_ad.push_to_cdn("stage")):
-                            triggered_ads.append(dependent_ad.errata_id)
-                # trigger push job for current advisory
-                if (ad.push_to_cdn("stage")):
+                if (ad.push_to_cdn()):
                     triggered_ads.append(ad.errata_id)
         except Exception as e:
             raise AdvisoryException("push to cdn failed") from e
 
-        return len(triggered_ads) > 0
+        return len(triggered_ads) == len(ads)
 
     def change_advisory_status(self, target_status=AD_STATUS_REL_PREP):
         """
@@ -326,6 +316,8 @@ class Advisory(Erratum):
     def __init__(self, **kwargs):
         if "impetus" in kwargs:
             self.impetus = kwargs["impetus"]
+        self.push_job_status = {}
+        self.no_push_job = False
         try:
             super().__init__(**kwargs)
         except ErrataException as e:
@@ -385,18 +377,34 @@ class Advisory(Erratum):
         """
         return self.externalTests(test_type="greenwave_cvp")
 
-    def push_to_cdn(self, target):
+    def push_to_cdn(self, target="stage"):
         """
         Trigger push job with default target. e.g. stage or live
         """
-        if self.are_all_push_jobs_completed():
-            return False
+
+        if (self.are_push_jobs_running() or self.are_push_jobs_completed()) and not self.has_failed_push_job():
+            return True
         else:
+            # logic to trigger jobs for blocking advisories
+            if self.has_dependency():
+                blocking_ads = self.get_blocking_advisories()
+                for ad in blocking_ads:
+                    ad.push_to_cdn()
+                completed = True
+                for ad in blocking_ads:
+                    if ad.are_push_jobs_running():
+                        completed = False
+                        logger.warn(f"push jobs of blocking advisory {ad.errata_id} are not completed yet, will not trigger push job for {self.errata_id}, please try again later")
+                if not completed:
+                    return False
+            # logic to trigger jobs for current advisory
             if target and target in ["stage", "live"]:
                 self.push(target=target)
             else:
                 self.push()
+
             logger.info(f"push job for advisory {self.errata_id} is triggered")
+        
             return True
 
     def get_push_job_status(self):
@@ -404,52 +412,88 @@ class Advisory(Erratum):
         Get push jobs' status
         """
 
+        # if the cached result is not empty or no push job found, won't get status again
+        if len(self.push_job_status) or self.no_push_job:
+            return
+
         url = "/api/v1/erratum/" + str(self.errata_id) + "/push"
         json = self._get(url)
 
-        return json
-
-    def are_all_push_jobs_completed(self):
-        """
-        Check all push jobs status for different types  e.g. cdn_stage, cdn_docker_stage etc.
-
-        Returns:
-            bool: True if jobs for different types are all complete, otherwise False
-        """
         logger.info(
             f"checking push job status for advisory {self.errata_id} ...")
-        job_result = {}
-        json = self.get_push_job_status()
+
+        if len(json) == 0:
+            self.no_push_job = True
+            logger.info(f"no push job found for advisory {self.errata_id}")
+        
         for cached_job in json:
             job_id = cached_job["id"]
             job_status = cached_job["status"]
             job_target = cached_job["target"]["name"]
 
-            if job_target in job_result:
-                cached_job = job_result[job_target]
+            if job_target in self.push_job_status:
+                cached_job = self.push_job_status[job_target]
                 cached_id = cached_job["id"]
                 if job_id > cached_id:
                     cached_job["id"] = job_id
                     cached_job["status"] = job_status
             else:
-                job_result[job_target] = {"id": job_id, "status": job_status}
+                self.push_job_status[job_target] = {"id": job_id, "status": job_status}
 
-        completed = True if len(job_result) else False
-        for cached_target, cached_job in job_result.items():
+        for cached_target, cached_job in self.push_job_status.items():
             cached_id = cached_job["id"]
             cached_status = cached_job["status"]
             logger.info(
                 f"push job for target <{cached_target}> is {cached_status}")
+
+
+    def are_push_jobs_completed(self):
+        """
+        Check all push jobs status for different types  e.g. cdn_stage, cdn_docker_stage etc.
+
+        Returns:
+            bool: True if jobs for different types are triggered and no failed job found, otherwise False
+        """
+        
+        self.get_push_job_status()
+
+        completed = True if len(self.push_job_status) else False
+        for cached_target, cached_job in self.push_job_status.items():
+            cached_status = cached_job["status"]
             if cached_status != PUSH_JOB_STATUS_COMPLETE:
                 completed = False
+                break
 
         return completed
+
+    def are_push_jobs_running(self):
+        """
+        Check if push jobs are triggered
+
+        Returns:
+            bool: if jobs are running return true
+        """
+
+        return (not self.are_push_jobs_completed()) and len(self.push_job_status)
+
+    def has_failed_push_job(self):
+        """
+        Check if any push job is failed
+
+        Returns:
+            bool: return true if any failed job found
+        """
+
+        self.get_push_job_status()
+
+        return PUSH_JOB_STATUS_FAILED in self.push_job_status.values()
+
 
     def is_doc_approved(self):
         """
         Check if doc is approved for a advisory
         Returns:
-        bool: True if doc for a advisory is approved, otherwise False
+            bool: True if doc for a advisory is approved, otherwise False
         """
         return self.get_erratum_data()["doc_complete"] == 1
 
@@ -457,7 +501,7 @@ class Advisory(Erratum):
         """
         Check if prodsec is approved for a advisory
         Returns:
-        bool: True if prodsec is approved, otherwise False
+            bool: True if prodsec is approved, otherwise False
         """
         return self.get_erratum_data()["security_approved"] == True
 
@@ -465,7 +509,7 @@ class Advisory(Erratum):
         """
         Check if doc for a advisory is requested
         Returns:
-        bool: True if doc for a advisory is requested, otherwise False
+            bool: True if doc for a advisory is requested, otherwise False
         """
         return self.get_erratum_data()["text_ready"] == 1
 
@@ -499,20 +543,21 @@ class Advisory(Erratum):
         """
         Check whether there is any dependent advisories
         """
-        dependent_ads = self.get_erratum_data()['dependent_advisories']
+        blocking_ads = self.get_erratum_data()['blocking_advisories']
         logger.info(
-            f"advisory {self.errata_id} has dependent advisory {dependent_ads}")
-        return len(dependent_ads) > 0
+            f"advisory {self.errata_id} has blocking advisory {blocking_ads}")
+        return len(blocking_ads) > 0
 
-    def get_dependent_advisories(self):
+    def get_blocking_advisories(self):
         """
         Get dependent advisory list
         """
-        dependent_ads = []
-        ad_list = self.get_erratum_data()['dependent_advisories']
+        blocking_ads = []
+        ad_list = self.get_erratum_data()['blocking_advisories']
         if len(ad_list) > 0:
             for id in ad_list:
                 ad = Advisory(errata_id=id)
-                dependent_ads.append(ad)
+                blocking_ads.append(ad)
 
-        return dependent_ads
+        return blocking_ads
+
