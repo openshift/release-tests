@@ -380,22 +380,31 @@ class Advisory(Erratum):
     def push_to_cdn(self, target="stage"):
         """
         Trigger push job with default target. e.g. stage or live
+        
+        if all push jobs are completed, return true
+        if any push job is running and there is no failed job, return false. i.e. action is in progress
+        if no jobs are triggered or there is any failed job found (retry), trigger the push job with target [stage]
+        if any blocking advisory found, trigger push job for it
+        if all the blocking jobs are completed, trigger push job for current advisory
+        
         """
-
-        if (self.are_push_jobs_running() or self.are_push_jobs_completed()) and not self.has_failed_push_job():
+        
+        if self.are_push_jobs_completed():
             return True
+        elif self.are_push_jobs_running() and not self.has_failed_push_job():
+            return False
         else:
             # logic to trigger jobs for blocking advisories
             if self.has_dependency():
                 blocking_ads = self.get_blocking_advisories()
                 for ad in blocking_ads:
                     ad.push_to_cdn()
-                completed = True
+                blocking_jobs_completed = True
                 for ad in blocking_ads:
                     if ad.are_push_jobs_running():
-                        completed = False
+                        blocking_jobs_completed = False
                         logger.warn(f"push jobs of blocking advisory {ad.errata_id} are not completed yet, will not trigger push job for {self.errata_id}, please try again later")
-                if not completed:
+                if not blocking_jobs_completed:
                     return False
             # logic to trigger jobs for current advisory
             if target and target in ["stage", "live"]:
@@ -405,7 +414,7 @@ class Advisory(Erratum):
 
             logger.info(f"push job for advisory {self.errata_id} is triggered")
         
-            return True
+            return False
 
     def get_push_job_status(self):
         """
@@ -486,7 +495,17 @@ class Advisory(Erratum):
 
         self.get_push_job_status()
 
-        return PUSH_JOB_STATUS_FAILED in self.push_job_status.values()
+        has_failed_job = False
+        jobs = self.push_job_status.values()
+        for job in jobs:
+            if PUSH_JOB_STATUS_FAILED == job['status']:
+                has_failed_job = True
+                break
+        
+        if has_failed_job:
+            logger.warning("found failed push job, will trigger again")
+            
+        return has_failed_job
 
 
     def is_doc_approved(self):
