@@ -24,8 +24,9 @@ def push_to_cdn_staging(ctx):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_PUSH_TO_CDN, TASK_STATUS_INPROGRESS)
         # trigger push job for cdn stage targets
-        all_triggered = am.push_to_cdn_staging()
-        if all_triggered:
+        # only mark the task to pass when all jobs are completed
+        all_jobs_completed = am.push_to_cdn_staging()
+        if all_jobs_completed:
             report.update_task_status(LABEL_TASK_PUSH_TO_CDN, TASK_STATUS_PASS)
     except Exception as e:
         logger.exception("push to cdn staging failed")
