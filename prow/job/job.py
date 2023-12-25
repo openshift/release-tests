@@ -48,12 +48,12 @@ class Jobs(object):
         else:
             print("Warning! Fail to get the corresponding amd64 base image, use the default one:%s" % self.base_image)
 
-    def get_job_data(self, payload, upgrade_from, upgrade_to):
+    def get_job_data(self, payload, upgrade_from, upgrade_to, extra_env=None):
         data = {"job_execution_type": "1"}
-        env = None
         if payload is not None and upgrade_from is not None and upgrade_to is not None:
             print("Error! You cannot run e2e and upgrade test at the same time!")
             sys.exit(1)
+        env = None
         # amd_latest env is must no mater what platforms you run
         # support platforms: https://github.com/openshift/release-controller/blob/master/cmd/release-controller/sync_verify_prow.go#L203
         amd_latest = "RELEASE_IMAGE_LATEST"
@@ -121,10 +121,26 @@ class Jobs(object):
                 self.get_amdBaseImage_for_arm(upgrade_from)
                 env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
         if env is not None:
+            if extra_env is not None:
+                old_env = env["envs"]
+                extra_env = self.string2Json(extra_env)
+                old_env.update(extra_env)
+                env["envs"] = old_env
             data = {"job_execution_type": "1", "pod_spec_options": env}
+        else:
+            if extra_env is not None:
+                env_json = self.string2Json(extra_env)
+                env = {"envs": {""}}
+                env["envs"] = env_json
+                data = {"job_execution_type": "1", "pod_spec_options": env}
         print(data)
         return data
-
+    
+    def string2Json(self, strings):
+        pairs = [pair.split('=') for pair in strings.split(',')]
+        jsons = {key: value for key, value in pairs}
+        return jsons
+    
     def get_sha(self, url):
         res = requests.get(url=url, headers=self.get_github_headers())
         if res.status_code == 200:
@@ -322,7 +338,7 @@ class Jobs(object):
                             self.run_job(job, None, None, None)
 
     # run_job func runs job by calling the API
-    def run_job(self, jobName, payload, upgrade_from, upgrade_to):
+    def run_job(self, jobName, payload, upgrade_from, upgrade_to, extra_env=None):
         if jobName is None:
             print("Error! Please input the correct prow job name!")
         elif jobName.startswith("periodic-ci-"):
@@ -336,7 +352,7 @@ class Jobs(object):
 
             res = requests.post(
                 url=url,
-                json=self.get_job_data(payload, upgrade_from, upgrade_to),
+                json=self.get_job_data(payload, upgrade_from, upgrade_to, extra_env),
                 headers=self.get_prow_headers(),
             )
             if res.status_code == 200:
@@ -505,11 +521,12 @@ def get_cmd(job_id):
 )
 @click.option("--upgrade_from", help="specify an original payload for upgrade test.")
 @click.option("--upgrade_to", help="specify a target payload for upgrade test.")
-def run_cmd(job_name, payload, upgrade_from, upgrade_to):
+@click.option("--envs", help="specify ENV vars, multi are separated by commas, such as env1=xxx,env2=xxx")
+def run_cmd(job_name, payload, upgrade_from, upgrade_to, envs):
     """Run a job and save results to /tmp/prow-jobs.csv. \n
     For ARM test, we hard code a x86 image as the base image. Details: https://issues.redhat.com/browse/DPTP-3538
     """
-    job.run_job(job_name, payload, upgrade_from, upgrade_to)
+    job.run_job(job_name, payload, upgrade_from, upgrade_to, envs)
 
 
 @cli.command("list")
