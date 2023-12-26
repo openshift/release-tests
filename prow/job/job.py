@@ -40,11 +40,12 @@ class Jobs(object):
     # so extract the corresponding amd64 version from the arm64 build, 
     # see bug: https://issues.redhat.com/browse/DPTP-3538, https://issues.redhat.com/browse/OCPQE-17600
     def get_amdBaseImage_for_arm(self, payload):
-        versionPattern = re.compile(":(\d*\.\d{2}\.\d)-")
+        versionPattern = re.compile(":(\d*\.\d{2}\.\d)(-.*)?-")
         version = versionPattern.findall(payload)
         if len(version) > 0:
-            self.base_image = "quay.io/openshift-release-dev/ocp-release:%s-x86_64" % version[0]
-            print("Use amd64 base image: %s" % self.base_image)
+            version_string = "".join(version[0])
+            self.base_image = "quay.io/openshift-release-dev/ocp-release:%s-x86_64" % version_string
+            print("Infer the amd64 image: %s from arm payload: %s" % (self.base_image, payload))
         else:
             print("Warning! Fail to get the corresponding amd64 base image, use the default one:%s" % self.base_image)
 
@@ -85,12 +86,12 @@ class Jobs(object):
             if "ppc64le" in upgrade_from and "ppc64le" in upgrade_to:
                 env = {"envs": {ppc64le_latest: upgrade_from, ppc64le_target: upgrade_to}}
             # check if it's for ARM, and amd_latest env is must no mater what platforms you run
-            if "arm64" in upgrade_from or "aarch64" in upgrade_from:
-                self.get_amdBaseImage_for_arm(upgrade_from)
-                env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
-            if "arm64" in upgrade_to or "aarch64" in upgrade_to:
-                self.get_amdBaseImage_for_arm(upgrade_to)
-                env = {"envs": {amd_latest: self.base_image, arm_target: upgrade_to}}
+            # if "arm64" in upgrade_from or "aarch64" in upgrade_from:
+            #     self.get_amdBaseImage_for_arm(upgrade_from)
+            #     env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
+            # if "arm64" in upgrade_to or "aarch64" in upgrade_to:
+            #     self.get_amdBaseImage_for_arm(upgrade_to)
+            #     env = {"envs": {amd_latest: self.base_image, arm_target: upgrade_to}}
             if ("arm64" in upgrade_from or "aarch64" in upgrade_from) and (
                 "arm64" in upgrade_to or "aarch64" in upgrade_to
             ):
