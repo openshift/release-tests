@@ -35,5 +35,5 @@ def update_bug_list(ctx, notify):
         if report.are_all_bugs_verified():
             report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)
     except Exception as e:
-        logger.exception("take ownership of advisory and jira subtasks failed")
+        logger.exception("update bug list in report failed")
         raise

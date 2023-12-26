@@ -439,6 +439,7 @@ class TestReport:
                     bug_key = self._ws.acell("C" + str(row_idx)).value
                     logger.debug(f"found not verified bug {bug_key}:{status}")
                     break
+                row_idx += 1
         except Exception as e:
             raise WorksheetException("iterate bug status failed") from e
 
