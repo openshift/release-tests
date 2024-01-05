@@ -17,6 +17,7 @@ import http.client as httpclient
 
 class Jobs(object):
     def __init__(self):
+        self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
         # config the based URL here
         self.jobURL = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=master"
@@ -174,10 +175,8 @@ class Jobs(object):
                     channel = content[:-2]
                     self.run_required_jobs(channel, default_file, content)
             else:
-                print(
-                    "No update! since the recored version %s >= the new version %s"
-                    % (oldVersion, content)
-                )
+                self.run = False
+                print("No update! since the recored version %s >= the new version %s" % (oldVersion, content))
         elif res.status_code == 404:
             print("file %s doesn't exist, create it." % url)
             data = {
@@ -192,6 +191,7 @@ class Jobs(object):
                 channel = content[:-2]
                 self.run_required_jobs(channel, default_file, content)
         else:
+            self.run = False
             print("Push error: %s, %s" % (res.status_code, res.reason))
 
     def save_results(self, content, file):
@@ -499,6 +499,7 @@ class Jobs(object):
             # z_version is like "4.10.0", and y_version is like "4.10"
             print("getting the latest payload of %s" % y_version)
             latest_version = ""
+            self.run = True
             for tag in dict["tags"]:
                 if tag["phase"] == "Accepted":
                     new = VersionInfo.parse(tag["name"])
@@ -511,6 +512,8 @@ class Jobs(object):
                             break
             else:
                 # if no break, that means no new version found, so continue
+                continue
+            if not self.run:
                 continue
             for job in jobs:
                 print("Run job: %s" % job)
