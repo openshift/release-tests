@@ -344,6 +344,8 @@ class Jobs(object):
                 # print(res.text)
                 job_id = json.loads(res.text)["id"]
                 print("Returned job id: %s" % job_id)
+                # wait 1s for the job startup
+                time.sleep(1)
                 self.get_job_results(job_id, jobName, payload, upgrade_from, upgrade_to)
             else:
                 print("Error code: %s, reason: %s" % (res.status_code, res.reason))
