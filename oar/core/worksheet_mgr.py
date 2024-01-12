@@ -4,7 +4,6 @@ import os
 import logging
 import oar.core.util as util
 from oar.core.exceptions import WorksheetException
-from oar.core.exceptions import JiraException
 from oar.core.exceptions import JiraUnauthorizedException
 from oar.core.config_store import ConfigStore
 from oar.core.const import *
@@ -13,7 +12,6 @@ from oar.core.jira_mgr import JiraManager
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import *
 from gspread import Worksheet
-from jira.exceptions import JIRAError
 
 logger = logging.getLogger(__name__)
 
@@ -386,6 +384,8 @@ class TestReport:
                     logger.info(f"bug {bug_key} is dropped")
                 else:
                     logger.info(f"bug status of {bug_key} is not changed")
+            except JiraUnauthorizedException:
+                continue
             except Exception as e:
                 raise WorksheetException(
                     f"update bug {bug_key} status failed") from e
