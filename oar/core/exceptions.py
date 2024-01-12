@@ -9,6 +9,8 @@ class WorksheetException(BaseException):
 class JiraException(BaseException):
     """Exception class to raise error in JiraManager"""
 
+class JiraUnauthorizedException(JiraException):
+    """Exception class to raise error in JiraManager when got 403 unauthorized"""
 
 class AdvisoryException(BaseException):
     """Exception class to raise error in AdvisoryManager"""

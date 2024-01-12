@@ -4,6 +4,8 @@ import os
 import logging
 import oar.core.util as util
 from oar.core.exceptions import WorksheetException
+from oar.core.exceptions import JiraException
+from oar.core.exceptions import JiraUnauthorizedException
 from oar.core.config_store import ConfigStore
 from oar.core.const import *
 from oar.core.advisory_mgr import AdvisoryManager, Advisory
@@ -11,6 +13,7 @@ from oar.core.jira_mgr import JiraManager
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import *
 from gspread import Worksheet
+from jira.exceptions import JIRAError
 
 logger = logging.getLogger(__name__)
 
@@ -318,7 +321,10 @@ class TestReport:
         row_idx = 8
         batch_vals = []
         for key in jira_issues:
-            issue = jm.get_issue(key)
+            try:
+                issue = jm.get_issue(key)
+            except JiraUnauthorizedException: # jira token does not have pemission to access security bugs, ignore it
+                continue
             logger.debug(f"updating jira issue {key} ...")
             if issue.is_on_qa():
                 logger.debug(f"jira issue {key} is ON_QA, updating")
