@@ -17,6 +17,7 @@ import http.client as httpclient
 
 class Jobs(object):
     def __init__(self):
+        self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
         # config the based URL here
         self.jobURL = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=master"
@@ -33,7 +34,7 @@ class Jobs(object):
             headers = {"Authorization": "Bearer " + token.strip()}
             return headers
         else:
-            print("No Prow API token found, exit...")
+            print("No APITOKEN env var found, exit...")
             sys.exit(0)
 
     # it's for ARM test, now unable to find the 'cli' image in the provided ARM release image, but x86
@@ -174,10 +175,8 @@ class Jobs(object):
                     channel = content[:-2]
                     self.run_required_jobs(channel, default_file, content)
             else:
-                print(
-                    "No update! since the recored version %s >= the new version %s"
-                    % (oldVersion, content)
-                )
+                self.run = False
+                print("No update! since the recored version %s >= the new version %s" % (oldVersion, content))
         elif res.status_code == 404:
             print("file %s doesn't exist, create it." % url)
             data = {
@@ -192,6 +191,7 @@ class Jobs(object):
                 channel = content[:-2]
                 self.run_required_jobs(channel, default_file, content)
         else:
+            self.run = False
             print("Push error: %s, %s" % (res.status_code, res.reason))
 
     def save_results(self, content, file):
@@ -281,11 +281,11 @@ class Jobs(object):
             headers = {"Authorization": "Bearer " + token.strip()}
             return headers
         else:
-            print("No GITHUB_TOKEN found, exit...")
+            print("No GITHUB_TOKEN env var found, exit...")
             sys.exit(0)
 
     def get_required_jobs(self, file_path):
-        print("use file: %s" % file_path)
+        print("use JSON file: %s" % file_path)
         if file_path is None:
             return None
         with open(file_path) as f:
@@ -344,6 +344,8 @@ class Jobs(object):
                 # print(res.text)
                 job_id = json.loads(res.text)["id"]
                 print("Returned job id: %s" % job_id)
+                # wait 1s for the job startup
+                time.sleep(1)
                 self.get_job_results(job_id, jobName, payload, upgrade_from, upgrade_to)
             else:
                 print("Error code: %s, reason: %s" % (res.status_code, res.reason))
@@ -475,9 +477,64 @@ class Jobs(object):
         except Exception as e:
             print(e)
 
+    def run_z_stream_test(self):
+        # get required OCP version info and jobs from JSON file
+        """
+        { 
+            "4.10" : [
+                    "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-aws-ipi-ovn-fips-p2-f28",
+                    "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-azure-ipi-fips-p2-f28",
+                    ...
+                    ],
+            "4.11" : [...],
+            ...
+        """
+        # get the payload info
+        res = requests.get(url=self.url, timeout=5)
+        if res.status_code != 200:
+            print("Fail to get payload info, %s:%s" % (res.status_code, res.reason))
+            sys.exit(1)
+        dict = json.loads(res.text)
+        # get the job info from a JSON file
+        job_dict = self.get_required_jobs("_releases/required-jobs.json")
+        for y_version, jobs in job_dict.items():
+            # z_version is like "4.10.0", and y_version is like "4.10"
+            print("getting the latest payload of %s" % y_version)
+            latest_version = ""
+            self.run = True
+            for tag in dict["tags"]:
+                if tag["phase"] == "Accepted":
+                    new = VersionInfo.parse(tag["name"])
+                    old = VersionInfo.parse(y_version+".0")
+                    if new >= old:
+                        if new.minor == old.minor:
+                            print("The latest version of %s is: %s" % (y_version, tag["name"]))
+                            latest_version = tag["name"]
+                            self.push_versions(content=latest_version, file="Auto-OCP-%s.txt" % y_version, run=False)
+                            break
+            else:
+                # if no break, that means no new version found, so continue
+                continue
+            if not self.run:
+                continue
+            for job in jobs:
+                print("Run job: %s" % job)
+                # amd64 as default
+                payload = "quay.io/openshift-release-dev/ocp-release:{}-x86_64".format(latest_version)
+                if "arm64" in job:
+                    payload = "quay.io/openshift-release-dev/ocp-release:{}-aarch64".format(latest_version)
+                # specify the latest stable payload for upgrade test
+                if "upgrade-from-stable" in job:
+                    self.run_job(job, None, None, upgrade_to=payload)
+                # specify the latest stable payload for e2e test
+                elif "upgrade" not in job:
+                    self.run_job(job, payload, None, None)
+                # as default
+                else:
+                    self.run_job(job, None, None, None)
+
 
 job = Jobs()
-
 
 @click.group()
 @click.version_option(package_name="job")
@@ -554,6 +611,12 @@ def run_payloads(versions, push, run):
     """Check the latest stable payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
     job.get_payloads(versions, push, run)
 
+@cli.command("run_z_stream_test")
+def run_cmd():
+    """Run jobs list in the _releases/required-jobs.json file.
+     It only used for periodic-ci-openshift-release-tests-master-stable-build-test prow job.
+    """
+    job.run_z_stream_test()
 
 if __name__ == "__main__":
     start = time.time()
