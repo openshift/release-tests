@@ -1,6 +1,7 @@
 import logging
 from oar.core.config_store import ConfigStore
 from oar.core.exceptions import JiraException
+from oar.core.exceptions import JiraUnauthorizedException
 from oar.core.const import *
 from jira import JIRA
 from jira import Issue
@@ -42,7 +43,11 @@ class JiraManager:
         try:
             issue = self._svc.issue(key)
         except JIRAError as je:
-            raise JiraException("get jira issue failed") from je
+            if je.status_code == 403:
+                logging.exception(f"Cannot get jira issue {key} due to permission issue")
+                raise JiraUnauthorizedException from je
+            else:
+                raise JiraException("get jira issue failed") from je
 
         return JiraIssue(issue)
 
