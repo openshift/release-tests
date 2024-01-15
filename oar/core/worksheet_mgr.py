@@ -384,8 +384,6 @@ class TestReport:
                     logger.info(f"bug {bug_key} is dropped")
                 else:
                     logger.info(f"bug status of {bug_key} is not changed")
-            except JiraUnauthorizedException:
-                continue
             except Exception as e:
                 raise WorksheetException(
                     f"update bug {bug_key} status failed") from e
@@ -398,7 +396,10 @@ class TestReport:
             batch_vals = []
             for key in jira_issues:
                 if key not in existing_bugs:
-                    issue = jm.get_issue(key)
+                    try:
+                        issue = jm.get_issue(key)
+                    except JiraUnauthorizedException:
+                        continue
                     if issue.is_on_qa():
                         logger.info(f"found new ON_QA bug {key}")
                         row_vals = []
