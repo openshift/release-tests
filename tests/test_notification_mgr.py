@@ -3,6 +3,7 @@ import sys
 from oar.core.notification_mgr import NotificationManager
 from oar.core.config_store import ConfigStore
 from oar.core.worksheet_mgr import WorksheetManager
+from oar.core.worksheet_mgr import TestReport
 
 
 class TestNotificationManager(unittest.TestCase):
@@ -33,3 +34,10 @@ class TestNotificationManager(unittest.TestCase):
         dropped_bugs = []
         must_verify_bugs = ["OCPQE-911"]
         self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)
+
+    @unittest.skip("disabled by default, avoid message flood")
+    def test_share_new_report(self):
+        cs = ConfigStore("4.14.9")
+        wm = WorksheetManager(cs)
+        nm = NotificationManager(cs)
+        nm.share_new_report(wm.get_test_report())
