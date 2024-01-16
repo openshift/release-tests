@@ -41,7 +41,7 @@ class Jobs(object):
     # so extract the corresponding amd64 version from the arm64 build, 
     # see bug: https://issues.redhat.com/browse/DPTP-3538, https://issues.redhat.com/browse/OCPQE-17600
     def get_amdBaseImage_for_arm(self, payload):
-        versionPattern = re.compile(":(\d*\.\d{2}\.\d)(-.*)?-")
+        versionPattern = re.compile(r':(\d*\.\d{2}\.\d)(-.*)?-')
         version = versionPattern.findall(payload)
         if len(version) > 0:
             version_string = "".join(version[0])
@@ -395,9 +395,7 @@ class Jobs(object):
                             else:
                                 return job_dict
 
-    def get_job_results(
-        self, jobID, jobName=None, payload=None, upgrade_from=None, upgrade_to=None
-    ):
+    def get_job_results(self, jobID, jobName=None, payload=None, upgrade_from=None, upgrade_to=None):
         if jobID:
             req = requests.get(url=self.prowJobURL.format(jobID.strip()))
             if req.status_code == 200:
@@ -426,9 +424,7 @@ class Jobs(object):
                 else:
                     print("Not found the url link or creationTimestamp...")
             else:
-                raise Exception(
-                    "return status code:%s reason:%s" % (req.status_code, req.reason)
-                )
+                print("return status code:%s reason:%s" % (req.status_code, req.reason))
         else:
             print("No job ID input, exit...")
             sys.exit(0)
