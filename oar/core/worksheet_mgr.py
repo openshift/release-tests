@@ -398,7 +398,7 @@ class TestReport:
                 if key not in existing_bugs:
                     try:
                         issue = jm.get_issue(key)
-                    except JiraUnauthorizedException:
+                    except JiraUnauthorizedException: # ignore the bug that cannot be accessed due to permission issue
                         continue
                     if issue.is_on_qa():
                         logger.info(f"found new ON_QA bug {key}")
