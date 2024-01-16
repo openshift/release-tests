@@ -348,7 +348,7 @@ class MessageHelper:
             )
         )
         linked_text = self._to_link(report.get_url(), "test report")
-        return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}"
+        return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}, *NOTE: this test report is not officially used for z-stream workflow. you still need to track test status via GDoc*"
 
     def get_slack_message_for_ownership_change(
         self, updated_ads, abnormal_ads, updated_subtasks, new_owner
