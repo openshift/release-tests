@@ -74,6 +74,15 @@ Debug mode is off
 Returned job id: 3ebe0a6e-ea5c-4c96-9ca4-295074f9eaa3
 periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14 None 3ebe0a6e-ea5c-4c96-9ca4-295074f9eaa3 2023-06-07T06:15:10Z https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14/1666327924111839232
 ```
+- An example to run a job with specific Envs.
+```console
+MacBook-Pro:job jianzhang$ job run --envs OMR_IMAGE=openshift-mirror-registry-rhel8:v1.3.8-2 periodic-ci-quay-quay-tests-master-omr-ocp415-unreleased-quay-omr-tests-omr-ocp415-disconnected-unreleased 
+Debug mode is off
+{'job_execution_type': '1', 'pod_spec_options': {'envs': {'OMR_IMAGE': 'openshift-mirror-registry-rhel8:v1.3.8-2'}}}
+Returned job id: 02a12b66-9a64-42db-8c28-bf785bbca501
+periodic-ci-quay-quay-tests-master-omr-ocp415-unreleased-quay-omr-tests-omr-ocp415-disconnected-unreleased None 02a12b66-9a64-42db-8c28-bf785bbca501 2023-12-25T08:37:30Z https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-quay-quay-tests-master-omr-ocp415-unreleased-quay-omr-tests-omr-ocp415-disconnected-unreleased/1739203704738811904
+Done.
+```
 
 ### Debug failure job
 - `Error code: 500, reason: Internal Server Error`
