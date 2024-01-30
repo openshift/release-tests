@@ -3,7 +3,6 @@ import logging
 import re
 import requests
 from requests.exceptions import RequestException
-from bs4 import BeautifulSoup
 from oar.core.const import *
 from oar.core.worksheet_mgr import WorksheetManager
 import time
@@ -14,15 +13,15 @@ logger = logging.getLogger(__name__)
 # 1. go to main URL and grab all links that matches the build type
 # 2. construct a complete URL,
 def get_image_digest(url, current_try=0):
-    print(f"Getting digest from {url}")
+    logger.info(f"Getting digest from {url}")
     res = requests.get(url)
     if not res.ok:
         logger.info(f"CODE: {res.status_code} -- {res.reason}")
-        raise SystemExit()
+        res.raise_for_status
     change_log_json = res.json().get("changeLogJson")
     if not change_log_json:
         logger.info("No changeLogJson element is found!")
-        raise SystemExit()
+        raise requests.InvalidJSONError
     digest = change_log_json.get("to").get("digest")
     # if there's no digest found it means the part of the system responsible checks for updated content and if
     # so recycles the underlying pods.  It takes roughly 8 mins for the git-cache to fully recycle.
@@ -80,5 +79,6 @@ def image_signed_check(ctx):
                     LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_PASS
                 )
         except RequestException:
-            logger.error("Visit release/mirror url failed")
+            logger.exception("Visit release/mirror url failed")
             report.update_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_FAIL)
+            raise
