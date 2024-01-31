@@ -3,6 +3,7 @@ import logging
 import re
 import requests
 from requests.exceptions import RequestException
+from requests.exceptions import InvalidJSONError
 from oar.core.const import *
 from oar.core.worksheet_mgr import WorksheetManager
 import time
@@ -21,7 +22,8 @@ def get_image_digest(url, current_try=0):
     change_log_json = res.json().get("changeLogJson")
     if not change_log_json:
         logger.info("No changeLogJson element is found!")
-        raise requests.InvalidJSONError
+        raise InvalidJSONError("No 'changeLogJson' element is found!")
+
     digest = change_log_json.get("to").get("digest")
     # if there's no digest found it means the part of the system responsible checks for updated content and if
     # so recycles the underlying pods.  It takes roughly 8 mins for the git-cache to fully recycle.
