@@ -16,10 +16,11 @@ setup(
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=['semver', 'requests', 'pyyaml', 'click'],
+    install_requires=['semver', 'requests', 'pyyaml', 'click', 'PyGithub'],
     entry_points={
         'console_scripts': [
             'job = job.job:cli',
+            'jobctl = job.controller:cli'
         ],
     },
     classifiers=[
