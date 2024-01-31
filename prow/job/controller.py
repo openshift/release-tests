@@ -45,6 +45,12 @@ class JobController:
     def get_current_build(self):
         data = self.github.get_file_content(self._build_file_for_nightly)
         return Build(data)
+    
+    def update_current_build(self, build):
+        if build.raw_data:
+            self.github.push_file(build.raw_data, self._build_file_for_nightly)
+
+        logger.info(f"current build info is updated on repo")
 
     def trigger_prow_jobs(self):
         pass
@@ -69,6 +75,7 @@ class JobController:
             logger.info(f"current build is same as latest build {latest.name}, no diff found")
         else:
             logger.info(f"found new build {latest.name}, will trigger required test jobs")
+            self.update_current_build(latest)
         
 
 
@@ -80,6 +87,7 @@ class Build(object):
         self._phase = obj["phase"]
         self._pull_spec = obj["pullSpec"]
         self._download_url = obj["downloadURL"]
+        self._raw_data = data
 
     @property
     def name(self):
@@ -96,6 +104,10 @@ class Build(object):
     @property
     def download_url(self):
         return self.download_url
+    
+    @property
+    def raw_data(self):
+        return self.raw_data
     
     def equals(self, build):
         if isinstance(build, Build):
