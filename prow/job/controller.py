@@ -171,6 +171,7 @@ class TestJob():
         # default value is false
         return bool(self._json_data["upgrade"]) if "upgrade" in self._json_data else False
     
+    @property
     def optional(self):
         # default value is false
         return bool(self._json_data["optional"]) if "optional" in self._json_data else False
