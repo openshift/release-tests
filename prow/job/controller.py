@@ -66,7 +66,7 @@ class JobController:
 
     def trigger_prow_jobs(self):
 
-        jobs = self.get_test_jobs(self._nightly)
+        jobs = self.get_test_jobs()
         if len(jobs):
             for job in jobs:
                 if job.disabled:
@@ -90,7 +90,7 @@ class JobController:
         if self._release not in self.VALID_RELEASES:
             raise SystemExit(f"{self._release} is not supported")
         
-    def get_test_jobs(self, nightly=True):
+    def get_test_jobs(self):
 
         test_jobs = []
         if self.release_test_master.file_exists(self._job_file):
