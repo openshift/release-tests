@@ -7,7 +7,6 @@ import os
 import click
 from .job import Jobs
 from github import *
-from operator import *
 from requests.exceptions import RequestException
 from github.GithubException import UnknownObjectException
 
