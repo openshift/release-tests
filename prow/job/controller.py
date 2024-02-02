@@ -69,11 +69,15 @@ class JobController:
         jobs = self.get_test_jobs(self._nightly)
         if len(jobs):
             for job in jobs:
+                if job.disabled:
+                    continue
                 current = self.get_current_build()
                 if job.upgrade:
                     self.jobs.run_job(job_name=job.prow_job, upgrade_to=current.pull_spec)
                 else:
                     self.jobs.run_job(job_name=job.prow_job, payload=current.pull_spec)
+                
+                logger.info(f"Triggered prow job {job.prow_job} with build {current.name}")
 
     def aggregate_test_results(self):
         pass
@@ -86,14 +90,14 @@ class JobController:
         if self._release not in self.VALID_RELEASES:
             raise SystemExit(f"{self._release} is not supported")
         
-    def get_test_jobs(self, nightly=True, required=True):
+    def get_test_jobs(self, nightly=True):
 
         test_jobs = []
         if self.release_test_master.file_exists(self._job_file):
             file_content = self.release_test_master.get_file_content(path=self._job_file)
             if file_content:
                 json_data = json.loads(file_content)
-                jobs = json_data[self._build_type]["required" if required else "optional"]
+                jobs = json_data[self._build_type]
                 for job in jobs:
                     test_jobs.append(TestJob(job))
 
@@ -160,12 +164,16 @@ class TestJob():
     @property
     def disabled(self):
         # default value is false
-        return self._json_data["disabled"] if "disabled" in self._json_data else False
+        return bool(self._json_data["disabled"]) if "disabled" in self._json_data else False
     
     @property
     def upgrade(self):
         # default value is false
-        return self._json_data["upgrade"] if "upgrade" in self._json_data else False
+        return bool(self._json_data["upgrade"]) if "upgrade" in self._json_data else False
+    
+    def optional(self):
+        # default value is false
+        return bool(self._json_data["optional"]) if "optional" in self._json_data else False
     
 
 class GithubUtil:
