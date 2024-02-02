@@ -43,7 +43,7 @@ class JobController:
             logger.info(f"Getting latest {self._build_type} build for {self._release} ...")
             resp = requests.get(url)
             resp.raise_for_status()
-        except RequestException as re: 
+        except RequestException as re:
             logger.error(f"Get latest  {self._build_type} build error {re}")
             raise
 
