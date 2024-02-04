@@ -4,31 +4,38 @@ import requests
 import json
 import logging
 import os
+import re
 import click
 from .job import Jobs
-from github import *
+from github import Auth, Github
 from requests.exceptions import RequestException
 from github.GithubException import UnknownObjectException
 
 logger = logging.getLogger(__name__)
 
+JOB_TYPE_NIGHTLY = "nightly"
+JOB_TYPE_STABLE = "stable"
+REPO_RELEASE_TESTS = "openshift/release-tests"
+BRANCH_RECORD = "record"
+DIR_RELEASE = "_releases"
+SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
+SYS_ENV_VAR_API_TOKEN = "APITOKEN"
+VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
 class JobController:
-
-    VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
 
     def __init__(self, release, nightly=True, trigger_prow_job=True):
         self._release = release[:-2] if len(release.split("."))==3 else release
         self._nightly = nightly
         self._trigger_prow_job = trigger_prow_job
         self._build_type = 'nightly' if self._nightly else 'stable'
-        self._build_file_for_nightly = f"_releases/ocp-latest-{self._release}-nightly.json"
-        self._build_file_for_stable = f"_releases/ocp-latest-{self._release}-stable.json"
+        self._build_file_for_nightly = f"{DIR_RELEASE}/ocp-latest-{self._release}-nightly.json"
+        self._build_file_for_stable = f"{DIR_RELEASE}/ocp-latest-{self._release}-stable.json"
         self._build_file = self._build_file_for_nightly if self._nightly else self._build_file_for_stable
-        self._job_file = f"_releases/ocp-{self._release}-test-jobs.json"
-        self.validate_required_info()
-        self.jobs = Jobs()
-        self.release_test_record = GithubUtil("openshift/release-tests", "record")
-        self.release_test_master = GithubUtil("openshift/release-tests")
+        validate_required_info()
+        self.job_api = Jobs()
+        self.job_registry = TestJobRegistry()
+        self.release_test_record = GithubUtil(REPO_RELEASE_TESTS, BRANCH_RECORD)
+        self.release_test_master = GithubUtil(REPO_RELEASE_TESTS)
         
     def get_latest_build(self):
 
@@ -65,44 +72,37 @@ class JobController:
 
         logger.info(f"current build info is updated on repo")
 
-    def trigger_prow_jobs(self):
+    def trigger_prow_jobs(self, build):
 
-        jobs = self.get_test_jobs()
-        if len(jobs):
-            for job in jobs:
-                if job.disabled:
+        test_jobs = self.job_registry.get_test_jobs(self._release, self._nightly)
+        test_result = []
+        if len(test_jobs):
+            for test_job in test_jobs:
+                if test_job.disabled:
+                    logger.info(f"Won't trigger prow job {test_job}, it is disabled")
                     continue
-                current = self.get_current_build()
-                if job.upgrade:
-                    self.jobs.run_job(job_name=job.prow_job, upgrade_to=current.pull_spec)
+      
+                logger.info(f"Start to trigger prow job {test_job.prow_job} ...\n")        
+                if test_job.upgrade:
+                    prow_job_id = self.job_api.run_job(job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=None, payload=None)
                 else:
-                    self.jobs.run_job(job_name=job.prow_job, payload=current.pull_spec)
+                    prow_job_id = self.job_api.run_job(job_name=test_job.prow_job, payload=build.pull_spec, upgrade_from=None, upgrade_to=None)
+                logger.info(f"Triggered prow job {test_job.prow_job} with build {build.name}, job id={prow_job_id}\n")
                 
-                logger.info(f"Triggered prow job {job.prow_job} with build {current.name}")
+                job_item = {}
+                if prow_job_id:
+                    job_item["jobName"] = test_job.prow_job
+                    job_item["jobID"] = prow_job_id
+                    test_result.append(job_item)
+                else:
+                    logger.error(f"Trigger prow job {test_job.prow_job} with build {build.name} failed, no prow job id returned")
 
-    def aggregate_test_results(self):
-        pass
-
-    def validate_required_info(self):
-        if os.environ.get("APITOKEN") is None:
-            raise SystemExit("Cannot find environment variable APITOKEN")
-        if os.environ.get("GITHUB_TOKEN") is None:
-            raise SystemExit("Cannot find environment variable GITHUB_TOKEN")
-        if self._release not in self.VALID_RELEASES:
-            raise SystemExit(f"{self._release} is not supported")
-        
-    def get_test_jobs(self):
-
-        test_jobs = []
-        if self.release_test_master.file_exists(self._job_file):
-            file_content = self.release_test_master.get_file_content(path=self._job_file)
-            if file_content:
-                json_data = json.loads(file_content)
-                jobs = json_data[self._build_type]
-                for job in jobs:
-                    test_jobs.append(TestJob(job))
-
-        return test_jobs
+            if len(test_result):
+                data = json.dumps({build.name: test_result}, indent=2)
+                logger.debug(f"Test result file content {data}")
+                file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}.json"
+                self.release_test_record.push_file(data=data, path=file_path)
+                logger.info(f"Test result of {build.name} is saved to {file_path}")
         
     def start(self):
         # get latest build info
@@ -115,7 +115,7 @@ class JobController:
             logger.info(f"Found new build {latest.name}")
             self.update_current_build(latest)
             if self._trigger_prow_job:
-                self.trigger_prow_jobs()
+                self.trigger_prow_jobs(latest)
             else:
                 logger.warning("Won't trigger prow jobs since control flag [--trigger-prow-job] is false")
 
@@ -155,8 +155,7 @@ class Build():
 class TestJob():
 
     def __init__(self, data):
-        self._raw_data = data
-        self._json_data = json.loads(data)
+        self._json_data = data if isinstance(data, dict) else json.loads(data)
 
     @property
     def prow_job(self):
@@ -204,6 +203,9 @@ class GithubUtil:
                                    content=data,
                                    branch=self._branch)
             logger.info("File is created successfully")
+
+    def get_files(self, path):
+        return self._repo.get_contents(path=path, ref=self._branch)
             
     def get_file_content(self, path):
         content = self._repo.get_contents(path=path, ref=self._branch)
@@ -232,6 +234,122 @@ class GithubUtil:
         else:
             logger.info(f"File {path} not found")
 
+class TestJobRegistry():
+
+    def __init__(self):
+        self.release_tests_master = GithubUtil(REPO_RELEASE_TESTS)
+        self._registry = {}
+        self.init()
+
+    def init(self):
+        logger.info("Initializing test job registry ...")
+        
+        contents = self.release_tests_master.get_files(DIR_RELEASE)
+        for content in contents:
+                matched_path = re.search(r'ocp-\d\.\d+-test-jobs.json', content.path)
+                if matched_path:
+                    release = re.search(r'\d\.\d+', matched_path.group()).group()
+                    file_content = self.release_tests_master.get_file_content(content.path)
+                    self._registry[release] = json.loads(file_content)
+                    logger.info(f"Test job definitions for {release} is initialized")
+        
+        logger.info("Test job registry is initialized")
+                    
+                    
+    def get_test_jobs(self, release, nightly):
+
+        test_jobs = []
+        build_type = JOB_TYPE_NIGHTLY if nightly else JOB_TYPE_STABLE
+        json_data = self._registry[release]
+        if json_data:
+            jobs = json_data[build_type]
+            for job in jobs:
+                test_jobs.append(TestJob(job))
+
+        return test_jobs
+    
+    def get_test_job(self, release, nightly, job_name):
+        jobs = self.get_test_jobs(release, nightly)
+        filtered_jobs = [j for j in jobs if j.prow_job == job_name]
+        if len(filtered_jobs):
+            return filtered_jobs[0]
+        else:
+            logger.info(f"Cannot find test job {job_name} in {release} definition")
+
+class TestResultAggregator():
+    
+    def __init__(self):
+        validate_required_info()
+        self.job_registry = TestJobRegistry()
+        self.release_test_record = GithubUtil(REPO_RELEASE_TESTS, BRANCH_RECORD)
+        self.job_api = Jobs()
+
+    def start(self):
+        logger.info("Start to scan test result files ...")
+        contents = self.release_test_record.get_files(DIR_RELEASE)
+        for content in contents:
+            matched_path = re.search(r"ocp-test-result-.*.json", content.path)
+            if matched_path:
+                logger.info(f"Found test result file {matched_path.group()}")
+                release = re.search(r"\d\.\d+", matched_path.group()).group()
+                nightly = "nightly" in matched_path.group()
+                file_content = self.release_test_record.get_file_content(content.path)
+                json_data = json.loads(file_content)
+                build = list(json_data.keys())[0]
+                logger.info(f"Start to check test result for {build} ...")
+                jobs = json_data[build]
+                completed_job_count = 0
+                required_job_count = 0
+                success_job_count = 0
+                failed_job_count = 0
+                pending_job_count = 0
+                for job in jobs:
+                    job_name = job["jobName"]
+                    job_id = job["jobID"]
+                    job_result = self.job_api.get_job_results(job_id)
+                    job_state = job_result["jobState"]
+                    job["jobState"] = job_state
+                    job["jobStartTime"] = job_result["jobStartTime"]
+                    job["jobURL"] = job_result["jobURL"]
+                    is_job_completed = "jobCompletionTime" in job_result
+                    is_job_success = job_state == "success"
+                    is_job_failed = job_state == "failure"
+                    if is_job_success:
+                        success_job_count += 1
+                    if is_job_failed:
+                        failed_job_count += 1
+                    if is_job_completed:
+                        job["jobCompletionTime"] = job_result["jobCompletionTime"]
+                        completed_job_count += 1
+                    else:
+                        pending_job_count += 1
+                    job_meta = self.job_registry.get_test_job(release, nightly, job_name)
+                    if not job_meta.optional:
+                       required_job_count += 1
+                    
+                self.release_test_record.push_file(data=json.dumps(json_data, indent=2), path=content.path)
+                logger.info(f"Latest test result of {build} is updated to file {content.path}")
+
+                # check if all the required jobs are success, if yes, update releasepayload with label release.openshift.io/qe_state=Accepted
+                qe_accepted = (required_job_count == success_job_count)
+                logger.info(f"Test result summary of {build}: all:{len(jobs)}, required:{required_job_count}, completed:{completed_job_count}, success:{success_job_count}, failed:{failed_job_count}, pending:{pending_job_count}, qe_accepted:{str(qe_accepted).lower()}")
+                
+                if qe_accepted:
+                    self.update_releasepayload()
+                else:
+                    logger.info(f"Not all the required jobs of build {build} are completed and success")
+                    
+    def update_releasepayload(self):
+        pass
+
+def validate_required_info(release=None):
+    if os.environ.get(SYS_ENV_VAR_API_TOKEN) is None:
+        raise SystemExit(f"Cannot find environment variable {SYS_ENV_VAR_API_TOKEN}")
+    if os.environ.get(SYS_ENV_VAR_GITHUB_TOKEN) is None:
+        raise SystemExit(f"Cannot find environment variable {SYS_ENV_VAR_GITHUB_TOKEN}")
+    if release and release not in VALID_RELEASES:
+        raise SystemExit(f"{release} is not supported")
+
 @click.group()
 @click.option("--debug/--no-debug", help="enable debug logging")
 def cli(debug):
@@ -248,7 +366,12 @@ def cli(debug):
 def start_controller(release, nightly, trigger_prow_job):
     JobController(release, nightly, trigger_prow_job).start()
 
+@click.command
+def start_aggregator():
+    TestResultAggregator().start()
+
 cli.add_command(start_controller)
+cli.add_command(start_aggregator)
 
 
     

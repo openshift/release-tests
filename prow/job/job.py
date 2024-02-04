@@ -12,6 +12,7 @@ import re
 import csv
 import click
 import logging
+import yaml
 import http.client as httpclient
 
 
@@ -239,15 +240,7 @@ class Jobs:
         # save it to the crrent CSV file
         with open("/tmp/prow-jobs.csv", "a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
-            line = [
-                job_dict["jobName"],
-                job_dict["payload"],
-                job_dict["upgrade_from"],
-                job_dict["upgrade_to"],
-                job_dict["time"],
-                job_dict["jobID"],
-                job_dict["jobURL"],
-            ]
+            line = list(job_dict.values())
             writer.writerow(line)
 
     # get_github_headers func adds Github Token in case rate limit
@@ -326,6 +319,8 @@ class Jobs:
         else:
             print(f"Warning! Couldn't find job: {job_name}")
 
+        return job_id
+
     def search_job(self, job_name, ocp_version):
         """Function search the prow job from https://github.com/openshift/release/tree/master/ci-operator/jobs/openshift/openshift-tests-private"""
         print("Searching job...")
@@ -365,37 +360,40 @@ class Jobs:
     def get_job_results(self, job_id, job_name=None, payload=None, upgrade_from=None, upgrade_to=None):
         """Function get job results"""
         if job_id:
-            req = requests.get(url=self.prow_job_url.format(job_id.strip()))
-            if req.status_code == 200:
-                # the returned content is not the standard JSON format so use RE instead
-                # jsonData = json.loads(req.text)
-                # jsonData = req.json()
-                url_pattern = re.compile(".*url: (.*)\n$", re.S)
-                time_pattern = re.compile('.*creationTimestamp: "(.*?)"', re.S)
-                url_list = url_pattern.findall(req.text)
-                time_list = time_pattern.findall(req.text)
-                if len(url_list) == 1 and len(time_list) == 1:
-                    job_url = url_list[0]
-                    create_time = time_list[0]
-                    print(job_name, payload, job_id, create_time, job_url)
+            resp = requests.get(url=self.prow_job_url.format(job_id.strip()))
+            if resp.status_code == 200 and resp.text:
+                job_result = yaml.safe_load(resp.text)
+                if job_result:
+                    status = job_result["status"]
+                    spec = job_result["spec"]
+                    job_name = spec["job"]
+                    job_url = status["url"]
+                    job_state = status["state"]
+                    job_start_time = status["startTime"]
+                    print(job_name, payload, job_id, job_start_time, job_url, job_state)
                     job_dict = {
                         "jobName": job_name,
                         "payload": payload,
                         "upgrade_from": upgrade_from,
                         "upgrade_to": upgrade_to,
-                        "time": create_time,
+                        "jobStartTime": job_start_time,
                         "jobID": job_id,
                         "jobURL": job_url,
+                        "jobState": job_state,
                     }
+                    if "completionTime" in status:
+                        job_dict["jobCompletionTime"] = status["completionTime"]
                     self.save_job_data(job_dict)
-                    print("Done.")
+                    print("Done.\n")
+                    return job_dict
                 else:
                     print("Not found the url link or creationTimestamp...")
             else:
-                print(f"return status code:{req.status_code} reason:{req.reason}")
+                print(f"return status code:{resp.status_code} reason:{resp.reason}")
         else:
             print("No job ID input, exit...")
             sys.exit(0)
+
 
     def list_jobs(self, component, branch):
         """Function list prow jobs"""
