@@ -336,8 +336,6 @@ class TestResultAggregator():
                 
                 if qe_accepted:
                     self.update_releasepayload()
-                else:
-                    logger.info(f"Not all the required jobs of build {build} are completed and success")
                     
     def update_releasepayload(self):
         pass
