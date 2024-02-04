@@ -31,7 +31,7 @@ class JobController:
         self._build_file_for_nightly = f"{DIR_RELEASE}/ocp-latest-{self._release}-nightly.json"
         self._build_file_for_stable = f"{DIR_RELEASE}/ocp-latest-{self._release}-stable.json"
         self._build_file = self._build_file_for_nightly if self._nightly else self._build_file_for_stable
-        validate_required_info()
+        validate_required_info(release)
         self.job_api = Jobs()
         self.job_registry = TestJobRegistry()
         self.release_test_record = GithubUtil(REPO_RELEASE_TESTS, BRANCH_RECORD)
