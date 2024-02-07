@@ -46,7 +46,7 @@ class JobController:
             else:
                 url = f"{RELEASE_STREAM_BASE_URL}/4-stable/latest?prefix={self._release}"
                 if requests.get(url).status_code == 404: # if latest stable build is valid and not found, i.e. 4.16, we check releasestream 4-dev-preview instead
-                    url = "{RELEASE_STREAM_BASE_URL}/4-dev-preview/latest"
+                    url = f"{RELEASE_STREAM_BASE_URL}/4-dev-preview/latest"
 
             logger.info(f"Getting latest {self._build_type} build for {self._release} ...")
             resp = requests.get(url)
