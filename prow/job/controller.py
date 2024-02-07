@@ -13,6 +13,7 @@ from github.GithubException import UnknownObjectException
 
 logger = logging.getLogger(__name__)
 
+# declare constants
 JOB_TYPE_NIGHTLY = "nightly"
 JOB_TYPE_STABLE = "stable"
 REPO_RELEASE_TESTS = "openshift/release-tests"
@@ -22,6 +23,7 @@ SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
 RELEASE_STREAM_BASE_URL = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream"
+
 class JobController:
 
     def __init__(self, release, nightly=True, trigger_prow_job=True):
