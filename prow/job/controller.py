@@ -21,6 +21,7 @@ DIR_RELEASE = "_releases"
 SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
+RELEASE_STREAM_BASE_URL = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream"
 class JobController:
 
     def __init__(self, release, nightly=True, trigger_prow_job=True):
@@ -41,11 +42,11 @@ class JobController:
 
         try:
             if self._nightly:
-                url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/{self._release}.0-0.nightly/latest"
+                url = f"{RELEASE_STREAM_BASE_URL}/{self._release}.0-0.nightly/latest"
             else:
-                url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/latest?prefix={self._release}"
+                url = f"{RELEASE_STREAM_BASE_URL}/4-stable/latest?prefix={self._release}"
                 if requests.get(url).status_code == 404: # if latest stable build is valid and not found, i.e. 4.16, we check releasestream 4-dev-preview instead
-                    url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-dev-preview/latest"
+                    url = "{RELEASE_STREAM_BASE_URL}/4-dev-preview/latest"
 
             logger.info(f"Getting latest {self._build_type} build for {self._release} ...")
             resp = requests.get(url)
