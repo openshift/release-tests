@@ -6,10 +6,13 @@ import logging
 import os
 import re
 import click
+import subprocess
+import shlex
 from .job import Jobs
 from github import Auth, Github
-from requests.exceptions import RequestException
 from github.GithubException import UnknownObjectException
+from requests.exceptions import RequestException
+from subprocess import CalledProcessError
 
 logger = logging.getLogger(__name__)
 
@@ -370,10 +373,16 @@ class TestResultAggregator():
                     f"Test result summary of {build}: all:{len(jobs)}, required:{required_job_count}, completed:{completed_job_count}, success:{success_job_count}, failed:{failed_job_count}, pending:{pending_job_count}, qe_accepted:{str(qe_accepted).lower()}")
 
                 if qe_accepted:
-                    self.update_releasepayload()
+                    self.update_releasepayload(build)
 
-    def update_releasepayload(self):
-        pass
+    def update_releasepayload(self, build):
+
+        cmd = f"oc label releasepayload/{build} release.openshift.io/qe_state=Accepted"
+        try:
+            subprocess.run(shlex.split(cmd), check=True)
+        except CalledProcessError as e:
+            logger.error(
+                f"add QE accepted label for releasepayload failed:\n Cmd: {e.cmd}, Return code: {e.returncode}")
 
 
 def validate_required_info(release=None):
