@@ -331,6 +331,10 @@ class TestResultAggregator():
                 json_data = json.loads(file_content)
                 build = list(json_data.keys())[0]
                 logger.info(f"Start to check test result for {build} ...")
+                if json_data["aggregated"]:
+                    logger.info(
+                        f"test result of build {build} is already aggregated, skip")
+                    continue
                 jobs = json_data[build]
                 completed_job_count = 0
                 required_job_count = 0
@@ -341,6 +345,9 @@ class TestResultAggregator():
                     job_name = job["jobName"]
                     job_id = job["jobID"]
                     job_result = self.job_api.get_job_results(job_id)
+                    # if there is no job result found, i.e. prow job is expired, we use updated job info instead.
+                    if not job_result:
+                        job_result = job
                     job_state = job_result["jobState"]
                     job["jobState"] = job_state
                     job["jobStartTime"] = job_result["jobStartTime"]
@@ -362,6 +369,9 @@ class TestResultAggregator():
                     if not job_meta.optional:
                         required_job_count += 1
 
+                # if all the jobs are completed, we add a attribute to indicate this test result is aggregated
+                if len(jobs) == completed_job_count:
+                    json_data["aggregated"] = True
                 self.release_test_record.push_file(
                     data=json.dumps(json_data, indent=2), path=content.path)
                 logger.info(
