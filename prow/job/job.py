@@ -18,6 +18,7 @@ import http.client as httpclient
 
 class Jobs:
     """Class Jobs handle Prow job by calling the API"""
+
     def __init__(self):
         self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
@@ -39,7 +40,7 @@ class Jobs:
             sys.exit(0)
 
     # it's for ARM test, now unable to find the 'cli' image in the provided ARM release image, but x86
-    # so extract the corresponding amd64 version from the arm64 build, 
+    # so extract the corresponding amd64 version from the arm64 build,
     # see bug: https://issues.redhat.com/browse/DPTP-3538, https://issues.redhat.com/browse/OCPQE-17600
     def get_amd_image_for_arm(self, payload):
         """Function get amd64 image as the ARM platform base image"""
@@ -48,9 +49,11 @@ class Jobs:
         if len(version) > 0:
             version_string = "".join(version[0])
             self.base_image = f"quay.io/openshift-release-dev/ocp-release:{version_string}-x86_64"
-            print(f"Infer the amd64 image: {self.base_image} from arm payload: {payload}")
+            print(
+                f"Infer the amd64 image: {self.base_image} from arm payload: {payload}")
         else:
-            print(f"Warning! Fail to get the corresponding amd64 base image, use the default one: {self.base_image}")
+            print(
+                f"Warning! Fail to get the corresponding amd64 base image, use the default one: {self.base_image}")
 
     def get_job_data(self, payload, upgrade_from, upgrade_to):
         """Function get prow job payload data"""
@@ -86,9 +89,11 @@ class Jobs:
             # x86 as default
             env = {"envs": {amd_latest: upgrade_from, amd_target: upgrade_to}}
             if "multi" in upgrade_from and "multi" in upgrade_to:
-                env = {"envs": {multi_latest: upgrade_from, multi_target: upgrade_to}}
+                env = {"envs": {multi_latest: upgrade_from,
+                                multi_target: upgrade_to}}
             if "ppc64le" in upgrade_from and "ppc64le" in upgrade_to:
-                env = {"envs": {ppc64le_latest: upgrade_from, ppc64le_target: upgrade_to}}
+                env = {"envs": {ppc64le_latest: upgrade_from,
+                                ppc64le_target: upgrade_to}}
             # check if it's for ARM, and amd_latest env is must no mater what platforms you run
             # if "arm64" in upgrade_from or "aarch64" in upgrade_from:
             #     self.get_amdBaseImage_for_arm(upgrade_from)
@@ -124,7 +129,8 @@ class Jobs:
                 env = {"envs": {ppc64le_latest: upgrade_from}}
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
                 self.get_amd_image_for_arm(upgrade_from)
-                env = {"envs": {amd_latest: self.base_image, arm_latest: upgrade_from}}
+                env = {"envs": {amd_latest: self.base_image,
+                                arm_latest: upgrade_from}}
         if env is not None:
             data = {"job_execution_type": "1", "pod_spec_options": env}
         print(data)
@@ -143,7 +149,8 @@ class Jobs:
 
     def push_action(self, url, data):
         """Function push data to the Github repo"""
-        res = requests.put(url=url, json=data, headers=self.get_github_headers())
+        res = requests.put(url=url, json=data,
+                           headers=self.get_github_headers())
         if res.status_code == 200:
             print(res.reason)
         else:
@@ -180,7 +187,8 @@ class Jobs:
                     self.run_required_jobs(channel, default_file, content)
             else:
                 self.run = False
-                print(f"No update! since the recored version {old_version} >= the new version {content}")
+                print(
+                    f"No update! since the recored version {old_version} >= the new version {content}")
         elif res.status_code == 404:
             print(f"file {url} doesn't exist, create it.")
             data = {
@@ -203,7 +211,8 @@ class Jobs:
         # it will use the default master branch
         res = requests.get(url=url, headers=self.get_github_headers())
         if res.status_code != 200:
-            print(f"Fail to get recored version! {res.status_code}:{res.reason}")
+            print(
+                f"Fail to get recored version! {res.status_code}:{res.reason}")
             return None
         return (base64.b64decode(json.loads(res.text)["content"]).decode("utf-8").replace("\n", ""))
 
@@ -230,7 +239,8 @@ class Jobs:
                     print(f'The latest version of {channel} is: {tag["name"]}')
                     file = f"Auto-OCP-{version[:-2]}.txt"
                     if push:
-                        self.push_versions(content=tag["name"], file=file, run=run)
+                        self.push_versions(
+                            content=tag["name"], file=file, run=run)
                     break
                 # else:
                 #     print("Not in the same Y release: %s" % new)
@@ -281,7 +291,8 @@ class Jobs:
                             payload = f"quay.io/openshift-release-dev/ocp-release:{version}-aarch64"
                         # specify the latest stable payload for upgrade test
                         if "upgrade-from-stable" in prow_job:
-                            self.run_job(prow_job, None, None, upgrade_to=payload)
+                            self.run_job(prow_job, None, None,
+                                         upgrade_to=payload)
                         # specify the latest stable payload for e2e test
                         elif "upgrade" not in prow_job:
                             self.run_job(prow_job, payload, None, None)
@@ -313,7 +324,8 @@ class Jobs:
                 print(f"Returned job id: {job_id}")
                 # wait 1s for the job startup
                 time.sleep(1)
-                self.get_job_results(job_id, job_name, payload, upgrade_from, upgrade_to)
+                self.get_job_results(
+                    job_id, job_name, payload, upgrade_from, upgrade_to)
             else:
                 print(f"Error code: {res.status_code}, reason: {res.reason}")
         else:
@@ -338,18 +350,22 @@ class Jobs:
                 continue
             print(">>>> " + file_name)
             url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=master"
-            res = requests.get(url=url, headers=self.get_github_headers(), timeout=3)
+            res = requests.get(
+                url=url, headers=self.get_github_headers(), timeout=3)
             if res.status_code != 200:
-                continue 
-            response = requests.get(url=res.json()["git_url"], headers=self.get_github_headers(), timeout=3)
+                continue
+            response = requests.get(
+                url=res.json()["git_url"], headers=self.get_github_headers(), timeout=3)
             if response.status_code != 200:
                 continue
             # We have to get the git blobs when the size is very large, such as
             # git_url = 'https://api.github.com/repos/openshift/release/git/blobs/7546acab2fdc5fcde2df8d549df1d2886fcb4efc'
-            content = base64.b64decode(response.json()["content"].replace("\n", "")).decode("utf-8")
+            content = base64.b64decode(
+                response.json()["content"].replace("\n", "")).decode("utf-8")
             job_dict = yaml.load(content, Loader=yaml.FullLoader)
             if job_dict is None:
-                print(f"Warning! Couldn't get retunred JSON content when scanning: {file_name}!")
+                print(
+                    f"Warning! Couldn't get retunred JSON content when scanning: {file_name}!")
                 continue
             if job_name is not None:
                 for periodics_job in job_dict["periodics"]:
@@ -370,7 +386,8 @@ class Jobs:
                     job_url = status["url"]
                     job_state = status["state"]
                     job_start_time = status["startTime"]
-                    print(job_name, payload, job_id, job_start_time, job_url, job_state)
+                    print(job_name, payload, job_id,
+                          job_start_time, job_url, job_state)
                     job_dict = {
                         "jobName": job_name,
                         "payload": payload,
@@ -389,11 +406,13 @@ class Jobs:
                 else:
                     print("Not found the url link or creationTimestamp...")
             else:
-                print(f"return status code:{resp.status_code} reason:{resp.reason}")
+                print(
+                    f"return status code:{resp.status_code} reason:{resp.reason}")
         else:
             print("No job ID input, exit...")
             sys.exit(0)
 
+        return None
 
     def list_jobs(self, component, branch):
         """Function list prow jobs"""
@@ -412,15 +431,18 @@ class Jobs:
                     print(url)
                     self.get_jobs(url)
                     file_count += 1
-            print(f"Total file number under {component} folder is: {str(file_count)}")
+            print(
+                f"Total file number under {component} folder is: {str(file_count)}")
         else:
             print(req.reason)
 
     def get_jobs(self, url):
         """Function get prow jobs"""
-        res = requests.get(url=url, headers=self.get_github_headers(), timeout=3)
+        res = requests.get(
+            url=url, headers=self.get_github_headers(), timeout=3)
         if res.status_code == 200:
-            content = base64.b64decode(res.json()["content"].replace("\n", "")).decode("utf-8")
+            content = base64.b64decode(
+                res.json()["content"].replace("\n", "")).decode("utf-8")
             job_dict = yaml.load(content, Loader=yaml.FullLoader)
             api_count = 0
             for test_job in job_dict["tests"]:
@@ -462,9 +484,11 @@ class Jobs:
                     old = VersionInfo.parse(y_version+".0")
                     if new >= old:
                         if new.minor == old.minor:
-                            print(f'The latest version of {y_version} is: {tag["name"]}')
+                            print(
+                                f'The latest version of {y_version} is: {tag["name"]}')
                             latest_version = tag["name"]
-                            self.push_versions(content=latest_version, file=f"Auto-OCP-{y_version}.txt", run=False)
+                            self.push_versions(
+                                content=latest_version, file=f"Auto-OCP-{y_version}.txt", run=False)
                             break
             else:
                 # if no break, that means no new version found, so continue
@@ -489,6 +513,7 @@ class Jobs:
 
 
 JOB = Jobs()
+
 
 @click.group()
 @click.version_option(package_name="job")
@@ -570,6 +595,7 @@ def run_required(channel, file, version):
 def run_payloads(versions, push, run):
     """Check the latest stable payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
     JOB.get_payloads(versions, push, run)
+
 
 @cli.command("run_z_stream_test")
 def run_z_stream():
