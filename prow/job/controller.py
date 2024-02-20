@@ -331,7 +331,7 @@ class TestResultAggregator():
                 json_data = json.loads(file_content)
                 build = list(json_data.keys())[0]
                 logger.info(f"Start to check test result for {build} ...")
-                if json_data["aggregated"]:
+                if "aggregated" in json_data and json_data["aggregated"] == True:
                     logger.info(
                         f"test result of build {build} is already aggregated, skip")
                     continue
