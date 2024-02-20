@@ -369,14 +369,6 @@ class TestResultAggregator():
                     if not job_meta.optional:
                         required_job_count += 1
 
-                # if all the jobs are completed, we add a attribute to indicate this test result is aggregated
-                if len(jobs) == completed_job_count:
-                    json_data["aggregated"] = True
-                self.release_test_record.push_file(
-                    data=json.dumps(json_data, indent=2), path=content.path)
-                logger.info(
-                    f"Latest test result of {build} is updated to file {content.path}")
-
                 # check if all the required jobs are success, if yes, update releasepayload with label release.openshift.io/qe_state=Accepted
                 qe_accepted = (required_job_count == success_job_count)
                 logger.info(
@@ -384,6 +376,14 @@ class TestResultAggregator():
 
                 if qe_accepted:
                     self.update_releasepayload(build)
+
+                # if all the jobs are completed, we add a attribute to indicate this test result is aggregated
+                if len(jobs) == completed_job_count:
+                    json_data["aggregated"] = True
+                self.release_test_record.push_file(
+                    data=json.dumps(json_data, indent=2), path=content.path)
+                logger.info(
+                    f"Latest test result of {build} is updated to file {content.path}")
 
     def update_releasepayload(self, build):
 
