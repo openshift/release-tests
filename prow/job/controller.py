@@ -325,12 +325,21 @@ class TestResultAggregator():
             if matched_path:
                 logger.info(f"Found test result file {matched_path.group()}")
                 release = re.search(r"\d\.\d+", matched_path.group()).group()
+                # check if the build is nightly
                 nightly = "nightly" in matched_path.group()
+                # get build number from file name
+                build = matched_path.group()[16:-5]
+                # if the nightly build is recycled/cannot be found on releasestream, will skip aggregation and delete test result file
+                if nightly and self.build_does_not_exists(build):
+                    logger.info(f"build {build} is recycled, skip aggregation")
+                    self.release_test_record.delete_file(content.path)
+                    continue
+                # load file content and start to aggregate
                 file_content = self.release_test_record.get_file_content(
                     content.path)
                 json_data = json.loads(file_content)
-                build = list(json_data.keys())[0]
                 logger.info(f"Start to check test result for {build} ...")
+                # if attribute `aggregate` found, i.e. the result is already analyzed, skip aggregation for this build
                 if "aggregated" in json_data and json_data["aggregated"] == True:
                     logger.info(
                         f"test result of build {build} is already aggregated, skip")
@@ -377,13 +386,15 @@ class TestResultAggregator():
                 if qe_accepted:
                     self.update_releasepayload(build)
 
-                # if all the jobs are completed, we add a attribute to indicate this test result is aggregated
+                # if all the jobs are completed, we add a attribute `aggregated` to indicate this test result is aggregated
                 if len(jobs) == completed_job_count:
                     json_data["aggregated"] = True
                 self.release_test_record.push_file(
                     data=json.dumps(json_data, indent=2), path=content.path)
                 logger.info(
                     f"Latest test result of {build} is updated to file {content.path}")
+
+        logger.info("Aggregation is completed")
 
     def update_releasepayload(self, build):
 
@@ -393,6 +404,17 @@ class TestResultAggregator():
         except CalledProcessError as e:
             logger.error(
                 f"add QE accepted label for releasepayload failed:\n Cmd: {e.cmd}, Return code: {e.returncode}")
+
+    def build_does_not_exists(self, nightly_build):
+        # check if nightly build exists or not, if it does not exist, skip test result aggregation for it
+        if nightly_build and "nightly" not in nightly_build:
+            # if input is not nightly build, i.e. it is stable build, it should be there
+            return True
+        # get releasestream from build string
+        releasestream = nightly_build.split('nightly')[0] + "nightly"
+        url = f"{RELEASE_STREAM_BASE_URL}/{releasestream}/release/{nightly_build}"
+
+        return requests.get(url).status_code == 404
 
 
 def validate_required_info(release=None):
