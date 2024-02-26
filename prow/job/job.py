@@ -302,6 +302,9 @@ class Jobs:
 
     def run_job(self, job_name, payload, upgrade_from, upgrade_to):
         """Function run Prow job by calling the API"""
+
+        job_id = None
+
         if job_name is None:
             print("Error! Please input the correct prow job name!")
         elif job_name.startswith("periodic-ci-"):

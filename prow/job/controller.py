@@ -290,6 +290,9 @@ class TestJobRegistry():
 
         test_jobs = []
         build_type = JOB_TYPE_NIGHTLY if nightly else JOB_TYPE_STABLE
+        if release not in self._registry:
+            logger.warning(f"no test job definition of {release} found")
+            return test_jobs
         json_data = self._registry[release]
         if json_data:
             jobs = json_data[build_type]
@@ -299,13 +302,18 @@ class TestJobRegistry():
         return test_jobs
 
     def get_test_job(self, release, nightly, job_name):
+
+        test_job = None
         jobs = self.get_test_jobs(release, nightly)
-        filtered_jobs = [j for j in jobs if j.prow_job == job_name]
-        if len(filtered_jobs):
-            return filtered_jobs[0]
-        else:
-            logger.info(
-                f"Cannot find test job {job_name} in {release} definition")
+        if len(jobs):
+            filtered_jobs = [j for j in jobs if j.prow_job == job_name]
+            if len(filtered_jobs):
+                test_job = filtered_jobs[0]
+            else:
+                logger.info(
+                    f"Cannot find test job {job_name} in {release} definition")
+
+        return test_job
 
 
 class TestResultAggregator():
@@ -348,6 +356,7 @@ class TestResultAggregator():
                 completed_job_count = 0
                 required_job_count = 0
                 success_job_count = 0
+                success_required_job_count = 0
                 failed_job_count = 0
                 pending_job_count = 0
                 for job in jobs:
@@ -377,11 +386,14 @@ class TestResultAggregator():
                         release, nightly, job_name)
                     if not job_meta.optional:
                         required_job_count += 1
+                        if is_job_success:
+                            success_required_job_count += 1
 
                 # check if all the required jobs are success, if yes, update releasepayload with label release.openshift.io/qe_state=Accepted
-                qe_accepted = (required_job_count == success_job_count)
+                qe_accepted = (required_job_count ==
+                               success_required_job_count)
                 logger.info(
-                    f"Test result summary of {build}: all:{len(jobs)}, required:{required_job_count}, completed:{completed_job_count}, success:{success_job_count}, failed:{failed_job_count}, pending:{pending_job_count}, qe_accepted:{str(qe_accepted).lower()}")
+                    f"Test result summary of {build}: all:{len(jobs)}, required:{required_job_count}, completed:{completed_job_count}, success:{success_job_count}, success required:{success_required_job_count}, failed:{failed_job_count}, pending:{pending_job_count}, qe_accepted:{str(qe_accepted).lower()}")
 
                 if qe_accepted:
                     self.update_releasepayload(build)
