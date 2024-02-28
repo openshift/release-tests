@@ -76,14 +76,11 @@ class ReleaseStreamURLResolver():
         return url
 
     @staticmethod
-    def get_url_for_build(build):
-
-        if not build:
-            logger.error("build is empty")
-            return None
-
+    def get_url_for_build(build, arch):
+        # the arch can be found in build string of nightly
+        # but it does not work for stable build, so param arch is needed here.
         url_resolver = ReleaseStreamURLResolver(
-            build[:4], "nightly" in build, Architectures.fromBuild(build))
+            build[:4], "nightly" in build, arch)
 
         return url_resolver.get_url_for_latest().replace("latest", f"release/{build}")
 
@@ -398,7 +395,7 @@ class TestResultAggregator():
                 # get build number from file name
                 build = re.search(r'\d.*\d', file_name).group()
                 # if the nightly build is recycled/cannot be found on releasestream, will skip aggregation and delete test result file
-                if nightly and self.build_does_not_exists(build):
+                if nightly and self.build_does_not_exists(build, self._arch):
                     logger.info(f"build {build} is recycled, skip aggregation")
                     self.release_test_record.delete_file(content.path)
                     continue
@@ -477,13 +474,13 @@ class TestResultAggregator():
             logger.error(
                 f"add QE accepted label for releasepayload failed:\n Cmd: {e.cmd}, Return code: {e.returncode}")
 
-    def build_does_not_exists(self, build):
+    def build_does_not_exists(self, build, arch):
         # check if nightly build exists or not, if it does not exist, skip test result aggregation for it
         if build and "nightly" not in build:
             # if input is not nightly build, i.e. it is stable build, it should be there
             return True
         # get build url
-        url = ReleaseStreamURLResolver.get_url_for_build(build)
+        url = ReleaseStreamURLResolver.get_url_for_build(build, arch)
 
         return requests.get(url).status_code == 404
 
