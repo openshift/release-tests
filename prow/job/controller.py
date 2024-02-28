@@ -16,7 +16,7 @@ from subprocess import CalledProcessError
 
 logger = logging.getLogger(__name__)
 
-# declare constants
+# declare global constants
 JOB_TYPE_NIGHTLY = "nightly"
 JOB_TYPE_STABLE = "stable"
 REPO_RELEASE_TESTS = "openshift/release-tests"
@@ -25,23 +25,83 @@ DIR_RELEASE = "_releases"
 SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
-RELEASE_STREAM_BASE_URL = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream"
+
+
+class Architectures():
+
+    AMD64 = "amd64"
+    ARM64 = "arm64"
+    MULTI = "multi"
+    PPC64LE = "ppc64le"
+    VALID_ARCHS = [AMD64, ARM64, MULTI, PPC64LE]
+
+    @staticmethod
+    def fromString(arch):
+        if arch and arch in Architectures.VALID_ARCHS:
+            return arch
+        raise ValueError(f"invalid architecture {arch}")
+
+    @staticmethod
+    def fromBuild(build):
+        for arch in Architectures.VALID_ARCHS:
+            if arch in build:
+                return arch
+
+        return Architectures.AMD64
+
+
+class ReleaseStreamURLResolver():
+
+    def __init__(self, release, nightly=True, arch=Architectures.AMD64):
+        self._arch = Architectures.fromString(arch)
+        self._nightly = nightly
+        self._release = release
+
+    def get_url_for_latest(self):
+        base_url = f"https://{self._arch}.ocp.releases.ci.openshift.org/api/v1/releasestream"
+        suffix = "" if self._arch == Architectures.AMD64 else f"-{self._arch}"
+        releasestream = (
+            f"{self._release}.0-0.nightly" if self._nightly else f"4-stable") + suffix
+
+        if self._nightly:
+            url = f"{base_url}/{releasestream}/latest"
+        else:
+            url = f"{base_url}/{releasestream}/latest?prefix={self._release}"
+            # if stable build is not available for latest release, use dev preview releasestream instead
+            if requests.get(url).status_code == 404:
+                releasestream = "4-dev-preview" + suffix
+
+            url = f"{base_url}/{releasestream}/latest"
+
+        return url
+
+    @staticmethod
+    def get_url_for_build(build, arch):
+        # the arch can be found in build string of nightly
+        # but it does not work for stable build, so param arch is needed here.
+        url_resolver = ReleaseStreamURLResolver(
+            build[:4], "nightly" in build, arch)
+
+        return url_resolver.get_url_for_latest().replace("latest", f"release/{build}")
 
 
 class JobController:
 
-    def __init__(self, release, nightly=True, trigger_prow_job=True):
+    def __init__(self, release, nightly=True, trigger_prow_job=True, arch=Architectures.AMD64):
         self._release = release[:-
                                 2] if len(release.split(".")) == 3 else release
+        validate_required_info(release)
         self._nightly = nightly
         self._trigger_prow_job = trigger_prow_job
+        self._arch = Architectures.fromString(arch)
         self._build_type = 'nightly' if self._nightly else 'stable'
-        self._build_file_for_nightly = f"{DIR_RELEASE}/ocp-latest-{self._release}-nightly.json"
-        self._build_file_for_stable = f"{DIR_RELEASE}/ocp-latest-{self._release}-stable.json"
+        self._build_file_for_nightly = f"{DIR_RELEASE}/ocp-latest-{self._release}-nightly-{self._arch}.json"
+        self._build_file_for_stable = f"{DIR_RELEASE}/ocp-latest-{self._release}-stable-{self._arch}.json"
         self._build_file = self._build_file_for_nightly if self._nightly else self._build_file_for_stable
-        validate_required_info(release)
         self.job_api = Jobs()
-        self.job_registry = TestJobRegistry()
+        self.job_registry = TestJobRegistry(self._arch)
+        self.url_resolver = ReleaseStreamURLResolver(
+            self._release, self._nightly, self._arch)
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
         self.release_test_master = GithubUtil(REPO_RELEASE_TESTS)
@@ -49,25 +109,17 @@ class JobController:
     def get_latest_build(self):
 
         try:
-            if self._nightly:
-                url = f"{RELEASE_STREAM_BASE_URL}/{self._release}.0-0.nightly/latest"
-            else:
-                url = f"{RELEASE_STREAM_BASE_URL}/4-stable/latest?prefix={self._release}"
-                # if latest stable build is valid and not found, i.e. 4.16, we check releasestream 4-dev-preview instead
-                if requests.get(url).status_code == 404:
-                    url = f"{RELEASE_STREAM_BASE_URL}/4-dev-preview/latest"
-
             logger.info(
                 f"Getting latest {self._build_type} build for {self._release} ...")
-            resp = requests.get(url)
+            resp = requests.get(self.url_resolver.get_url_for_latest())
             resp.raise_for_status()
         except RequestException as re:
-            logger.error(f"Get latest  {self._build_type} build error {re}")
+            logger.error(f"Get latest {self._build_type} build error {re}")
             raise
 
         if resp.text:
             logger.info(
-                f"Latest  {self._build_type} build of {self._release} is:\n{resp.text}")
+                f"Latest {self._build_type} build of {self._release} is:\n{resp.text}")
             # if record file does not exist, create it on github repo
             if not self.release_test_record.file_exists(self._build_file):
                 self.release_test_record.push_file(
@@ -121,7 +173,7 @@ class JobController:
             if len(test_result):
                 data = json.dumps({build.name: test_result}, indent=2)
                 logger.debug(f"Test result file content {data}")
-                file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}.json"
+                file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}-{self._arch}.json"
                 self.release_test_record.push_file(data=data, path=file_path)
                 logger.info(
                     f"Test result of {build.name} is saved to {file_path}")
@@ -264,9 +316,10 @@ class GithubUtil:
 
 class TestJobRegistry():
 
-    def __init__(self):
+    def __init__(self, arch=Architectures.AMD64):
         self.release_tests_master = GithubUtil(REPO_RELEASE_TESTS)
         self._registry = {}
+        self._arch = Architectures.fromBuild(arch)
         self.init()
 
     def init(self):
@@ -275,14 +328,15 @@ class TestJobRegistry():
         contents = self.release_tests_master.get_files(DIR_RELEASE)
         for content in contents:
             matched_path = re.search(
-                r'ocp-\d\.\d+-test-jobs.json', content.path)
+                r'ocp-\d\.\d+-test-jobs-{}.json'.format(self._arch), content.path)
             if matched_path:
                 release = re.search(r'\d\.\d+', matched_path.group()).group()
                 file_content = self.release_tests_master.get_file_content(
                     content.path)
-                self._registry[release] = json.loads(file_content)
+                self._registry[release] = json.loads(
+                    file_content)
                 logger.info(
-                    f"Test job definitions for {release} is initialized")
+                    f"Test job definitions for {release}-{self._arch} is initialized")
 
         logger.info("Test job registry is initialized")
 
@@ -318,9 +372,10 @@ class TestJobRegistry():
 
 class TestResultAggregator():
 
-    def __init__(self):
+    def __init__(self, arch=Architectures.AMD64):
         validate_required_info()
-        self.job_registry = TestJobRegistry()
+        self._arch = Architectures.fromString(arch)
+        self.job_registry = TestJobRegistry(self._arch)
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
         self.job_api = Jobs()
@@ -329,16 +384,18 @@ class TestResultAggregator():
         logger.info("Start to scan test result files ...")
         contents = self.release_test_record.get_files(DIR_RELEASE)
         for content in contents:
-            matched_path = re.search(r"ocp-test-result-.*.json", content.path)
+            matched_path = re.search(
+                r'ocp-test-result-.*-{}.json'.format(self._arch), content.path)
             if matched_path:
-                logger.info(f"Found test result file {matched_path.group()}")
-                release = re.search(r"\d\.\d+", matched_path.group()).group()
+                file_name = matched_path.group()
+                logger.info(f"Found test result file {file_name}")
+                release = re.search(r'\d\.\d+', file_name).group()
                 # check if the build is nightly
-                nightly = "nightly" in matched_path.group()
+                nightly = "nightly" in file_name
                 # get build number from file name
-                build = matched_path.group()[16:-5]
+                build = re.search(r'\d.*\d', file_name).group()
                 # if the nightly build is recycled/cannot be found on releasestream, will skip aggregation and delete test result file
-                if nightly and self.build_does_not_exists(build):
+                if nightly and self.build_does_not_exists(build, self._arch):
                     logger.info(f"build {build} is recycled, skip aggregation")
                     self.release_test_record.delete_file(content.path)
                     continue
@@ -417,14 +474,13 @@ class TestResultAggregator():
             logger.error(
                 f"add QE accepted label for releasepayload failed:\n Cmd: {e.cmd}, Return code: {e.returncode}")
 
-    def build_does_not_exists(self, nightly_build):
+    def build_does_not_exists(self, build, arch):
         # check if nightly build exists or not, if it does not exist, skip test result aggregation for it
-        if nightly_build and "nightly" not in nightly_build:
+        if build and "nightly" not in build:
             # if input is not nightly build, i.e. it is stable build, it should be there
             return True
-        # get releasestream from build string
-        releasestream = nightly_build.split('nightly')[0] + "nightly"
-        url = f"{RELEASE_STREAM_BASE_URL}/{releasestream}/release/{nightly_build}"
+        # get build url
+        url = ReleaseStreamURLResolver.get_url_for_build(build, arch)
 
         return requests.get(url).status_code == 404
 
@@ -454,13 +510,15 @@ def cli(debug):
 @click.option("-r", "--release", help="y-stream release number e.g. 4.15", required=True)
 @click.option("--nightly/--no-nightly", help="run controller for nightly or stable build, default is nightly", default=True)
 @click.option("--trigger-prow-job", help="trigger prow job if new build is found", default=True)
-def start_controller(release, nightly, trigger_prow_job):
-    JobController(release, nightly, trigger_prow_job).start()
+@click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
+def start_controller(release, nightly, trigger_prow_job, arch):
+    JobController(release, nightly, trigger_prow_job, arch).start()
 
 
 @click.command
-def start_aggregator():
-    TestResultAggregator().start()
+@click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
+def start_aggregator(arch):
+    TestResultAggregator(arch).start()
 
 
 cli.add_command(start_controller)
