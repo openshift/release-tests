@@ -183,17 +183,17 @@ class JobController:
         latest = self.get_latest_build()
         current = self.get_current_build()
         # compare whether current = latest, if latest is newer than current trigger prow jobs
-        # if latest.equals(current):
-        #     logger.info(
-        #         f"Current build is same as latest build {latest.name}, no diff found")
-        # else:
-        logger.info(f"Found new build {latest.name}")
-        self.update_current_build(latest)
-        if self._trigger_prow_job:
-            self.trigger_prow_jobs(latest)
+        if latest.equals(current):
+            logger.info(
+                f"Current build is same as latest build {latest.name}, no diff found")
         else:
-            logger.warning(
-                "Won't trigger prow jobs since control flag [--trigger-prow-job] is false")
+            logger.info(f"Found new build {latest.name}")
+            self.update_current_build(latest)
+            if self._trigger_prow_job:
+                self.trigger_prow_jobs(latest)
+            else:
+                logger.warning(
+                    "Won't trigger prow jobs since control flag [--trigger-prow-job] is false")
 
 
 class Build():
