@@ -319,7 +319,7 @@ class TestJobRegistry():
     def __init__(self, arch=Architectures.AMD64):
         self.release_tests_master = GithubUtil(REPO_RELEASE_TESTS)
         self._registry = {}
-        self._arch = Architectures.fromBuild(arch)
+        self._arch = Architectures.fromString(arch)
         self.init()
 
     def init(self):
