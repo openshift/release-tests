@@ -183,17 +183,17 @@ class JobController:
         latest = self.get_latest_build()
         current = self.get_current_build()
         # compare whether current = latest, if latest is newer than current trigger prow jobs
-        if latest.equals(current):
-            logger.info(
-                f"Current build is same as latest build {latest.name}, no diff found")
+        # if latest.equals(current):
+        #     logger.info(
+        #         f"Current build is same as latest build {latest.name}, no diff found")
+        # else:
+        logger.info(f"Found new build {latest.name}")
+        self.update_current_build(latest)
+        if self._trigger_prow_job:
+            self.trigger_prow_jobs(latest)
         else:
-            logger.info(f"Found new build {latest.name}")
-            self.update_current_build(latest)
-            if self._trigger_prow_job:
-                self.trigger_prow_jobs(latest)
-            else:
-                logger.warning(
-                    "Won't trigger prow jobs since control flag [--trigger-prow-job] is false")
+            logger.warning(
+                "Won't trigger prow jobs since control flag [--trigger-prow-job] is false")
 
 
 class Build():
@@ -393,7 +393,8 @@ class TestResultAggregator():
                 # check if the build is nightly
                 nightly = "nightly" in file_name
                 # get build number from file name
-                build = re.search(r'\d.*\d', file_name).group()
+                build = re.search(
+                    r'\d.*\d', file_name[:file_name.index(self._arch)]).group()
                 # if the nightly build is recycled/cannot be found on releasestream, will skip aggregation and delete test result file
                 if nightly and self.build_does_not_exists(build, self._arch):
                     logger.info(f"build {build} is recycled, skip aggregation")

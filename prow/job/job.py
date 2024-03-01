@@ -326,7 +326,7 @@ class Jobs:
                 job_id = json.loads(res.text)["id"]
                 print(f"Returned job id: {job_id}")
                 # wait 1s for the job startup
-                time.sleep(1)
+                time.sleep(5)
                 self.get_job_results(
                     job_id, job_name, payload, upgrade_from, upgrade_to)
             else:
