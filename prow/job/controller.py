@@ -468,7 +468,7 @@ class TestResultAggregator():
 
     def update_releasepayload(self, build):
 
-        cmd = f"oc label releasepayload/{build} release.openshift.io/qe_state=Accepted"
+        cmd = f"oc label releasepayloads/{build} release.openshift.io/qe_state=Accepted -n ocp-{self._arch}"
         try:
             subprocess.run(shlex.split(cmd), check=True)
         except CalledProcessError as e:
