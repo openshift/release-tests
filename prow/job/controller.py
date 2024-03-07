@@ -645,32 +645,32 @@ class TestResultAggregator():
                 metrics = TestMetrics()
                 metrics.total.value = len(jobs)
                 for job in jobs:
-                    jon_result = TestJobResult(job)
+                    job_result = TestJobResult(job)
                     # get job metadata to check control flag optional,
                     # if it's true, the job result will not be used to determine build is QE accepted
                     job_metadata = self.job_registry.get_test_job(
-                        release, nightly, jon_result.job_name)
+                        release, nightly, job_result.job_name)
 
                     # if first job is failed and it's not optional we will start to trigger retry jobs
                     # according to `retries` attribute defined in job registry
-                    if jon_result.first_job.is_failed() and not job_metadata.optional and not jon_result.has_retried_jobs():
+                    if job_result.first_job.is_failed() and not job_metadata.optional and not job_result.has_retried_jobs():
                         self.retry_prow_jobs(
                             release, nightly, job_metadata, Build(json_data.get("build")), job)
 
-                    if jon_result.is_completed():
+                    if job_result.is_completed():
                         metrics.completed.increase()
                     else:
                         metrics.pending.increase()
 
-                    if jon_result.is_success():
+                    if job_result.is_success():
                         metrics.success.increase()
 
                     if not job_metadata.optional:
                         metrics.required.increase()
-                        if jon_result.is_success():
+                        if job_result.is_success():
                             metrics.successful_required.increase()
 
-                    job = jon_result.to_dict()
+                    job = job_result.to_dict()
 
                 logger.info(f"Test result summary of {build}: {metrics}")
 
