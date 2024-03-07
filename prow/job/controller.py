@@ -33,7 +33,8 @@ class Architectures():
     ARM64 = "arm64"
     MULTI = "multi"
     PPC64LE = "ppc64le"
-    VALID_ARCHS = [AMD64, ARM64, MULTI, PPC64LE]
+    S390X = "s390x"
+    VALID_ARCHS = [AMD64, ARM64, MULTI, PPC64LE, S390X]
 
     @staticmethod
     def fromString(arch):
@@ -83,6 +84,87 @@ class ReleaseStreamURLResolver():
             build[:4], "nightly" in build, arch)
 
         return url_resolver.get_url_for_latest().replace("latest", f"release/{build}")
+
+
+class Build():
+
+    def __init__(self, data):
+        self._raw_data = data
+        self._json_data = data if isinstance(data, dict) else json.loads(data)
+
+    @property
+    def name(self):
+        return self._json_data["name"]
+
+    @property
+    def phase(self):
+        return self._json_data["phase"]
+
+    @property
+    def pull_spec(self):
+        return self._json_data["pullSpec"]
+
+    @property
+    def download_url(self):
+        return self._json_data["downloadURL"]
+
+    @property
+    def raw_data(self):
+        return self._raw_data
+
+    def equals(self, build):
+        if isinstance(build, Build):
+            return self.name == build.name
+
+        return False
+
+    def __str__(self):
+        return self.name
+
+    def to_dict(self):
+        return self._json_data
+
+
+class TestJob():
+
+    def __init__(self, data):
+        self._json_data = data if isinstance(data, dict) else json.loads(data)
+
+    @property
+    def prow_job(self):
+        return self._json_data["prowJob"]
+
+    @property
+    def disabled(self):
+        # default value is false
+        return bool(self._json_data["disabled"]) if "disabled" in self._json_data else False
+
+    @property
+    def upgrade(self):
+        # default value is false
+        return bool(self._json_data["upgrade"]) if "upgrade" in self._json_data else False
+
+    @property
+    def optional(self):
+        # default value is false
+        return bool(self._json_data["optional"]) if "optional" in self._json_data else False
+
+    @property
+    def retries(self):
+        # value should be odd numbers e.g. 3,5,7
+        # default value is 3, if the attribute is not present
+        retries = 0
+        if "retries" not in self._json_data:
+            retries = 3
+        else:
+            num = self._json_data.get("retries")
+            if num and str(num).isdigit():
+                num = int(num)
+                retries = num if num % 2 != 0 else num+1
+            else:
+                retries = 3
+
+        return retries
 
 
 class JobController:
@@ -138,7 +220,7 @@ class JobController:
 
         logger.info(f"current build info is updated on repo")
 
-    def trigger_prow_jobs(self, build):
+    def trigger_prow_jobs(self, build: Build):
 
         test_jobs = self.job_registry.get_test_jobs(
             self._release, self._nightly)
@@ -150,33 +232,40 @@ class JobController:
                         f"Won't trigger prow job {test_job}, it is disabled")
                     continue
 
-                logger.info(
-                    f"Start to trigger prow job {test_job.prow_job} ...\n")
-                if test_job.upgrade:
-                    prow_job_id = self.job_api.run_job(
-                        job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=None, payload=None)
-                else:
-                    prow_job_id = self.job_api.run_job(
-                        job_name=test_job.prow_job, payload=build.pull_spec, upgrade_from=None, upgrade_to=None)
-                logger.info(
-                    f"Triggered prow job {test_job.prow_job} with build {build.name}, job id={prow_job_id}\n")
+                prow_job_id = self.trigger_prow_job(test_job, build)
 
                 job_item = {}
                 if prow_job_id:
                     job_item["jobName"] = test_job.prow_job
-                    job_item["jobID"] = prow_job_id
+                    job_item["firstJob"] = {"jobID": prow_job_id}
                     test_result.append(job_item)
                 else:
                     logger.error(
                         f"Trigger prow job {test_job.prow_job} with build {build.name} failed, no prow job id returned")
 
             if len(test_result):
-                data = json.dumps({build.name: test_result}, indent=2)
+                data = json.dumps(
+                    {"result": test_result, "build": build.to_dict()}, indent=2)
                 logger.debug(f"Test result file content {data}")
                 file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}-{self._arch}.json"
                 self.release_test_record.push_file(data=data, path=file_path)
                 logger.info(
                     f"Test result of {build.name} is saved to {file_path}")
+
+    def trigger_prow_job(self, test_job, build):
+
+        logger.info(
+            f"Start to trigger prow job {test_job.prow_job} ...\n")
+        if test_job.upgrade:
+            prow_job_id = self.job_api.run_job(
+                job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=None, payload=None)
+        else:
+            prow_job_id = self.job_api.run_job(
+                job_name=test_job.prow_job, payload=build.pull_spec, upgrade_from=None, upgrade_to=None)
+        logger.info(
+            f"Triggered prow job {test_job.prow_job} with build {build.name}, job id={prow_job_id}\n")
+
+        return prow_job_id
 
     def start(self):
         # get latest build info
@@ -194,64 +283,6 @@ class JobController:
             else:
                 logger.warning(
                     "Won't trigger prow jobs since control flag [--trigger-prow-job] is false")
-
-
-class Build():
-
-    def __init__(self, data):
-        self._raw_data = data
-        self._json_data = json.loads(data)
-
-    @property
-    def name(self):
-        return self._json_data["name"]
-
-    @property
-    def phase(self):
-        return self._json_data["phase"]
-
-    @property
-    def pull_spec(self):
-        return self._json_data["pullSpec"]
-
-    @property
-    def download_url(self):
-        return self._json_data["downloadURL"]
-
-    @property
-    def raw_data(self):
-        return self._raw_data
-
-    def equals(self, build):
-        if isinstance(build, Build):
-            return self.name == build.name
-
-        return False
-
-
-class TestJob():
-
-    def __init__(self, data):
-        self._json_data = data if isinstance(data, dict) else json.loads(data)
-
-    @property
-    def prow_job(self):
-        return self._json_data["prowJob"]
-
-    @property
-    def disabled(self):
-        # default value is false
-        return bool(self._json_data["disabled"]) if "disabled" in self._json_data else False
-
-    @property
-    def upgrade(self):
-        # default value is false
-        return bool(self._json_data["upgrade"]) if "upgrade" in self._json_data else False
-
-    @property
-    def optional(self):
-        # default value is false
-        return bool(self._json_data["optional"]) if "optional" in self._json_data else False
 
 
 class GithubUtil:
@@ -370,6 +401,207 @@ class TestJobRegistry():
         return test_job
 
 
+class ProwJobResult():
+
+    def __init__(self, job_data):
+        self._result = None
+        self.job_api = Jobs()
+        if "jobCompletionTime" in job_data:
+            self.from_dict(job_data)
+        else:
+            self.fetch(job_data.get("jobID"))
+
+    @property
+    def job_id(self):
+        return self._result.get("jobID")
+
+    @property
+    def job_state(self):
+        return self._result.get("jobState")
+
+    @property
+    def job_url(self):
+        return self._result.get("jobURL")
+
+    @property
+    def job_start_time(self):
+        return self._result.get("jobStartTime")
+
+    @property
+    def job_completion_time(self):
+        return self._result.get("jobCompletionTime")
+
+    def is_completed(self):
+        return bool(self.job_completion_time)
+
+    def is_failed(self):
+        return self.job_state == "failure" or self.job_state == "aborted"
+
+    def is_success(self):
+        return self.job_state == "success"
+
+    def is_pending(self):
+        return self.job_state == "pending"
+
+    def not_found(self):
+        return self._result is None
+
+    def to_dict(self):
+        return {k: v for k, v in self._result.items() if v is not None and k != "jobName"}
+
+    def from_dict(self, result):
+        if result:
+            self._result = result
+        return self
+
+    def fetch(self, job_id):
+        self.from_dict(self.job_api.get_job_results(job_id))
+        return self
+
+
+class TestJobResult():
+
+    def __init__(self, job_data):
+        self._result = job_data
+        self._retried_jobs: list[ProwJobResult] = []
+        self._first_job: ProwJobResult = None
+        self.job_api = Jobs()
+
+    @property
+    def job_name(self):
+        return self._result.get("jobName")
+
+    @property
+    def first_job(self):
+        if self._first_job is None:
+            self._first_job = ProwJobResult(self._result.get("firstJob"))
+
+        return self._first_job
+
+    @property
+    def retried_jobs(self):
+        if len(self._retried_jobs) == 0:
+            retried_jobs = self._result.get("retriedJobs")
+            if retried_jobs and len(retried_jobs):
+                for job in retried_jobs:
+                    self._retried_jobs.append(ProwJobResult(job))
+
+        return self._retried_jobs
+
+    @property
+    def raw_data(self):
+        return self._result
+
+    def has_retried_jobs(self):
+        return len(self.retried_jobs) > 0
+
+    def is_retried_jobs_completed(self):
+        if self.has_retried_jobs():
+            completed_jobs = 0
+            for job in self.retried_jobs:
+                if job.is_completed():
+                    completed_jobs += 1
+            return completed_jobs and completed_jobs == len(self.retried_jobs)
+        else:
+            return True
+
+    def is_retry_success(self):
+        if self.has_retried_jobs():
+            success_jobs = 0
+            for job in self.retried_jobs:
+                if job.is_success():
+                    success_jobs += 1
+            return self.is_retried_jobs_completed() and success_jobs >= round(len(self._retried_jobs)/2)
+        else:
+            return False
+
+    def is_completed(self):
+        return self.first_job.is_completed() and self.is_retried_jobs_completed()
+
+    def is_success(self):
+        return self.first_job.is_success() or self.is_retry_success()
+
+    def to_dict(self):
+        retried_jobs = []
+        for job in self.retried_jobs:
+            retried_jobs.append(job.to_dict())
+        self._result["retriedJobs"] = retried_jobs
+        self._result["firstJob"] = self.first_job.to_dict()
+
+        return self._result
+
+
+class Metric():
+
+    def __init__(self, name, increment=1):
+        self._counter = 0
+        self._increment = increment
+        self._name = name
+
+    def increase(self):
+        self._counter += self._increment
+
+    @property
+    def value(self):
+        return self._counter
+
+    @value.setter
+    def value(self, value):
+        self._counter = int(value)
+
+    def __str__(self):
+        return f"{self._name}:{self._counter}"
+
+
+class TestMetrics():
+
+    def __init__(self):
+        self._total = Metric("total")
+        self._success = Metric("success")
+        self._pending = Metric("pending")
+        self._failed = Metric("failed")
+        self._required = Metric("required")
+        self._completed = Metric("completed")
+        self._successful_required = Metric("successful_required")
+
+    @property
+    def total(self):
+        return self._total
+
+    @property
+    def success(self):
+        return self._success
+
+    @property
+    def pending(self):
+        return self._pending
+
+    @property
+    def failed(self):
+        return self._failed
+
+    @property
+    def required(self):
+        return self._required
+
+    @property
+    def completed(self):
+        return self._completed
+
+    @property
+    def successful_required(self):
+        return self._successful_required
+
+    def is_qe_accepted(self):
+        return self.successful_required.value == self.required.value
+
+    def all_jobs_are_completed(self):
+        return self.total.value > 0 and self.completed.value > 0 and self.total.value == self.completed.value
+
+    def __str__(self):
+        return f"{self.total}, {self._success}, {self._pending}, {self._failed}, {self._required}, {self._completed}, {self._successful_required}, qe_accepted:{str(self.is_qe_accepted()).lower()}"
+
+
 class TestResultAggregator():
 
     def __init__(self, arch=Architectures.AMD64):
@@ -405,60 +637,50 @@ class TestResultAggregator():
                     content.path)
                 json_data = json.loads(file_content)
                 logger.info(f"Start to check test result for {build} ...")
-                # if attribute `aggregate` found, i.e. the result is already analyzed, skip aggregation for this build
-                if "aggregated" in json_data and json_data["aggregated"] == True:
-                    logger.info(
-                        f"test result of build {build} is already aggregated, skip")
+                # if attribute `aggregated` found, i.e. the result is already analyzed, skip aggregation for this build
+                if self.is_test_result_aggregated(json_data):
                     continue
-                jobs = json_data[build]
-                completed_job_count = 0
-                required_job_count = 0
-                success_job_count = 0
-                success_required_job_count = 0
-                failed_job_count = 0
-                pending_job_count = 0
+
+                jobs = json_data["result"]
+                metrics = TestMetrics()
+                metrics.total.value = len(jobs)
                 for job in jobs:
-                    job_name = job["jobName"]
-                    job_id = job["jobID"]
-                    job_result = self.job_api.get_job_results(job_id)
-                    # if there is no job result found, i.e. prow job is expired, we use updated job info instead.
-                    if not job_result:
-                        job_result = job
-                    job_state = job_result["jobState"]
-                    job["jobState"] = job_state
-                    job["jobStartTime"] = job_result["jobStartTime"]
-                    job["jobURL"] = job_result["jobURL"]
-                    is_job_completed = "jobCompletionTime" in job_result
-                    is_job_success = job_state == "success"
-                    is_job_failed = job_state == "failure"
-                    if is_job_success:
-                        success_job_count += 1
-                    if is_job_failed:
-                        failed_job_count += 1
-                    if is_job_completed:
-                        job["jobCompletionTime"] = job_result["jobCompletionTime"]
-                        completed_job_count += 1
+                    job_result = TestJobResult(job)
+                    # get job metadata to check control flag optional,
+                    # if it's true, the job result will not be used to determine build is QE accepted
+                    job_metadata = self.job_registry.get_test_job(
+                        release, nightly, job_result.job_name)
+
+                    # if first job is failed and it's not optional we will start to trigger retry jobs
+                    # according to `retries` attribute defined in job registry
+                    if job_result.first_job.is_failed() and not job_metadata.optional and not job_result.has_retried_jobs():
+                        self.retry_prow_jobs(
+                            release, nightly, job_metadata, Build(json_data.get("build")), job)
+
+                    if job_result.is_completed():
+                        metrics.completed.increase()
                     else:
-                        pending_job_count += 1
-                    job_meta = self.job_registry.get_test_job(
-                        release, nightly, job_name)
-                    if not job_meta.optional:
-                        required_job_count += 1
-                        if is_job_success:
-                            success_required_job_count += 1
+                        metrics.pending.increase()
 
-                # check if all the required jobs are success, if yes, update releasepayload with label release.openshift.io/qe_state=Accepted
-                qe_accepted = (required_job_count ==
-                               success_required_job_count)
-                logger.info(
-                    f"Test result summary of {build}: all:{len(jobs)}, required:{required_job_count}, completed:{completed_job_count}, success:{success_job_count}, success required:{success_required_job_count}, failed:{failed_job_count}, pending:{pending_job_count}, qe_accepted:{str(qe_accepted).lower()}")
+                    if job_result.is_success():
+                        metrics.success.increase()
 
-                if qe_accepted:
+                    if not job_metadata.optional:
+                        metrics.required.increase()
+                        if job_result.is_success():
+                            metrics.successful_required.increase()
+
+                    job = job_result.to_dict()
+
+                logger.info(f"Test result summary of {build}: {metrics}")
+
+                if metrics.is_qe_accepted():
                     self.update_releasepayload(build)
 
                 # if all the jobs are completed, we add a attribute `aggregated` to indicate this test result is aggregated
-                if len(jobs) == completed_job_count:
+                if metrics.all_jobs_are_completed():
                     json_data["aggregated"] = True
+                    json_data["accepted"] = metrics.is_qe_accepted()
                 self.release_test_record.push_file(
                     data=json.dumps(json_data, indent=2), path=content.path)
                 logger.info(
@@ -485,6 +707,35 @@ class TestResultAggregator():
         url = ReleaseStreamURLResolver.get_url_for_build(build, arch)
 
         return requests.get(url).status_code == 404
+
+    def retry_prow_jobs(self, release, nightly, job_metadata, build, job_data):
+
+        logger.info(f"Start to retry failed job {job_metadata.prow_job} ...")
+
+        job_ids = []
+        controller = JobController(release, nightly, False, self._arch)
+        for x in range(job_metadata.retries):
+            prow_job_id = controller.trigger_prow_job(job_metadata, build)
+            if prow_job_id:
+                job_ids.append(prow_job_id)
+
+        if len(job_ids):
+            retried_jobs = []
+            for job_id in job_ids:
+                retried_jobs.append({"jobID": job_id})
+            job_data["retriedJobs"] = retried_jobs
+
+            logger.info(f"Retried jobs: {retried_jobs}")
+
+    def is_test_result_aggregated(self, json_data):
+
+        if json_data.get("aggregated") == True:
+            build = Build(json_data.get("build"))
+            logger.info(
+                f"test result of build {build} is already aggregated, skip")
+            return True
+
+        return False
 
 
 def validate_required_info(release=None):
