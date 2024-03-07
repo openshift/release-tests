@@ -158,7 +158,7 @@ class TestJob():
             retries = 3
         else:
             num = self._json_data.get("retries")
-            if num and num.isdigit():
+            if num and str(num).isdigit():
                 num = int(num)
                 retries = num if num % 2 != 0 else num+1
             else:
