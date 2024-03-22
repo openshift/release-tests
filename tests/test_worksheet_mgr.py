@@ -10,7 +10,7 @@ from oar.core.const import *
 class TestWorksheetManager(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        cs = ConfigStore("4.12.18")
+        cs = ConfigStore("4.15.4")
         self.wm = WorksheetManager(cs)
         self.am = AdvisoryManager(cs)
 
@@ -20,11 +20,11 @@ class TestWorksheetManager(unittest.TestCase):
 
     def step_0_create_report(self):
         self.report = self.wm.create_test_report()
-        self.assertRegex(self.report.get_advisory_info(), "114397")
+        self.assertRegex(self.report.get_advisory_info(), "129357")
         self.assertRegex(
-            self.report.get_build_info(), "4.12.0-0.nightly-2023-05-17-133811"
+            self.report.get_build_info(), "4.15.0-0.nightly-2024-03-20-032212"
         )
-        self.assertRegex(self.report.get_jira_info(), "ART-6821")
+        self.assertRegex(self.report.get_jira_info(), "ART-9191")
 
     def step_1_update_overall_status(self):
         self.report.update_overall_status_to_red()
