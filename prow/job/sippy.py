@@ -19,6 +19,7 @@ class Sippy():
         # define retry strategy
         self._retry_strategy = Retry(
             total=3,
+            backoff_factor=2,
             status_forcelist=[429, 500, 502, 503, 504])
 
         self._adapter = HTTPAdapter(max_retries=self._retry_strategy)
