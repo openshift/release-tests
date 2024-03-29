@@ -17,12 +17,12 @@ class Sippy():
         self._base_url = f"{schema}://{self._host}:{self._port}/api"
 
         # define retry strategy
-        self._retry_strategy = Retry(
+        retry_strategy = Retry(
             total=3,
             backoff_factor=2,
             status_forcelist=[429, 500, 502, 503, 504])
 
-        self._adapter = HTTPAdapter(max_retries=self._retry_strategy)
+        self._adapter = HTTPAdapter(max_retries=retry_strategy)
 
     def _request(self, url, params):
         session = requests.Session()
