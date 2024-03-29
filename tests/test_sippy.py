@@ -87,8 +87,22 @@ class TestSippy(unittest.TestCase):
 
         base_startendtime = StartEndTimePicker(DatetimePicker.lastmonth())
         sample_startendtime = StartEndTimePicker()
-        params = ParamBuilder().base_release("4.15").base_starttime(base_startendtime.last4weeks()).base_endtime(base_startendtime.today()
-                                                                                                                 ).sample_release("4.16").sample_starttime(sample_startendtime.lastweek()).sample_endtime(sample_startendtime.today()).confidence().exclude_arches().exclude_clouds().exclude_variants().ignore_disruption().ignore_missing().group_by().min_fail().pity().done()
+        params = ParamBuilder().base_release("4.15") \
+            .base_starttime(base_startendtime.last4weeks()) \
+            .base_endtime(base_startendtime.today()) \
+            .sample_release("4.16") \
+            .sample_starttime(sample_startendtime.lastweek()) \
+            .sample_endtime(sample_startendtime.today()) \
+            .confidence() \
+            .exclude_arches() \
+            .exclude_clouds() \
+            .exclude_variants() \
+            .ignore_disruption() \
+            .ignore_missing() \
+            .group_by() \
+            .min_fail() \
+            .pity() \
+            .done()
         resp = self.sippy.query_component_readiness(params)
         rows = resp.get("rows")
         self.assertGreater(len(rows), 1)
