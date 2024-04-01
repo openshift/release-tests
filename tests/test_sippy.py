@@ -117,8 +117,12 @@ class TestSippy(unittest.TestCase):
             logger.info("OK\n")
 
     def test_query_variant(self):
-
-        filters = FilterBuilder().filter("variants", "contains", "single-node").done()
-        params = ParamBuilder().release("4.16").filter(filters).done()
-
+        params = ParamBuilder().release("4.16").done()
         resp = self.sippy.query_variant_status(params)
+        self.assertGreater(len(resp), 0, "Cannnot get any varaint records")
+        for v in resp:
+            logger.info(f"name: {v.get('name')}")
+            logger.info(
+                f"current_pass_percentage: {v.get('current_pass_percentage')}")
+            logger.info(
+                f"previous_pass_percentage: {v.get('previous_pass_percentage')}\n")

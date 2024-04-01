@@ -51,7 +51,7 @@ class Sippy():
         return self._request(url, params)
 
     def query_variant_status(self, params):
-        url = f"{self._base_url}/jobs/analysis"
+        url = f"{self._base_url}/variants"
         return self._request(url, params)
 
 
