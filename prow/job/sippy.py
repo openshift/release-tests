@@ -273,7 +273,7 @@ class DataAnalyzer():
 
         return len(issued_comps) == 0
 
-    def is_variants_status_green(self, expected_variants: [] = None, threshold=-1):
+    def is_variants_status_green(self, expected_variants: [] = None, threshold=2):
         '''
           Check if the current pass percentage > or ~= previous pass percentage of the variants
         '''
@@ -293,7 +293,7 @@ class DataAnalyzer():
                 previous_pass_percentage = variant.get(
                     "previous_pass_percentage")
                 net_improvement = variant.get("net_improvement")
-                if net_improvement < threshold:
+                if net_improvement < 0 and abs(net_improvement) >= threshold:
                     logger.warning(
                         f"issued variant <{name}> current %: {float('%.1f' % current_pass_percentage)}%, previous %:{float('%.1f' % previous_pass_percentage)}%")
                     issued_variants.append(name)

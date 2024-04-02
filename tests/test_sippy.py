@@ -156,6 +156,6 @@ class TestSippy(unittest.TestCase):
 
         analyzer = self.sippy.analyze_variants(
             ParamBuilder().release("4.16").done())
-        self.assertFalse(analyzer.is_variants_status_green(threshold=-2))
+        self.assertFalse(analyzer.is_variants_status_green())
         self.assertTrue(analyzer.is_variants_status_green(
             ['gcp', 'upgrade', 'realtime']))
