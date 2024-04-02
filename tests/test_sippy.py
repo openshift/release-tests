@@ -2,7 +2,7 @@ import unittest
 import logging
 import sys
 import urllib3
-from job.sippy import Sippy
+from job.sippy import Sippy, DataAnalyzer
 from job.sippy import ParamBuilder, FilterBuilder, DatetimePicker, StartEndTimePicker
 
 logging.basicConfig(
@@ -126,3 +126,36 @@ class TestSippy(unittest.TestCase):
                 f"current_pass_percentage: {v.get('current_pass_percentage')}")
             logger.info(
                 f"previous_pass_percentage: {v.get('previous_pass_percentage')}\n")
+
+    def test_analyze_component_readiness(self):
+
+        base_startendtime = StartEndTimePicker(DatetimePicker.lastmonth())
+        sample_startendtime = StartEndTimePicker()
+        params = ParamBuilder().base_release("4.15") \
+            .base_starttime(base_startendtime.last4weeks()) \
+            .base_endtime(base_startendtime.today()) \
+            .sample_release("4.16") \
+            .sample_starttime(sample_startendtime.lastweek()) \
+            .sample_endtime(sample_startendtime.today()) \
+            .confidence() \
+            .exclude_arches() \
+            .exclude_clouds() \
+            .exclude_variants() \
+            .ignore_disruption() \
+            .ignore_missing() \
+            .group_by() \
+            .done()
+
+        analyzer = self.sippy.analyze_component_readiness(params)
+        self.assertTrue(
+            analyzer.is_component_readiness_status_green() == False)
+
+    def test_analyze_variant_status(self):
+
+        self.assertRaises(ValueError, DataAnalyzer, None)
+
+        analyzer = self.sippy.analyze_variants(
+            ParamBuilder().release("4.16").done())
+        self.assertFalse(analyzer.is_variants_status_green())
+        self.assertTrue(analyzer.is_variants_status_green(
+            ['gcp', 'upgrade', 'realtime']))

@@ -1,3 +1,4 @@
+from __future__ import annotations
 import requests
 import logging
 import json
@@ -53,6 +54,12 @@ class Sippy():
     def query_variant_status(self, params):
         url = f"{self._base_url}/variants"
         return self._request(url, params)
+
+    def analyze_component_readiness(self, params) -> DataAnalyzer:
+        return DataAnalyzer(self.query_component_readiness(params))
+
+    def analyze_variants(self, params) -> DataAnalyzer:
+        return DataAnalyzer(self.query_variant_status(params))
 
 
 class ParamBuilder():
@@ -228,3 +235,71 @@ class StartEndTimePicker():
     def last4weeks(self):
         last4weeks = self._now - timedelta(days=28)
         return last4weeks.strftime(self.starttime_format)
+
+
+class DataAnalyzer():
+
+    def __init__(self, payload: dict):
+        if payload:
+            self._data_set = payload
+        else:
+            raise ValueError("payload is empty")
+
+    def is_component_readiness_status_green(self):
+        '''
+          Check if any component has attribute `regressed_tests` and status >= -1
+        '''
+        logger.info('-' * 50)
+        logger.info("Start to analyze component readiness status")
+
+        issued_comps = []
+        rows = self._data_set.get("rows")
+        if len(rows):
+            for comp in rows:
+                name = comp.get("component")
+                cols = comp.get("columns")
+                for col in cols:
+                    status = col.get("status")
+                    if "regressed_tests" in col:
+                        regressed_tests = col.get("regressed_tests")
+                        logger.warning(
+                            f"{name} has regressed tests:\n{regressed_tests}\n")
+                        issued_comps.append(name)
+
+        if not issued_comps:
+            logger.info("No issued component found")
+
+        logger.info("Component readiness status is analyzed")
+
+        return len(issued_comps) == 0
+
+    def is_variants_status_green(self, expected_variants: [] = None):
+        '''
+          Check if the current pass percentage > or ~= previous pass percentage of the variants
+        '''
+
+        logger.info('-' * 50)
+        logger.info(
+            f"Start to analyze variants status {expected_variants if expected_variants else ''}")
+
+        issued_variants = []
+        if len(self._data_set):
+            for variant in self._data_set:
+                name = variant.get("name")
+                if expected_variants and name not in expected_variants:
+                    continue
+                current_pass_percentage = variant.get(
+                    "current_pass_percentage")
+                previous_pass_percentage = variant.get(
+                    "previous_pass_percentage")
+                if previous_pass_percentage - current_pass_percentage > 1:
+                    logger.warning(
+                        f"issued variant <{name}> current %: {float('%.1f' % current_pass_percentage)}%, previous %:{float('%.1f' % previous_pass_percentage)}%")
+                    issued_variants.append(name)
+
+        if not issued_variants:
+            logger.info("No issued variant found")
+
+        logger.info("Variants are analyzed")
+
+        return len(issued_variants) == 0
