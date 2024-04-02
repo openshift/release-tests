@@ -71,8 +71,7 @@ class ReleaseStreamURLResolver():
             # if stable build is not available for latest release, use dev preview releasestream instead
             if requests.get(url).status_code == 404:
                 releasestream = "4-dev-preview" + suffix
-
-            url = f"{base_url}/{releasestream}/latest"
+                url = f"{base_url}/{releasestream}/latest"
 
         return url
 
