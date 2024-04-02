@@ -260,7 +260,7 @@ class DataAnalyzer():
                 cols = comp.get("columns")
                 for col in cols:
                     status = col.get("status")
-                    if "regressed_tests" in col:
+                    if status <= -2 or "regressed_tests" in col:
                         regressed_tests = col.get("regressed_tests")
                         logger.warning(
                             f"{name} has regressed tests:\n{regressed_tests}\n")
@@ -292,7 +292,8 @@ class DataAnalyzer():
                     "current_pass_percentage")
                 previous_pass_percentage = variant.get(
                     "previous_pass_percentage")
-                if previous_pass_percentage - current_pass_percentage > 1:
+                net_improvement = variant.get("net_improvement")
+                if net_improvement < -1:
                     logger.warning(
                         f"issued variant <{name}> current %: {float('%.1f' % current_pass_percentage)}%, previous %:{float('%.1f' % previous_pass_percentage)}%")
                     issued_variants.append(name)
