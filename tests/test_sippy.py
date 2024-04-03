@@ -168,7 +168,7 @@ class TestSippy(unittest.TestCase):
         self.assertIn('OverallRisk', resp)
         self.assertIn('Level', resp.get('OverallRisk'))
 
-        payload_a = {
+        job_data_a = {
             "ID": 1767798075599884288,
             "ProwJob": {
                 "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
@@ -176,7 +176,7 @@ class TestSippy(unittest.TestCase):
             "TestCount": 100
         }
 
-        payload_b = {
+        job_data_b = {
             "ID": 1767798075599884288,
             "ProwJob": {
                 "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
@@ -200,17 +200,17 @@ class TestSippy(unittest.TestCase):
             "TestCount": 532
         }
 
-        payloads = [payload_a, payload_b]
-        for p in payloads:
+        job_datas = [job_data_a, job_data_b]
+        for jd in job_datas:
             resp = self.sippy.query_risk_analysis(
-                json.dumps(p).encode("utf-8"))
+                json.dumps(jd).encode("utf-8"))
             logger.info(resp)
             self.assertIn('OverallRisk', resp)
             self.assertIn('Level', resp.get('OverallRisk'))
 
         path = "/tmp/req_body.txt"
         with open(path, 'w') as f:
-            f.write(json.dumps(payload_b))
+            f.write(json.dumps(job_data_b))
 
         with open(path, "r") as f:
             resp = self.sippy.query_risk_analysis(f.read())

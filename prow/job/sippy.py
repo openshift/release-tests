@@ -39,12 +39,12 @@ class Sippy():
 
         return response.json()
 
-    def _post_request(self, url, payload, headers=None):
-        if not payload:
-            raise ValueError("request payload should not be empty")
+    def _post_request(self, url, data, headers=None):
+        if not data:
+            raise ValueError("request body should not be empty")
 
         session = self._get_session()
-        response = session.post(url, data=payload, headers=headers)
+        response = session.post(url, data=data, headers=headers)
         response.raise_for_status()
 
         return response.json()
@@ -69,19 +69,19 @@ class Sippy():
         url = f"{self._base_url}/variants"
         return self._get_request(url, params)
 
-    def query_risk_analysis(self, payload=None, job_run_id=None):
-        if payload is None and job_run_id is None:
-            raise ValueError("payload and job_run_id are all empty")
+    def query_risk_analysis(self, job_data=None, job_run_id=None):
+        if job_data is None and job_run_id is None:
+            raise ValueError("job data and job_run_id are all empty")
 
         url = f"{self._base_url}/jobs/runs/risk_analysis"
         if job_run_id:
             # send get request
             return self._get_request(url, ParamBuilder().prow_job_run_id(job_run_id).done())
 
-        if payload:
-            # send get reuqest with payload
+        if job_data:
+            # send get reuqest with json data
             # https://github.com/openshift/sippy/blob/72a5f3e16bc99483db09155707ad14280c3a7554/pkg/sippyserver/server.go#L1080
-            return self._get_request(url, params=None, data=payload)
+            return self._get_request(url, params=None, data=job_data)
 
     def analyze_component_readiness(self, params) -> DataAnalyzer:
         return DataAnalyzer(self.query_component_readiness(params))
@@ -89,8 +89,8 @@ class Sippy():
     def analyze_variants(self, params) -> DataAnalyzer:
         return DataAnalyzer(self.query_variant_status(params))
 
-    def analyze_job_run_risk(self, payload=None, job_run_id=None):
-        return DataAnalyzer(self.query_risk_analysis(payload=payload, job_run_id=job_run_id))
+    def analyze_job_run_risk(self, job_data=None, job_run_id=None):
+        return DataAnalyzer(self.query_risk_analysis(job_data=job_data, job_run_id=job_run_id))
 
 
 class ParamBuilder():
@@ -274,11 +274,11 @@ class StartEndTimePicker():
 
 class DataAnalyzer():
 
-    def __init__(self, payload: dict):
-        if payload:
-            self._data_set = payload
+    def __init__(self, data: dict):
+        if data:
+            self._data_set = data
         else:
-            raise ValueError("payload is empty")
+            raise ValueError("job data is empty")
 
     def is_component_readiness_status_green(self):
         '''
