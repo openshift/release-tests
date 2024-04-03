@@ -14,7 +14,8 @@ class Sippy():
     def __init__(self, host, port=443, secure=True):
         self._host = host
         self._port = port
-        schema = "https" if secure else "http"
+        self._secure = secure
+        schema = "https" if self._secure else "http"
         self._base_url = f"{schema}://{self._host}:{self._port}/api"
 
         # define retry strategy
@@ -25,41 +26,71 @@ class Sippy():
 
         self._adapter = HTTPAdapter(max_retries=retry_strategy)
 
-    def _request(self, url, params):
+    def _get_session(self):
         session = requests.Session()
-        session.mount("http://", self._adapter)
-        session.mount("https://", self._adapter)
+        session.mount(
+            f"{'https' if self._secure else 'http'}://", self._adapter)
+        return session
 
-        response = session.get(url, params=params, verify=False)
+    def _get_request(self, url, params, data=None):
+        session = self._get_session()
+        response = session.get(url, params=params, verify=False, data=data)
+        response.raise_for_status()
+
+        return response.json()
+
+    def _post_request(self, url, data, headers=None):
+        if not data:
+            raise ValueError("request body should not be empty")
+
+        session = self._get_session()
+        response = session.post(url, data=data, headers=headers)
         response.raise_for_status()
 
         return response.json()
 
     def health_check(self, release):
         url = f"{self._base_url}/health"
-        return self._request(url, ParamBuilder().release(release).done())
+        return self._get_request(url, ParamBuilder().release(release).done())
 
     def query_jobs(self, params):
         url = f"{self._base_url}/jobs"
-        return self._request(url, params)
+        return self._get_request(url, params)
 
     def query_tests(self, params):
         url = f"{self._base_url}/tests"
-        return self._request(url, params)
+        return self._get_request(url, params)
 
     def query_component_readiness(self, params):
         url = f"{self._base_url}/component_readiness"
-        return self._request(url, params)
+        return self._get_request(url, params)
 
     def query_variant_status(self, params):
         url = f"{self._base_url}/variants"
-        return self._request(url, params)
+        return self._get_request(url, params)
+
+    def query_risk_analysis(self, job_data=None, job_run_id=None):
+        if job_data is None and job_run_id is None:
+            raise ValueError("job data and job_run_id are all empty")
+
+        url = f"{self._base_url}/jobs/runs/risk_analysis"
+        if job_run_id:
+            # send get request
+            return self._get_request(url, ParamBuilder().prow_job_run_id(job_run_id).done())
+
+        if job_data:
+            # send get reuqest with json data
+            # https://github.com/openshift/sippy/blob/72a5f3e16bc99483db09155707ad14280c3a7554/pkg/sippyserver/server.go#L1080
+            return self._get_request(url, params=None, data=job_data)
 
     def analyze_component_readiness(self, params) -> DataAnalyzer:
         return DataAnalyzer(self.query_component_readiness(params))
 
     def analyze_variants(self, params) -> DataAnalyzer:
         return DataAnalyzer(self.query_variant_status(params))
+
+    def analyze_job_run_risk(self, job_data=None, job_run_id=None):
+        return DataAnalyzer(self.query_risk_analysis(job_data=job_data, job_run_id=job_run_id))
 
 
 class ParamBuilder():
@@ -151,6 +182,10 @@ class ParamBuilder():
         self._params.update(period=period)
         return self
 
+    def prow_job_run_id(self, prow_job_run_id):
+        self._params.update(prow_job_run_id=prow_job_run_id)
+        return self
+
     def done(self):
         return self._params
 
@@ -239,11 +274,11 @@ class StartEndTimePicker():
 
 class DataAnalyzer():
 
-    def __init__(self, payload: dict):
-        if payload:
-            self._data_set = payload
+    def __init__(self, data: dict):
+        if data:
+            self._data_set = data
         else:
-            raise ValueError("payload is empty")
+            raise ValueError("job data is empty")
 
     def is_component_readiness_status_green(self):
         '''
@@ -304,3 +339,20 @@ class DataAnalyzer():
         logger.info("Variants are analyzed")
 
         return len(issued_variants) == 0
+
+    def is_job_run_risky(self, threshold=50):
+        '''
+          Check risk level in job run risk analysis result
+        '''
+        job_name = self._data_set.get("ProwJobName")
+        job_run_id = self._data_set.get("ProwJobRunID")
+        level_dict = self._data_set.get("OverallRisk").get("Level")
+        level = level_dict.get("Level")
+        reasons = level_dict.get("Reasons")
+
+        risky = False
+        if level > threshold:
+            risky = True
+            logger.warning(f"{job_name} run {job_run_id} is risky: {reasons}")
+
+        return risky

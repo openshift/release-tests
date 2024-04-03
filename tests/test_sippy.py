@@ -2,6 +2,7 @@ import unittest
 import logging
 import sys
 import urllib3
+import json
 from job.sippy import Sippy, DataAnalyzer
 from job.sippy import ParamBuilder, FilterBuilder, DatetimePicker, StartEndTimePicker
 
@@ -159,3 +160,64 @@ class TestSippy(unittest.TestCase):
         self.assertFalse(analyzer.is_variants_status_green())
         self.assertTrue(analyzer.is_variants_status_green(
             ['gcp', 'upgrade', 'realtime']))
+
+    def test_risk_analysis(self):
+
+        resp = self.sippy.query_risk_analysis(job_run_id='1767798075599884288')
+        logger.info(resp)
+        self.assertIn('OverallRisk', resp)
+        self.assertIn('Level', resp.get('OverallRisk'))
+
+        job_data_a = {
+            "ID": 1767798075599884288,
+            "ProwJob": {
+                "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
+            },
+            "TestCount": 100
+        }
+
+        job_data_b = {
+            "ID": 1767798075599884288,
+            "ProwJob": {
+                "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
+            },
+            "ClusterData": {
+                "Release": "4.16",
+                "FromRelease": "",
+                "Platform": "aws",
+                "Architecture": "amd64",
+                "Network": "ovn",
+                "Topology": "ha",
+                "NetworkStack": "IPv4",
+                "CloudRegion": "us-west-1",
+                "CloudZone": "us-west-1c",
+                "ClusterVersionHistory": [
+                    "4.16.0-0.nightly-2024-03-13-061822"
+                ],
+                "MasterNodesUpdated": "N"
+            },
+            "Tests": [],
+            "TestCount": 532
+        }
+
+        job_datas = [job_data_a, job_data_b]
+        for jd in job_datas:
+            resp = self.sippy.query_risk_analysis(
+                json.dumps(jd).encode("utf-8"))
+            logger.info(resp)
+            self.assertIn('OverallRisk', resp)
+            self.assertIn('Level', resp.get('OverallRisk'))
+
+        path = "/tmp/req_body.txt"
+        with open(path, 'w') as f:
+            f.write(json.dumps(job_data_b))
+
+        with open(path, "r") as f:
+            resp = self.sippy.query_risk_analysis(f.read())
+            logger.info(resp)
+
+    def test_analyze_job_run_risk(self):
+
+        analyzer = self.sippy.analyze_job_run_risk(
+            job_run_id='1767798075599884288')
+        self.assertFalse(analyzer.is_job_run_risky())
