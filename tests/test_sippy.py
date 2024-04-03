@@ -173,6 +173,20 @@ class TestSippy(unittest.TestCase):
             "ProwJob": {
                 "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
             },
+            "TestCount": 100
+        }
+
+        resp = self.sippy.query_risk_analysis(
+            json.dumps(payload).encode("utf-8"))
+        logger.info(resp)
+        self.assertIn('OverallRisk', resp)
+        self.assertIn('Level', resp.get('OverallRisk'))
+
+        payload = {
+            "ID": 1767798075599884288,
+            "ProwJob": {
+                "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
+            },
             "ClusterData": {
                 "Release": "4.16",
                 "FromRelease": "",

@@ -32,9 +32,9 @@ class Sippy():
             f"{'https' if self._secure else 'http'}://", self._adapter)
         return session
 
-    def _get_request(self, url, params):
+    def _get_request(self, url, params, data=None):
         session = self._get_session()
-        response = session.get(url, params=params, verify=False)
+        response = session.get(url, params=params, verify=False, data=data)
         response.raise_for_status()
 
         return response.json()
@@ -79,8 +79,9 @@ class Sippy():
             return self._get_request(url, ParamBuilder().prow_job_run_id(job_run_id).done())
 
         if payload:
-            # send post reuqest
-            return self._post_request(url, payload=payload, headers={"Content-Type": "application/json"})
+            # send get reuqest with payload
+            # https://github.com/openshift/sippy/blob/72a5f3e16bc99483db09155707ad14280c3a7554/pkg/sippyserver/server.go#L1080
+            return self._get_request(url, params=None, data=payload)
 
     def analyze_component_readiness(self, params) -> DataAnalyzer:
         return DataAnalyzer(self.query_component_readiness(params))
