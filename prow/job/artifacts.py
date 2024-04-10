@@ -46,6 +46,8 @@ class Artifacts():
                 test_count += test_summary.tests
                 if test_summary.failures > 0:
                     failed_tests.extend(report.get_failed_tests())
+        else:
+            raise FileNotFoundError("Cannnot find any junit file")
 
         test_failures_summary = {
             "ID": int(self._job_run_id),
