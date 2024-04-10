@@ -30,7 +30,7 @@ class TestArtifacts(unittest.TestCase):
             logger.info(f"{jf.name}")
 
     def test_generate_job_summary(self):
-        job_data = self.artifacts.generate_job_summary()
-        logger.info(json.dumps(json.loads(job_data), indent=2))
-        resp = self.sippy.query_risk_analysis(job_data)
+        test_failures_summary = self.artifacts.generate_test_failures_summary()
+        logger.info(json.dumps(json.loads(test_failures_summary), indent=2))
+        resp = self.sippy.query_risk_analysis(test_failures_summary)
         logger.info(resp)

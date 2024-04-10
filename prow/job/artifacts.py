@@ -27,7 +27,7 @@ class Artifacts():
                     '.*\/gui_test.*console-cypress.xml']
         return self._gcs.get_files(self._root_dir, patterns)
 
-    def get_job_summary(self):
+    def get_test_failures_summary(self):
         blobs = self._gcs.get_files(
             self._root_dir, ['test-failures-summary_.*json'])
         if blobs:
@@ -35,7 +35,7 @@ class Artifacts():
         else:
             raise FileNotFoundError(f"job summary file not found")
 
-    def generate_job_summary(self):
+    def generate_test_failures_summary(self):
         test_count = 0
         failed_tests = []
         junit_files = self.get_junit_files()
