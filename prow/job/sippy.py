@@ -3,6 +3,8 @@ import requests
 import logging
 import json
 from requests.adapters import HTTPAdapter
+from requests.exceptions import HTTPError
+from requests import Response
 from urllib3.util import Retry
 from datetime import date, datetime, timedelta, timezone
 
@@ -35,7 +37,7 @@ class Sippy():
     def _get_request(self, url, params, data=None):
         session = self._get_session()
         response = session.get(url, params=params, verify=False, data=data)
-        response.raise_for_status()
+        self._raise_http_status(response)
 
         return response.json()
 
@@ -45,9 +47,14 @@ class Sippy():
 
         session = self._get_session()
         response = session.post(url, data=data, headers=headers)
-        response.raise_for_status()
+        self._raise_http_status(response)
 
         return response.json()
+
+    def _raise_http_status(self, response: Response):
+        if not response.ok:
+            raise HTTPError(
+                f"{response.status_code} {response.reason}, {response.text}")
 
     def health_check(self, release):
         url = f"{self._base_url}/health"
@@ -308,7 +315,7 @@ class DataAnalyzer():
 
         return len(issued_comps) == 0
 
-    def is_variants_status_green(self, expected_variants: [] = None, threshold=2):
+    def is_variants_status_green(self, expected_variants: list[str] = None, threshold=2):
         '''
           Check if the current pass percentage > or ~= previous pass percentage of the variants
         '''
