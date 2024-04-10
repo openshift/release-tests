@@ -8,6 +8,7 @@ from oar.core.exceptions import ConfigStoreException
 from oar.core.const import *
 from requests.exceptions import RequestException
 from yaml import YAMLError
+from jose import jwe
 
 # get module level logger
 logger = logging.getLogger(__name__)
@@ -36,7 +37,8 @@ class ConfigStore:
         # load local config file
         path = os.path.dirname(__file__) + "/config_store.json"
         with open(path) as f:
-            self._local_conf = json.load(f)
+            jwk = self._get_env_var("OAR_JWK")
+            self._local_conf = json.loads(jwe.decrypt(f.read(), jwk))
 
         # download ocp build data with release branch e.g. openshift-4.12
         branch = "openshift-%s" % util.get_y_release(self.release)
@@ -52,7 +54,7 @@ class ConfigStore:
         if response.text:
             try:
                 self._build_data = yaml.safe_load(response.text)
-            except yaml.YAMLError as ye:
+            except YAMLError as ye:
                 raise ConfigStoreException(
                     "ocp build data format is invalid") from ye
 
@@ -72,7 +74,7 @@ class ConfigStore:
                 metadata: 113028
                 rpm: 113025
         """
-            
+
         return self._get_assembly_attr("group/advisories")
 
     def get_candidate_builds(self):
@@ -90,7 +92,7 @@ class ConfigStore:
         # https://art-docs.engineering.redhat.com/assemblies/#building-an-updated-component
         # according to above doc, it is possible that `reference_releases` can be removed from the yaml
         # if it is true, return a empty dict instead
-        
+
         return self._get_assembly_attr("basis/reference_releases")
 
     def get_jira_ticket(self):
@@ -292,11 +294,11 @@ class ConfigStore:
                 f"system environment variable {var} not found")
 
         return val
-    
+
     def _get_assembly_attr(self, keypath):
         """
         Get attribute with key names followed inheritance rule
-        
+
         e.g. if advisory! or advisories does not exist in 4.14.1, 
         we should get advisory's from parent assembly i.e. 4.14.0
 
@@ -306,17 +308,18 @@ class ConfigStore:
         attr_val = None
         basis = self._assembly["basis"]
         if "assembly" in basis:
-            parent_assembly = self._get_value_by_path(self._build_data["releases"], f"{basis['assembly']}/assembly")
+            parent_assembly = self._get_value_by_path(
+                self._build_data["releases"], f"{basis['assembly']}/assembly")
         child_keypath = "%s!" % keypath
-        
+
         attr_val = self._get_value_by_path(self._assembly, child_keypath)
-        if attr_val == None: # no child key found, i.e. suffixed with !
+        if attr_val == None:  # no child key found, i.e. suffixed with !
             attr_val = self._get_value_by_path(self._assembly, keypath)
-        if attr_val == None and parent_assembly: # no key found, try to get it from parent assembly
+        if attr_val == None and parent_assembly:  # no key found, try to get it from parent assembly
             attr_val = self._get_value_by_path(parent_assembly, keypath)
-            
+
         return attr_val
-            
+
     def _get_value_by_path(self, json, path):
         """
         Get value from json path delimited by slash
@@ -334,5 +337,5 @@ class ConfigStore:
                 else:
                     logger.debug(f"cannot find key {key} in json object {tmp}")
                     return None
-        
+
         return tmp
