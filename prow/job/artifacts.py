@@ -33,7 +33,7 @@ class Artifacts():
         if blobs:
             return blobs[0].download_as_bytes()
         else:
-            raise FileNotFoundError(f"job summary file not found")
+            raise FileNotFoundError(f"test failures summary file not found")
 
     def generate_test_failures_summary(self):
         test_count = 0
