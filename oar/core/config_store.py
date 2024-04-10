@@ -8,6 +8,7 @@ from oar.core.exceptions import ConfigStoreException
 from oar.core.const import *
 from requests.exceptions import RequestException
 from yaml import YAMLError
+from jose import jwe
 
 # get module level logger
 logger = logging.getLogger(__name__)
@@ -28,14 +29,16 @@ class ConfigStore:
             raise ConfigStoreException("argument release is required")
 
         if not util.is_valid_z_release(release):
-            raise ConfigStoreException(f"invalid zstream release format {release}")
+            raise ConfigStoreException(
+                f"invalid zstream release format {release}")
 
         self.release = release
 
         # load local config file
         path = os.path.dirname(__file__) + "/config_store.json"
         with open(path) as f:
-            self._local_conf = json.load(f)
+            jwk = self._get_env_var("OAR_JWK")
+            self._local_conf = json.loads(jwe.decrypt(f.read(), jwk))
 
         # download ocp build data with release branch e.g. openshift-4.12
         branch = "openshift-%s" % util.get_y_release(self.release)
@@ -45,27 +48,34 @@ class ConfigStore:
             response = requests.get(url)
             response.raise_for_status()
         except RequestException as re:
-            raise ConfigStoreException("download ocp build data failed") from re
+            raise ConfigStoreException(
+                "download ocp build data failed") from re
 
         if response.text:
             try:
                 self._build_data = yaml.safe_load(response.text)
-            except yaml.YAMLError as ye:
-                raise ConfigStoreException("ocp build data format is invalid") from ye
+            except YAMLError as ye:
+                raise ConfigStoreException(
+                    "ocp build data format is invalid") from ye
 
-        self._assembly = self._build_data["releases"][self.release]["assembly"]
+        if self.release in self._build_data["releases"]:
+            self._assembly = self._build_data["releases"][self.release]["assembly"]
+        else:
+            raise ConfigStoreException(
+                f"[{self.release}] ocp build data is not ready you can check file:{url}")
 
     def get_advisories(self):
         """
         Get advisories info from build data e.g.
         group:
             advisories:
-            extras: 113027
-            image: 113026
-            metadata: 113028
-            rpm: 113025
+                extras: 113027
+                image: 113026
+                metadata: 113028
+                rpm: 113025
         """
-        return self._assembly["group"]["advisories"]
+
+        return self._get_assembly_attr("group/advisories")
 
     def get_candidate_builds(self):
         """
@@ -82,13 +92,8 @@ class ConfigStore:
         # https://art-docs.engineering.redhat.com/assemblies/#building-an-updated-component
         # according to above doc, it is possible that `reference_releases` can be removed from the yaml
         # if it is true, return a empty dict instead
-        try:
-            reference_releases = self._assembly["basis"]["reference_releases"]
-        except KeyError:
-            logger.warn("<reference_releases> is not found in releases.yml")
-            reference_releases = {}
 
-        return reference_releases
+        return self._get_assembly_attr("basis/reference_releases")
 
     def get_jira_ticket(self):
         """
@@ -152,7 +157,7 @@ class ConfigStore:
         """
         return self.get_slack_contact(contact)["channel"]
 
-    def get_slack_user_group_from_contact(self, contact):
+    def get_slack_user_group_from_contact_by_id(self, contact):
         """
         Get slack user/group name from contact
 
@@ -162,7 +167,20 @@ class ConfigStore:
         Returns:
             str: slack user/group name
         """
-        return self.get_slack_contact(contact)["id"]
+        return self.get_slack_user_group_from_contact(contact, "id")
+
+    def get_slack_user_group_from_contact(self, contact, attribute):
+        """
+        Get slack user/group name from contact by json attribute
+
+        Args:
+            contact (str): contact name
+            attribute (str): json attribute name
+
+        Returns:
+            str: slack user/group name
+        """
+        return self.get_slack_contact(contact)[attribute]
 
     def get_email_contact(self, team):
         """
@@ -176,6 +194,12 @@ class ConfigStore:
             )
 
         return email_contacts[team]
+
+    def get_prodsec_id(self):
+        """
+        Get prodsec email from local config
+        """
+        return self._local_conf["contacts"]["slack"]["approver"]["prodsec_id"]
 
     def get_report_template(self):
         """
@@ -243,18 +267,18 @@ class ConfigStore:
         Get google account application password
         """
         return self._get_env_var(ENV_APP_PASSWD)
-    
+
     def get_release_url(self):
         """
         Get release url
         """
-        return self._get_env_var(ENV_RELEASE_URL)
+        return self._local_conf["release_url"]
 
     def get_signature_url(self):
         """
         Get release url
         """
-        return self._get_env_var(ENV_SIGNATURE_URL)
+        return self._local_conf["signature_url"]
 
     def _get_env_var(self, var):
         """
@@ -266,6 +290,52 @@ class ConfigStore:
         """
         val = os.environ.get(var)
         if not val:
-            raise ConfigStoreException(f"system environment variable {var} not found")
+            raise ConfigStoreException(
+                f"system environment variable {var} not found")
 
         return val
+
+    def _get_assembly_attr(self, keypath):
+        """
+        Get attribute with key names followed inheritance rule
+
+        e.g. if advisory! or advisories does not exist in 4.14.1, 
+        we should get advisory's from parent assembly i.e. 4.14.0
+
+        Args:
+            keypath (_str_): attribute key path e.g. group/advisories!
+        """
+        attr_val = None
+        basis = self._assembly["basis"]
+        if "assembly" in basis:
+            parent_assembly = self._get_value_by_path(
+                self._build_data["releases"], f"{basis['assembly']}/assembly")
+        child_keypath = "%s!" % keypath
+
+        attr_val = self._get_value_by_path(self._assembly, child_keypath)
+        if attr_val == None:  # no child key found, i.e. suffixed with !
+            attr_val = self._get_value_by_path(self._assembly, keypath)
+        if attr_val == None and parent_assembly:  # no key found, try to get it from parent assembly
+            attr_val = self._get_value_by_path(parent_assembly, keypath)
+
+        return attr_val
+
+    def _get_value_by_path(self, json, path):
+        """
+        Get value from json path delimited by slash
+        e.g. releases/4.14.1/assembly
+
+        Args:
+            json (_dict_): json object
+            path (_str_): attribute path based on current json object
+        """
+        tmp = json
+        if tmp:
+            for key in path.split("/"):
+                if key in tmp:
+                    tmp = tmp[key]
+                else:
+                    logger.debug(f"cannot find key {key} in json object {tmp}")
+                    return None
+
+        return tmp
