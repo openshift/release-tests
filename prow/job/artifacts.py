@@ -42,12 +42,12 @@ class Artifacts():
         if junit_files:
             for jf in junit_files:
                 report = JunitTestReport(jf.download_as_bytes())
-                summary = report.get_test_summary()
-                test_count += summary.tests
-                if summary.failures > 0:
+                test_summary = report.get_test_summary()
+                test_count += test_summary.tests
+                if test_summary.failures > 0:
                     failed_tests.extend(report.get_failed_tests())
 
-        job_summary = {
+        test_failures_summary = {
             "ID": int(self._job_run_id),
             "ProwJob": {
                 "Name": self._job_name
@@ -56,7 +56,7 @@ class Artifacts():
             "TestCount": test_count
         }
 
-        return json.dumps(job_summary).encode('utf-8')
+        return json.dumps(test_failures_summary).encode('utf-8')
 
 
 class GCSClient():
