@@ -106,8 +106,10 @@ class JunitTestReport():
             else:
                 raise FileNotFoundError(f"{file_path} not found")
 
+        self._test_summary = JunitTestSummary(self._root)
+
     def get_test_summary(self):
-        return JunitTestSummary(self._root)
+        return self._test_summary
 
     def get_failed_tests(self):
         test_cases = []
@@ -119,7 +121,7 @@ class JunitTestReport():
                     # https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-openshift-release-master-nightly-4.15-e2e-aws-ovn-upi/1776477546024538112/artifacts/e2e-aws-ovn-upi/openshift-e2e-test/artifacts/junit/test-failures-summary_20240406-055752.json
                     test_cases.append({
                         "Test": {"Name": tc.name},
-                        "Suite": {"Name": "openshift-tests-private"},
+                        "Suite": {"Name": self.get_test_summary().name},
                         "Status": 12
                     })
 
