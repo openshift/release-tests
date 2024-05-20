@@ -327,8 +327,11 @@ class Jobs:
                 print(f"Returned job id: {job_id}")
                 # wait 1s for the job startup
                 time.sleep(5)
-                self.get_job_results(
-                    job_id, job_name, payload, upgrade_from, upgrade_to)
+                try:
+                    self.get_job_results(
+                        job_id, job_name, payload, upgrade_from, upgrade_to)
+                except Exception as e:
+                    print(f"get job result error: {e}")
             else:
                 print(f"Error code: {res.status_code}, reason: {res.reason}")
         else:
