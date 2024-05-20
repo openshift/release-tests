@@ -454,7 +454,10 @@ class ProwJobResult():
         return self
 
     def fetch(self, job_id):
-        self.from_dict(self.job_api.get_job_results(job_id))
+        try:
+            self.from_dict(self.job_api.get_job_results(job_id))
+        except Exception as e:
+            logger.error(f"fetch job result error: {e}")
         return self
 
 
