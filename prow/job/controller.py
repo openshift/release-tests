@@ -523,6 +523,9 @@ class TestJobResult():
     def is_success(self):
         return self.first_job.is_success() or self.is_retry_success()
 
+    def is_failed(self):
+        return self.is_completed() and self.first_job.is_failed() and (not self.is_retry_success())
+
     def to_dict(self):
         retried_jobs = []
         for job in self.retried_jobs:
@@ -666,6 +669,9 @@ class TestResultAggregator():
 
                     if job_result.is_success():
                         metrics.success.increase()
+
+                    if job_result.is_failed():
+                        metrics.failed.increase()
 
                     if not job_metadata.optional:
                         metrics.required.increase()
