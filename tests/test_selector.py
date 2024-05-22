@@ -16,8 +16,8 @@ class TestSelector(unittest.TestCase):
         pass
 
     def test_get_not_supported_release(self):
-        self.assertRaises(FileNotFoundError, AutoReleaseJobs, "4.13")
-        self.assertRaises(FileNotFoundError, AutoReleaseJobs, "4.14")
+        with self.assertRaises(FileNotFoundError):
+            AutoReleaseJobs("4.13").get_jobs()
 
     def test_get_auto_release_jobs(self):
         for release in ["4.15", "4.16"]:

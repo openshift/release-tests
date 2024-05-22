@@ -11,27 +11,32 @@ logger = logging.getLogger(__name__)
 
 class AutoReleaseJobs():
 
+    JOB_FILE_DIR = "ci-operator/jobs/openshift/openshift-tests-private"
+    CONFIG_FILE_DIR = "ci-operator/config/openshift/openshift-tests-private"
+
+    # TODO: currently we only have automated release jobs for amd64
+    # need to support getting jobs for other arches
     def __init__(self, release) -> None:
         if not release:
             raise ValueError("param <release> is mandatory")
         self._release = release
-
-        # env var GITHUB_TOKEN is required
         self.release_master = GithubUtil("openshift/release")
 
     def get_jobs(self) -> list[str]:
         # get automated release jobs from github repo openshift/release by different releases
         # currently only release 4.15,4.16 are supported.
         auto_release_jobs = []
-        # check whether job file exists for the requested release
-        file_path = f"ci-operator/jobs/openshift/openshift-tests-private/openshift-openshift-tests-private-release-{self._release}-periodics.yaml"
-        if not self.release_master.file_exists(file_path):
+        # check whether config file exists for the requested release
+        config_file_path = f"{self.CONFIG_FILE_DIR}/openshift-openshift-tests-private-release-{self._release}__automated-release.yaml"
+        if not self.release_master.file_exists(config_file_path):
             raise FileNotFoundError(
                 f"automate release job file cannot be found for release {self._release}")
 
-        # because the file size is too big, the raw content won't be sent back via api call
+        # because the file size is big, the raw content won't be sent back via api call
         # we need to download the raw file content separately
-        raw_data_url = self.release_master.get_files(file_path).download_url
+        job_file_path = f"{self.JOB_FILE_DIR}/openshift-openshift-tests-private-release-{self._release}-periodics.yaml"
+        raw_data_url = self.release_master.get_files(
+            job_file_path).download_url
         resp = requests.get(raw_data_url)
         resp.raise_for_status()
 
