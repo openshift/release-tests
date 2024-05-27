@@ -8,11 +8,14 @@ import re
 import click
 import subprocess
 import shlex
+import yaml
 from .job import Jobs
+from .artifacts import Artifacts
 from github import Auth, Github
 from github.GithubException import UnknownObjectException
 from requests.exceptions import RequestException
 from subprocess import CalledProcessError
+
 
 logger = logging.getLogger(__name__)
 
@@ -24,6 +27,7 @@ BRANCH_RECORD = "record"
 DIR_RELEASE = "_releases"
 SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
+SYS_ENV_VAR_GCS_CRED_FILE = "GCS_CRED_FILE"
 VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
 
 
@@ -409,6 +413,8 @@ class ProwJobResult():
             self.from_dict(job_data)
         else:
             self.fetch(job_data.get("jobID"))
+        # if job is completed, get test report from artifacts
+        self._get_test_result_summary()
 
     @property
     def job_id(self):
@@ -429,6 +435,10 @@ class ProwJobResult():
     @property
     def job_completion_time(self):
         return self._result.get("jobCompletionTime")
+
+    @property
+    def test_result_summary(self):
+        return self._result.get("testResultSummary")
 
     def is_completed(self):
         return bool(self.job_completion_time)
@@ -459,6 +469,22 @@ class ProwJobResult():
         except Exception as e:
             logger.error(f"fetch job result error: {e}")
         return self
+
+    def _get_test_result_summary(self):
+        if self.is_completed() and not self.test_result_summary:
+            url_split = self.job_url.split("/")
+            job_name = url_split[-2]
+            job_run_id = url_split[-1]
+            cred_file = os.environ.get("GCS_CRED_FILE")
+            artifacts = Artifacts(cred_file, job_name, job_run_id)
+            try:
+                test_result_summary = artifacts.get_qe_test_report()
+                if test_result_summary:
+                    self._result["testResultSummary"] = yaml.safe_load(
+                        test_result_summary)
+            except FileNotFoundError:
+                logger.warning(
+                    f"skip getting test result summary, not junit file found for job {artifacts._job_name}/{artifacts._job_run_id}")
 
 
 class TestJobResult():
@@ -753,6 +779,9 @@ def validate_required_info(release=None):
     if os.environ.get(SYS_ENV_VAR_GITHUB_TOKEN) is None:
         raise SystemExit(
             f"Cannot find environment variable {SYS_ENV_VAR_GITHUB_TOKEN}")
+    if os.environ.get(SYS_ENV_VAR_GCS_CRED_FILE) is None:
+        raise SystemExit(
+            f"Cannot find environment variable {SYS_ENV_VAR_GCS_CRED_FILE}")
     if release and release not in VALID_RELEASES:
         raise SystemExit(f"{release} is not supported")
 
