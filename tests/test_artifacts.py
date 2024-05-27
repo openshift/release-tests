@@ -19,7 +19,7 @@ class TestArtifacts(unittest.TestCase):
     def setUp(self):
         self.artifacts = Artifacts(os.environ.get(
             "GCS_CRED_FILE"), "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360", "1793149826221740032")
-        # self.sippy = Sippy("sippy.dptools.openshift.org")
+        self.sippy = Sippy("sippy.dptools.openshift.org")
 
     def test_get_junit_files(self):
         junit_files = self.artifacts.get_junit_files()
@@ -38,5 +38,5 @@ class TestArtifacts(unittest.TestCase):
     def test_generate_job_summary(self):
         test_failures_summary = self.artifacts.generate_test_failures_summary()
         logger.info(json.dumps(json.loads(test_failures_summary), indent=2))
-        # resp = self.sippy.query_risk_analysis(test_failures_summary)
-        # logger.info(resp)
+        resp = self.sippy.query_risk_analysis(test_failures_summary)
+        logger.info(resp)
