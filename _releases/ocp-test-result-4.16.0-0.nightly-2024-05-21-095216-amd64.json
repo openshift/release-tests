@@ -7,7 +7,30 @@
         "jobID": "46689cb4-2dfa-496b-8976-5bf86317e250",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1792968514273808384",
         "jobState": "success",
-        "jobCompletionTime": "2024-05-21T19:46:26Z"
+        "jobCompletionTime": "2024-05-21T19:46:26Z",
+        "testResultSummary": {
+          "ginkgo-1": {
+            "type": "openshift-extended-test",
+            "total": 86,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 23
+          },
+          "cucushift": {
+            "type": "cucushift-e2e",
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "ginkgo-2": {
+            "type": "openshift-extended-test-supplementary",
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -26,21 +49,103 @@
           "jobID": "4cc526ec-95d8-461b-b6c9-b5f131373060",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1792999233171755008",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-21T21:54:41Z"
+          "jobCompletionTime": "2024-05-21T21:54:41Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:anli-LEVEL0-Critical-71772-Forward logs to Azure Log Analytics -- full options",
+                "[sig-operators] OLM should Author:jiazha-LEVEL0-Critical-72192-OLM is not correctly refreshing operator catalogs due to IfNotPresent imagePullPolicy"
+              ]
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-05-21T19:21:47Z",
           "jobID": "ffb190fd-7ff8-4074-9ec1-4ec70383db33",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1792999247612743680",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-21T22:06:13Z"
+          "jobCompletionTime": "2024-05-21T22:06:13Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:anli-LEVEL0-Critical-71772-Forward logs to Azure Log Analytics -- full options"
+              ]
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-05-21T19:21:52Z",
           "jobID": "b3c21cee-6e0b-4d59-97fe-4fd5f445636a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1792999269335044096",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-21T21:55:11Z"
+          "jobCompletionTime": "2024-05-21T21:55:11Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:anli-LEVEL0-Critical-71772-Forward logs to Azure Log Analytics -- full options"
+              ]
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "[sig-cluster-lifecycle] Cluster_Infrastructure NonHyperShiftHOST-Author:zhsun-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+              ]
+            }
+          }
         }
       ]
     },
@@ -51,7 +156,33 @@
         "jobID": "eebf6fc1-d057-4942-abe6-3ea230b9e735",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-mini-perm-custom-type-f360/1792968557974261760",
         "jobState": "failure",
-        "jobCompletionTime": "2024-05-21T20:40:59Z"
+        "jobCompletionTime": "2024-05-21T20:40:59Z",
+        "testResultSummary": {
+          "ginkgo-1": {
+            "type": "openshift-extended-test",
+            "total": 86,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:qitang-LEVEL0-Critical-53691-Forward logs to Google Cloud Logging using Service Account authentication."
+            ]
+          },
+          "cucushift": {
+            "type": "cucushift-e2e",
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "ginkgo-2": {
+            "type": "openshift-extended-test-supplementary",
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": [
         {
@@ -59,21 +190,90 @@
           "jobID": "1d5fc37f-8873-4b9b-99c8-78fbf70949ce",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-mini-perm-custom-type-f360/1793028979272192000",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-22T00:35:18Z"
+          "jobCompletionTime": "2024-05-22T00:35:18Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 28
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-05-21T21:20:01Z",
           "jobID": "9b3bf551-7216-4c98-b59f-448b6e20e53b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-mini-perm-custom-type-f360/1793029013648707584",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-22T00:39:24Z"
+          "jobCompletionTime": "2024-05-22T00:39:24Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 28
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-05-21T21:20:06Z",
           "jobID": "560ebba6-ee90-48c9-89bf-31dbfe6b3931",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-mini-perm-custom-type-f360/1793029022821650432",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-22T00:37:53Z"
+          "jobCompletionTime": "2024-05-22T00:37:53Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -125,14 +325,63 @@
           "jobID": "6fb81358-74db-45e9-b55c-393c3bde1ee5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360/1792984041020985344",
           "jobState": "success",
-          "jobCompletionTime": "2024-05-21T20:17:50Z"
+          "jobCompletionTime": "2024-05-21T20:17:50Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 32
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 8,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-05-21T18:21:27Z",
           "jobID": "44fe6fa3-9483-46d8-b836-cb78611d909b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360/1792984062906863616",
           "jobState": "failure",
-          "jobCompletionTime": "2024-05-21T20:22:53Z"
+          "jobCompletionTime": "2024-05-21T20:22:53Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 86,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 32,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully"
+              ]
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 8,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-05-21T18:21:32Z",
@@ -193,5 +442,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-05-21-095216",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-05-21-095216"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
