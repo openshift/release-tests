@@ -35,6 +35,21 @@ class Artifacts():
         else:
             raise FileNotFoundError(f"test failures summary file not found")
 
+    def get_qe_test_report(self):
+        blobs = self._gcs.get_files(
+            self._root_dir, ["openshift-e2e-test-qe-report/artifacts/test-results.yaml"])
+        if blobs:
+            yaml = str(blobs[0].download_as_bytes().decode('utf-8'))
+            # in test-results.yaml, there are 2 dup keys <ginkgo>, the 1st one will be overwritten by 2nd one during parsing
+            # we need to rename the dup keys with unique names
+            yaml = yaml.replace("ginkgo", "g1", 1) \
+                       .replace("ginkgo", "g2", 1) \
+                       .replace("g1", "ginkgo-1") \
+                       .replace("g2", "ginkgo-2")
+            return yaml
+        else:
+            raise FileNotFoundError(f"QE test report file not found")
+
     def generate_test_failures_summary(self):
         test_count = 0
         failed_tests = []
