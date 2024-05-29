@@ -1,9 +1,18 @@
 import logging
 import requests
 import yaml
+import tempfile
+import os
 from .controller import GithubUtil
+from .controller import Architectures
 from github.GithubException import UnknownObjectException
 from requests.exceptions import RequestException
+from pathlib import Path
+from github import Auth, Github, GithubIntegration
+from github.Installation import Installation
+from github.Repository import Repository
+from git import Repo, Actor
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -51,3 +60,110 @@ class AutoReleaseJobs():
                     auto_release_jobs.append(job_name)
 
         return auto_release_jobs
+
+
+class GithubApp():
+
+    def __init__(self, app_private_key_path, app_id, app_account, app_repo):
+        self.app_id = app_id
+        self.app_account = app_account
+        self.app_repo = app_repo
+        app_private_key = Path(app_private_key_path)
+        if app_private_key.exists():
+            app_auth = app_private_key.expanduser().read_text()
+            app_auth = Auth.AppAuth(app_id, app_private_key)
+            github_integ = GithubIntegration(auth=app_auth)
+            github_install = github_integ.get_installation(
+                app_account, app_repo)
+            self._github_api = github_install.get_github_for_installation()
+            self._repo = self._github_api.get_repo(f"{app_account}/{app_repo}")
+        else:
+            raise FileNotFoundError(
+                f"app private key file not found: {app_private_key_path}")
+
+    def create_pull_request_and_approve(self, title, body, base, head):
+        pr = self._repo.create_pull(title, body, base, head)
+        pr.add_to_labels("lgtm", "approved")
+
+    def get_repo_url(self):
+        return f"https://x-access-token:{self._github_api._Github__requester.auth.token}@github.com/{self.app_account}/{self.app_repo}.git"
+
+    def get_email(self):
+        return f"{self.app_id}+{self.app_repo}-github-app-{self.app_account}[bot]@users.noreply.github.com"
+
+
+class LocalGitRepo():
+
+    def __init__(self, repo_url):
+        self._repo_name = repo_url.split()[-1].replace(".git", "")
+        self._repo_local_dir = tempfile.NamedTemporaryFile(
+            dir="/tmp", prefix="release-tests-").name
+        # repo initialization
+        self._repo = Repo.clone_from(self.repo_url, self._repo_local_dir)
+
+    def add_remote(self, name, url):
+        self._repo.create_remote(name, url)
+
+    def commit_file_change(self, relative_file_path, file_content, actor_name, actor_email):
+        if not file_content:
+            raise ValueError("file content is empty, cannot apply this change")
+
+        local_file = f"{self._repo_local_dir}/{relative_file_path}"
+        if not Path(local_file).exists():
+            raise FileNotFoundError(
+                f"file {relative_file_path} not found in repo {self._repo_name}")
+
+        # fetch all remotes
+        for remote in self._repo.remotes:
+            remote.fetch()
+        # set push config
+        self._repo.config_writer().set_value("push", "default", "current")
+        # create new branch with datetime suffix
+        self.branch_name = "-".join(["autobranch",
+                                     datetime.now().strftime("%y%m%d%H%M%S")])
+        branch = self._repo.create_head(self.branch_name)
+        branch.checkout()
+        # make file change and commit
+        with open(local_file, "w") as f:
+            f.write(file_content)
+        # add changed file and commit
+        self._repo.index.add(relative_file_path)
+        commit_actor = Actor(name=actor_name, email=actor_email)
+        self._repo.index.commit(message=f"Changes for file {relative_file_path}",
+                                author=commit_actor, committer=commit_actor)
+        # push local change to remote
+        self._repo.remote().push()
+
+
+class TestJobRegistryUpdater():
+
+    def __init__(self, release, arch=Architectures.AMD64):
+        app_private_key = os.environ.get("APP_PRIVATE_KEY")
+        if not app_private_key:
+            raise ValueError("env variable APP_PRIVATE_KEY is mandatory")
+        app_id = 897744
+        app_local_account = "rioliu-rh"
+        app_upstream_account = "openshift"
+        app_repo = "release-tests"
+        self._app_of_forked_repo = GithubApp(
+            app_private_key, app_id, app_local_account, app_repo)
+        self._app_of_upstream_repo = GithubApp(
+            app_private_key, app_id, app_upstream_account, app_repo)
+        self._local_git_repo = LocalGitRepo(
+            self._app_of_forked_repo.get_repo_url())
+        self._release = release
+        self._arch = arch
+        self._file_path = f"_releases/ocp-{self._release}-test-jobs-{self._arch}.json"
+
+    def update(self, file_content):
+        if not file_content:
+            raise ValueError("file content is mandatory")
+
+        self._local_git_repo.add_remote(
+            "upstream", f"https://github.com/openshift/{self._app_of_forked_repo.app_repo}")
+        self._local_git_repo.commit_file_change(
+            self._file_path, file_content, "QE Github App", self._app_of_forked_repo.get_email())
+
+        self._app_of_upstream_repo.create_pull_request_and_approve(
+            f"Update test job registry for {self._release}-{self._arch} on {datetime.now().strftime('%y%m%d')}",
+            "Update job registry with rotated job list", "master", f"{self._app_of_forked_repo.app_account}:{self._local_git_repo.branch_name}")
