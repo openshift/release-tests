@@ -5,8 +5,6 @@ import tempfile
 import os
 from .controller import GithubUtil
 from .controller import Architectures
-from github.GithubException import UnknownObjectException
-from requests.exceptions import RequestException
 from pathlib import Path
 from github import Auth, Github, GithubIntegration
 from github.Installation import Installation
@@ -89,14 +87,8 @@ class GithubApp():
     def get_repo_url(self):
         return f"https://x-access-token:{self._github_api._Github__requester.auth.token}@github.com/{self.app_owner}/{self.app_repo}.git"
 
-    def get_repo_path(self):
-        return f"{self.app_owner}/{self.app_repo}"
-
     def get_email(self):
         return f"{self.app_id}+{self.app_repo}-github-app-{self.app_owner}[bot]@users.noreply.github.com"
-
-    def merge_upstream(self):
-        self._repo
 
 
 class LocalGitRepo():
