@@ -16,9 +16,56 @@
         "jobStartTime": "2024-05-30T18:20:50Z",
         "jobID": "4785fee2-09b6-4735-bcd2-2c802fc883f5",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1796245399690809344",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-05-30T20:55:06Z",
+        "testResultSummary": {
+          "ginkgo-1": {
+            "type": "openshift-extended-test",
+            "total": 85,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-auth] CFE ROSA-ConnectedOnly-Author:geliu-LEVEL0-High-62494-Use explicit credential in ACME dns01 solver with route53 to generate certificate",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-50398-[CSI-Driver] [Daemonset] [Filesystem default] could provide RWX access mode volume"
+            ]
+          },
+          "cucushift": {
+            "type": "cucushift-e2e",
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "ginkgo-2": {
+            "type": "openshift-extended-test-supplementary",
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-05-30T21:20:02Z",
+          "jobID": "481a5724-3f11-42b9-ac03-54db61892baf",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1796290496021139456",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-05-30T21:20:07Z",
+          "jobID": "9d88602e-40ff-4261-993a-54a06a903700",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1796290517827325952",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-05-30T21:20:12Z",
+          "jobID": "9ec53f5c-03c0-44d2-ab4a-799e12fa4159",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-marketplace-mini-perm-f360/1796290539595763712",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360",
