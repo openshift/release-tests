@@ -26,9 +26,57 @@
         "jobStartTime": "2024-05-30T18:20:55Z",
         "jobID": "116fbf66-b7ef-4e0b-9c55-312dce1203f3",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360/1796245421438275584",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-05-30T20:13:58Z",
+        "testResultSummary": {
+          "ginkgo-1": {
+            "type": "openshift-extended-test",
+            "total": 85,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 32,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47930-[CSI-Driver] [Snapshot] [Filesystem ext4] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift": {
+            "type": "cucushift-e2e",
+            "total": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "ginkgo-2": {
+            "type": "openshift-extended-test-supplementary",
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-05-30T20:24:56Z",
+          "jobID": "e70316c3-93b4-4887-a0f5-4a90a283e0fa",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360/1796276679425921024",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-05-30T20:25:01Z",
+          "jobID": "91042f1f-7c06-47f2-9e86-a0333d85ea5a",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360/1796276685297946624",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-05-30T20:25:07Z",
+          "jobID": "5ab6a57f-55da-4a0e-8a17-60d39805ad57",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-vsphere-ipi-ovn-dualstack-f360/1796276688657584128",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.16-aws-ipi-private-shared-vpc-phz-sts-f360",
