@@ -64,42 +64,50 @@ class AutoReleaseJobs():
 
 class GithubApp():
 
-    def __init__(self, app_private_key_path, app_id, app_account, app_repo):
+    def __init__(self, app_private_key_path, app_id, app_owner, app_repo):
         self.app_id = app_id
-        self.app_account = app_account
+        self.app_owner = app_owner
         self.app_repo = app_repo
-        app_private_key = Path(app_private_key_path)
-        if app_private_key.exists():
-            app_auth = app_private_key.expanduser().read_text()
+        app_private_key_file = Path(app_private_key_path)
+        if app_private_key_file.exists():
+            app_private_key = app_private_key_file.expanduser().read_text()
             app_auth = Auth.AppAuth(app_id, app_private_key)
             github_integ = GithubIntegration(auth=app_auth)
-            github_install = github_integ.get_installation(
-                app_account, app_repo)
+            github_install = github_integ.get_repo_installation(
+                app_owner, app_repo)
             self._github_api = github_install.get_github_for_installation()
-            self._repo = self._github_api.get_repo(f"{app_account}/{app_repo}")
+            self._repo = self._github_api.get_repo(f"{app_owner}/{app_repo}")
         else:
             raise FileNotFoundError(
                 f"app private key file not found: {app_private_key_path}")
 
     def create_pull_request_and_approve(self, title, body, base, head):
-        pr = self._repo.create_pull(title, body, base, head)
+        pr = self._repo.create_pull(
+            title, body, base, head, maintainer_can_modify=False)
         pr.add_to_labels("lgtm", "approved")
 
     def get_repo_url(self):
-        return f"https://x-access-token:{self._github_api._Github__requester.auth.token}@github.com/{self.app_account}/{self.app_repo}.git"
+        return f"https://x-access-token:{self._github_api._Github__requester.auth.token}@github.com/{self.app_owner}/{self.app_repo}.git"
+
+    def get_repo_path(self):
+        return f"{self.app_owner}/{self.app_repo}"
 
     def get_email(self):
-        return f"{self.app_id}+{self.app_repo}-github-app-{self.app_account}[bot]@users.noreply.github.com"
+        return f"{self.app_id}+{self.app_repo}-github-app-{self.app_owner}[bot]@users.noreply.github.com"
+
+    def merge_upstream(self):
+        self._repo
 
 
 class LocalGitRepo():
 
     def __init__(self, repo_url):
+        self._default_branch = "master"
         self._repo_name = repo_url.split()[-1].replace(".git", "")
         self._repo_local_dir = tempfile.NamedTemporaryFile(
             dir="/tmp", prefix="release-tests-").name
         # repo initialization
-        self._repo = Repo.clone_from(self.repo_url, self._repo_local_dir)
+        self._repo = Repo.clone_from(repo_url, self._repo_local_dir)
 
     def add_remote(self, name, url):
         self._repo.create_remote(name, url)
@@ -109,13 +117,16 @@ class LocalGitRepo():
             raise ValueError("file content is empty, cannot apply this change")
 
         local_file = f"{self._repo_local_dir}/{relative_file_path}"
-        if not Path(local_file).exists():
-            raise FileNotFoundError(
-                f"file {relative_file_path} not found in repo {self._repo_name}")
+        # if not Path(local_file).exists():
+        #     raise FileNotFoundError(
+        #         f"file {relative_file_path} not found in repo {self._repo_name}")
 
         # fetch all remotes
         for remote in self._repo.remotes:
             remote.fetch()
+            if remote.name.lower() == "upstream":
+                self._repo.git.merge(f"{remote.name}/{self._default_branch}")
+
         # set push config
         self._repo.config_writer().set_value("push", "default", "current")
         # create new branch with datetime suffix
@@ -160,10 +171,10 @@ class TestJobRegistryUpdater():
             raise ValueError("file content is mandatory")
 
         self._local_git_repo.add_remote(
-            "upstream", f"https://github.com/openshift/{self._app_of_forked_repo.app_repo}")
+            "upstream", self._app_of_upstream_repo.get_repo_url())
         self._local_git_repo.commit_file_change(
             self._file_path, file_content, "QE Github App", self._app_of_forked_repo.get_email())
 
         self._app_of_upstream_repo.create_pull_request_and_approve(
-            f"Update test job registry for {self._release}-{self._arch} on {datetime.now().strftime('%y%m%d')}",
-            "Update job registry with rotated job list", "master", f"{self._app_of_forked_repo.app_account}:{self._local_git_repo.branch_name}")
+            f"Update test job registry for {self._release}-{self._arch} on {datetime.now().strftime('%y%m%d%H%M')}",
+            "Update job registry with rotated job list", "master", f"{self._app_of_forked_repo.app_owner}:{self._local_git_repo.branch_name}")
