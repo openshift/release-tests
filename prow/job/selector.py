@@ -176,5 +176,5 @@ class TestJobRegistryUpdater():
             self._file_path, file_content, "QE Github App", self._app_of_forked_repo.get_email())
 
         self._app_of_upstream_repo.create_pull_request_and_approve(
-            f"Update test job registry for {self._release}-{self._arch} on {datetime.now().strftime('%y%m%d%H%M')}",
+            f"Update test job registry for {self._release}-{self._arch} - {datetime.now().strftime('%y%m%d%H%M')}",
             "Update job registry with rotated job list", "master", f"{self._app_of_forked_repo.app_owner}:{self._local_git_repo.branch_name}")
