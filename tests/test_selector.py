@@ -1,6 +1,9 @@
+import json
 import unittest
 import logging
-from job.selector import AutoReleaseJobs
+import random
+import string
+from job.selector import AutoReleaseJobs, TestJobRegistryUpdater
 
 logging.basicConfig(
     format="%(asctime)s: %(levelname)s: %(message)s",
@@ -26,3 +29,12 @@ class TestSelector(unittest.TestCase):
             for job in jobs:
                 logger.info(job)
                 self.assertRegex(job, "automated-release")
+
+    def test_update_job_registry(self):
+        job_list = {
+            "nightly": [
+                {"prowJob": f"periodic-ci-openshift-openshift-tests-private-release-4.x-automated-release-aws-ipi-private-dummy-test-{''.join(random.choices(string.ascii_lowercase, k=5))}-f360"}
+            ],
+            "stable": []
+        }
+        TestJobRegistryUpdater("4.x").update(json.dumps(job_list, indent=2))
