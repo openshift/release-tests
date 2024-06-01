@@ -77,7 +77,36 @@
           "jobStartTime": "2024-06-01T17:25:57Z",
           "jobID": "b1d5692d-62c0-43ca-bfd5-657ebca42d1c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1796956362094153728",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-06-01T20:21:50Z",
+          "testResultSummary": {
+            "ginkgo-1": {
+              "type": "openshift-extended-test",
+              "total": 84,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-networking] SDN nmstate installation LEVEL0-NonHyperShiftHOST-StagerunBoth-Author:qiowang-Critical-47088-NMState Operator installation ",
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup ",
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:ikanse-LEVEL0-Critical-51974-Vector Forward logs to Cloudwatch by logtype"
+              ]
+            },
+            "cucushift": {
+              "type": "cucushift-e2e",
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "ginkgo-2": {
+              "type": "openshift-extended-test-supplementary",
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-06-01T17:26:02Z",
@@ -346,5 +375,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-06-01-063526",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-06-01-063526"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
