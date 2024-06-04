@@ -154,18 +154,22 @@ class TestJob():
 
     @property
     def retries(self):
-        # value should be odd numbers e.g. 3,5,7
-        # default value is 3, if the attribute is not present
+        # value of retry setting should be even numbers, so all the total job run number is odd. i.e. by default first job (1) + retried jobs(2) = 3
+        # default value is 2, if the attribute is not present
+        default_retries = 2
         retries = 0
         if "retries" not in self._json_data:
-            retries = 3
+            retries = default_retries
         else:
             num = self._json_data.get("retries")
             if num and str(num).isdigit():
                 num = int(num)
-                retries = num if num % 2 != 0 else num+1
+                if num > default_retries:
+                    retries = num if num % 2 == 0 else num - 1
+                else:
+                    retries = default_retries
             else:
-                retries = 3
+                retries = default_retries
 
         return retries
 
@@ -539,7 +543,7 @@ class TestJobResult():
             for job in self.retried_jobs:
                 if job.is_success():
                     success_jobs += 1
-            return self.is_retried_jobs_completed() and success_jobs >= round(len(self._retried_jobs)/2)
+            return self.is_retried_jobs_completed() and success_jobs >= round(float(len(self._retried_jobs)+1.1)/2)
         else:
             return False
 
