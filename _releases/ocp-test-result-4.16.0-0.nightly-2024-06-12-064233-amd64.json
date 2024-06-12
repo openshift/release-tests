@@ -6,7 +6,37 @@
         "jobStartTime": "2024-06-12T11:18:30Z",
         "jobID": "1c21b459-6ea1-440f-a4ec-c064001c5d9c",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1800850158292832256",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-06-12T13:37:52Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 22
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 7,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-19672:UserInterface Check cronjob on console",
+              "OCP-19717:UserInterface Check configmap on console",
+              "OCP-20020:UserInterface Source Secret",
+              "OCP-20800:UserInterface Key/Value Secret",
+              "OCP-25763:UserInterface Users management on console",
+              "OCP-26910:UserInterface Check project page",
+              "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -16,5 +46,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-06-12-064233",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-06-12-064233"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
