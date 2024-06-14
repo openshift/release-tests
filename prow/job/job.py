@@ -14,6 +14,8 @@ import click
 import logging
 import yaml
 import http.client as httpclient
+from requests.adapters import HTTPAdapter
+from urllib3.util import Retry
 
 
 class Jobs:
@@ -27,6 +29,19 @@ class Jobs:
         self.gangway_url = "https://gangway-ci.apps.ci.l2s4.p1.openshiftapps.com/v1/executions/"
         self.prow_job_url = "https://prow.ci.openshift.org/prowjob?prowjob={}"
         self.base_image = "quay.io/openshift-release-dev/ocp-release:4.13.4-x86_64"
+
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=2,
+            status_forcelist=[429, 500, 502, 503, 504])
+
+        self._adapter = HTTPAdapter(max_retries=retry_strategy)
+
+    def _get_session(self):
+        session = requests.Session()
+        session.mount("https://", self._adapter)
+        session.mount("http://", self._adapter)
+        return session
 
     # get_prow_headers func adds the Prow Token
     def get_prow_headers(self):
@@ -316,7 +331,7 @@ class Jobs:
         if periodic_job is not None:
             url = self.gangway_url + periodic_job.strip()
 
-            res = requests.post(
+            res = self._get_session().post(
                 url=url,
                 json=self.get_job_data(payload, upgrade_from, upgrade_to),
                 headers=self.get_prow_headers(),
