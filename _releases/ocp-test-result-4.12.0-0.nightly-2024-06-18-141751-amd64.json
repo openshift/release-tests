@@ -39,7 +39,22 @@
           "jobStartTime": "2024-06-19T03:25:40Z",
           "jobID": "a55d749e-2d27-4456-b358-3477d0c34765",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-azure-ipi-mini-perm-fips-f360/1803267879605374976",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-06-19T05:49:24Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 47,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 9
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-06-19T03:25:45Z",
@@ -64,13 +79,46 @@
           "jobStartTime": "2024-06-19T03:25:53Z",
           "jobID": "8a7b3bc1-e5fe-466a-861e-4a45ce9f0590",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-mini-perm-custom-type-f360/1803267933598650368",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-06-19T05:27:56Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 47,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 7
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-06-19T03:25:58Z",
           "jobID": "dec8a6d4-5ea0-4850-a037-50663d6ae404",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-mini-perm-custom-type-f360/1803267955174150144",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-06-19T05:28:37Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 47,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -99,13 +147,15 @@
           "jobStartTime": "2024-06-19T03:26:05Z",
           "jobID": "dad9b311-5f77-433b-b997-c31b1e76ba30",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-gcp-ipi-mini-perm-custom-type-f360/1803267987529011200",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-06-19T06:07:45Z"
         },
         {
           "jobStartTime": "2024-06-19T03:26:11Z",
           "jobID": "e4e106a2-708a-4bbe-86c5-2b583c4d2db4",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-gcp-ipi-mini-perm-custom-type-f360/1803268009163231232",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-06-19T06:17:37Z"
         }
       ]
     }
@@ -115,5 +165,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2024-06-18-141751",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2024-06-18-141751"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
