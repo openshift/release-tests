@@ -348,7 +348,7 @@ class MessageHelper:
             )
         )
         linked_text = self._to_link(report.get_url(), "test report")
-        return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}, *NOTE: this test report is not officially used for z-stream workflow. you still need to track test status via GDoc*"
+        return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}"
 
     def get_slack_message_for_ownership_change(
         self, updated_ads, abnormal_ads, updated_subtasks, new_owner
@@ -376,7 +376,7 @@ class MessageHelper:
         message += "Updated jira subtasks:\n"
         for key in updated_subtasks:
             message += self._to_link(util.get_jira_link(key), key) + " "
-            
+
         if len(abnormal_ads):
             message += "\n"
             message += "Found some abnormal advisories that state is not QE\n"
