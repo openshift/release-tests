@@ -7,6 +7,7 @@ import os
 import logging
 import re
 import subprocess
+import shlex
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("TestSocketMode")
@@ -17,7 +18,8 @@ client = SocketModeClient(
     # This app-level token will be used only for establishing a connection
     app_token=os.environ.get("SLACK_APP_TOKEN"),  # xapp-A111-222-xyz
     # You will be using this WebClient for performing Web API calls in listeners
-    web_client=WebClient(token=os.environ.get("SLACK_BOT_TOKEN")),  # xoxb-111-222-xyz
+    web_client=WebClient(token=os.environ.get(
+        "SLACK_BOT_TOKEN")),  # xoxb-111-222-xyz
     trace_enabled=True,
     logger=logger,
 )
@@ -46,12 +48,20 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                 )
 
             if message.startswith("oar") or re.search("^<\@.*>\ oar\ ", message):
-                cmd = message[message.index("oar") :]
-                result = subprocess.run(cmd.split(" "), capture_output=True, text=True)
-                client.web_client.chat_postMessage(
-                    channel=channel_id,
-                    text=f"```{result.stdout} {result.stderr}```",
-                )
+                cmd = message[message.index("oar"):]
+                result = subprocess.run(shlex.split(
+                    cmd), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                output = result.stdout
+                # if the message size > 4000, we need to split the message due to api limit
+                if len(output) > 4000:
+                    chunks, chunk_size = len(output), 2500
+                    for msg in [output[i:i+chunk_size] for i in range(0, chunks, chunk_size)]:
+                        client.web_client.chat_postMessage(
+                            channel=channel_id, text=f"```{msg}```")
+                else:
+                    client.web_client.chat_postMessage(
+                        channel=channel_id,
+                        text=f"```{result.stdout}```")
 
 
 # Add a new listener to receive messages from Slack
