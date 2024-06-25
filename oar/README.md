@@ -19,7 +19,8 @@ pip3 install -e .
     export JENKINS_USER=<$your-mail-id>
     export JENKINS_TOKEN=xxx
     ```
-- Kerberos ticket is required to access Errata Tool
+  - Kerberos ticket is required to access Errata Tool
+  - According to security policy, sensitive data in config file should NOT be plain text, we use JWE to encrypt `config_store.json`, encryption key should be exported by var `OAR_JWK`, value can be found in above bitwarden item
 ```
 kinit $kid@$domain
 ```
