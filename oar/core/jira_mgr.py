@@ -1,4 +1,5 @@
 import logging
+import time
 from oar.core.config_store import ConfigStore
 from oar.core.exceptions import JiraException
 from oar.core.exceptions import JiraUnauthorizedException
@@ -19,7 +20,8 @@ class JiraManager:
         self._cs = cs
         token = self._cs.get_jira_token()
         if not token:
-            raise JiraException("cannot find auth token from env var JIRA_TOKEN")
+            raise JiraException(
+                "cannot find auth token from env var JIRA_TOKEN")
 
         self._svc = JIRA(server=self._cs.get_jira_server(), token_auth=token)
         try:
@@ -29,6 +31,9 @@ class JiraManager:
                 raise JiraException("invalid token") from je
             else:
                 raise JiraException("cannot talk to jira server") from je
+
+        self._req_count = 0
+        self._req_limit = 3
 
     def get_issue(self, key):
         """
@@ -42,9 +47,14 @@ class JiraManager:
         """
         try:
             issue = self._svc.issue(key)
+            self._req_count += 1
+            if self._req_count == self._req_limit:
+                time.sleep(1)
+                self._req_count = 0
         except JIRAError as je:
             if je.status_code == 403:
-                logging.exception(f"Cannot get jira issue {key} due to permission issue")
+                logging.exception(
+                    f"Cannot get jira issue {key} due to permission issue")
                 raise JiraUnauthorizedException from je
             else:
                 raise JiraException("get jira issue failed") from je
@@ -112,7 +122,8 @@ class JiraManager:
         try:
             self._svc.assign_issue(key, contact)
         except JIRAError as je:
-            raise JiraException(f"assign issue {key} to {contact} failed") from je
+            raise JiraException(
+                f"assign issue {key} to {contact} failed") from je
 
         logger.info(f"jira issue {key} assignee is updated to {contact}")
 
@@ -162,7 +173,8 @@ class JiraManager:
                     if st.get_summary().startswith(
                         "[Wed-Fri]"
                     ) or st.get_summary().startswith("[Mon-Wed]"):
-                        self.transition_issue(st.get_key(), JIRA_STATUS_IN_PROGRESS)
+                        self.transition_issue(
+                            st.get_key(), JIRA_STATUS_IN_PROGRESS)
 
         return updated_tasks
 
@@ -187,9 +199,11 @@ class JiraManager:
             try:
                 self._svc.add_comment(key, comment)
             except JIRAError as je:
-                raise JiraException(f"add comment for jira issue {key} failed") from je
+                raise JiraException(
+                    f"add comment for jira issue {key} failed") from je
         else:
-            raise JiraException("invalid input argument key or comment is empty")
+            raise JiraException(
+                "invalid input argument key or comment is empty")
 
 
 class JiraIssue:
