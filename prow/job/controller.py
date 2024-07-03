@@ -216,8 +216,10 @@ class JobController:
 
         return Build(resp.text)
 
-    def get_current_build(self):
-        data = self.release_test_record.get_file_content(self._build_file)
+    def get_current_build(self, build_file=None):
+        if build_file == None:
+            build_file = self._build_file
+        data = self.release_test_record.get_file_content(build_file)
         return Build(data)
 
     def update_current_build(self, build):
@@ -263,9 +265,17 @@ class JobController:
 
         logger.info(
             f"Start to trigger prow job {test_job.prow_job} ...\n")
+        prow_job_id = ""
         if test_job.upgrade:
-            prow_job_id = self.job_api.run_job(
-                job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=None, payload=None)
+            if self._nightly and "upgrade-from-stable" in test_job.prow_job:
+                # OCPQE-23403 to support test nightly upgrade with `upgrade-from-stable` job, if build is nightly, we should use latest stable build as param upgrade_from
+                latest_stable_build = self.get_current_build(
+                    build_file=self._build_file_for_stable)
+                prow_job_id = self.job_api.run_job(
+                    job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=latest_stable_build.pull_spec, payload=None)
+            else:
+                prow_job_id = self.job_api.run_job(
+                    job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=None, payload=None)
         else:
             prow_job_id = self.job_api.run_job(
                 job_name=test_job.prow_job, payload=build.pull_spec, upgrade_from=None, upgrade_to=None)
