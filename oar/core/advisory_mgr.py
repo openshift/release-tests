@@ -359,7 +359,7 @@ class Advisory(Erratum):
         logger.info(
             f"advisory {self.errata_id} state is updated to {state.upper()}")
 
-    def remove_bugs(self, bug_list: []):
+    def remove_bugs(self, bug_list: list):
         """
         Drop bugs from advisory
 
@@ -380,15 +380,15 @@ class Advisory(Erratum):
     def push_to_cdn(self, target="stage"):
         """
         Trigger push job with default target. e.g. stage or live
-        
+
         if all push jobs are completed, return true
         if any push job is running and there is no failed job, return false. i.e. action is in progress
         if no jobs are triggered or there is any failed job found (retry), trigger the push job with target [stage]
         if any blocking advisory found, trigger push job for it
         if all the blocking jobs are completed, trigger push job for current advisory
-        
+
         """
-        
+
         if self.are_push_jobs_completed():
             return True
         elif self.are_push_jobs_running() and not self.has_failed_push_job():
@@ -403,7 +403,8 @@ class Advisory(Erratum):
                 for ad in blocking_ads:
                     if ad.are_push_jobs_running():
                         blocking_jobs_completed = False
-                        logger.warn(f"push jobs of blocking advisory {ad.errata_id} are not completed yet, will not trigger push job for {self.errata_id}, please try again later")
+                        logger.warn(
+                            f"push jobs of blocking advisory {ad.errata_id} are not completed yet, will not trigger push job for {self.errata_id}, please try again later")
                 if not blocking_jobs_completed:
                     return False
             # logic to trigger jobs for current advisory
@@ -413,7 +414,7 @@ class Advisory(Erratum):
                 self.push()
 
             logger.info(f"push job for advisory {self.errata_id} is triggered")
-        
+
             return False
 
     def get_push_job_status(self):
@@ -434,7 +435,7 @@ class Advisory(Erratum):
         if len(json) == 0:
             self.no_push_job = True
             logger.info(f"no push job found for advisory {self.errata_id}")
-        
+
         for cached_job in json:
             job_id = cached_job["id"]
             job_status = cached_job["status"]
@@ -447,14 +448,14 @@ class Advisory(Erratum):
                     cached_job["id"] = job_id
                     cached_job["status"] = job_status
             else:
-                self.push_job_status[job_target] = {"id": job_id, "status": job_status}
+                self.push_job_status[job_target] = {
+                    "id": job_id, "status": job_status}
 
         for cached_target, cached_job in self.push_job_status.items():
             cached_id = cached_job["id"]
             cached_status = cached_job["status"]
             logger.info(
                 f"push job for target <{cached_target}> is {cached_status}")
-
 
     def are_push_jobs_completed(self):
         """
@@ -463,7 +464,7 @@ class Advisory(Erratum):
         Returns:
             bool: True if jobs for different types are triggered and no failed job found, otherwise False
         """
-        
+
         self.get_push_job_status()
 
         completed = True if len(self.push_job_status) else False
@@ -501,12 +502,11 @@ class Advisory(Erratum):
             if PUSH_JOB_STATUS_FAILED == job['status']:
                 has_failed_job = True
                 break
-        
+
         if has_failed_job:
             logger.warning("found failed push job, will trigger again")
-            
-        return has_failed_job
 
+        return has_failed_job
 
     def is_doc_approved(self):
         """
@@ -579,4 +579,3 @@ class Advisory(Erratum):
                 blocking_ads.append(ad)
 
         return blocking_ads
-
