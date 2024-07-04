@@ -307,7 +307,7 @@ class TestReport:
         """
         return OVERALL_STATUS_RED == self.get_overall_status()
 
-    def generate_bug_list(self, jira_issues: []):
+    def generate_bug_list(self, jira_issues: list):
         """
         Generate bug list of on_qa bugs
 
@@ -321,7 +321,7 @@ class TestReport:
         for key in jira_issues:
             try:
                 issue = jm.get_issue(key)
-            except JiraUnauthorizedException: # jira token does not have pemission to access security bugs, ignore it
+            except JiraUnauthorizedException:  # jira token does not have pemission to access security bugs, ignore it
                 continue
             logger.debug(f"updating jira issue {key} ...")
             if issue.is_on_qa():
@@ -350,7 +350,7 @@ class TestReport:
 
         logger.info("bugs to be verified are updated")
 
-    def update_bug_list(self, jira_issues: []):
+    def update_bug_list(self, jira_issues: list):
         """
         update existing bug status in report
         append new ON_QA bugs
@@ -398,7 +398,7 @@ class TestReport:
                 if key not in existing_bugs:
                     try:
                         issue = jm.get_issue(key)
-                    except JiraUnauthorizedException: # ignore the bug that cannot be accessed due to permission issue
+                    except JiraUnauthorizedException:  # ignore the bug that cannot be accessed due to permission issue
                         continue
                     if issue.is_on_qa():
                         logger.info(f"found new ON_QA bug {key}")
