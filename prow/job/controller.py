@@ -219,6 +219,11 @@ class JobController:
     def get_current_build(self, build_file=None):
         if build_file == None:
             build_file = self._build_file
+
+        # check build file exists or not
+        if not self.release_test_record.file_exists(build_file):
+            return None
+
         data = self.release_test_record.get_file_content(build_file)
         return Build(data)
 
