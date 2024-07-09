@@ -196,7 +196,6 @@ class JobController:
         self.release_test_master = GithubUtil(REPO_RELEASE_TESTS)
 
     def get_latest_build(self):
-
         try:
             logger.info(
                 f"Getting latest {self._build_type} build for {self._release} ...")
@@ -209,10 +208,6 @@ class JobController:
         if resp.text:
             logger.info(
                 f"Latest {self._build_type} build of {self._release} is:\n{resp.text}")
-            # if record file does not exist, create it on github repo
-            if not self.release_test_record.file_exists(self._build_file):
-                self.release_test_record.push_file(
-                    data=resp.text, path=self._build_file)
 
         return Build(resp.text)
 
