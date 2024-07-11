@@ -25,6 +25,26 @@ client = SocketModeClient(
 )
 
 
+def replace_mailto(message):
+    pattern = r'<mailto:([^|]+)\|([^>]+)>'
+    match = re.search(pattern, message)
+    if match:
+        email = match.group(2)
+        return message.replace(match.group(0), email)
+    else:
+        return message
+
+
+def get_username(user_id):
+    resp = client.web_client.users_info(user=user_id)
+    if resp['ok']:
+        user_info = resp['user']
+        username = user_info['name']
+        return username
+    else:
+        return "unknown user"
+
+
 def process(client: SocketModeClient, req: SocketModeRequest):
     # Acknowledge the request anyway
     response = SocketModeResponse(envelope_id=req.envelope_id)
@@ -38,6 +58,7 @@ def process(client: SocketModeClient, req: SocketModeRequest):
         message = event["text"]
         channel_id = event["channel"]
         thread_ts = event["ts"]
+        username = get_username(event["user"])
 
         if event_type in ["message", "app_mention"]:
             if "Hello" in message:
@@ -47,7 +68,10 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                     text="I'm qe release bot",
                 )
 
+            # slack will transform the email address in message with mailto format e.g. <mailto:xx@foo.com|xx@foo.com>
+            message = replace_mailto(message)
             if message.startswith("oar") or re.search("^<\@.*>\ oar\ ", message):
+                logger.info(f"received cmd from user <{username}>: {message}")
                 cmd = message[message.index("oar"):]
                 result = subprocess.run(shlex.split(
                     cmd), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
