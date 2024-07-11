@@ -1,5 +1,6 @@
 import click
 import logging
+import re
 import oar.core.util as util
 from oar.core.worksheet_mgr import WorksheetManager, WorksheetException
 from oar.core.jira_mgr import JiraManager, JiraException
@@ -11,11 +12,20 @@ from oar.core.const import *
 logger = logging.getLogger(__name__)
 
 
+def validate_email(ctx, param, value):
+    email_pattern = re.compile(
+        r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+    if not email_pattern.match(value):
+        raise click.BadParameter(f"{value} is not a valid email")
+    return value
+
+
 @click.command()
 @click.option(
     "-e",
     "--email",
     required=True,
+    callback=validate_email,
     help="email address of the owner",
 )
 @click.pass_context

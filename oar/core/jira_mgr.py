@@ -168,7 +168,8 @@ class JiraManager:
         if len(subtasks):
             for st in subtasks:
                 if st.get_summary() in JIRA_QE_TASK_SUMMARIES:
-                    self.assign_issue(st.get_key(), self._cs.get_owner())
+                    self.assign_issue(
+                        st.get_key(), self._cs.get_owner().split('@')[0])
                     updated_tasks.append(st.get_key())
                     if st.get_summary().startswith(
                         "[Wed-Fri]"
