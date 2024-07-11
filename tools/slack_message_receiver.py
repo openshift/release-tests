@@ -10,7 +10,7 @@ import subprocess
 import shlex
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("TestSocketMode")
+logger = logging.getLogger("QEReleaseBot")
 
 
 # Initialize SocketModeClient with an app-level token + WebClient
