@@ -510,10 +510,10 @@ class MessageHelper:
         message = ""
         if len(doc_appr):
             logger.info(f"send message for doc approval")
-            message = f"[{self.cs.release}] Hello {gid}, Could you approve doc for advisories:{str(doc_appr)}, thanks!"
+            message = f"[{self.cs.release}] Hello {gid}, Could you approve doc for advisories:{doc_appr}, thanks!"
         if len(prodsec_appr):
             logger.info(f"send message for Prodsec approval")
-            message += f"\n[{self.cs.release}] Hello {userid}, Could you approve Prodsec for advisories:{str(prodsec_appr)}, thanks!"
+            message += f"\n[{self.cs.release}] Hello {userid}, Could you approve Prodsec for advisories:{prodsec_appr}, thanks!"
         return message
 
     def get_slack_message_for_jenkins_build(self, job_name, build_info):
