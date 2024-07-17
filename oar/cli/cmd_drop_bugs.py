@@ -25,12 +25,12 @@ def drop_bugs(ctx):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
         # check doc and product security approval advisories
-        approved_doc_ads,approved_prodsec_ads = am.get_doc_prodsec_approved_ads()        
+        approved_doc_ads, approved_prodsec_ads = am.get_doc_prodsec_approved_ads()
         dropped_bugs, must_verify_bugs = am.drop_bugs()
         # check if all bugs are verified
         nm = NotificationManager(cs)
-        requested_doc_ads=[]
-        requested_prodsec_ads=[]
+        requested_doc_ads = []
+        requested_prodsec_ads = []
         if len(dropped_bugs) or len(must_verify_bugs):
             logger.info("updating test report")
             report.update_bug_list(am.get_jira_issues())
@@ -40,17 +40,19 @@ def drop_bugs(ctx):
             if len(approved_doc_ads):
                 for ad in approved_doc_ads:
                     ad.refresh()
-                    if not ad.is_doc_approved() and  not ad.is_doc_requested():
+                    if not ad.is_doc_approved() and not ad.is_doc_requested():
                         ad.request_doc_approval()
-                        requested_doc_ads.append(ad)
+                        requested_doc_ads.append(ad.errata_id)
             if len(approved_prodsec_ads):
                 for ad in approved_prodsec_ads:
                     ad.refresh()
                     if ad.is_prodsec_requested() == 'null':
                         ad.request_prodsec_approval()
-                        requested_prodsec_ads.append(ad)
-            logger.info(f"request doc and prodsec advisories are:{requested_doc_ads} and {requested_prodsec_ads}")
-        nm.share_doc_prodsec_approval_result(requested_doc_ads,requested_prodsec_ads)
+                        requested_prodsec_ads.append(ad.errata_id)
+            logger.info(
+                f"request doc and prodsec advisories are:{requested_doc_ads} and {requested_prodsec_ads}")
+        nm.share_doc_prodsec_approval_result(
+            requested_doc_ads, requested_prodsec_ads)
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_PASS)
         report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)
     except Exception as e:
