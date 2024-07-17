@@ -267,8 +267,9 @@ class JobController:
             f"Start to trigger prow job {test_job.prow_job} ...\n")
         prow_job_id = ""
         if test_job.upgrade:
-            if self._nightly and "upgrade-from-stable" in test_job.prow_job:
-                # OCPQE-23403 to support test nightly upgrade with `upgrade-from-stable` job, if build is nightly, we should use latest stable build as param upgrade_from
+            if self._nightly and f"upgrade-from-stable-{self._release}" in test_job.prow_job:
+                # OCPQE-23403 to support test nightly upgrade with `upgrade-from-stable` job e.g. `upgrade-from-stable-4.16`, if build is nightly, we should use latest stable build as param upgrade_from
+                # This logic only supports upgrade from latest stable version of current release e.g. from 4.16.3 to latest nightly
                 latest_stable_build = self.get_current_build(
                     build_file=self._build_file_for_stable)
                 prow_job_id = self.job_api.run_job(
