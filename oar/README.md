@@ -25,7 +25,7 @@ kinit $kid@$domain
 ```
 - Bugzilla login api-key, the credentail will be cached to ~/.config/python-bugzilla/bugzillarc. 
 ```
-bugzilla login --api-key xxx
+echo 'xxx' | bugzilla login --api-key
 ```
    - According to security policy, sensitive data in config file should NOT be plain text, we use JWE to encrypt `config_store.json`, encryption key should be exported by var `OAR_JWK`, value can be found in above bitwarden item
 ### Command help
