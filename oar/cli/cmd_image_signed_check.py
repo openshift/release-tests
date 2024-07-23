@@ -33,7 +33,8 @@ def get_image_digest(url, current_try=0):
 
     if not digest:
         if current_try == max_retries:
-            logger.error(f"Imgage digest failed to show after {max_retries} retries!")
+            logger.error(
+                f"Imgage digest failed to show after {max_retries} retries!")
             return
         else:
             logger.debug(f"Current try: {current_try}")
@@ -55,9 +56,11 @@ def image_signed_check(ctx):
     """
     cs = ctx.obj["cs"]
     report = WorksheetManager(cs).get_test_report()
-    image_signed_check_result = report.get_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY)
+    image_signed_check_result = report.get_task_status(
+        LABEL_TASK_PAYLOAD_IMAGE_VERIFY)
     if image_signed_check_result == TASK_STATUS_PASS:
-        logger.info("image signed check already pass, not need to trigger again")
+        logger.info(
+            "image signed check already pass, not need to trigger again")
     else:
         report.update_task_status(
             LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_INPROGRESS
@@ -71,7 +74,7 @@ def image_signed_check(ctx):
             digest_sha = get_image_digest(release_url)
             reformatted_digest = digest_sha.replace(":", "=")
             # 2. query the mirror location
-            mirror_url = cs.get_signature_url() + reformatted_digest + "/"
+            mirror_url = f"{cs.get_signature_url()}{reformatted_digest}/signature-1"
             logger.info(f"Comparing digest from url: {mirror_url}")
             rest = requests.get(mirror_url)
             rest.raise_for_status()
@@ -82,5 +85,6 @@ def image_signed_check(ctx):
                 )
         except RequestException:
             logger.exception("Visit release/mirror url failed")
-            report.update_task_status(LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_FAIL)
+            report.update_task_status(
+                LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_FAIL)
             raise
