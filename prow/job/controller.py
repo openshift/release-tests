@@ -672,7 +672,7 @@ class TestResultAggregator():
                 nightly = "nightly" in file_name
                 # get build number from file name
                 build = re.search(
-                    r'\d.*\d', file_name[:file_name.index(self._arch)]).group()
+                    r'\d.*\d', file_name[:file_name.rfind(self._arch)]).group()
                 # if the nightly build is recycled/cannot be found on releasestream, will skip aggregation and delete test result file
                 if nightly and self.build_does_not_exists(build, self._arch):
                     logger.info(f"build {build} is recycled, skip aggregation")
