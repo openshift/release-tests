@@ -1,5 +1,7 @@
 import os
+import re
 import smtplib
+import logging
 import oar.core.util as util
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -9,7 +11,7 @@ from oar.core.worksheet_mgr import TestReport
 from oar.core.jira_mgr import JiraManager
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-import logging
+
 
 logger = logging.getLogger(__name__)
 
@@ -261,6 +263,7 @@ class SlackClient:
         Returns:
             str: slack user id
         """
+        email = self.transform_email(email)
         try:
             resp = self.client.api_call(
                 api_method="users.lookupByEmail", params={"email": email}
@@ -301,6 +304,19 @@ class SlackClient:
                 f"cannot find slack group id by name {name}")
 
         return "<!subteam^%s>" % ret_id
+
+    def transform_email(self, email):
+        '''
+        Email id in JIRA profile is not same as slack profile, 
+        e.g. in JIRA it's xxx+jira, in slack it's xxx
+        '''
+        at_index = email.find('@')
+        before_at = email[:at_index]
+        if re.search(r'\+\w+', before_at):
+            cleaned_part = re.sub(r'\+\w+', '', before_at)
+            return cleaned_part + email[at_index:]
+        else:
+            return email
 
 
 class MessageHelper:
