@@ -91,8 +91,12 @@ class Jobs:
         if payload is not None:
             env = {"envs": {amd_latest: payload}}
             if "arm64" in payload or "aarch64" in payload:
-                self.get_amd_image_for_arm(payload)
-                env = {"envs": {amd_latest: self.base_image, arm_latest: payload}}
+                # OCPQE-24207 only specify RELEASE_IMAGE_LATEST if payload is stable build
+                if "nightly" in payload:
+                    env = {"envs": {arm_latest: payload}}
+                else:
+                    self.get_amd_image_for_arm(payload)
+                    env = {"envs": {amd_latest: self.base_image, arm_latest: payload}}
             if "multi" in payload:
                 env = {"envs": {multi_latest: payload}}
             if "ppc64le" in payload:
@@ -119,14 +123,18 @@ class Jobs:
             if ("arm64" in upgrade_from or "aarch64" in upgrade_from) and (
                 "arm64" in upgrade_to or "aarch64" in upgrade_to
             ):
-                self.get_amd_image_for_arm(upgrade_from)
-                env = {
-                    "envs": {
-                        amd_latest: self.base_image,
-                        arm_latest: upgrade_from,
-                        arm_target: upgrade_to,
+                if "nightly" in upgrade_from or "nightly" in upgrade_to:
+                    env = {"envs": {arm_latest: upgrade_from,
+                                    arm_target: upgrade_to}}
+                else:
+                    self.get_amd_image_for_arm(upgrade_from)
+                    env = {
+                        "envs": {
+                            amd_latest: self.base_image,
+                            arm_latest: upgrade_from,
+                            arm_target: upgrade_to,
+                        }
                     }
-                }
         if upgrade_from is None and upgrade_to is not None:
             env = {"envs": {amd_target: upgrade_to}}
             if "multi" in upgrade_to:
@@ -134,8 +142,12 @@ class Jobs:
             if "ppc64le" in upgrade_to:
                 env = {"envs": {ppc64le_target: upgrade_to}}
             if "arm64" in upgrade_to or "aarch64" in upgrade_to:
-                self.get_amd_image_for_arm(upgrade_to)
-                env = {"envs": {amd_latest: self.base_image, arm_target: upgrade_to}}
+                if "nightly" in upgrade_to:
+                    env = {"envs": {arm_target: upgrade_to}}
+                else:
+                    self.get_amd_image_for_arm(upgrade_to)
+                    env = {"envs": {amd_latest: self.base_image,
+                                    arm_target: upgrade_to}}
         if upgrade_from is not None and upgrade_to is None:
             env = {"envs": {amd_latest: upgrade_from}}
             if "multi" in upgrade_from:
@@ -143,9 +155,12 @@ class Jobs:
             if "ppc64le" in upgrade_from:
                 env = {"envs": {ppc64le_latest: upgrade_from}}
             if "arm64" in upgrade_from or "aarch64" in upgrade_from:
-                self.get_amd_image_for_arm(upgrade_from)
-                env = {"envs": {amd_latest: self.base_image,
-                                arm_latest: upgrade_from}}
+                if "nightly" in upgrade_from:
+                    env = {"envs": {arm_latest: upgrade_from}}
+                else:
+                    self.get_amd_image_for_arm(upgrade_from)
+                    env = {"envs": {amd_latest: self.base_image,
+                                    arm_latest: upgrade_from}}
         if env is not None:
             data = {"job_execution_type": "1", "pod_spec_options": env}
         print(data)
