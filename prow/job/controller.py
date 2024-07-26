@@ -639,7 +639,7 @@ class TestMetrics():
         return self._successful_required
 
     def is_qe_accepted(self):
-        return self.successful_required.value == self.required.value
+        return self.required.value > 0 and self.successful_required.value > 0 and self.successful_required.value == self.required.value
 
     def all_jobs_are_completed(self):
         return self.total.value > 0 and self.completed.value > 0 and self.total.value == self.completed.value
