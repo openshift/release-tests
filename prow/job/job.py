@@ -91,8 +91,12 @@ class Jobs:
         if payload is not None:
             env = {"envs": {amd_latest: payload}}
             if "arm64" in payload or "aarch64" in payload:
-                self.get_amd_image_for_arm(payload)
-                env = {"envs": {amd_latest: self.base_image, arm_latest: payload}}
+                # OCPQE-24207 only specify RELEASE_IMAGE_LATEST if payload is stable build
+                if "nightly" in payload:
+                    env = {"envs": {arm_latest: payload}}
+                else:
+                    self.get_amd_image_for_arm(payload)
+                    env = {"envs": {amd_latest: self.base_image, arm_latest: payload}}
             if "multi" in payload:
                 env = {"envs": {multi_latest: payload}}
             if "ppc64le" in payload:
