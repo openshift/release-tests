@@ -37,13 +37,62 @@
           "jobStartTime": "2024-07-27T02:21:29Z",
           "jobID": "c5282ccf-bd05-4ffe-a456-4da0f70da858",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1817022467437236224",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-07-27T04:48:05Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 94,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:ikanse-LEVEL0-Critical-51974-Vector Forward logs to Cloudwatch by logtype"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-07-27T02:21:34Z",
           "jobID": "634c2fd8-669c-4048-bd72-a92d7c06d694",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1817022489037901824",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-07-27T04:49:13Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 94,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-auth] Authentication WRS-ConnectedOnly-Author:dmukherj-LEVEL0-High-47941-User should not be allowed to create privileged ephemeral container without required privileges",
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:ikanse-LEVEL0-Critical-51974-Vector Forward logs to Cloudwatch by logtype"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -81,5 +130,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-07-26-120421",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-07-26-120421"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
