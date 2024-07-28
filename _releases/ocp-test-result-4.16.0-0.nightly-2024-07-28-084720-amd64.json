@@ -6,9 +6,46 @@
         "jobStartTime": "2024-07-28T16:22:57Z",
         "jobID": "1231660f-ca71-43a8-9edb-c483052ab4d3",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1817596618090745856",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-07-28T18:52:49Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 94,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:ikanse-LEVEL0-Critical-51974-Vector Forward logs to Cloudwatch by logtype"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-07-28T19:19:37Z",
+          "jobID": "a1e69d19-f028-49da-9d5a-c933c8b9b441",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1817641076576489472",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-07-28T19:19:42Z",
+          "jobID": "ae2e26b9-4a36-47c1-981f-79aa0bc827c5",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1817641097711587328",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery",
@@ -16,7 +53,28 @@
         "jobStartTime": "2024-07-28T16:23:02Z",
         "jobID": "c290cb15-66fc-47ae-b969-949a4dbe1191",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery/1817596639460724736",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-07-28T18:44:31Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 94,
+            "failures": 6,
+            "errors": 0,
+            "skipped": 21,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus",
+              "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:ikanse-LEVEL0-Critical-51974-Vector Forward logs to Cloudwatch by logtype",
+              "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-60351-Critical-60352-Install Run Once Duration Override operator via a deployment and verify that it works fine",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-60598-High-60599-[CSI-Driver] [BYOK] Pre-defined storageclass and user defined storageclass should provision volumes as expected"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
