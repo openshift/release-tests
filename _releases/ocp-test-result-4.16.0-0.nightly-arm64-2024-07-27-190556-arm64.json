@@ -6,7 +6,25 @@
         "jobStartTime": "2024-07-28T00:09:02Z",
         "jobID": "77445829-14e2-4dca-8d26-0ab1449cef45",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-arm64-nightly-aws-ipi-private-f28-disasterrecovery/1817351521910657024",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-07-28T04:04:24Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 2
+          },
+          "openshift-extended-test": {
+            "total": 94,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 29,
+            "failingScenarios": [
+              "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:ikanse-LEVEL0-Critical-51974-Vector Forward logs to Cloudwatch by logtype"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -16,5 +34,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp-arm64/release-arm64:4.16.0-0.nightly-arm64-2024-07-27-190556",
     "downloadURL": "https://openshift-release-artifacts-arm64.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-arm64-2024-07-27-190556"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
