@@ -178,6 +178,9 @@ class AdvisoryManager:
                     logger.warn(
                         f"cannot change state of advisory {ad.errata_id} from {target_status} to {ad.get_state()}, skip")
                     continue
+                if ad.has_blocking_secruity_alert():
+                    raise AdvisoryException(
+                        f"advisory {ad.errata_id} has blocking secalerts, please contact prodsec team")
                 ad.set_state(target_status.strip())
         except Exception as e:
             raise AdvisoryException(f"change advisory status failed") from e
@@ -579,3 +582,35 @@ class Advisory(Erratum):
                 blocking_ads.append(ad)
 
         return blocking_ads
+
+    def get_security_alerts(self):
+        """
+        Get secalerts for current advisory
+        """
+        if self.errata_type == "RHSA":
+            url = "/api/v1/erratum/%i/security_alerts" % self.errata_id
+            return self._get(url)
+        else:
+            # RHBA does not have secalerts
+            logger.warning(
+                f"RHBA advisory {self.errata_id} does not have secalerts")
+            return None
+
+    def has_blocking_secruity_alert(self):
+        """
+        Check is RHSA advisory has blocking secalert
+        """
+        json_dict = self.get_security_alerts()
+        if json_dict:
+            alerts = json_dict["alerts"]
+            blocking = alerts["blocking"]
+            if blocking:
+                logger.info(
+                    f"found blocking secalert on advisory {self.errata_id}")
+                logger.info(json.dumps(alerts["alerts"], indent=2))
+            else:
+                logger.info(
+                    f"RHSA advisory {self.errata_id} does not have blocking secalert")
+            return blocking
+        else:
+            return False

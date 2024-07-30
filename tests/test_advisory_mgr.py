@@ -60,4 +60,11 @@ class TestAdvisoryManager(unittest.TestCase):
         self.me = AdvisoryManager(ConfigStore("4.13.15"))
         ads = self.me.get_advisories()
         for ad in ads:
-            self.assertNotEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP, "AD with DROOPED NO SHIP hasn't been fileter out")
+            self.assertNotEqual(ad.errata_state, AD_STATUS_DROPPED_NO_SHIP,
+                                "AD with DROOPED NO SHIP hasn't been fileter out")
+
+    def test_get_security_alerts(self):
+        self.me = AdvisoryManager(ConfigStore("4.12.61"))
+        ads = self.me.get_advisories()
+        for ad in ads:
+            self.assertFalse(ad.has_blocking_secruity_alert(), f"advisory {ad.errata_id} has blocking security alerts")
