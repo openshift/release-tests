@@ -6,7 +6,25 @@
         "jobStartTime": "2024-07-30T08:08:52Z",
         "jobID": "32de2bb8-5177-41f6-b89b-acf6ed1b7330",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-arm64-nightly-aws-ipi-private-f28-disasterrecovery/1818197055928012800",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-07-30T12:10:01Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 9,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 2,
+            "failingScenarios": [
+              "[sig-disasterrecovery] DR_Testing Longduration-Author:skundu-NonPreRelease-Critical-59377-etcd-operator should not scale-down when all members are healthy. [Disruptive] [Serial]"
+            ]
+          },
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 28
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -16,5 +34,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp-arm64/release-arm64:4.16.0-0.nightly-arm64-2024-07-30-034547",
     "downloadURL": "https://openshift-release-artifacts-arm64.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-arm64-2024-07-30-034547"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
