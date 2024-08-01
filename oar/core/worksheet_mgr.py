@@ -459,7 +459,7 @@ class TestReport:
         Append missed cve tracker bugs
         """
         if len(cve_tracker_bugs) == 0:
-            logger.warn("no cve bugs found, won't update report")
+            logger.warning("no cve bugs found, won't update report")
             return
 
         row_idx = 8
