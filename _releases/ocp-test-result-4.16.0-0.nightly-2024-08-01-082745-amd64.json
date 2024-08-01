@@ -6,7 +6,28 @@
         "jobStartTime": "2024-08-01T16:24:22Z",
         "jobID": "b6c72748-0317-460b-a0a4-02cf01db954f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1819046526383558656",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2024-08-01T19:02:01Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 23
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -16,7 +37,25 @@
         "jobStartTime": "2024-08-01T16:24:27Z",
         "jobID": "344876b1-4367-437b-b593-99160415b5ef",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery/1819046547938086912",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-01T18:39:34Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-60351-Critical-60352-Install Run Once Duration Override operator via a deployment and verify that it works fine"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -26,5 +65,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-08-01-082745",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-08-01-082745"
-  }
+  },
+  "aggregated": true,
+  "accepted": true
 }
