@@ -30,7 +30,25 @@
         "jobStartTime": "2024-08-01T06:20:33Z",
         "jobID": "d13b018d-90f3-48e0-b109-148b4795b039",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery/1818894569190723584",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-01T08:41:37Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-60351-Critical-60352-Install Run Once Duration Override operator via a deployment and verify that it works fine"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
