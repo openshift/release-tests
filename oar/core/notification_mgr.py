@@ -227,7 +227,8 @@ class MailClient:
                 self.from_addr, to_addrs.split(","), message.as_string()
             )
             if len(senderrs):
-                logger.warn(f"someone in the to_list is rejected: {senderrs}")
+                logger.warning(
+                    f"someone in the to_list is rejected: {senderrs}")
         except smtplib.SMTPException as se:  # catch all the exceptions here
             raise NotificationException("send email failed") from se
         finally:
@@ -270,7 +271,7 @@ class SlackClient:
             )
             userid = resp["user"]["id"]
         except SlackApiError as e:
-            logger.warn(f"cannot get slack user id for <{email}>: {e}")
+            logger.warning(f"cannot get slack user id for <{email}>: {e}")
             return email
 
         return "<@%s>" % userid

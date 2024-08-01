@@ -76,7 +76,7 @@ class AdvisoryManager:
                 # only check if the state is [NEW_FILES]
                 # talked with ART, microshift advisory should be excluded from this check
                 if ad.errata_state == AD_STATUS_NEW_FILES and ad.impetus != AD_IMPETUS_MICROSHIFT:
-                    logger.warn(
+                    logger.warning(
                         f"advisory state is not QE, it is {ad.errata_state}")
                     abnormal_ads.append(ad.errata_id)
                 ad.change_qe_email(self._cs.get_owner())
@@ -175,7 +175,7 @@ class AdvisoryManager:
             ads = self.get_advisories()
             for ad in ads:
                 if target_status == AD_STATUS_REL_PREP and ad.get_state() != AD_STATUS_QE:
-                    logger.warn(
+                    logger.warning(
                         f"cannot change state of advisory {ad.errata_id} from {target_status} to {ad.get_state()}, skip")
                     continue
                 if ad.has_blocking_secruity_alert():
@@ -214,7 +214,7 @@ class AdvisoryManager:
                             or issue.is_customer_case()
                             or issue.is_cve_tracker()
                         ):
-                            logger.warn(
+                            logger.warning(
                                 f"jira issue {key} is critical: {issue.is_critical_issue()} or customer case: {issue.is_customer_case()} or cve tracker: {issue.is_cve_tracker()}, it must be verified"
                             )
                             all_must_verify_bugs.append(key)
@@ -406,7 +406,7 @@ class Advisory(Erratum):
                 for ad in blocking_ads:
                     if ad.are_push_jobs_running():
                         blocking_jobs_completed = False
-                        logger.warn(
+                        logger.warning(
                             f"push jobs of blocking advisory {ad.errata_id} are not completed yet, will not trigger push job for {self.errata_id}, please try again later")
                 if not blocking_jobs_completed:
                     return False
