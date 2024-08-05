@@ -6,7 +6,25 @@
         "jobStartTime": "2024-08-05T00:09:45Z",
         "jobID": "e3d65253-6c88-440d-90c3-4209003bb260",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-arm64-nightly-aws-ipi-private-f28-disasterrecovery/1820250805924532224",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-05T04:10:21Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 9,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 2,
+            "failingScenarios": [
+              "[sig-disasterrecovery] DR_Testing LEVEL0-ROSA-ARO-OSD_CCS-NonPreRelease-Longduration-Author:rgangwar-High-19941-[Apiserver] [failure inject] when 1 master is down the cluster should continue serving well without unavailable more than 30s [Disruptive] [Serial]"
+            ]
+          },
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 28
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -16,5 +34,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp-arm64/release-arm64:4.16.0-0.nightly-arm64-2024-08-04-185111",
     "downloadURL": "https://openshift-release-artifacts-arm64.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-arm64-2024-08-04-185111"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
