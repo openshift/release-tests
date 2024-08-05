@@ -1,8 +1,8 @@
 import unittest
 import os
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JiraException
-from oar.core.jira_mgr import JiraManager
+from oar.core.jira import JiraManager
 from oar.core.const import *
 
 

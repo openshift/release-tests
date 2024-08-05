@@ -14,7 +14,7 @@ from oar.cli.cmd_push_to_cdn import push_to_cdn_staging
 from oar.cli.cmd_drop_bugs import drop_bugs
 from oar.cli.cmd_change_advisory_status import change_advisory_status
 from oar.cli.cmd_check_cve_tracker_bug import check_cve_tracker_bug
-from oar.core.config_store import ConfigStore, ConfigStoreException
+from oar.core.configstore import ConfigStore, ConfigStoreException
 from oar.core.const import CONTEXT_SETTINGS
 
 logger = logging.getLogger(__name__)

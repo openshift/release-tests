@@ -1,9 +1,9 @@
 import unittest
 from oar.core.exceptions import WorksheetException
-from oar.core.worksheet_mgr import WorksheetManager
-from oar.core.advisory_mgr import AdvisoryManager
-from oar.core.worksheet_mgr import TestReport
-from oar.core.config_store import ConfigStore
+from oar.core.worksheet import WorksheetManager
+from oar.core.advisory import AdvisoryManager
+from oar.core.worksheet import TestReport
+from oar.core.configstore import ConfigStore
 from oar.core.const import *
 
 

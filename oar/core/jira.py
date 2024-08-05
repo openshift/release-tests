@@ -1,6 +1,6 @@
 import logging
 import time
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JiraException
 from oar.core.exceptions import JiraUnauthorizedException
 from oar.core.const import *

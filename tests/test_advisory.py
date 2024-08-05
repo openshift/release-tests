@@ -1,7 +1,7 @@
 import unittest
-from oar.core.advisory_mgr import AdvisoryManager
-from oar.core.advisory_mgr import Advisory
-from oar.core.config_store import ConfigStore
+from oar.core.advisory import AdvisoryManager
+from oar.core.advisory import Advisory
+from oar.core.configstore import ConfigStore
 from oar.core.const import *
 
 

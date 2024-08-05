@@ -5,10 +5,10 @@ import logging
 import oar.core.util as util
 from oar.core.exceptions import WorksheetException
 from oar.core.exceptions import JiraUnauthorizedException
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.advisory_mgr import AdvisoryManager, Advisory
-from oar.core.jira_mgr import JiraManager
+from oar.core.advisory import AdvisoryManager, Advisory
+from oar.core.jira import JiraManager
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import *
 from gspread import Worksheet
