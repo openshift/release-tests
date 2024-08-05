@@ -5,10 +5,10 @@ import logging
 import oar.core.util as util
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.exceptions import NotificationException
-from oar.core.worksheet_mgr import TestReport
-from oar.core.jira_mgr import JiraManager
+from oar.core.worksheet import TestReport
+from oar.core.jira import JiraManager
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 

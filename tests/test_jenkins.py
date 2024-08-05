@@ -1,6 +1,6 @@
 import unittest
-from oar.core.jenkins_helper import JenkinsHelper
-from oar.core.config_store import ConfigStore
+from oar.core.jenkins import JenkinsHelper
+from oar.core.configstore import ConfigStore
 
 
 class TestJenkinsHelper(unittest.TestCase):

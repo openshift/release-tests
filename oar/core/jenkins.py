@@ -5,7 +5,7 @@ import logging
 import oar.core.util as util
 from jenkins import JenkinsException
 from oar.core.exceptions import JenkinsHelperException
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.const import *
 
 logger = logging.getLogger(__name__)

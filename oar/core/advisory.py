@@ -1,8 +1,8 @@
 from errata_tool import Erratum
 from errata_tool import ErrataException
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.exceptions import AdvisoryException
-from oar.core.jira_mgr import JiraManager, JiraException
+from oar.core.jira import JiraManager, JiraException
 from oar.core.const import *
 import oar.core.util as util
 import logging

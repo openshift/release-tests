@@ -1,9 +1,9 @@
 import click
 import logging
-from oar.core.worksheet_mgr import WorksheetManager
-from oar.core.advisory_mgr import AdvisoryManager
-from oar.core.jira_mgr import JiraManager
-from oar.core.config_store import ConfigStore
+from oar.core.worksheet import WorksheetManager
+from oar.core.advisory import AdvisoryManager
+from oar.core.jira import JiraManager
+from oar.core.configstore import ConfigStore
 from oar.core.const import *
 
 logger = logging.getLogger(__name__)

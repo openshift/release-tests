@@ -35,7 +35,7 @@ class ConfigStore:
         self.release = release
 
         # load local config file
-        path = os.path.dirname(__file__) + "/config_store.json"
+        path = os.path.dirname(__file__) + "/configstore.json"
         with open(path) as f:
             jwk = self._get_env_var("OAR_JWK")
             self._local_conf = json.loads(jwe.decrypt(f.read(), jwk))

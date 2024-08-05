@@ -1,9 +1,9 @@
 import click
 import logging
-from oar.core.worksheet_mgr import WorksheetManager
-from oar.core.advisory_mgr import AdvisoryManager
-from oar.core.config_store import ConfigStore
-from oar.core.notification_mgr import NotificationManager
+from oar.core.worksheet import WorksheetManager
+from oar.core.advisory import AdvisoryManager
+from oar.core.configstore import ConfigStore
+from oar.core.notification import NotificationManager
 from oar.core.const import *
 
 logger = logging.getLogger(__name__)

@@ -5,7 +5,7 @@ import requests
 from requests.exceptions import RequestException
 from requests.exceptions import InvalidJSONError
 from oar.core.const import *
-from oar.core.worksheet_mgr import WorksheetManager
+from oar.core.worksheet import WorksheetManager
 import time
 
 logger = logging.getLogger(__name__)

@@ -1,11 +1,11 @@
 import click
 import logging
-from oar.core.config_store import ConfigStore
+from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JenkinsHelperException
-from oar.core.jenkins_helper import JenkinsHelper
+from oar.core.jenkins import JenkinsHelper
 from oar.core.const import *
-from oar.core.notification_mgr import NotificationManager
-from oar.core.worksheet_mgr import WorksheetManager
+from oar.core.notification import NotificationManager
+from oar.core.worksheet import WorksheetManager
 
 logger = logging.getLogger(__name__)
 
