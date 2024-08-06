@@ -1,6 +1,7 @@
 import yaml
 import requests
 import click
+import re
 import logging
 from oar.core.configstore import ConfigStore
 from oar.cli.cmd_create_test_report import create_test_report
@@ -17,6 +18,7 @@ class ReleaseDetector:
         prepared, we can kick off QE release flow
         """
         self._minor_release = minor_release
+
         # TODO: create statebox object
 
     def get_latest_zstream_version(self):
@@ -63,7 +65,14 @@ class ReleaseDetector:
             logger.info("no new z-stream release found")
 
 
+def validate_minor_release(ctx, param, value):
+    pattern = re.compile(r"^4\.\d{1,2}$")
+    if not pattern.match(value):
+        raise click.BadParameter(f"Invalid OCP minor version {value}")
+    return value
+
+
 @click.command()
-@click.option("-r", "--minor-release", help="Minor rlease of OCP e.g. 4.y", required=True)
+@click.option("-r", "--minor-release", help="Minor rlease of OCP e.g. 4.y", required=True, callback=validate_minor_release)
 def start_release_detector(minor_release):
     ReleaseDetector(minor_release).start()
