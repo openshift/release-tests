@@ -14,13 +14,58 @@
           "jobStartTime": "2024-08-08T09:31:30Z",
           "jobID": "613e5301-ad78-40c6-82c2-9f2ede7fe384",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1821479345709912064",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-08-08T11:58:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 92,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 22
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-08-08T09:31:35Z",
           "jobID": "67b4c420-6de3-46a3-8896-6c5c5b0591db",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1821479359333011456",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-08-08T11:55:14Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 92,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads Validate Secondary Scheduler Operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -58,5 +103,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-08-08-003631",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-08-08-003631"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
