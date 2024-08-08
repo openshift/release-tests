@@ -54,6 +54,10 @@ class ReleaseDetector:
         logger.info(f"latest z-stream version: {latest_zstream_version}")
         logger.info(f"latest stable version: {latest_stable_version}")
 
+        if latest_zstream_version is None or latest_stable_version is None:
+            logger.error("get latest versions failed")
+            return
+
         if latest_zstream_version != latest_stable_version:
             logger.info(
                 f"new z-stream release is detected: {latest_zstream_version}")
