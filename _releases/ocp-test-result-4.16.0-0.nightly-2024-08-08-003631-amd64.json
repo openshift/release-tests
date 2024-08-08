@@ -6,9 +6,23 @@
         "jobStartTime": "2024-08-08T06:21:27Z",
         "jobID": "71ffd9d0-232e-4bbe-891f-3122d10862fd",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1821431513426694144",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-08T09:02:01Z"
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-08-08T09:31:30Z",
+          "jobID": "613e5301-ad78-40c6-82c2-9f2ede7fe384",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1821479345709912064",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-08-08T09:31:35Z",
+          "jobID": "67b4c420-6de3-46a3-8896-6c5c5b0591db",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1821479359333011456",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery",
@@ -16,7 +30,25 @@
         "jobStartTime": "2024-08-08T06:21:33Z",
         "jobID": "ca13ed74-658b-4d24-a59d-02f4975d4513",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery/1821431534746341376",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-08T08:42:13Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-network-edge] Network_Edge Component_Router should Author:hongli-LEVEL0-High-52837-switching of AWS CLB to NLB without deletion of ingresscontroller"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
