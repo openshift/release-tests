@@ -7,7 +7,7 @@ class WorksheetException(BaseException):
 
 
 class WorksheetExistsException(WorksheetException):
-    """Exception class to raise workhseet already exists error"""
+    """Exception class to raise worksheet already exists error"""
 
 
 class JiraException(BaseException):
