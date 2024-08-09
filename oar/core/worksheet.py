@@ -3,11 +3,11 @@ import gspread_formatting
 import os
 import logging
 import oar.core.util as util
-from oar.core.exceptions import WorksheetException
+from oar.core.exceptions import WorksheetException, WorksheetExistsException
 from oar.core.exceptions import JiraUnauthorizedException
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.advisory import AdvisoryManager, Advisory
+from oar.core.advisory import AdvisoryManager
 from oar.core.jira import JiraManager
 from google.oauth2.service_account import Credentials
 from gspread.exceptions import *
@@ -68,9 +68,9 @@ class WorksheetManager:
             try:
                 existing_sheet = self._doc.worksheet(self._cs.release)
                 if existing_sheet:
-                    raise WorksheetException(
-                        f"test report of {self._cs.release} already exists, url: {existing_sheet.url}"
-                    )
+                    logger.info(
+                        f"test report of {self._cs.release} already exists, url: {existing_sheet.url}")
+                    raise WorksheetExistsException()
             except WorksheetNotFound:
                 new_sheet = self._doc.duplicate_sheet(self._template.id)
                 new_sheet.update_title(self._cs.release)

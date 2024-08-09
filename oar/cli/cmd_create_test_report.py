@@ -1,7 +1,7 @@
 import click
 import logging
 import oar.core.util as util
-from oar.core.worksheet import WorksheetManager, WorksheetException
+from oar.core.worksheet import WorksheetManager, WorksheetException, WorksheetExistsException
 from oar.core.notification import NotificationManager, NotificationException
 
 logger = logging.getLogger(__name__)
@@ -19,6 +19,8 @@ def create_test_report(ctx):
     try:
         wm = WorksheetManager(cs)
         report = wm.create_test_report()
+    except WorksheetExistsException:
+        return
     except WorksheetException as we:
         logger.exception("create new test report failed")
         raise
