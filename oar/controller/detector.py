@@ -30,7 +30,7 @@ class ReleaseDetector:
         if resp.ok:
             yamlobj = yaml.safe_load(resp.text)
             releases = list(yamlobj["releases"].keys())
-            if len(releases) > 1:
+            if len(releases):
                 return releases[-1]
             else:
                 return None
