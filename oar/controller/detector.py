@@ -29,7 +29,11 @@ class ReleaseDetector:
         resp = requests.get(url)
         if resp.ok:
             yamlobj = yaml.safe_load(resp.text)
-            return list(yamlobj["releases"].keys())[-1]
+            releases = list(yamlobj["releases"].keys())
+            if len(releases) > 1:
+                return releases[-1]
+            else:
+                return None
         else:
             return None
 
