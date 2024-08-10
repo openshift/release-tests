@@ -6,9 +6,46 @@
         "jobStartTime": "2024-08-10T17:20:37Z",
         "jobID": "f7d53d2f-ec8d-4eda-89b1-deba8bd9b0d9",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1822322173830762496",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-10T19:46:08Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-ROSA-OSD_CCS-ARO-High-21205-Install descheduler operator via a deployment"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-08-10T20:21:02Z",
+          "jobID": "7d6f1685-ffbb-4abb-8899-464d33e31784",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1822367576789880832",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-08-10T20:21:07Z",
+          "jobID": "0b961406-3b57-4326-9155-97c088b0583c",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1822367597962727424",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery",
@@ -16,7 +53,25 @@
         "jobStartTime": "2024-08-10T17:20:43Z",
         "jobID": "d6571b92-740f-49ce-9b03-6b6f51d39f06",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery/1822322195133632512",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-10T19:47:11Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 92,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-network-edge] Network_Edge Component_Router should Author:hongli-LEVEL0-High-52837-switching of AWS CLB to NLB without deletion of ingresscontroller"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
