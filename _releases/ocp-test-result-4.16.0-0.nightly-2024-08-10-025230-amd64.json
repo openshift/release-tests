@@ -14,13 +14,58 @@
           "jobStartTime": "2024-08-10T12:21:38Z",
           "jobID": "1fad6895-9ccc-4ad7-99c4-4265213010cb",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1822246931905122304",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-08-10T14:48:48Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 92,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 22
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-08-10T12:21:43Z",
           "jobID": "c3189234-d3b4-41e5-83e6-a8928fb01f13",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1822246953061191680",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-08-10T14:48:35Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 92,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-ROSA-OSD_CCS-ARO-High-21205-Install descheduler operator via a deployment"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -58,5 +103,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-08-10-025230",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-08-10-025230"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
