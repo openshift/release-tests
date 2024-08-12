@@ -81,6 +81,10 @@ def validate_minor_release(ctx, param, value):
 
 
 @click.command()
-@click.option("-r", "--minor-release", help="Minor rlease of OCP e.g. 4.y", required=True, callback=validate_minor_release)
+@click.option("-r", "--minor-release",
+              help="Minor rlease of OCP e.g. 4.y",
+              prompt="Please input the minor version of OCP",
+              required=True,
+              callback=validate_minor_release)
 def start_release_detector(minor_release):
     ReleaseDetector(minor_release).start()
