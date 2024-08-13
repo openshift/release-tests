@@ -37,13 +37,58 @@
           "jobStartTime": "2024-08-13T20:23:26Z",
           "jobID": "5183bcfd-ff5b-48c6-81b2-81ccd02db71f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1823455341665325056",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-08-13T23:07:45Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 93,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_Router should Author:hongli-ROSA-OSD_CCS-LEVEL0-High-52837-switching of AWS CLB to NLB without deletion of ingresscontroller"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-08-13T20:23:31Z",
           "jobID": "0a57cfa0-99f9-4759-918f-896b3e43b2d0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1823455362833977344",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-08-13T23:12:18Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 93,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 22
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -64,5 +109,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-08-13-080843",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-08-13-080843"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
