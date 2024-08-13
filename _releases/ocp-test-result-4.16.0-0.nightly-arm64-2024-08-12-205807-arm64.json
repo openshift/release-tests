@@ -6,7 +6,25 @@
         "jobStartTime": "2024-08-13T02:09:56Z",
         "jobID": "bd845e6d-4ae4-4a47-b5aa-84efd2b16bf5",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-arm64-nightly-aws-ipi-private-f28-disasterrecovery/1823180155330236416",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-13T07:07:15Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 9,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 2
+          },
+          "openshift-extended-test": {
+            "total": 93,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-auth] CFE cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -16,5 +34,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp-arm64/release-arm64:4.16.0-0.nightly-arm64-2024-08-12-205807",
     "downloadURL": "https://openshift-release-artifacts-arm64.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-arm64-2024-08-12-205807"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
