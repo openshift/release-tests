@@ -6,9 +6,46 @@
         "jobStartTime": "2024-08-13T08:33:25Z",
         "jobID": "dd5800b0-2425-4e79-a7be-b2c6465a5412",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1823276659315314688",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-13T11:08:12Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 93,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-network-edge] Network_Edge Component_Router should Author:hongli-ROSA-OSD_CCS-LEVEL0-High-52837-switching of AWS CLB to NLB without deletion of ingresscontroller"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-08-13T11:23:42Z",
+          "jobID": "85fd3199-7f66-4699-a899-c72489b6b3bc",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1823319515576930304",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-08-13T11:23:47Z",
+          "jobID": "f07809d2-5dc5-4004-8774-732e5a33a5d9",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1823319536707833856",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery",
@@ -16,7 +53,25 @@
         "jobStartTime": "2024-08-13T08:33:30Z",
         "jobID": "b1a65a47-d2e7-41df-9c61-a04f740c044d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-aws-ipi-private-fips-f4-disasterrecovery/1823276680660127744",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-13T10:56:06Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 93,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 22,
+            "failingScenarios": [
+              "[sig-network-edge] Network_Edge Component_Router should Author:hongli-ROSA-OSD_CCS-LEVEL0-High-52837-switching of AWS CLB to NLB without deletion of ingresscontroller"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
