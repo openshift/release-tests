@@ -48,6 +48,23 @@ class ReleaseDetector:
         else:
             return None
 
+    def compare_patch_versions(self, version_a, version_b):
+        """
+        Compare the patch version of OCP releases
+        Input params are like version_a=4.15.6 version_b=4.15.7
+        Return -1 if version a is less than version b
+        Return 1 if version a is more than version b
+        Return 0 if version a equals version b
+        """
+        patch_version_a = int(version_a.split('.')[2])
+        patch_version_b = int(version_b.split('.')[2])
+        if patch_version_a < patch_version_b:
+            return -1
+        elif patch_version_a > patch_version_b:
+            return 1
+        else:
+            return 0
+
     def start(self):
         """
         Entrypoint of cli cmd
@@ -62,13 +79,18 @@ class ReleaseDetector:
             logger.error("get latest versions failed")
             return
 
-        if latest_zstream_version != latest_stable_version:
+        result = self.compare_patch_versions(
+            latest_zstream_version, latest_stable_version)
+        if result == 1:
             logger.info(
                 f"new z-stream release is detected: {latest_zstream_version}")
             # TODO: init statebox
             create_test_report.invoke(click.Context(
                 command=create_test_report, obj={"cs": ConfigStore(latest_zstream_version)}))
             logger.info(f"test report is created for {latest_zstream_version}")
+        elif result == -1:
+            logger.warning(
+                f"latest z-stream version is less than latest stable version, it's abnormal. We need to contact ART")
         else:
             logger.info("no new z-stream release found")
 
