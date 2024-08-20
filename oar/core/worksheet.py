@@ -1,6 +1,6 @@
 import gspread
-import gspread_formatting
 import os
+import re
 import logging
 import oar.core.util as util
 from oar.core.exceptions import WorksheetException, WorksheetExistsException
@@ -467,6 +467,14 @@ class TestReport:
             cell_value = self._ws.acell("F" + str(row_idx)).value
             if not cell_value:
                 break
+            else:
+                # check whether track bug is already there, remove it from the list
+                match = re.search(r'OCPBUGS-\d+', cell_value)
+                if match:
+                    jira_key = match.group(0)
+                    logger.info(
+                        f"found existing CVE tracker bug {jira_key} in report")
+                    cve_tracker_bugs.remove(jira_key)
             row_idx += 1
 
         for bug in cve_tracker_bugs:
