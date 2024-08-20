@@ -31,8 +31,8 @@ def check_cve_tracker_bug(ctx, notify):
         # trigger push job for cdn stage targets
         cve_tracker_bugs = am.check_cve_tracker_bug()
         if len(cve_tracker_bugs):
-            report.append_missed_cve_tracker_bugs(cve_tracker_bugs)
-            if notify:
+            appended = report.append_missed_cve_tracker_bugs(cve_tracker_bugs)
+            if notify and appended:
                 nm.share_new_cve_tracker_bugs(cve_tracker_bugs)
         else:
             logger.info("no new CVE tracker bug found")
