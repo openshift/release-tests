@@ -496,7 +496,7 @@ class MessageHelper:
 
         if len(must_verify_bugs):
             message += "\n" if len(message) else ""
-            message += f"[{self.cs.release}] Hello {gid}, following bugs are Critical/CVE Tracker/Customer Case, must be verified, if any of them can be dropped, let us (#release-tests) know, thanks\n"
+            message += f"[{self.cs.release}] Hello {gid}, following bugs are Critical/CVE Tracker/Customer Case, must be verified, if any of them can be dropped, do it manually, thanks\n"
             for bug in must_verify_bugs:
                 message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
