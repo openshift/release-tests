@@ -1,6 +1,6 @@
 import gspread
-import gspread_formatting
 import os
+import re
 import logging
 import oar.core.util as util
 from oar.core.exceptions import WorksheetException, WorksheetExistsException
@@ -467,6 +467,14 @@ class TestReport:
             cell_value = self._ws.acell("F" + str(row_idx)).value
             if not cell_value:
                 break
+            else:
+                # check whether track bug is already there, remove it from the list
+                match = re.search(r'OCPBUGS-\d+', cell_value)
+                if match:
+                    bug = match.group(0)
+                    logger.info(
+                        f"found existing CVE tracker bug {bug} in report")
+                    cve_tracker_bugs.remove(bug)
             row_idx += 1
 
         for bug in cve_tracker_bugs:
@@ -475,6 +483,10 @@ class TestReport:
             )
             row_idx += 1
             logger.info(f"append missed CVE tracker bug {bug} to test report")
+
+        # if list cve_tracker_bugs is not empty, it means new tracker bug found
+        # we need to send out notfication
+        return len(cve_tracker_bugs) > 0
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
