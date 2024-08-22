@@ -81,10 +81,13 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                     chunks, chunk_size = len(output), 2500
                     for msg in [output[i:i+chunk_size] for i in range(0, chunks, chunk_size)]:
                         client.web_client.chat_postMessage(
-                            channel=channel_id, text=f"```{msg}```")
+                            channel=channel_id,
+                            thread_ts=thread_ts,
+                            text=f"```{msg}```")
                 else:
                     client.web_client.chat_postMessage(
                         channel=channel_id,
+                        thread_ts=thread_ts,
                         text=f"```{result.stdout}```")
 
 
