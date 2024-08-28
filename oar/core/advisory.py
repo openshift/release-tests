@@ -590,13 +590,33 @@ class Advisory(Erratum):
                 f"RHBA advisory {self.errata_id} does not have secalerts")
             return None
 
+    def refresh_security_alerts(self):
+        """
+        Makes a request to the ProdSec errata review microservice to refresh the security alert data for an RHSA.
+        """
+        if self.errata_type == "RHSA":
+            url = "/api/v1/erratum/%i/security_alerts/refresh" % self.errata_id
+            resp = self._post(url)
+            resp.raise_for_status()
+            return resp.json()
+        else:
+            logger.warning(
+                f"RHBA advisory {self.errata_id} does not have secalerts")
+            return None
+
     def has_blocking_secruity_alert(self):
         """
-        Check is RHSA advisory has blocking secalert
+        Check RHSA advisory has blocking security alert
         """
-        json_dict = self.get_security_alerts()
+        # get refreshed results directly
+        json_dict = self.refresh_security_alerts()
         if json_dict:
             alerts = json_dict["alerts"]
+            # if alerts are empty or attr blocking not found, return false
+            if len(alerts) == 0 or "blocking" not in alerts:
+                logger.warning(
+                    f"Cannot find alerts for advisory {self.errata_id}")
+                return False
             blocking = alerts["blocking"]
             if blocking:
                 logger.info(
