@@ -696,6 +696,11 @@ class TestResultAggregator():
                     # if it's true, the job result will not be used to determine build is QE accepted
                     job_metadata = self.job_registry.get_test_job(
                         release, nightly, job_result.job_name)
+                    # if job definition is removed from job registry, skip this job and continue
+                    if not job_metadata:
+                        logger.warning(
+                            f"skip aggreation for job run of {job_result.job_name}")
+                        continue
 
                     # if first job is failed and it's not optional we will start to trigger retry jobs
                     # according to `retries` attribute defined in job registry
