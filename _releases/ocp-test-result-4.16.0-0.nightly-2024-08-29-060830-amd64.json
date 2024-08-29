@@ -14,13 +14,61 @@
           "jobStartTime": "2024-08-29T12:21:12Z",
           "jobID": "c4c9cbbb-c4a7-4961-b8e3-d8cddbc69bfe",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1829132191922130944",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-08-29T14:59:09Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 93,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-60351-Critical-60352-Install Run Once Duration Override operator via a deployment and verify that it works fine"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 27,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-08-29T12:21:17Z",
           "jobID": "2d6be0a6-3088-417e-8092-6175347c73df",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1829132231096930304",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-08-29T15:01:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 93,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 27,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -30,7 +78,25 @@
         "jobStartTime": "2024-08-29T11:20:43Z",
         "jobID": "26365d7c-dd5d-42b2-84e4-c7d45ce6380d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-amd64-nightly-gcp-ipi-disc-priv-fips-f4-disasterrecovery/1829116971069739008",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-08-29T15:10:50Z",
+        "testResultSummary": {
+          "openshift-extended-test-disasterrecovery": {
+            "total": 2,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test": {
+            "total": 93,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     }
@@ -40,5 +106,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-08-29-060830",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-08-29-060830"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
