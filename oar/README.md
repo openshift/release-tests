@@ -102,7 +102,7 @@ $ oar -r $release-version image-signed-check
 ```
 $ oar -r $release-version drop-bugs
 ```
-11. This command will change advisory status e.g. REL_PREP, and close QE related JIRA subtasks. Refresh api is triggered to check for secalerts on RHSA's. If it fails it will throw appropriate error message
+11. This command will change advisory status e.g. REL_PREP, and close QE related JIRA subtasks. It will also check blocking secalerts for RHSA advisory. If it fails it will throw appropriate error message
 ```
 $ oar -r $release-version change-advisory-status
 ```
