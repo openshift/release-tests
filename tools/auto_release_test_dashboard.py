@@ -85,7 +85,7 @@ def dialog_with_links(links: list[str]):
             'https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/'), url=link)
 
 
-@st.cache_data
+@st.cache_data(ttl='3h')
 def load_test_results(release='4.12'):
     table_data = []
     for file in directory_contents:
@@ -110,11 +110,17 @@ def load_test_results(release='4.12'):
 st.set_page_config(layout='wide')
 st.markdown("<h2 style='text-align: center; color: black;'>Auto Release Test Results</h2>",
             unsafe_allow_html=True)
+cola, colb = st.columns(2, vertical_alignment='bottom')
 # define a select box to choose minor release, don't load all the test results together
-release = st.selectbox(
-    'Choose minor release',
-    ("4.12", "4.16")
-)
+with cola:
+    release = st.selectbox(
+        'Choose minor release',
+        ("4.12", "4.16")
+    )
+# clear cache manually if you want to get latest results
+with colb:
+    if st.button("Clear Cache"):
+        st.cache_data.clear()
 # load test results and create dataframe
 df = load_test_results(release)
 event = st.dataframe(
