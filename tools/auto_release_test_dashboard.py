@@ -78,7 +78,7 @@ def get_col_test_summary(file_content):
     return job_summaries, job_links
 
 
-@st.dialog("Links")
+@st.dialog("Prow Job Links")
 def dialog_with_links(links: list[str]):
     for link in links:
         st.link_button(link.removeprefix(
