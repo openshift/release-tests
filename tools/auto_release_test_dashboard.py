@@ -23,9 +23,6 @@ gh = Github(auth=Auth.Token(github_token))
 # Get the repository object
 repo = gh.get_repo(f'{repository_owner}/{repository_name}')
 
-# Get the contents of the specified directory
-directory_contents = repo.get_contents(path=directory_path, ref=branch_name)
-
 
 def get_col_state(file_content):
     """
@@ -66,7 +63,7 @@ def get_col_test_summary(file_content):
                 job_links.append(retried_job['jobURL'])
 
         if 'pending' in results:
-            job_summaries.append('WIP')
+            job_summaries.append('P')
         else:
             if len(results) == 1 and results.count('success') == 1:
                 job_summaries.append('S')
@@ -87,6 +84,9 @@ def dialog_with_links(links: list[str]):
 
 @st.cache_data(ttl='3h')
 def load_test_results(release='4.12'):
+    # Get the contents of the specified directory
+    directory_contents = repo.get_contents(
+        path=directory_path, ref=branch_name)
     table_data = []
     for file in directory_contents:
         if file.name.startswith('ocp-test-result') and release in file.name:
@@ -119,7 +119,7 @@ with cola:
     )
 # clear cache manually if you want to get latest results
 with colb:
-    if st.button("Clear Cache"):
+    if st.button("Refresh"):
         st.cache_data.clear()
 # load test results and create dataframe
 df = load_test_results(release)
