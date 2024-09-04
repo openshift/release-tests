@@ -272,6 +272,11 @@ class JobController:
                 # This logic only supports upgrade from latest stable version of current release e.g. from 4.16.3 to latest nightly
                 latest_stable_build = self.get_current_build(
                     build_file=self._build_file_for_stable)
+                if not latest_stable_build:
+                    # if no stable build found, it is possible that controller is running for nightly first.
+                    # so stable build file is not created, we need to intiialize it in runtime
+                    latest_stable_build = JobController(
+                        self._release, False, False, self._arch).get_latest_build()
                 prow_job_id = self.job_api.run_job(
                     job_name=test_job.prow_job, upgrade_to=build.pull_spec, upgrade_from=latest_stable_build.pull_spec, payload=None)
             else:
