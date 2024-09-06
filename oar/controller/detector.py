@@ -29,9 +29,11 @@ class ReleaseDetector:
         resp = requests.get(url)
         if resp.ok:
             yamlobj = yaml.safe_load(resp.text)
-            releases = list(yamlobj["releases"].keys())
+            # by default cannot get latest version with keys()[-1], need to sort the items with tuple
+            releases = sorted(yamlobj["releases"].items(
+            ), key=lambda item: tuple(map(int, item[0].split('.'))))
             if len(releases):
-                return releases[-1]
+                return releases[-1][0]
             else:
                 return None
         else:
