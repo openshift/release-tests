@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class NotificationManager:
     """
-    NotifiationManager will be used to notificate messages via email or slack.
+    NotificationManager is used to send notification messages via email or slack.
     """
 
     def __init__(self, cs: ConfigStore):
@@ -35,7 +35,7 @@ class NotificationManager:
 
     def share_new_report(self, report: TestReport):
         """
-        Send email and slack messgae for new report info
+        Send email and slack message for new report info
 
         Args:
             report (TestReport): newly created test report
@@ -473,7 +473,7 @@ class MessageHelper:
         self, dropped_bugs, must_verify_bugs
     ):
         """
-        manipulate slacke message for dropped bugs and must verified bugs
+        manipulate slack message for dropped bugs and must verified bugs
 
         Args:
             dropped_bugs ([]): list of dropped bugs

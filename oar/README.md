@@ -23,7 +23,7 @@ pip3 install -e .
 ```
 kinit $kid@$domain
 ```
-- Bugzilla login api-key, the credentail will be cached to ~/.config/python-bugzilla/bugzillarc. 
+- Bugzilla login api-key, the credentials are cached to ~/.config/python-bugzilla/bugzillarc
 ```
 echo 'xxx' | bugzilla login --api-key
 ```
@@ -59,50 +59,50 @@ $ oar -r $release-version $sub-cmd -h
 ### Examples
 - Common functions
   - release-version: e.g. 4.13.6
-  - every command is related to QE task in checklist, every task status will be updated to `In Progress` when execution is started, and the task status will be updated to `Pass` or `Fail` when execution is completed. If any task is failed, `Overall Status` will be updated to `Red`
-1. Create test report for z-stream release in spreadsheet, you can get new report url when execution is completed. new report contains advisory, candidate nightly build, ART JIRA ticket, QE checklist, ONQA bugs etc.
+  - every command is related to QE task in checklist, every task status is updated to `In Progress` when execution is started, and the task status is updated to `Pass` or `Fail` when execution is completed. If any task fails, `Overall Status` is updated to `Red`
+1. Create test report for z-stream release in spreadsheet, you can get new report url when execution is completed. New report contains advisory, candidate nightly build, ART JIRA ticket, QE checklist, ONQA bugs, etc.
 ```
 $ oar -r $release-version create-test-report
 ```
-2. This command will help us to take ownership of advisory and JIRA subtasks created by ART team. just need to provide owner email as command option
+2. This command helps us to take ownership of an advisory and JIRA subtasks created by ART team. Just need to provide owner email as command option
 ```
 $ oar -r $release-version take-ownership -e foo@bar.com
 ```
-3. This command needs to be ran multiple times, it can update ONQA bugs with latest status in test report, e.g. Verified/Closed, and append newly attached bugs to the report as well, slack notification will be sent out to QA Contacts finally
+3. This command needs to be run multiple times, it updates ONQA bugs with the latest status in test report, e.g. Verified/Closed, and appends newly attached bugs to the report as well. Slack notification is sent out to QA Contacts
 ```
 $ oar -r $release-version update-bug-list
 ```
-4. This command will trigger image-consistency-check jenkins job to verify images in release payload, build number will be returned with first run, the build number can be used as option for subsequent run to check jenkins job status
+4. This command triggers image-consistency-check jenkins job to verify images in release payload. The build number is returned with the first run. The build number can be used as an option for subsequent run to check jenkins job status
 ```
 $ oar -r $release-version image-consistency-check
 $ oar -r $release-version image-consistency-check -n 123
 ```
-5. This command will check all the Greenwave CVP tests of all advisories, expected result is all the tests are `PASSED/WAVIED`, if any of the tests is failed, you can get test id and corresponding advisory number from the output, you can trigger `Refetch` for it, if the test is still failed after refetch, contact CVP team via Google Spaces [CVP]
+5. This command checks all Greenwave CVP tests of all advisories. Expected result is that all tests finish with status `PASSED/WAVIED`. If any of the tests failed, you can trigger `Refetch` with the test id and corresponding advisory number. You can get those parameters from this command output. If the test is still failing after refetch, contact CVP team via Google Spaces [CVP]
 ```
 $ oar -r $release-version check-greenwave-cvp-tests
 ```
-6. This command will call `rh-elliott` to check if any CVE tracker bug is missed for current release. it will send out slack notification to ART team if any bug found
+6. This command calls `rh-elliott` to check if any CVE tracker bug is missed for current release. It sends out a Slack notification to ART team if any bug found
 ```
 $ oar -r $release-version check-cve-tracker-bug
 ```
-7. If all the Greenwave CVP tests are `PASSED/WAIVED`, this command can trigger push job for default target `stage`, it will not interrupt existing running jobs
+7. If all Greenwave CVP tests are `PASSED/WAIVED`, this command triggers push job for default target `stage`. It does not interrupt existing running jobs
 ```
 $ oar -r $release-version push-to-cdn-staging
 ```
-8. This command will trigger stage pipeline to do stage testing, build number will be returned with first run, the build number can be used as option for subsequent run to check jenkins job status
+8. This command triggers stage pipeline to do stage testing. Build number is returned with the first run. The build number can be used as option for subsequent run to check jenkins job status
 ```
 $ oar -r $release-version stage-testing
 $ oar -r $release-version stage-testing -n 123
 ```
-9. This command will verify whether payload is well-signed. it can get digest of stable build automatically and check out whether it can be found on mirror site
+9. This command verifies whether payload is well-signed. It gets digest of stable build automatically and checks out whether it can be found on mirror site
 ```
 $ oar -r $release-version image-signed-check
 ```
-10. This command will check all the not verified bugs from advisories, if any bug is `Critical` or `CVE Tracker` or `Customer Case` it is must-verify bug, need to confirm with bug owner, slack notification will be sent out. the rest of the bugs will be dropped automatically
+10. This command checks all not verified bugs from advisories. If any bug is `Critical`, `CVE Tracker` or `Customer Case` it is "must-verify" bug. In that case, they need to be confirmed with a bug owner, a Slack notification is sent out. The rest of the bugs are dropped automatically
 ```
 $ oar -r $release-version drop-bugs
 ```
-11. This command will change advisory status e.g. REL_PREP, and close QE related JIRA subtasks. It will also check blocking secalerts for RHSA advisory. If it fails it will throw appropriate error message
+11. This command changes advisory status to, e.g. REL_PREP, and close QE related JIRA subtasks. It also checks blocking secalerts for RHSA advisory. In case of failure, it throws appropriate error message
 ```
 $ oar -r $release-version change-advisory-status
 ```
