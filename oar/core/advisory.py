@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 class AdvisoryManager:
     """
-    AdvisoryManager will be used to communicate with Errata Tool API to get/update advisory
-    Kerbros ticket is required to use this tool
+    AdvisoryManager is used to communicate with Errata Tool API to get/update advisory
+    Kerberos ticket is required to use this tool
     """
 
     def __init__(self, cs: ConfigStore):
@@ -144,7 +144,7 @@ class AdvisoryManager:
             bool: job is triggered or not
         """
 
-        # check if all the push jobs are completed, if no, trigger new push job with default value [stage]
+        # check if all push jobs are completed, if not, trigger new push job with default value [stage]
         # request with default value will not redo any push which has already successfully completed since the last respin of the advisory. It will redo failed pushes
 
         triggered_ads = []
@@ -187,7 +187,7 @@ class AdvisoryManager:
 
     def drop_bugs(self):
         """
-        Go thru all attached bugs. drop the not verified bugs if they're not critical/blocker/customer_case
+        Go thru all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
@@ -240,7 +240,7 @@ class AdvisoryManager:
 
     def check_cve_tracker_bug(self):
         """
-        Call elliott cmd to check if any new CVE tracke bug found
+        Call elliott cmd to check if any new CVE tracker bug found
 
         Raises:
             AdvisoryException: error when invoke elliott cmd
@@ -507,15 +507,15 @@ class Advisory(Erratum):
 
     def is_doc_approved(self):
         """
-        Check if doc is approved for a advisory
+        Check if doc is approved for an advisory
         Returns:
-            bool: True if doc for a advisory is approved, otherwise False
+            bool: True if doc for an advisory is approved, otherwise False
         """
         return self.get_erratum_data()["doc_complete"] == 1
 
     def is_prodsec_approved(self):
         """
-        Check if prodsec is approved for a advisory
+        Check if prodsec is approved for an advisory
         Returns:
             bool: True if prodsec is approved, otherwise False
         """
@@ -523,23 +523,23 @@ class Advisory(Erratum):
 
     def is_doc_requested(self):
         """
-        Check if doc for a advisory is requested
+        Check if doc for an advisory is requested
         Returns:
-            bool: True if doc for a advisory is requested, otherwise False
+            bool: True if doc for an advisory is requested, otherwise False
         """
         return self.get_erratum_data()["text_ready"] == 1
 
     def is_prodsec_requested(self):
         """
-        Check if prodsec for a advisory is requested
+        Check if prodsec for an advisory is requested
         Returns:
-        bool: False if prodsec for a advisory is requested, otherwise False
+        bool: False if prodsec for an advisory is requested, otherwise False
         """
         return self.get_erratum_data()["security_approved"] == False
 
     def request_doc_approval(self):
         """
-        send doc approval request for a advisory
+        send doc approval request for an advisory
         """
         pdata = {"advisory[text_ready]": 1}
         url = "/api/v1/erratum/%i" % self.errata_id
@@ -548,7 +548,7 @@ class Advisory(Erratum):
 
     def request_prodsec_approval(self):
         """
-        send product security approval request for a advisory
+        send product security approval request for an advisory
         """
         pdata = {"advisory[security_approved]": False}
         url = "/api/v1/erratum/%i" % self.errata_id

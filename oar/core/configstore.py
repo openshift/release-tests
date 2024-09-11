@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class ConfigStore:
     """
-    Config Store object will be used in other modules to retrieve
+    Config Store object is used in other modules to retrieve
     release data and app level config settings. e.g. advisories, builds etc.
 
     cs = ConfigStore("4.12.11")
@@ -91,7 +91,7 @@ class ConfigStore:
         """
         # https://art-docs.engineering.redhat.com/assemblies/#building-an-updated-component
         # according to above doc, it is possible that `reference_releases` can be removed from the yaml
-        # if it is true, return a empty dict instead
+        # if it is true, return an empty dict instead
 
         return self._get_assembly_attr("basis/reference_releases")
 
@@ -118,7 +118,7 @@ class ConfigStore:
         """
         o = self._local_conf["owners"]
         yr = util.get_y_release(self.release)
-        # check version exists in owner settings, if no, return default instead
+        # check a version exists in owner settings, if not, return default instead
         if yr not in o.keys():
             return o["default"]
         else:
@@ -297,10 +297,10 @@ class ConfigStore:
 
     def _get_assembly_attr(self, keypath):
         """
-        Get attribute with key names followed inheritance rule
+        Get attribute with key names following inheritance rule
 
-        e.g. if advisory! or advisories does not exist in 4.14.1, 
-        we should get advisory's from parent assembly i.e. 4.14.0
+        e.g. if advisory! or advisories do not exist in 4.14.1,
+        we should get advisories from parent assembly i.e. 4.14.0
 
         Args:
             keypath (_str_): attribute key path e.g. group/advisories!

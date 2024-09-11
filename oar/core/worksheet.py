@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 class WorksheetManager:
     """
-    WorksheetManager will be used to update test report with info provided by ConfigStore
+    WorksheetManager is used to update test report with info provided by ConfigStore
     """
 
     def __init__(self, cs: ConfigStore):
@@ -321,7 +321,7 @@ class TestReport:
         for key in jira_issues:
             try:
                 issue = jm.get_issue(key)
-            except JiraUnauthorizedException:  # jira token does not have pemission to access security bugs, ignore it
+            except JiraUnauthorizedException:  # jira token does not have permission to access security bugs, ignore it
                 continue
             logger.debug(f"updating jira issue {key} ...")
             if issue.is_on_qa():
@@ -484,8 +484,8 @@ class TestReport:
             row_idx += 1
             logger.info(f"append missed CVE tracker bug {bug} to test report")
 
-        # if list cve_tracker_bugs is not empty, it means new tracker bug found
-        # we need to send out notfication
+        # if cve_tracker_bugs list is not empty, it means a new tracker bug is found
+        # we need to send out notification
         return len(cve_tracker_bugs) > 0
 
     def _to_hyperlink(self, link, label):
