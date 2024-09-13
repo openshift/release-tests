@@ -419,9 +419,11 @@ class Jobs:
                     status = job_result["status"]
                     spec = job_result["spec"]
                     job_name = spec["job"]
-                    job_url = status["url"]
-                    job_state = status["state"]
-                    job_start_time = status["startTime"]
+                    # it is possible that any of the follow attributes is not in response
+                    # use func `get` to avoid key error
+                    job_url = status.get("url")
+                    job_state = status.get("state")
+                    job_start_time = status.get("startTime")
                     print(job_name, payload, job_id,
                           job_start_time, job_url, job_state)
                     job_dict = {

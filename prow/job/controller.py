@@ -472,9 +472,6 @@ class ProwJobResult():
     def is_pending(self):
         return self.job_state == "pending"
 
-    def not_found(self):
-        return self._result is None
-
     def to_dict(self):
         return {k: v for k, v in self._result.items() if v is not None and k != "jobName"}
 
@@ -488,6 +485,8 @@ class ProwJobResult():
             self.from_dict(self.job_api.get_job_results(job_id))
         except Exception as e:
             logger.error(f"fetch job result error: {e}")
+            # if job info cannot be retrieved from gangway, init result as empty dict
+            self._result = {}
         return self
 
     def _get_test_result_summary(self):
