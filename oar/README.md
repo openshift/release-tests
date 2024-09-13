@@ -77,7 +77,7 @@ $ oar -r $release-version update-bug-list
 $ oar -r $release-version image-consistency-check
 $ oar -r $release-version image-consistency-check -n 123
 ```
-5. This command checks all Greenwave CVP tests of all advisories. Expected result is that all tests finish with status `PASSED/WAVIED`. If any of the tests failed, you can trigger `Refetch` with the test id and corresponding advisory number. You can get those parameters from this command output. If the test is still failing after refetch, contact CVP team via Google Spaces [CVP]
+5. This command checks all Greenwave CVP tests of all advisories. Expected result is that all tests finish with status `PASSED/WAIVED`. If any of the tests failed, you can trigger `Refetch` with the test id and corresponding advisory number. You can get those parameters from this command output. If the test is still failing after refetch, contact CVP team via Google Spaces [CVP]
 ```
 $ oar -r $release-version check-greenwave-cvp-tests
 ```

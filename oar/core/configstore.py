@@ -30,7 +30,7 @@ class ConfigStore:
 
         if not util.is_valid_z_release(release):
             raise ConfigStoreException(
-                f"invalid zstream release format {release}")
+                f"invalid z-stream release format {release}")
 
         self.release = release
 
@@ -62,7 +62,7 @@ class ConfigStore:
             self._assembly = self._build_data["releases"][self.release]["assembly"]
         else:
             raise ConfigStoreException(
-                f"[{self.release}] ocp build data is not ready you can check file:{url}")
+                f"[{self.release}] ocp build data is not ready you can check file: {url}")
 
     def get_advisories(self):
         """

@@ -27,10 +27,10 @@ def stage_testing(ctx, build_number):
             task_status = report.get_task_status(LABEL_TASK_STAGE_TEST)
             if task_status == TASK_STATUS_PASS:
                 logger.info(
-                    "stage testing already pass, no need to trigger again")
+                    "stage testing already passed, no need to trigger again")
             elif task_status == TASK_STATUS_INPROGRESS:
                 logger.info(
-                    "job [Stage-Pipeline] already triggered and in progress, not need to trigger again"
+                    "job [Stage-Pipeline] already triggered and in progress, no need to trigger again"
                 )
             else:
                 cdn_result = report.get_task_status(LABEL_TASK_PUSH_TO_CDN)
@@ -60,7 +60,7 @@ def stage_testing(ctx, build_number):
             logger.exception("trigger stage testing failed")
     else:
         logger.info(
-            f"check stage job status according to job id:{build_number}")
+            f"check stage job status according to job id: {build_number}")
         job_status = jh.get_build_status(
             JENKINS_JOB_STAGE_PIPELINE, build_number)
         if job_status == JENKINS_JOB_STATUS_SUCCESS:

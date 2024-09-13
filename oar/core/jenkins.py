@@ -158,14 +158,14 @@ class JenkinsHelper:
             else:
                 try:
                     max_count = 3
-                    internval = 30
+                    interval = 30
                     for x in range(max_count):
                         queue_item_info = self.server.get_queue_item(res)
                         if (JENKINS_QUEUE_ITEM_ATTR_EXECUTABLE in queue_item_info):
                             build_info = queue_item_info[JENKINS_QUEUE_ITEM_ATTR_EXECUTABLE][JENKINS_QUEUE_ITEM_ATTR_URL]
                             break
                         else:
-                            time.sleep(internval)
+                            time.sleep(interval)
                 except:
                     raise JenkinsHelperException(
                         f"visit {queue_item_link} failed")

@@ -28,7 +28,7 @@ def check_greenwave_cvp_tests(ctx):
         # check if all bugs are verified
         if len(abnormal_tests):
             report.update_task_status(LABEL_TASK_GREENWAVE_CVP_TEST, TASK_STATUS_FAIL)
-            # TODO: create jira ticket under proejct CVP with abnormal test details
+            # TODO: create jira ticket under project CVP with abnormal test details
             # TODO: send slack notification
         else:
             report.update_task_status(LABEL_TASK_GREENWAVE_CVP_TEST, TASK_STATUS_PASS)

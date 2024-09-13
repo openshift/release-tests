@@ -453,7 +453,7 @@ class MessageHelper:
         manipulate slack message for new CVE tracker bugs
 
         Args:
-            cve_tracker_bugs ([]): list of new CVE tracker bug
+            cve_tracker_bugs ([]): list of new CVE tracker bugs
 
         Returns:
             str: slack message
@@ -473,7 +473,7 @@ class MessageHelper:
         self, dropped_bugs, must_verify_bugs
     ):
         """
-        manipulate slack message for dropped bugs and must verified bugs
+        manipulate slack message for dropped bugs and must verify bugs
 
         Args:
             dropped_bugs ([]): list of dropped bugs

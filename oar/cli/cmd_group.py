@@ -38,7 +38,7 @@ def print_version(ctx, param, value):
     expose_value=False,
     is_eager=True,
 )
-@click.option("-r", "--release", help="z-stream releaes version")
+@click.option("-r", "--release", help="z-stream release version", required=True)
 @click.option("-v", "--debug", help="enable debug logging", is_flag=True, default=False)
 def cli(ctx, release, debug):
     util.init_logging(logging.DEBUG if debug else logging.INFO)

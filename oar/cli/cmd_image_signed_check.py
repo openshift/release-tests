@@ -11,7 +11,7 @@ import time
 logger = logging.getLogger(__name__)
 
 
-# 1. go to main URL and grab all links that matches the build type
+# 1. go to main URL and grab all links that match the build type
 # 2. construct a complete URL,
 def get_image_digest(url, current_try=0):
     logger.info(f"Getting digest from {url}")
@@ -34,7 +34,7 @@ def get_image_digest(url, current_try=0):
     if not digest:
         if current_try == max_retries:
             logger.error(
-                f"Imgage digest failed to show after {max_retries} retries!")
+                f"Image digest failed to show after {max_retries} retries!")
             return
         else:
             logger.debug(f"Current try: {current_try}")
@@ -60,7 +60,7 @@ def image_signed_check(ctx):
         LABEL_TASK_PAYLOAD_IMAGE_VERIFY)
     if image_signed_check_result == TASK_STATUS_PASS:
         logger.info(
-            "image signed check already pass, not need to trigger again")
+            "image signed check already pass, no need to trigger again")
     else:
         report.update_task_status(
             LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_INPROGRESS
