@@ -38,7 +38,7 @@ def print_version(ctx, param, value):
     expose_value=False,
     is_eager=True,
 )
-@click.option("-r", "--release", help="z-stream releaes version", required=True)
+@click.option("-r", "--release", help="z-stream releaes version")
 @click.option("-v", "--debug", help="enable debug logging", is_flag=True, default=False)
 def cli(ctx, release, debug):
     util.init_logging(logging.DEBUG if debug else logging.INFO)
@@ -48,6 +48,10 @@ def cli(ctx, release, debug):
             is_help = True
             break
     if not is_help:
+        if not release:
+            raise click.MissingParameter(
+                "-r/--release is required", param_type='option')
+
         cs = ConfigStore(release)
         ctx.ensure_object(dict)
         ctx.obj["cs"] = cs

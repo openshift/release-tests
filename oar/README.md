@@ -54,7 +54,7 @@ Commands:
 ```
 ### Sub command help
 ```
-$ oar -r $release-version $sub-cmd -h
+$ oar $sub-cmd -h
 ```
 ### Examples
 - Common functions
