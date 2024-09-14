@@ -46,10 +46,7 @@ def get_username(user_id):
 
 
 def is_oar_related_message(message):
-    if message.startswith("oar") or message.startswith("oarctl") or re.search("^<\@.*>\ oar\ ", message) or re.search("^<\@.*>\ oarctl\ ", message):
-        return True
-    else:
-        return False
+    return message.startswith("oar") or message.startswith("oarctl") or re.search("^<\@.*>\ oar\ ", message) or re.search("^<\@.*>\ oarctl\ ", message)
 
 
 def process(client: SocketModeClient, req: SocketModeRequest):
