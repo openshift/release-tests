@@ -45,16 +45,18 @@ def get_username(user_id):
         return "unknown user"
 
 
+def is_oar_related_message(message):
+    return message.startswith("oar") or message.startswith("oarctl") or re.search("^<\@.*>\ oar\ ", message) or re.search("^<\@.*>\ oarctl\ ", message)
+
+
 def process(client: SocketModeClient, req: SocketModeRequest):
     # Acknowledge the request anyway
     response = SocketModeResponse(envelope_id=req.envelope_id)
     client.send_socket_mode_response(response)
 
     if req.type == "events_api":
-        # Add a reaction to the message if it's a new message
         event = req.payload["event"]
         event_type = event["type"]
-        event_subtype = event.get("subtype")
         message = event["text"]
         channel_id = event["channel"]
         thread_ts = event["ts"]
@@ -70,7 +72,7 @@ def process(client: SocketModeClient, req: SocketModeRequest):
 
             # slack will transform the email address in message with mailto format e.g. <mailto:xx@foo.com|xx@foo.com>
             message = replace_mailto(message)
-            if message.startswith("oar") or re.search("^<\@.*>\ oar\ ", message):
+            if is_oar_related_message(message):
                 logger.info(f"received cmd from user <{username}>: {message}")
                 cmd = message[message.index("oar"):]
                 result = subprocess.run(shlex.split(
