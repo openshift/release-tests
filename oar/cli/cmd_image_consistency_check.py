@@ -50,7 +50,7 @@ def image_consistency_check(ctx, build_number, for_nightly):
                     if for_nightly:
                         if "x86_64" in cs.get_candidate_builds():
                             pull_spec = (
-                                "registry.ci.openshift.org/ocp/release: " + cs.get_candidate_builds().get("x86_64") 
+                                "registry.ci.openshift.org/ocp/release:" + cs.get_candidate_builds().get("x86_64") 
                             )
                         else: 
                             raise JenkinsHelperException(
@@ -58,7 +58,7 @@ def image_consistency_check(ctx, build_number, for_nightly):
                                 )
                     else:
                         pull_spec = (
-                            "quay.io/openshift-release-dev/ocp-release: " + cs.release + "-x86_64" 
+                            "quay.io/openshift-release-dev/ocp-release:" + cs.release + "-x86_64" 
                         )  
                     build_info = jh.call_image_consistency_job(pull_spec)
                     logger.info(
