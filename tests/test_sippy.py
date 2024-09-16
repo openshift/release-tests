@@ -120,7 +120,7 @@ class TestSippy(unittest.TestCase):
     def test_query_variant(self):
         params = ParamBuilder().release("4.16").done()
         resp = self.sippy.query_variant_status(params)
-        self.assertGreater(len(resp), 0, "Cannnot get any varaint records")
+        self.assertGreater(len(resp), 0, "Cannot get any variant records")
         for v in resp:
             logger.info(f"name: {v.get('name')}")
             logger.info(

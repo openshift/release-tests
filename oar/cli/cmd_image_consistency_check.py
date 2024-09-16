@@ -75,10 +75,10 @@ def image_consistency_check(ctx, build_number, for_nightly):
                 )
     else:
         if(for_nightly):
-            logger.error(f"no need to add '--for_nightly' option,if just want to check job status")
+            logger.error(f"no need to add '--for_nightly' option, if just want to check job status")
         else: 
             logger.info(
-                f"check image-consistency-check job status with job id:{build_number}"
+                f"check image-consistency-check job status with job id: {build_number}"
             )
             job_status = jh.get_build_status(
                 "image-consistency-check", build_number)
