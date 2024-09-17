@@ -16,7 +16,7 @@ class JenkinsHelper:
     def __init__(self, cs: ConfigStore):
         self._cs = cs
         self.version = util.get_y_release(self._cs.release)
-        self.metadata_ad = self._cs.get_advisories()["metadata"]
+        self.metadata_ad = self._cs.get_advisories().get("metadata")
         # get string errata_numbers like: 115076 115075 115077 115074 115078
         self.errata_numbers = " ".join(
             [str(i) for i in [val for val in self._cs.get_advisories().values()]]
@@ -28,6 +28,9 @@ class JenkinsHelper:
 
     def call_stage_job(self):
         try:
+            if not self.metadata_ad:
+                raise JenkinsException("metadata advisory not found")
+
             build_url = self.call_build_job(
                 JENKINS_JOB_STAGE_PIPELINE, self.pull_spec)
         except JenkinsException as ej:
