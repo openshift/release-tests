@@ -95,7 +95,27 @@
           "jobStartTime": "2024-09-18T16:22:55Z",
           "jobID": "df4f5542-46a2-4753-a2ad-1d113ba581af",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1836440976403468288",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-18T19:29:58Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+                "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-09-18T16:23:00Z",
@@ -238,5 +258,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-09-18-085651",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-09-18-085651"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
