@@ -14,13 +14,51 @@
           "jobStartTime": "2024-09-21T00:20:09Z",
           "jobID": "db3fa239-6301-4363-9597-532585dd093a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-aws-ipi-mini-perm-f360/1837285652526272512",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-21T02:15:26Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-High-54043-High-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-High-50504-Verify flowlogs-pipeline metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-09-21T00:20:14Z",
           "jobID": "4540ad07-d3be-43a7-acac-ad66f2f14a89",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-aws-ipi-mini-perm-f360/1837285674026274816",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-21T02:15:49Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 6,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-High-54043-High-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-High-50504-Verify flowlogs-pipeline metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -102,5 +140,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2024-09-20-143200",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2024-09-20-143200"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
