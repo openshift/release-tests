@@ -182,13 +182,54 @@
           "jobStartTime": "2024-09-21T07:21:28Z",
           "jobID": "b6df35ba-48bb-46fd-879a-3353eecb3dbc",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1837391682526515200",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-21T10:28:38Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 6,
+              "errors": 0,
+              "skipped": 21,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ConnectedOnly-ROSA-ARO-OSD_CCS-WRS-Critical-34388-High-27760-check file-integrity-operator could report failure and persist the failure logs on to a ConfigMap [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+                "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-09-21T07:21:34Z",
           "jobID": "591b92a9-d557-4942-ad9b-c9eeb406d65d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1837391704315924480",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-21T11:01:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_Router should Author:shudili-LEVEL0-High-55367-Default HAProxy maxconn value to 50000 for OCP 4.12 and later",
+                "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Logging acceptance testing: vector to loki[Slow][Serial]",
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:qitang-LEVEL0-Critical-53691-Forward logs to Google Cloud Logging using Service Account authentication.[Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -220,5 +261,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-09-20-220019",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-09-20-220019"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
