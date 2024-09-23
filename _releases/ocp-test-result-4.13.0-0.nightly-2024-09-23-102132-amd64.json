@@ -55,9 +55,39 @@
         "jobStartTime": "2024-09-23T17:27:16Z",
         "jobID": "200a963a-1d6a-46dd-941e-879c3bc81e4e",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1838268912295219200",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-09-23T20:10:02Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 73,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 24,
+            "failingScenarios": [
+              "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]",
+              "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Logging acceptance testing: vector to loki[Slow][Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-09-23T20:20:46Z",
+          "jobID": "4ed2dfb5-295a-4532-b705-06342f12801b",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2024-09-23T20:20:51Z",
+          "jobID": "3c45a8ba-bcde-4363-acf8-c994cd3a41a8",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f360",
@@ -65,7 +95,8 @@
         "jobStartTime": "2024-09-23T17:27:21Z",
         "jobID": "ae03888d-6a6e-4a83-b4c0-5fef1722e534",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f360/1838268933677780992",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2024-09-23T20:13:48Z"
       },
       "retriedJobs": []
     },
