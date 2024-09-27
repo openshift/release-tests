@@ -149,7 +149,25 @@
           "jobStartTime": "2024-09-27T09:27:24Z",
           "jobID": "e7543cd5-bff2-4cf9-a6ae-917dac13ffbe",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1839597699632992256",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-27T12:31:06Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-09-27T09:27:29Z",
@@ -206,5 +224,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-09-26-214440",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-09-26-214440"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
