@@ -33,7 +33,7 @@ class JiraManager:
                 raise JiraException("cannot talk to jira server") from je
 
         self._req_count = 0
-        self._req_limit = 3
+        self._req_limit = 2
 
     def get_issue(self, key):
         """
@@ -49,7 +49,7 @@ class JiraManager:
             issue = self._svc.issue(key)
             self._req_count += 1
             if self._req_count == self._req_limit:
-                time.sleep(1)
+                time.sleep(1.75)
                 self._req_count = 0
         except JIRAError as je:
             if je.status_code == 403:
