@@ -39,13 +39,46 @@
           "jobStartTime": "2024-09-30T00:21:05Z",
           "jobID": "d7aa6cbf-2fbb-458d-8556-44f2d282a51c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-azure-ipi-mini-perm-fips-f360/1840547380701696000",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-09-30T02:58:50Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 10,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47930-[CSI Driver] [Snapshot] [Filesystem ext4] provisioning should provision storage with snapshot data source and restore it successfully"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-09-30T00:21:10Z",
           "jobID": "e5bab46e-2fd9-4b80-a226-195c8e192eb0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-azure-ipi-mini-perm-fips-f360/1840547402067480576",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-09-30T02:49:18Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 10
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -102,5 +135,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2024-09-29-183925",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2024-09-29-183925"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
