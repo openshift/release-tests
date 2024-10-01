@@ -56,13 +56,46 @@
           "jobStartTime": "2024-10-01T11:36:42Z",
           "jobID": "18dc5091-c66d-4c83-946d-98582238136b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1841079808998510592",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-10-01T14:34:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 23
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-10-01T11:36:47Z",
           "jobID": "fa029680-67de-4968-af90-dddf16a2eb25",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1841079813171843072",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-01T14:35:48Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Logging acceptance testing: vector to loki[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -119,5 +152,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-10-01-031909",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-10-01-031909"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
