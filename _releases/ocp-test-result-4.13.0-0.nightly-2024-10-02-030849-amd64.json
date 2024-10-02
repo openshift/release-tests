@@ -107,7 +107,26 @@
           "jobStartTime": "2024-10-02T10:36:02Z",
           "jobID": "a8e94ada-f628-40b0-865a-b49db0ce345e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1841426910517661696",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-02T13:46:47Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN metallb Author:asood-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation ",
+                "[sig-operators] OLM should Author:jiazha-LEVEL0-Critical-72192-OLM is not correctly refreshing operator catalogs due to IfNotPresent imagePullPolicy"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-10-02T10:36:07Z",
@@ -189,5 +208,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-10-02-030849",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-10-02-030849"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
