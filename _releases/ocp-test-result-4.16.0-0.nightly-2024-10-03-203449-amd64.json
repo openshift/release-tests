@@ -67,7 +67,31 @@
           "jobStartTime": "2024-10-04T11:22:37Z",
           "jobID": "ac2b64a0-dff4-4d20-9882-e98833cb97de",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-private-shared-vpc-phz-sts-f360/1842163409789915136",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-04T14:34:37Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads Validate Secondary Scheduler Operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     }
@@ -77,5 +101,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2024-10-03-203449",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2024-10-03-203449"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
