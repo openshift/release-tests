@@ -32,13 +32,46 @@
           "jobStartTime": "2024-10-10T00:19:30Z",
           "jobID": "e833c8a3-f721-4ca6-bf32-8822961543ad",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-aws-ipi-mini-perm-f360/1844170859233677312",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-10T02:32:03Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 9
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-26910:UserInterface Check project page"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2024-10-10T00:19:35Z",
           "jobID": "d73ea140-7261-4052-a2e1-6151a629d624",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-aws-ipi-mini-perm-f360/1844170880758845440",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-10-10T02:19:14Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 9
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -120,5 +153,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2024-10-09-170259",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2024-10-09-170259"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
