@@ -127,13 +127,49 @@
           "jobStartTime": "2024-10-11T06:43:00Z",
           "jobID": "00c03cf8-8fd5-413e-a809-3649964e2f3f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1844629756843134976",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-11T09:48:48Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ConnectedOnly-ROSA-ARO-OSD_CCS-WRS-Critical-34388-High-27760-V-EST.01-check file-integrity-operator could report failure and persist the failure logs on to a ConfigMap [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-10-11T06:43:05Z",
           "jobID": "10318399-971c-4854-953e-982fb3f297e2",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1844629778221502464",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-11T09:44:22Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -180,5 +216,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-10-10-221519",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-10-10-221519"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
