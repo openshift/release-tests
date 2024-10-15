@@ -128,13 +128,53 @@
           "jobStartTime": "2024-10-15T03:46:02Z",
           "jobID": "29ad724d-9c7d-4241-afc1-7ad17f48c5f9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1846034772543934464",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-15T06:53:08Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19717:UserInterface Check configmap on console"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2024-10-15T03:46:07Z",
           "jobID": "b903e760-9a60-42b4-9c66-5e1311af2e1b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1846034793888747520",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-15T06:47:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ConnectedOnly-ROSA-ARO-OSD_CCS-WRS-Critical-34388-High-27760-V-EST.01-check file-integrity-operator could report failure and persist the failure logs on to a ConfigMap [Serial]",
+                "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -166,5 +206,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-10-14-182256",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-10-14-182256"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
