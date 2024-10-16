@@ -31,9 +31,41 @@
         "jobStartTime": "2024-10-16T07:19:39Z",
         "jobID": "7bd27d75-ca2a-4ae3-841d-3d414f3c9819",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1846450921916076032",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-10-16T11:11:22Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 73,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+              "[sig-openshift-logging] LOGGING Logging Author:anli-LEVEL0-Critical-70965-fluentd: Logging acceptance testing: fluentd to ES[Slow][Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-10-16T11:52:22Z",
+          "jobID": "c986d1f3-d489-412c-b190-b6d3bd7b3592",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1846519552251269120",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-10-16T11:52:27Z",
+          "jobID": "b34af9e2-ec9c-4a57-8d1e-5bb30bd08ad9",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-f360/1846519573579304960",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360",
@@ -41,9 +73,62 @@
         "jobStartTime": "2024-10-16T07:19:44Z",
         "jobID": "1b715dc4-74cd-43dd-ac83-9bc6fd2db746",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1846450943252500480",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-10-16T10:52:27Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 73,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]",
+              "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Logging acceptance testing: vector to loki[Slow][Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 19,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+              "OCP-12482:Workloads Fixed predicates rules testing - PodFitsResources",
+              "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler",
+              "OCP-14603:Workloads pod will not be scheduled if pod affinity not match",
+              "OCP-14688:Workloads pod will be scheduled on the node which meets pod affinity - In",
+              "OCP-14697:Workloads pod will be scheduled on the node which meets pod affinity specified namespace",
+              "OCP-14698:Workloads pod with pod affinity will not be scheduled if not all matchExpressions are satisfied",
+              "OCP-19672:UserInterface Check cronjob on console",
+              "OCP-19717:UserInterface Check configmap on console",
+              "OCP-20020:UserInterface Source Secret",
+              "OCP-20800:UserInterface Key/Value Secret",
+              "OCP-22715:Storage Cluster operator storage should be in available status",
+              "OCP-25763:UserInterface Users management on console",
+              "OCP-26910:UserInterface Check project page",
+              "OCP-31989:ClusterObservability Export Thanos Querier metrics and alerts",
+              "OCP-33125:UserInterface Check subscription link and channel helper text with links",
+              "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x",
+              "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-10-16T11:52:36Z",
+          "jobID": "1cb06c23-4884-499c-a5d6-57acb33ca054",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1846519609209917440",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-10-16T11:52:41Z",
+          "jobID": "59c8b2b5-4eb6-402f-8215-ffaaae831e90",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f360/1846519630521176064",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f360",
