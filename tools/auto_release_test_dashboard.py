@@ -28,7 +28,6 @@ def get_col_state(file_content):
     """
     Get job state: Accepted, Rejected, Pending
     """
-    build = file_content['build']['name']
     if 'accepted' in file_content:
         accepted = 'Accepted' if file_content['accepted'] else 'Rejected'
     else:
@@ -115,7 +114,7 @@ cola, colb = st.columns(2, vertical_alignment='bottom')
 with cola:
     release = st.selectbox(
         'Choose minor release',
-        ("4.12", "4.13", "4.16")
+        ("4.12", "4.13", "4.14", "4.16")
     )
 # clear cache manually if you want to get latest results
 with colb:
