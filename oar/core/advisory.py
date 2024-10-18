@@ -76,7 +76,6 @@ class AdvisoryManager:
                 # check advisory status, if it is not QE, log warn message
                 # if the advisory is released, the state is like [REP_PREP/SHIPPED LIVE], it is not [QE], we should not send alert to ART
                 # only check if the state is [NEW_FILES]
-                # talked with ART, microshift advisory should be excluded from this check
                 if ad.errata_state == AD_STATUS_NEW_FILES:
                     logger.warning(
                         f"advisory state is not QE, it is {ad.errata_state}")
