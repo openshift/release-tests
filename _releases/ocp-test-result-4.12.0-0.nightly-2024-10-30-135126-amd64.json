@@ -192,7 +192,25 @@
           "jobStartTime": "2024-10-31T00:22:32Z",
           "jobID": "b3e23dd5-27ae-42b8-bd98-aac3d5e0a839",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-mini-perm-custom-type-f999/1851781767409700864",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-10-31T04:44:04Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 55,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 7
+            },
+            "cucushift-e2e": {
+              "total": 13,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            }
+          }
         }
       ]
     },
@@ -239,5 +257,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2024-10-30-135126",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2024-10-30-135126"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
