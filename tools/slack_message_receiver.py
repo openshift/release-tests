@@ -88,6 +88,9 @@ def process(client: SocketModeClient, req: SocketModeRequest):
         thread_ts = event["ts"]
         username = get_username(event["user"])
 
+        if username == "qe-release-bot":
+            return
+
         if event_type in ["message", "app_mention"]:
             if "Hello" in message:
                 client.web_client.chat_postMessage(
