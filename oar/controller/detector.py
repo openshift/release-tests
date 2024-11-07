@@ -5,6 +5,7 @@ import re
 import logging
 from oar.core.configstore import ConfigStore
 from oar.cli.cmd_create_test_report import create_test_report
+from semver import VersionInfo
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,7 @@ class ReleaseDetector:
         else:
             return None
 
-    def compare_patch_versions(self, version_a, version_b):
+    def compare_versions(self, version_a, version_b):
         """
         Compare the patch version of OCP releases
         Input params are like version_a=4.15.6 version_b=4.15.7
@@ -58,14 +59,10 @@ class ReleaseDetector:
         Return 1 if version a is greater than version b
         Return 0 if version a equals version b
         """
-        patch_version_a = int(version_a.split('.')[2])
-        patch_version_b = int(version_b.split('.')[2])
-        if patch_version_a < patch_version_b:
-            return -1
-        elif patch_version_a > patch_version_b:
-            return 1
-        else:
-            return 0
+        vi_a = VersionInfo.parse(version_a)
+        vi_b = VersionInfo.parse(version_b)
+
+        return vi_a.compare(vi_b)
 
     def start(self):
         """
@@ -81,7 +78,7 @@ class ReleaseDetector:
             logger.error("get latest versions failed")
             return
 
-        result = self.compare_patch_versions(
+        result = self.compare_versions(
             latest_zstream_version, latest_stable_version)
         if result == 1:
             logger.info(
