@@ -31,13 +31,46 @@
           "jobStartTime": "2024-11-14T07:30:08Z",
           "jobID": "1a6f28c2-a6c5-42b7-8618-08f473687d19",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/1856962804997689344",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-11-14T11:39:43Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 72,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24524-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-11-14T07:30:13Z",
           "jobID": "8c57009b-1256-49dc-8040-a5a3d7724d37",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/1856962826397028352",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-11-14T11:29:13Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 72,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -119,5 +152,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2024-11-13-175837",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2024-11-13-175837"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
