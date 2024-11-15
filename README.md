@@ -4,6 +4,6 @@ ERT will make QE tasks of z-stream release more efficient and easier, improve te
 
 ### Tools
 There are two tools in this repo:
-- oar(Openshift Automatic Release), which interacte Errata, Jira, Google doc, Slack and Jenkins.
+- oar(Openshift Automatic Release), which interacts with Errata, Jira, Google doc, Slack and Jenkins.
 - job, which run Prow jobs.
 
