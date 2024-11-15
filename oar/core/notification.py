@@ -14,7 +14,7 @@ from slack_sdk.errors import SlackApiError
 
 
 logger = logging.getLogger(__name__)
-
+in_memory_cache = dict()
 
 class NotificationManager:
     """
@@ -265,11 +265,15 @@ class SlackClient:
             str: slack user id
         """
         email = self.transform_email(email)
+
+        if in_memory_cache.get(email) is not None:
+            return "<@%s>" % in_memory_cache.get(email)
         try:
             resp = self.client.api_call(
                 api_method="users.lookupByEmail", params={"email": email}
             )
             userid = resp["user"]["id"]
+            in_memory_cache[email] = userid
         except SlackApiError as e:
             logger.warning(f"cannot get slack user id for <{email}>: {e}")
             return email
@@ -287,6 +291,8 @@ class SlackClient:
             group id: slack group id
         """
         ret_id = ""
+        if in_memory_cache.get(name) is not None:
+            return "<!subteam^%s>" % in_memory_cache.get(name)
         try:
             resp = self.client.api_call("usergroups.list")
             if resp.data:
@@ -295,6 +301,7 @@ class SlackClient:
                     gid = group["id"]
                     if gname == name:
                         ret_id = gid
+                        in_memory_cache[name] = ret_id
                         break
         except SlackApiError as e:
             raise NotificationException(
