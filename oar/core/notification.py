@@ -237,9 +237,8 @@ class MailClient:
 
 
 class SlackClient:
-    cache_dict = dict()
-
     def __init__(self, bot_token):
+        self.cache_dict = dict()
         if not bot_token:
             raise NotificationException("slack bot token is not available")
         self.client = WebClient(token=bot_token)
@@ -267,19 +266,20 @@ class SlackClient:
         """
         email = self.transform_email(email)
         userid = None
-        if email in cache_dict:
-            userid = cache_dict.get(email)
+        if email in self.cache_dict:
+            userid = self.cache_dict.get(email)
         else:
             try:
                 resp = self.client.api_call(
                     api_method="users.lookupByEmail", params={"email": email}
                 )
                 userid = resp["user"]["id"]
-                cache_dict[email] = userid
+                self.cache_dict[email] = userid
             except SlackApiError as e:
                 logger.warning(f"cannot get slack user id for <{email}>: {e}")
                 return email
 
+        logger.debug(f"Cached email ids: {cache_dict}")
         return "<@%s>" % userid
 
     def get_group_id_by_name(self, name):
@@ -293,8 +293,8 @@ class SlackClient:
             group id: slack group id
         """
         ret_id = ""
-        if name in cache_dict:
-            ret_id = cache_dict.get(name)
+        if name in self.cache_dict:
+            ret_id = self.cache_dict.get(name)
         else:
             try:
                 resp = self.client.api_call("usergroups.list")
@@ -304,7 +304,7 @@ class SlackClient:
                         gid = group["id"]
                         if gname == name:
                             ret_id = gid
-                            cache_dict[name] = ret_id
+                            self.cache_dict[name] = ret_id
                             break
             except SlackApiError as e:
                 raise NotificationException(
@@ -314,6 +314,7 @@ class SlackClient:
             raise NotificationException(
                 f"cannot find slack group id by name {name}")
 
+        logger.debug(f"Cached group ids: {cache_dict}")
         return "<!subteam^%s>" % ret_id
 
     def transform_email(self, email):
