@@ -279,7 +279,7 @@ class SlackClient:
                 logger.warning(f"cannot get slack user id for <{email}>: {e}")
                 return email
 
-        logger.debug(f"Cached email ids: {cache_dict}")
+        logger.debug(f"Cached email ids: {self.cache_dict}")
         return "<@%s>" % userid
 
     def get_group_id_by_name(self, name):
@@ -314,7 +314,7 @@ class SlackClient:
             raise NotificationException(
                 f"cannot find slack group id by name {name}")
 
-        logger.debug(f"Cached group ids: {cache_dict}")
+        logger.debug(f"Cached group ids: {self.cache_dict}")
         return "<!subteam^%s>" % ret_id
 
     def transform_email(self, email):
