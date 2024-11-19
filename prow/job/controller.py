@@ -31,7 +31,18 @@ SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 SYS_ENV_VAR_GCS_CRED_FILE = "GCS_CRED_FILE"
 VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16", "4.17"]
-HTTP_CODE_FOR_RETRY = [429, 500, 502, 503, 504]
+
+
+def create_session() -> requests.Session:
+    retry_strategy = Retry(total=5, backoff_factor=2,
+                           status_forcelist=[429, 500, 502, 503, 504])
+    adapter = HTTPAdapter(max_retries=retry_strategy)
+
+    session = requests.Session()
+    session.mount("https://", adapter)
+    session.mount("http://", adapter)
+
+    return session
 
 
 class Architectures():
@@ -64,6 +75,7 @@ class ReleaseStreamURLResolver():
         self._arch = Architectures.fromString(arch)
         self._nightly = nightly
         self._release = release
+        self._session = create_session()
 
     def get_url_for_latest(self):
         base_url = f"https://{self._arch}.ocp.releases.ci.openshift.org/api/v1/releasestream"
@@ -76,7 +88,7 @@ class ReleaseStreamURLResolver():
         else:
             url = f"{base_url}/{releasestream}/latest?prefix={self._release}"
             # if stable build is not available for latest release, use dev preview releasestream instead
-            if requests.get(url).status_code == 404:
+            if self._session.get(url).status_code == 404:
                 releasestream = "4-dev-preview" + suffix
                 url = f"{base_url}/{releasestream}/latest"
 
@@ -197,9 +209,7 @@ class JobController:
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
         self.release_test_master = GithubUtil(REPO_RELEASE_TESTS)
-        self._session = requests.Session()
-        self._session.mount("https", HTTPAdapter(
-            max_retries=Retry(5, status_forcelist=HTTP_CODE_FOR_RETRY)))
+        self._session = create_session()
 
     def get_latest_build(self):
         try:
@@ -667,9 +677,7 @@ class TestResultAggregator():
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
         self.job_api = Jobs()
-        self._session = requests.Session()
-        self._session.mount("https", HTTPAdapter(
-            max_retries=Retry(5, status_forcelist=HTTP_CODE_FOR_RETRY)))
+        self._session = create_session()
 
     def start(self):
         logger.info("Start to scan test result files ...")
