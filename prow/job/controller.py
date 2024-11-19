@@ -15,6 +15,8 @@ from github import Auth, Github
 from github.GithubException import UnknownObjectException
 from requests.exceptions import RequestException
 from subprocess import CalledProcessError
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 
 
 logger = logging.getLogger(__name__)
@@ -28,7 +30,8 @@ DIR_RELEASE = "_releases"
 SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 SYS_ENV_VAR_GCS_CRED_FILE = "GCS_CRED_FILE"
-VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16"]
+VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16", "4.17"]
+HTTP_CODE_FOR_RETRY = [429, 500, 502, 503, 504]
 
 
 class Architectures():
@@ -194,12 +197,15 @@ class JobController:
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
         self.release_test_master = GithubUtil(REPO_RELEASE_TESTS)
+        self._session = requests.Session()
+        self._session.mount("https", HTTPAdapter(
+            max_retries=Retry(5, status_forcelist=HTTP_CODE_FOR_RETRY)))
 
     def get_latest_build(self):
         try:
             logger.info(
                 f"Getting latest {self._build_type} build for {self._release} ...")
-            resp = requests.get(self.url_resolver.get_url_for_latest())
+            resp = self._session.get(self.url_resolver.get_url_for_latest())
             resp.raise_for_status()
         except RequestException as re:
             logger.error(f"Get latest {self._build_type} build error {re}")
@@ -661,6 +667,9 @@ class TestResultAggregator():
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
         self.job_api = Jobs()
+        self._session = requests.Session()
+        self._session.mount("https", HTTPAdapter(
+            max_retries=Retry(5, status_forcelist=HTTP_CODE_FOR_RETRY)))
 
     def start(self):
         logger.info("Start to scan test result files ...")
@@ -765,7 +774,7 @@ class TestResultAggregator():
         # get build url
         url = ReleaseStreamURLResolver.get_url_for_build(build, arch)
 
-        return requests.get(url).status_code == 404
+        return self._session.get(url).status_code == 404
 
     def retry_prow_jobs(self, release, nightly, job_metadata, build, job_data):
 
