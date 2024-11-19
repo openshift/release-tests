@@ -268,6 +268,7 @@ class SlackClient:
         userid = None
         if email in self.cache_dict:
             userid = self.cache_dict.get(email)
+            logger.debug(f"Slack user id of {email} is retrieved from runtime cache")
         else:
             try:
                 resp = self.client.api_call(
@@ -275,11 +276,11 @@ class SlackClient:
                 )
                 userid = resp["user"]["id"]
                 self.cache_dict[email] = userid
+                logger.debug(f"Slack user id of {email} is added to runtime cache")
             except SlackApiError as e:
                 logger.warning(f"cannot get slack user id for <{email}>: {e}")
                 return email
 
-        logger.debug(f"Cached email ids: {self.cache_dict}")
         return "<@%s>" % userid
 
     def get_group_id_by_name(self, name):
@@ -295,6 +296,7 @@ class SlackClient:
         ret_id = ""
         if name in self.cache_dict:
             ret_id = self.cache_dict.get(name)
+            logger.debug(f"Slack group id of {name} is retrieved from runtime cache")
         else:
             try:
                 resp = self.client.api_call("usergroups.list")
@@ -305,6 +307,7 @@ class SlackClient:
                         if gname == name:
                             ret_id = gid
                             self.cache_dict[name] = ret_id
+                            logger.debug(f"Slack group id of {name} is added to runtime cache")
                             break
             except SlackApiError as e:
                 raise NotificationException(
@@ -314,7 +317,6 @@ class SlackClient:
             raise NotificationException(
                 f"cannot find slack group id by name {name}")
 
-        logger.debug(f"Cached group ids: {self.cache_dict}")
         return "<!subteam^%s>" % ret_id
 
     def transform_email(self, email):
