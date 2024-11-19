@@ -1,0 +1,24 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: oar
+  title: Openshift Automatic Release
+  namespace: quality-community
+  description: |
+    oar(Openshift Automatic Release), which interacts with Errata, Jira, Google doc, Slack and Jenkins.
+  annotations:
+    gitlab.com/project-slug: openshift/release-tests
+    gitlab.com/instance: github.com
+  tags:
+    - openshift
+    - python
+  links:
+    - title: Help
+      url: https://github.com/openshift/release-tests/blob/master/oar/README.md
+      icon: help
+spec:
+  type: tool
+  lifecycle: production
+  owner: group:redhat/ERT
+  domain: quality-community/quality-community
