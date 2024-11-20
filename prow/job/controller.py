@@ -41,6 +41,7 @@ def create_session() -> requests.Session:
     session = requests.Session()
     session.mount("https://", adapter)
     session.mount("http://", adapter)
+    session.stream = True
 
     return session
 
