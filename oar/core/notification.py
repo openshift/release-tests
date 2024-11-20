@@ -238,10 +238,10 @@ class MailClient:
 
 class SlackClient:
     def __init__(self, bot_token):
-        self.cache_dict = dict()
         if not bot_token:
             raise NotificationException("slack bot token is not available")
         self.client = WebClient(token=bot_token)
+        self.cache_dict = dict()
 
     def post_message(self, channel, msg):
         """
