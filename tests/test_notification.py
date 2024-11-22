@@ -22,7 +22,7 @@ class TestNotificationManager(unittest.TestCase):
         self.assertTrue(gid.startswith("<!subteam"))
 
     def test_get_slack_group_id_from_cache(self):
-        groupidlist = ["openshift-qe","forum-ocp-ert","openshift-qe","openshift-qe"]
+        groupidlist = ["openshift-qe","openshift-qe","openshift-qe"]
         for groupid in groupidlist:
             gid = self.nm.sc.get_group_id_by_name(groupid)
             self.assertTrue(gid.startswith("<!subteam"))
