@@ -1,10 +1,15 @@
 import unittest
+import logging
 import sys
 from oar.core.notification import NotificationManager
 from oar.core.configstore import ConfigStore
 from oar.core.worksheet import WorksheetManager
 from oar.core.worksheet import TestReport
 
+logging.basicConfig(
+    level=logging.DEBUG,  # Set the minimum log level to DEBUG
+    format="%(asctime)s - %(levelname)s - %(message)s",  # Format for log messages
+)
 
 class TestNotificationManager(unittest.TestCase):
     def setUp(self):
@@ -21,9 +26,21 @@ class TestNotificationManager(unittest.TestCase):
         gid = self.nm.sc.get_group_id_by_name("openshift-qe")
         self.assertTrue(gid.startswith("<!subteam"))
 
+    def test_get_slack_group_id_from_cache(self):
+        groupidlist = ["openshift-qe","openshift-qe","openshift-qe"]
+        for groupid in groupidlist:
+            gid = self.nm.sc.get_group_id_by_name(groupid)
+            self.assertTrue(gid.startswith("<!subteam"))
+
     def test_get_slack_user_id(self):
         uid = self.nm.sc.get_user_id_by_email("rioliu@redhat.com")
         self.assertTrue(uid.startswith("<@"))
+
+    def test_get_slack_user_id_from_cache(self):
+        emaillist = ["rioliu@redhat.com","jhuttana@redhat.com","rioliu@redhat.com","rioliu@redhat.com"]
+        for emailid in emaillist:
+            uid = self.nm.sc.get_user_id_by_email(emailid)
+            self.assertTrue(uid.startswith("<@"))
 
     def test_share_dropped_bugs(self):
         dropped_bugs = ["OCPQE-123", "OCPQE-456", "OCPQE-789"]

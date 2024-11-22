@@ -15,7 +15,6 @@ from slack_sdk.errors import SlackApiError
 
 logger = logging.getLogger(__name__)
 
-
 class NotificationManager:
     """
     NotificationManager is used to send notification messages via email or slack.
@@ -242,6 +241,7 @@ class SlackClient:
         if not bot_token:
             raise NotificationException("slack bot token is not available")
         self.client = WebClient(token=bot_token)
+        self.cache_dict = dict()
 
     def post_message(self, channel, msg):
         """
@@ -265,14 +265,21 @@ class SlackClient:
             str: slack user id
         """
         email = self.transform_email(email)
-        try:
-            resp = self.client.api_call(
-                api_method="users.lookupByEmail", params={"email": email}
-            )
-            userid = resp["user"]["id"]
-        except SlackApiError as e:
-            logger.warning(f"cannot get slack user id for <{email}>: {e}")
-            return email
+        userid = None
+        if email in self.cache_dict:
+            userid = self.cache_dict.get(email)
+            logger.debug(f"Slack user id of {email} is retrieved from runtime cache")
+        else:
+            try:
+                resp = self.client.api_call(
+                    api_method="users.lookupByEmail", params={"email": email}
+                )
+                userid = resp["user"]["id"]
+                self.cache_dict[email] = userid
+                logger.debug(f"Slack user id of {email} is added to runtime cache")
+            except SlackApiError as e:
+                logger.warning(f"cannot get slack user id for <{email}>: {e}")
+                return email
 
         return "<@%s>" % userid
 
@@ -287,18 +294,24 @@ class SlackClient:
             group id: slack group id
         """
         ret_id = ""
-        try:
-            resp = self.client.api_call("usergroups.list")
-            if resp.data:
-                for group in resp.data["usergroups"]:
-                    gname = group["handle"]
-                    gid = group["id"]
-                    if gname == name:
-                        ret_id = gid
-                        break
-        except SlackApiError as e:
-            raise NotificationException(
-                f"query group id by name {name} error") from e
+        if name in self.cache_dict:
+            ret_id = self.cache_dict.get(name)
+            logger.debug(f"Slack group id of {name} is retrieved from runtime cache")
+        else:
+            try:
+                resp = self.client.api_call("usergroups.list")
+                if resp.data:
+                    for group in resp.data["usergroups"]:
+                        gname = group["handle"]
+                        gid = group["id"]
+                        if gname == name:
+                            ret_id = gid
+                            self.cache_dict[name] = ret_id
+                            logger.debug(f"Slack group id of {name} is added to runtime cache")
+                            break
+            except SlackApiError as e:
+                raise NotificationException(
+                    f"query group id by name {name} error") from e
 
         if not ret_id:
             raise NotificationException(
