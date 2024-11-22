@@ -751,8 +751,7 @@ class TestResultAggregator():
                 logger.info(f"Test result summary of {build}: {metrics}")
 
                 if metrics.is_qe_accepted():
-                    # self.update_releasepayload(build)
-                    pass
+                    self.update_releasepayload(build)
 
                 # if all the jobs are completed, we add a attribute `aggregated` to indicate this test result is aggregated
                 if metrics.all_jobs_are_completed():
