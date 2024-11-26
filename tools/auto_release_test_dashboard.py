@@ -107,7 +107,7 @@ def load_test_results(release='4.12'):
 
 # start to write page elements
 st.set_page_config(layout='wide')
-st.markdown("<h2 style='text-align: center; color: black;'>Auto Release Test Results</h2>",
+st.markdown("<h2 style='text-align: center'>Auto Release Test Results</h2>",
             unsafe_allow_html=True)
 cola, colb = st.columns(2, vertical_alignment='bottom')
 # define a select box to choose minor release, don't load all the test results together
