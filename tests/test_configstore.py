@@ -58,29 +58,36 @@ class TestConfigStore(unittest.TestCase):
         self.assertEqual(contact["channel"], "#forum-qe")
         self.assertEqual(contact["id"], "openshift-qe")
 
-        self.assertRaises(ConfigStoreException, self.cs.get_slack_contact, "dummy")
+        self.assertRaises(ConfigStoreException,
+                          self.cs.get_slack_contact, "dummy")
 
     def test_get_email_contact(self):
         contact = self.cs.get_email_contact("qe")
         self.assertEqual(contact, "aos-qe@redhat.com")
 
-        self.assertRaises(ConfigStoreException, self.cs.get_email_contact, "dummy")
+        self.assertRaises(ConfigStoreException,
+                          self.cs.get_email_contact, "dummy")
 
     def test_get_report_template(self):
         template = self.cs.get_report_template()
-        self.assertEqual(template, "1Xv8qfYUwp61lOOMQaXNO7wnlo9b8mXACgug49cZHCTM")
+        self.assertEqual(
+            template, "1Xv8qfYUwp61lOOMQaXNO7wnlo9b8mXACgug49cZHCTM")
 
         cs = ConfigStore("4.9.10")
         self.assertRaises(ConfigStoreException, cs.get_report_template)
-        
+
     def test_get_inheritance_rule(self):
         cs = ConfigStore("4.13.21")
         ads = cs.get_advisories()
         self.assertEqual(123314, ads["extras"])
-        
+
         cs = ConfigStore("4.14.1")
         ads = cs.get_advisories()
         self.assertEqual(123024, ads["rpm"])
         builds = cs.get_candidate_builds()
         self.assertEqual(len(builds), 0)
-  
+
+    def test_get_jenkins_server(self):
+        server_url = self.cs.get_jenkins_server()
+        self.assertTrue(
+            "dno.corp.redhat.com" in server_url)
