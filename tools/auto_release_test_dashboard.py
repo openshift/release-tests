@@ -29,7 +29,12 @@ def get_col_state(file_content):
     Get job state: Accepted, Rejected, Pending
     """
     if 'accepted' in file_content:
-        accepted = 'Accepted' if file_content['accepted'] else 'Rejected'
+        if file_content['accepted']:
+            accepted = 'Accepted'
+        elif 'manual_promotion' in file_content:
+            accepted = 'Accepted (Manually Promoted)'
+        else:
+            accepted = 'Rejected'
     else:
         accepted = 'Pending'
 
