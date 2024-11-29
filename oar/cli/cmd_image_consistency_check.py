@@ -1,5 +1,6 @@
 import click
 import logging
+from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins import JenkinsHelper
@@ -27,6 +28,7 @@ def image_consistency_check(ctx, build_number, for_nightly):
     jh = JenkinsHelper(cs)
     nm = NotificationManager(cs)
     report = WorksheetManager(cs).get_test_report()
+    am = AdvisoryManager(cs)
 
     if not build_number:
         logger.info(
@@ -84,8 +86,13 @@ def image_consistency_check(ctx, build_number, for_nightly):
                 "image-consistency-check", build_number)
 
             if job_status == JENKINS_JOB_STATUS_SUCCESS:
-                report.update_task_status(
-                    LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
+                # TODO run the advisories check only when consistency check passed?
+                if am.all_advisories_grades_healthy():
+                    report.update_task_status(
+                        LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
+                else:
+                    report.update_task_status(
+                        LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)
             elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:
                 report.update_task_status(
                     LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS)
