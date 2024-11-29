@@ -750,7 +750,7 @@ class TestResultAggregator():
 
                 logger.info(f"Test result summary of {build}: {metrics}")
 
-                if metrics.is_qe_accepted():
+                if metrics.is_qe_accepted() or self.is_test_result_promoted_manually(json_data):
                     self.update_releasepayload(build)
 
                 # if all the jobs are completed, we add a attribute `aggregated` to indicate this test result is aggregated
@@ -804,7 +804,6 @@ class TestResultAggregator():
             logger.info(f"Retried jobs: {retried_jobs}")
 
     def is_test_result_aggregated(self, json_data):
-
         if json_data.get("aggregated") == True:
             build = Build(json_data.get("build"))
             logger.info(
@@ -812,6 +811,23 @@ class TestResultAggregator():
             return True
 
         return False
+    
+    def is_test_result_promoted_manually(self, json_data):
+        return "manual_promotion" in json_data
+    
+    def promote_test_results_for_build(self, build):
+        file_path = f"{DIR_RELEASE}/ocp-test-result-{build}-{self._arch}.json"
+        if self.release_test_record.file_exists(file_path):
+            file_content = self.release_test_record.get_file_content(file_path)
+            json_data = json.loads(file_content)
+            # update attr aggregated to false, so this file will be processed in next aggregator job
+            json_data["aggregated"] = False
+            # update attr `manual_promotion`, so releasepayload will be updated
+            json_data["manual_promotion"] = True
+            # update the file content
+            self.release_test_record.push_file(data=json.dumps(json_data, indent=2), path=file_path)
+        else:
+            logger.error(f"{file_path} not found in repo release-tests")
 
 
 def validate_required_info(release=None):
@@ -852,6 +868,13 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 def start_aggregator(arch):
     TestResultAggregator(arch).start()
 
+@click.command
+@click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
+@click.option("--build", help="build version e.g. 4.16.20", required=True)
+def promote_test_results(arch, build):
+    TestResultAggregator(arch).promote_test_results_for_build(build)
+
 
 cli.add_command(start_controller)
 cli.add_command(start_aggregator)
+cli.add_command(promote_test_results)
