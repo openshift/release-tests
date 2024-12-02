@@ -1,4 +1,3 @@
-
 import unittest
 
 from oar.core.advisory import Advisory, AdvisoryManager

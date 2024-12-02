@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from dateutil import parser
 from errata_tool import Erratum
 from errata_tool import ErrataException
@@ -325,11 +325,12 @@ class AdvisoryManager:
                 continue
         
             ad_grade = ad.get_overall_grade()
-            unhealthy_builds = ad.get_unhealthy_builds()
             
-            if  not util.isGradeHealthy(ad_grade) or unhealthy_builds:
-                healthy_advisories = False
+            if not util.is_grade_healthy(ad_grade):
                 logger.error(f"advisory {ad.errata_id} is unhealthy, overall grade is {ad_grade}")
+                healthy_advisories = False
+                unhealthy_builds = ad.get_unhealthy_builds()
+                
                 for ub in unhealthy_builds:
                     logger.error(f"build {ub["nvr"]} for architecture {ub["arch"]} with {ub["grade"]} is unhealthy")
    
@@ -667,7 +668,7 @@ class Advisory(Erratum):
         Get unhealthy builds of advisory.
 
         Returns:
-            list: Unhealthy builds {}.
+            list: Unhealthy builds.
         """
         nvrs = self.get_build_nvrs()
 
@@ -676,7 +677,7 @@ class Advisory(Erratum):
         for n in nvrs:
             build_grades = self.get_build_grades(n)
             for bg in build_grades:
-                if not util.isGradeHealthy(bg["grade"]):
+                if not util.is_grade_healthy(bg["grade"]):
                     unhealthy_builds.append(bg)
 
         return unhealthy_builds
@@ -697,25 +698,28 @@ class Advisory(Erratum):
             # TODO should we skip empty data? 
 
             for arch in resp.json()["data"]:
-                grade = None
+                effective_grade = None
                 for fg in arch["freshness_grades"]:                    
-                    new_grade = fg["grade"]
-                    start_date = parser.parse(fg["start_date"]).replace(tzinfo=None)
+                    checked_grade = fg["grade"]
+                    start_date = parser.parse(fg["start_date"])
 
-                    if start_date > datetime.now():
+                    # skip if checked grade is not effective yet
+                    if start_date > datetime.now(timezone.utc):
                         continue
 
-                    if "end_date" in fg and parser.parse(fg["end_date"]).replace(tzinfo=None) < datetime.now():
+                    # skip if new_grade is 
+                    if "end_date" in fg and parser.parse(fg["end_date"]) < datetime.now(timezone.utc):
                         continue
 
-                    # TODO if there are more overlapping intervals, take the bigger grade or error?
-                    if grade and new_grade < grade:
+                    # skip if checked grade is smaller than current effective grade(if intervals are overlapping, bigger grade is taken)
+                    if effective_grade and checked_grade < effective_grade:
                         continue
 
-                    grade = new_grade
+                    # save new effective grade
+                    effective_grade = checked_grade
 
                 # TODO create object instead dict?
-                nvr_grades.append({"nvr": nvr, "arch": arch["architecture"], "grade": grade})
+                nvr_grades.append({"nvr": nvr, "arch": arch["architecture"], "grade": effective_grade})
         else:
             raise AdvisoryException(f"error when accessing build nvr - {nvr}")
         return nvr_grades
