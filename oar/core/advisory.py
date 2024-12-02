@@ -314,7 +314,7 @@ class AdvisoryManager:
         Check advisories overall grade and advisories image builds grades.
 
         Returns:
-            bool: True if all advisories grades are healthy
+            bool: True if all advisories grades are healthy.
 
         """
         healthy_advisories = True
@@ -332,8 +332,7 @@ class AdvisoryManager:
                 unhealthy_builds = ad.get_unhealthy_builds()
                 
                 for ub in unhealthy_builds:
-                    logger.error(f"build {ub["nvr"]} for architecture {ub["arch"]} with {ub["grade"]} is unhealthy")
-   
+                    logger.error(f"build {ub["nvr"]} for architecture {ub["arch"]} with grade {ub["grade"]} is unhealthy")
             else:
                 logger.info(f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
 
@@ -707,11 +706,11 @@ class Advisory(Erratum):
                     if start_date > datetime.now(timezone.utc):
                         continue
 
-                    # skip if new_grade is 
+                    # skip if checked grade is no longer effective
                     if "end_date" in fg and parser.parse(fg["end_date"]) < datetime.now(timezone.utc):
                         continue
 
-                    # skip if checked grade is smaller than current effective grade(if intervals are overlapping, bigger grade is taken)
+                    # skip if checked grade is smaller than current effective grade (if intervals are overlapping, bigger grade is taken)
                     if effective_grade and checked_grade < effective_grade:
                         continue
 

@@ -86,7 +86,6 @@ def image_consistency_check(ctx, build_number, for_nightly):
                 "image-consistency-check", build_number)
 
             if job_status == JENKINS_JOB_STATUS_SUCCESS:
-                # TODO run the advisories check only when consistency check passed?
                 if am.all_advisories_grades_healthy():
                     report.update_task_status(
                         LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
