@@ -690,12 +690,9 @@ class Advisory(Erratum):
         """
         nvr_url = "https://pyxis.engineering.redhat.com/v1/images/nvr/%s?include=data.freshness_grades&include=data.architecture" % nvr
         resp = requests.get(nvr_url, auth=self._auth, verify=self.ssl_verify)
-
         nvr_grades = []
 
         if resp.ok:
-            # TODO should we skip empty data? 
-
             for arch in resp.json()["data"]:
                 effective_grade = None
                 for fg in arch["freshness_grades"]:                    
@@ -717,7 +714,6 @@ class Advisory(Erratum):
                     # save new effective grade
                     effective_grade = checked_grade
 
-                # TODO create object instead dict?
                 nvr_grades.append({"nvr": nvr, "arch": arch["architecture"], "grade": effective_grade})
         else:
             raise AdvisoryException(f"error when accessing build nvr - {nvr}")
