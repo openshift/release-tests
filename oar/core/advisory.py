@@ -667,7 +667,7 @@ class Advisory(Erratum):
         Get unhealthy builds of advisory.
 
         Returns:
-            list: Unhealty builds {}.
+            list: Unhealthy builds {}.
         """
         nvrs = self.get_build_nvrs()
 
