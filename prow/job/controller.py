@@ -335,6 +335,8 @@ class GithubUtil:
         self._branch = branch
 
     def push_file(self, data, path):
+        if isinstance(data, dict):
+            data = json.dumps(data, indent=2)
         if self.file_exists(path):
             content = self._repo.get_contents(path=path, ref=self._branch)
             logger.info(f"Updating file {content.path}")
@@ -706,7 +708,7 @@ class TestResultAggregator():
                 json_data = json.loads(file_content)
                 logger.info(f"Start to check test result for {build} ...")
                 # if attribute `aggregated` found, i.e. the result is already analyzed, skip aggregation for this build
-                if self.is_test_result_aggregated(json_data):
+                if self.__is_test_result_aggregated(json_data):
                     continue
 
                 jobs = json_data["result"]
@@ -750,7 +752,7 @@ class TestResultAggregator():
 
                 logger.info(f"Test result summary of {build}: {metrics}")
 
-                if metrics.is_qe_accepted() or self.is_test_result_promoted_manually(json_data):
+                if metrics.is_qe_accepted() or self.__is_test_result_promoted_manually(json_data):
                     self.update_releasepayload(build)
 
                 # if all the jobs are completed, we add a attribute `aggregated` to indicate this test result is aggregated
@@ -758,7 +760,7 @@ class TestResultAggregator():
                     json_data["aggregated"] = True
                     json_data["accepted"] = metrics.is_qe_accepted()
                 self.release_test_record.push_file(
-                    data=json.dumps(json_data, indent=2), path=content.path)
+                    data=json_data, path=content.path)
                 logger.info(
                     f"Latest test result of {build} is updated to file {content.path}")
 
@@ -803,7 +805,7 @@ class TestResultAggregator():
 
             logger.info(f"Retried jobs: {retried_jobs}")
 
-    def is_test_result_aggregated(self, json_data):
+    def __is_test_result_aggregated(self, json_data):
         if json_data.get("aggregated") == True:
             build = Build(json_data.get("build"))
             logger.info(
@@ -811,23 +813,58 @@ class TestResultAggregator():
             return True
 
         return False
-    
-    def is_test_result_promoted_manually(self, json_data):
+
+    def __is_test_result_promoted_manually(self, json_data):
         return "manual_promotion" in json_data
-    
-    def promote_test_results_for_build(self, build):
-        file_path = f"{DIR_RELEASE}/ocp-test-result-{build}-{self._arch}.json"
+
+    def __get_test_result(self, file_path):
+        json_data = None
         if self.release_test_record.file_exists(file_path):
             file_content = self.release_test_record.get_file_content(file_path)
             json_data = json.loads(file_content)
+
+        return json_data
+
+    def __get_test_result_file_path(self, build):
+        return f"{DIR_RELEASE}/ocp-test-result-{build}-{self._arch}.json"
+
+    def promote_test_results_for_build(self, build):
+        file_path = self.__get_test_result_file_path(build)
+        json_data = self.__get_test_result(file_path)
+        if json_data:
             # update attr aggregated to false, so this file will be processed in next aggregator job
             json_data["aggregated"] = False
             # update attr `manual_promotion`, so releasepayload will be updated
             json_data["manual_promotion"] = True
             # update the file content
-            self.release_test_record.push_file(data=json.dumps(json_data, indent=2), path=file_path)
-        else:
-            logger.error(f"{file_path} not found in repo release-tests")
+            self.release_test_record.push_file(data=json_data, path=file_path)
+
+    def update_retried_job_run(self, build, job_name, current_job_id, new_job_id):
+        file_path = self.__get_test_result_file_path(build)
+        json_data = self.__get_test_result(file_path)
+        if json_data:
+            # find job result by job name
+            results = json_data["result"]
+            job_result = None
+            for result in results:
+                if result["jobName"] == job_name:
+                    job_result = result
+                    break
+            if job_result:
+                # get retried job run and update jobID with new one
+                retried_job_runs = job_result["retriedJobs"]
+                for job_run in retried_job_runs:
+                    if job_run["jobID"] == current_job_id:
+                        job_run.clear()
+                        job_run["jobID"] = new_job_id
+                        break
+                # delete attr `aggregated` and `accepted`
+                json_data.pop("aggregated")
+                json_data.pop("accepted")
+                self.release_test_record.push_file(
+                    data=json_data, path=file_path)
+            else:
+                logger.error(f"cannot find job name {job_name} in {file_path}")
 
 
 def validate_required_info(release=None):
@@ -868,6 +905,7 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 def start_aggregator(arch):
     TestResultAggregator(arch).start()
 
+
 @click.command
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
@@ -875,6 +913,18 @@ def promote_test_results(arch, build):
     TestResultAggregator(arch).promote_test_results_for_build(build)
 
 
+@click.command
+@click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
+@click.option("--build", help="build version e.g. 4.16.20", required=True)
+@click.option("--job-name", help="prow job name configured in test job registry", required=True)
+@click.option("--current-job-id", help="current job run id", required=True)
+@click.option("--new-job-id", help="new job run id used to replace current job id", required=True)
+def update_retried_job_run(arch, build, job_name, current_job_id, new_job_id):
+    TestResultAggregator(arch).update_retried_job_run(
+        build, job_name, current_job_id, new_job_id)
+
+
 cli.add_command(start_controller)
 cli.add_command(start_aggregator)
 cli.add_command(promote_test_results)
+cli.add_command(update_retried_job_run)
