@@ -332,7 +332,7 @@ class AdvisoryManager:
                 unhealthy_builds = ad.get_unhealthy_builds()
                 
                 for ub in unhealthy_builds:
-                    logger.error(f"build {ub["nvr"]} for architecture {ub["arch"]} with grade {ub["grade"]} is unhealthy")
+                    logger.error(f"build {ub['nvr']} for architecture {ub['arch']} with grade {ub['grade']} is unhealthy")
             else:
                 logger.info(f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
 
