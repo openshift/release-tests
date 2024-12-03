@@ -21,7 +21,7 @@ class TestAdvisoryGrade(unittest.TestCase):
         self.assertEqual(188, len(Advisory(errata_id=140505).get_build_nvrs()))
         self.assertEqual(13, len(Advisory(errata_id=140506).get_build_nvrs()))
         self.assertEqual(28, len(Advisory(errata_id=140508).get_build_nvrs()))
-    
+
     def test_build_grades(self):
         ad = Advisory(errata_id=140505)
 
