@@ -669,15 +669,14 @@ class Advisory(Erratum):
         Returns:
             list: Unhealthy builds.
         """
-        nvrs = self.get_build_nvrs()
-
         unhealthy_builds = []
 
-        for n in nvrs:
-            build_grades = self.get_build_grades(n)
-            for bg in build_grades:
-                if not util.is_grade_healthy(bg["grade"]):
-                    unhealthy_builds.append(bg)
+        for product_version in self.errata_builds:
+            for nvr in self.errata_builds[product_version]:
+                build_grades = self.get_build_grades(nvr)
+                for bg in build_grades:
+                    if not util.is_grade_healthy(bg["grade"]):
+                        unhealthy_builds.append(bg)
 
         return unhealthy_builds
 
@@ -718,25 +717,6 @@ class Advisory(Erratum):
         else:
             raise AdvisoryException(f"error when accessing build nvr - {nvr}")
         return nvr_grades
-
-    def get_build_nvrs(self):
-        """
-        Get nvrs list of advisory builds.
-
-        Returns:
-            list: Build nvrs.
-        """
-
-        nvrs = []
-        builds_url = "/api/v1/erratum/%i/builds" % self.errata_id
-        resp = self._get(builds_url)
-
-        for arch in resp.values():
-            for builds in arch["builds"]:
-                for b in builds.values():
-                    nvrs.append(b["nvr"])
-
-        return nvrs
 
     def get_overall_grade(self):
         """

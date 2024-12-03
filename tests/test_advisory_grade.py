@@ -11,17 +11,6 @@ class TestAdvisoryGrade(unittest.TestCase):
         self.assertEqual("A", Advisory(errata_id=140506).get_overall_grade())
         self.assertRaises(AdvisoryException, Advisory(errata_id=140508).get_overall_grade)
 
-    def test_builds_nvrs(self): 
-        nvrs = Advisory(errata_id=140504).get_build_nvrs()
-        self.assertEqual(42, len(nvrs))
-        self.assertIn("ose-secrets-store-csi-mustgather-container-v4.14.0-202410182001.p0.g4f339d0.assembly.stream.el8", nvrs)
-        self.assertIn("ose-kubernetes-nmstate-operator-container-v4.14.0-202410241808.p0.g3955b1b.assembly.stream.el9", nvrs)
-        self.assertIn("ose-secrets-store-csi-mustgather-container-v4.14.0-202410182001.p0.g4f339d0.assembly.stream.el8", nvrs)
-
-        self.assertEqual(188, len(Advisory(errata_id=140505).get_build_nvrs()))
-        self.assertEqual(13, len(Advisory(errata_id=140506).get_build_nvrs()))
-        self.assertEqual(28, len(Advisory(errata_id=140508).get_build_nvrs()))
-
     def test_build_grades(self):
         ad = Advisory(errata_id=140505)
 
