@@ -69,6 +69,8 @@ def send_prompt_to_ai_model(prompt):
             openai_api_key=model_api_key,
             openai_api_base=f"{model_api_base}/v1",
             model_name=model_api_name,
+            streaming=True,
+            max_tokens=4096
         )
         return llm.invoke(prompt)
 
