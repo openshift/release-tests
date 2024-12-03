@@ -859,8 +859,8 @@ class TestResultAggregator():
                         job_run["jobID"] = new_job_id
                         break
                 # delete attr `aggregated` and `accepted`
-                json_data.pop("aggregated")
-                json_data.pop("accepted")
+                json_data.pop("aggregated", None)
+                json_data.pop("accepted", None)
                 self.release_test_record.push_file(
                     data=json_data, path=file_path)
             else:
