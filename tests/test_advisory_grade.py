@@ -41,10 +41,17 @@ class TestAdvisoryGrade(unittest.TestCase):
         self.assertEqual(b_nvr, b_grades[2]["nvr"])
         self.assertEqual("B", b_grades[2]["grade"])
         self.assertEqual("ppc64le", b_grades[2]["arch"])
-    
-    def test_unhealthy_builds(self):
-        ad = Advisory(errata_id=140505)
-        builds = ad.get_unhealthy_builds()
+
+    def test_all_advisories_grades_healthy(self):
+        am = AdvisoryManager(ConfigStore("4.14.40"))
+        unhealthy_advisories = am.check_advisories_grades_health()
+
+        self.assertEqual(1, len(unhealthy_advisories))
+
+        builds = unhealthy_advisories[0]["unhealthy_builds"]
+
+        self.assertEqual(140505, unhealthy_advisories[0]["errata_id"])
+        self.assertEqual("F", unhealthy_advisories[0]["ad_grade"])
         self.assertEqual(4, len(builds))
 
         self.assertEqual("ose-ovn-kubernetes-container-v4.14.0-202410300909.p0.geb3869e.assembly.stream.el9", builds[0]["nvr"])
@@ -62,7 +69,3 @@ class TestAdvisoryGrade(unittest.TestCase):
         self.assertEqual("ose-ovn-kubernetes-container-v4.14.0-202410300909.p0.geb3869e.assembly.stream.el9", builds[3]["nvr"])
         self.assertEqual("F", builds[3]["grade"])
         self.assertEqual("amd64", builds[3]["arch"])
-
-    def test_all_advisories_grades_healthy(self):
-        am = AdvisoryManager(ConfigStore("4.14.40"))
-        self.assertFalse(am.all_advisories_grades_healthy())

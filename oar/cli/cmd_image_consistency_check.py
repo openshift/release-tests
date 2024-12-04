@@ -86,10 +86,12 @@ def image_consistency_check(ctx, build_number, for_nightly):
                 "image-consistency-check", build_number)
 
             if job_status == JENKINS_JOB_STATUS_SUCCESS:
-                if am.all_advisories_grades_healthy():
+                unhealthy_advisories = am.check_advisories_grades_health()
+                if not unhealthy_advisories:
                     report.update_task_status(
                         LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
                 else:
+                    nm.share_unhealthy_advisories(unhealthy_advisories)
                     report.update_task_status(
                         LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)
             elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:

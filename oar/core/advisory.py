@@ -309,15 +309,14 @@ class AdvisoryManager:
                 f"get request Docs and Prodsec approved advisories failed"
             ) from e
 
-    def all_advisories_grades_healthy(self):
+    def check_advisories_grades_health(self):
         """
-        Check advisories overall grade and advisories image builds grades.
+        Check advisories overall grade, advisories image builds grades and return unhealthy advisories.
 
         Returns:
-            bool: True if all advisories grades are healthy.
-
+            list: Unhealthy advisories {errata_id, ad_grade, unhealthy_builds}.
         """
-        healthy_advisories = True
+        unhealthy_advisories = []
         
         for ad in self.get_advisories():
             if ad.impetus == AD_IMPETUS_RPM:
@@ -328,15 +327,15 @@ class AdvisoryManager:
             
             if not util.is_grade_healthy(ad_grade):
                 logger.error(f"advisory {ad.errata_id} is unhealthy, overall grade is {ad_grade}")
-                healthy_advisories = False
                 unhealthy_builds = ad.get_unhealthy_builds()
+                unhealthy_advisories.append({"errata_id": ad.errata_id, "ad_grade": ad_grade, "unhealthy_builds": unhealthy_builds})
                 
                 for ub in unhealthy_builds:
                     logger.error(f"build {ub['nvr']} for architecture {ub['arch']} with grade {ub['grade']} is unhealthy")
             else:
                 logger.info(f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
 
-        return healthy_advisories
+        return unhealthy_advisories
     
 class Advisory(Erratum):
     """
