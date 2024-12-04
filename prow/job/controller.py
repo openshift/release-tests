@@ -30,7 +30,8 @@ DIR_RELEASE = "_releases"
 SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 SYS_ENV_VAR_GCS_CRED_FILE = "GCS_CRED_FILE"
-VALID_RELEASES = ["4.11", "4.12", "4.13", "4.14", "4.15", "4.16", "4.17"]
+REQUIRED_ENV_VARS_FOR_CONTROLLER = [
+    SYS_ENV_VAR_GITHUB_TOKEN, SYS_ENV_VAR_API_TOKEN, SYS_ENV_VAR_GCS_CRED_FILE]
 
 
 def create_session() -> requests.Session:
@@ -195,7 +196,6 @@ class JobController:
     def __init__(self, release, nightly=True, trigger_prow_job=True, arch=Architectures.AMD64):
         self._release = release[:-
                                 2] if len(release.split(".")) == 3 else release
-        validate_required_info(release)
         self._nightly = nightly
         self._trigger_prow_job = trigger_prow_job
         self._arch = Architectures.fromString(arch)
@@ -674,7 +674,6 @@ class TestMetrics():
 class TestResultAggregator():
 
     def __init__(self, arch=Architectures.AMD64):
-        validate_required_info()
         self._arch = Architectures.fromString(arch)
         self.job_registry = TestJobRegistry(self._arch)
         self.release_test_record = GithubUtil(
@@ -867,18 +866,12 @@ class TestResultAggregator():
                 logger.error(f"cannot find job name {job_name} in {file_path}")
 
 
-def validate_required_info(release=None):
-    if os.environ.get(SYS_ENV_VAR_API_TOKEN) is None:
+def validate_required_info(required_env_vars):
+    missing_env_vars = [
+        var for var in required_env_vars if os.environ.get(var) is None]
+    if missing_env_vars:
         raise SystemExit(
-            f"Cannot find environment variable {SYS_ENV_VAR_API_TOKEN}")
-    if os.environ.get(SYS_ENV_VAR_GITHUB_TOKEN) is None:
-        raise SystemExit(
-            f"Cannot find environment variable {SYS_ENV_VAR_GITHUB_TOKEN}")
-    if os.environ.get(SYS_ENV_VAR_GCS_CRED_FILE) is None:
-        raise SystemExit(
-            f"Cannot find environment variable {SYS_ENV_VAR_GCS_CRED_FILE}")
-    if release and release not in VALID_RELEASES:
-        raise SystemExit(f"{release} is not supported")
+            f"Missing required environment variables: {', '.join(missing_env_vars)}")
 
 
 @click.group()
@@ -897,12 +890,14 @@ def cli(debug):
 @click.option("--trigger-prow-job", help="trigger prow job if new build is found", default=True)
 @click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 def start_controller(release, nightly, trigger_prow_job, arch):
+    validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
     JobController(release, nightly, trigger_prow_job, arch).start()
 
 
 @click.command
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 def start_aggregator(arch):
+    validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
     TestResultAggregator(arch).start()
 
 
@@ -910,6 +905,7 @@ def start_aggregator(arch):
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
 def promote_test_results(arch, build):
+    validate_required_info([SYS_ENV_VAR_GITHUB_TOKEN])
     TestResultAggregator(arch).promote_test_results_for_build(build)
 
 
@@ -920,6 +916,7 @@ def promote_test_results(arch, build):
 @click.option("--current-job-id", help="current job run id", required=True)
 @click.option("--new-job-id", help="new job run id used to replace current job id", required=True)
 def update_retried_job_run(arch, build, job_name, current_job_id, new_job_id):
+    validate_required_info([SYS_ENV_VAR_GITHUB_TOKEN])
     TestResultAggregator(arch).update_retried_job_run(
         build, job_name, current_job_id, new_job_id)
 
