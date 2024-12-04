@@ -134,6 +134,27 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException(
                 "share missed CVE tracker bugs failed") from e
+        
+    def share_unhealthy_advisories(self, unhealthy_advisories):
+        """
+        Send slack message to ART team with unhealthy advisories 
+
+        Args:
+            list: unhealthy_advisories
+
+        Raises:
+            NotificationException: error when sharing unhealthy advisories
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_unhealthy_advisories(
+                unhealthy_advisories)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share unhealthy advisories failed") from e
 
     def share_dropped_and_must_verify_bugs(self, dropped_bugs, must_verify_bugs):
         """
@@ -479,6 +500,29 @@ class MessageHelper:
         for bug in cve_tracker_bugs:
             message += self._to_link(util.get_jira_link(bug), bug) + " "
         message += "\n"
+
+        return message
+    
+    def get_slack_message_for_unhealthy_advisories(self, unhealthy_advisories):
+        """
+        manipulate slack message for unhealthy advisories
+
+        Args:
+            list: unhealthy advisories
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact_by_id("art")
+        )
+
+        message = f"Hello {gid}, Found unhealthy advisories, could you please take a look, thanks\n"
+
+        for ua in unhealthy_advisories:
+            message += f"Advisory {util.get_advisory_link(ua['errata_id'])} has grade {ua['ad_grade']} with unhealthy builds:\n"
+            for ub in ua["unhealthy_builds"]:
+                message += f"{ub['nvr']} build for architecture {ub['arch']} has grade {ub['grade']}\n"
 
         return message
 

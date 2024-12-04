@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+from dateutil import parser
 from errata_tool import Erratum
 from errata_tool import ErrataException
 from oar.core.configstore import ConfigStore
@@ -8,6 +10,8 @@ import oar.core.util as util
 import logging
 import subprocess
 import json
+import re
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -305,7 +309,34 @@ class AdvisoryManager:
                 f"get request Docs and Prodsec approved advisories failed"
             ) from e
 
+    def check_advisories_grades_health(self):
+        """
+        Check advisories overall grade, advisories image builds grades and return unhealthy advisories.
 
+        Returns:
+            list: Unhealthy advisories {errata_id, ad_grade, unhealthy_builds}.
+        """
+        unhealthy_advisories = []
+        
+        for ad in self.get_advisories():
+            if ad.impetus == AD_IMPETUS_RPM:
+                logger.info(f"skipping RPM advisory - {ad.errata_id}, it has no container")
+                continue
+        
+            ad_grade = ad.get_overall_grade()
+            
+            if not util.is_grade_healthy(ad_grade):
+                logger.error(f"advisory {ad.errata_id} is unhealthy, overall grade is {ad_grade}")
+                unhealthy_builds = ad.get_unhealthy_builds()
+                unhealthy_advisories.append({"errata_id": ad.errata_id, "ad_grade": ad_grade, "unhealthy_builds": unhealthy_builds})
+                
+                for ub in unhealthy_builds:
+                    logger.error(f"build {ub['nvr']} for architecture {ub['arch']} with grade {ub['grade']} is unhealthy")
+            else:
+                logger.info(f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
+
+        return unhealthy_advisories
+    
 class Advisory(Erratum):
     """
     Wrapper class of Erratum, add more functionalities and properties
@@ -629,3 +660,79 @@ class Advisory(Erratum):
             return blocking
         else:
             return False
+        
+    def get_unhealthy_builds(self):
+        """
+        Get unhealthy builds of advisory.
+
+        Returns:
+            list: Unhealthy builds.
+        """
+        unhealthy_builds = []
+
+        for product_version in self.errata_builds:
+            for nvr in self.errata_builds[product_version]:
+                build_grades = self.get_build_grades(nvr)
+                for bg in build_grades:
+                    if not util.is_grade_healthy(bg["grade"]):
+                        unhealthy_builds.append(bg)
+
+        return unhealthy_builds
+
+    def get_build_grades(self, nvr):
+        """
+        Get all architecture grades of build.
+
+        Returns:
+            list: All architecture grades of build {nvr, architecture, grade}.
+        """
+        nvr_url = "https://pyxis.engineering.redhat.com/v1/images/nvr/%s?include=data.freshness_grades&include=data.architecture" % nvr
+        resp = requests.get(nvr_url, auth=self._auth, verify=self.ssl_verify)
+        nvr_grades = []
+
+        if resp.ok:
+            for arch in resp.json()["data"]:
+                effective_grade = None
+                for fg in arch["freshness_grades"]:
+                    checked_grade = fg["grade"]
+                    start_date = parser.parse(fg["start_date"])
+
+                    # skip if checked grade is not effective yet
+                    if start_date > datetime.now(timezone.utc):
+                        continue
+
+                    # skip if checked grade is no longer effective
+                    if "end_date" in fg and parser.parse(fg["end_date"]) < datetime.now(timezone.utc):
+                        continue
+
+                    # skip if checked grade is smaller than current effective grade (if intervals are overlapping, bigger grade is taken)
+                    if effective_grade and checked_grade < effective_grade:
+                        continue
+
+                    # save new effective grade
+                    effective_grade = checked_grade
+
+                nvr_grades.append({"nvr": nvr, "arch": arch["architecture"], "grade": effective_grade})
+        else:
+            raise AdvisoryException(f"error when accessing build nvr - {nvr}")
+        return nvr_grades
+
+    def get_overall_grade(self):
+        """
+        Get overall grade of advisory.
+
+        Retruns:
+            str: Overall grade of advisory.
+        """
+        container_url = "https://errata.devel.redhat.com/errata/container/%i" % self.errata_id
+
+        resp = requests.get(container_url, auth=self._auth, verify=self.ssl_verify)
+
+        if resp.ok:
+            search_result = re.search("Docker Container Content - ([A-F])", resp.text)
+            if search_result:
+                return search_result.group(1)
+            else:
+                raise AdvisoryException(f"cannot find overall advisory grade - {self.errata_id}")
+        else:
+            raise AdvisoryException(f"error when accessing advisory containers - {self.errata_id}")
