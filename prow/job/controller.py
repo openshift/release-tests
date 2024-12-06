@@ -31,6 +31,8 @@ SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 SYS_ENV_VAR_GCS_CRED_FILE = "GCS_CRED_FILE"
 REQUIRED_ENV_VARS_FOR_CONTROLLER = [
+    SYS_ENV_VAR_GITHUB_TOKEN, SYS_ENV_VAR_API_TOKEN]
+REQUIRED_ENV_VARS_FOR_AGGREGATOR = [
     SYS_ENV_VAR_GITHUB_TOKEN, SYS_ENV_VAR_API_TOKEN, SYS_ENV_VAR_GCS_CRED_FILE]
 
 
@@ -105,6 +107,12 @@ class ReleaseStreamURLResolver():
 
         return url_resolver.get_url_for_latest().replace("latest", f"release/{build}")
 
+    @staticmethod
+    def get_url_for_tags(build, arch):
+        url_resolver = ReleaseStreamURLResolver(
+            build[:4], "nightly" in build, arch)
+        return url_resolver.get_url_for_latest().replace("latest", "tags")
+
 
 class Build():
 
@@ -140,6 +148,9 @@ class Build():
 
     def __str__(self):
         return self.name
+
+    def __repr__(self):
+        return json.dumps(self._json_data, indent=2)
 
     def to_dict(self):
         return self._json_data
@@ -245,6 +256,22 @@ class JobController:
                 build.raw_data, self._build_file)
 
         logger.info(f"current build info is updated on repo")
+
+    def get_build(self, build):
+        build_obj = None
+        url = self.url_resolver.get_url_for_tags(build, self._arch)
+        resp = self._session.get(url)
+        if resp.ok:
+            json_data = resp.json()
+            for tag in json_data["tags"]:
+                if build == tag["name"]:
+                    build_obj = Build(tag)
+                    break
+        else:
+            logger.error(
+                f"Get build {build} failed: {resp.status_code} {resp.reason}")
+
+        return build_obj
 
     def trigger_prow_jobs(self, build: Build):
 
@@ -895,9 +922,26 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 
 
 @click.command
+@click.option("-r", "--release", help="y-stream release number e.g. 4.15", required=True)
+@click.option("--nightly/--no-nightly", help="target build is nightly or stable build, default is nightly", default=True)
+@click.option("--build", help="build version e.g. 4.16.20", required=True)
+@click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
+def trigger_jobs_for_build(release, nightly, build, arch):
+    validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
+    controller = JobController(release, nightly, True, arch)
+    build_obj = controller.get_build(build)
+    if build_obj is None:
+        raise click.BadParameter(
+            f"build {build} does not exist, please double check")
+    logger.info(
+        f"start to trigger prow jobs for build:\n{repr(build_obj)}")
+    controller.trigger_prow_jobs(build_obj)
+
+
+@click.command
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 def start_aggregator(arch):
-    validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
+    validate_required_info(REQUIRED_ENV_VARS_FOR_AGGREGATOR)
     TestResultAggregator(arch).start()
 
 
@@ -925,3 +969,4 @@ cli.add_command(start_controller)
 cli.add_command(start_aggregator)
 cli.add_command(promote_test_results)
 cli.add_command(update_retried_job_run)
+cli.add_command(trigger_jobs_for_build)
