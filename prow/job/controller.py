@@ -922,12 +922,12 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 
 
 @click.command
-@click.option("-r", "--release", help="y-stream release number e.g. 4.15", required=True)
-@click.option("--nightly/--no-nightly", help="target build is nightly or stable build, default is nightly", default=True)
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
 @click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
-def trigger_jobs_for_build(release, nightly, build, arch):
+def trigger_jobs_for_build(build, arch):
     validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
+    release = build[:4]
+    nightly = "nightly" in build
     controller = JobController(release, nightly, True, arch)
     build_obj = controller.get_build(build)
     if build_obj is None:
