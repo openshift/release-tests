@@ -1,7 +1,6 @@
 from datetime import datetime, timezone
 from dateutil import parser
-from errata_tool import Erratum
-from errata_tool import ErrataException
+from errata_tool import Erratum, ErrataException, security
 from oar.core.configstore import ConfigStore
 from oar.core.exceptions import AdvisoryException
 from oar.core.jira import JiraManager, JiraException
@@ -12,6 +11,7 @@ import subprocess
 import json
 import re
 import requests
+import urllib3
 
 logger = logging.getLogger(__name__)
 
@@ -317,26 +317,32 @@ class AdvisoryManager:
             list: Unhealthy advisories {errata_id, ad_grade, unhealthy_builds}.
         """
         unhealthy_advisories = []
-        
+
         for ad in self.get_advisories():
             if ad.impetus == AD_IMPETUS_RPM:
-                logger.info(f"skipping RPM advisory - {ad.errata_id}, it has no container")
+                logger.info(
+                    f"skipping RPM advisory - {ad.errata_id}, it has no container")
                 continue
-        
+
             ad_grade = ad.get_overall_grade()
-            
+
             if not util.is_grade_healthy(ad_grade):
-                logger.error(f"advisory {ad.errata_id} is unhealthy, overall grade is {ad_grade}")
+                logger.error(
+                    f"advisory {ad.errata_id} is unhealthy, overall grade is {ad_grade}")
                 unhealthy_builds = ad.get_unhealthy_builds()
-                unhealthy_advisories.append({"errata_id": ad.errata_id, "ad_grade": ad_grade, "unhealthy_builds": unhealthy_builds})
-                
+                unhealthy_advisories.append(
+                    {"errata_id": ad.errata_id, "ad_grade": ad_grade, "unhealthy_builds": unhealthy_builds})
+
                 for ub in unhealthy_builds:
-                    logger.error(f"build {ub['nvr']} for architecture {ub['arch']} with grade {ub['grade']} is unhealthy")
+                    logger.error(
+                        f"build {ub['nvr']} for architecture {ub['arch']} with grade {ub['grade']} is unhealthy")
             else:
-                logger.info(f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
+                logger.info(
+                    f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
 
         return unhealthy_advisories
-    
+
+
 class Advisory(Erratum):
     """
     Wrapper class of Erratum, add more functionalities and properties
@@ -347,6 +353,10 @@ class Advisory(Erratum):
             self.impetus = kwargs["impetus"]
         self.push_job_status = {}
         self.no_push_job = False
+        # temp w/a to handle INC3282265 - errata.devel.redhat.com certificate has expired
+        # TODO: when errata cert is updated, rollback this change
+        security.security_settings._verify_ssl = False
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         try:
             super().__init__(**kwargs)
         except ErrataException as e:
@@ -660,7 +670,7 @@ class Advisory(Erratum):
             return blocking
         else:
             return False
-        
+
     def get_unhealthy_builds(self):
         """
         Get unhealthy builds of advisory.
@@ -712,7 +722,8 @@ class Advisory(Erratum):
                     # save new effective grade
                     effective_grade = checked_grade
 
-                nvr_grades.append({"nvr": nvr, "arch": arch["architecture"], "grade": effective_grade})
+                nvr_grades.append(
+                    {"nvr": nvr, "arch": arch["architecture"], "grade": effective_grade})
         else:
             raise AdvisoryException(f"error when accessing build nvr - {nvr}")
         return nvr_grades
@@ -726,13 +737,17 @@ class Advisory(Erratum):
         """
         container_url = "https://errata.devel.redhat.com/errata/container/%i" % self.errata_id
 
-        resp = requests.get(container_url, auth=self._auth, verify=self.ssl_verify)
+        resp = requests.get(container_url, auth=self._auth,
+                            verify=self.ssl_verify)
 
         if resp.ok:
-            search_result = re.search("Docker Container Content - ([A-F])", resp.text)
+            search_result = re.search(
+                "Docker Container Content - ([A-F])", resp.text)
             if search_result:
                 return search_result.group(1)
             else:
-                raise AdvisoryException(f"cannot find overall advisory grade - {self.errata_id}")
+                raise AdvisoryException(
+                    f"cannot find overall advisory grade - {self.errata_id}")
         else:
-            raise AdvisoryException(f"error when accessing advisory containers - {self.errata_id}")
+            raise AdvisoryException(
+                f"error when accessing advisory containers - {self.errata_id}")
