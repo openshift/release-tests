@@ -78,8 +78,11 @@ class WorksheetManager:
             # get required info from config store and populate cell data
             # update build info
             build_cell_value = ""
-            for k, v in self._cs.get_candidate_builds().items():
-                build_cell_value += f"{k}: {v}\n"
+            candidate_builds = self._cs.get_candidate_builds()
+            if candidate_builds:
+                for k, v in candidate_builds.items():
+                    build_cell_value += f"{k}: {v}\n"
+            # if attr reference_releases! does not have anything, update the cell with empty
             self._report.update_build_info(build_cell_value[:-1])
             logger.info("build info is updated")
             logger.debug(f"build info:\n{build_cell_value}")
