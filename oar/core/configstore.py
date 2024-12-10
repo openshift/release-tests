@@ -101,7 +101,7 @@ class ConfigStore:
         group:
             release_jira: ART-6626
         """
-        return self._assembly["group"]["release_jira"]
+        return self._get_assembly_attr("group/release_jira")
 
     def set_jira_ticket(self, key):
         """

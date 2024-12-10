@@ -43,6 +43,10 @@ class TestConfigStore(unittest.TestCase):
     def test_get_jira(self):
         jira = self.cs.get_jira_ticket()
         self.assertEqual(jira, "ART-6489")
+        # add new case to cover OCPERT-35
+        cs = ConfigStore("4.15.41")
+        jira = cs.get_jira_ticket()
+        self.assertEqual(jira, "ART-11549")
 
     def test_get_owner(self):
         # verify default value, if minor release not found in conf
