@@ -101,13 +101,58 @@
           "jobStartTime": "2024-12-11T15:44:52Z",
           "jobID": "9000d351-e750-4f58-86e3-cbea9043617d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1866871781109796864",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-12-11T19:31:56Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 90,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ConnectedOnly-ROSA-ARO-OSD_CCS-WRS-Critical-34388-High-27760-V-EST.01-check file-integrity-operator could report failure and persist the failure logs on to a ConfigMap [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-12-11T15:44:57Z",
           "jobID": "6f35229e-fbd4-47df-9325-e312f72b9811",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1866871802416861184",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-12-11T18:56:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 90,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -139,5 +184,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2024-12-11-040351",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2024-12-11-040351"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
