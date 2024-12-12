@@ -37,7 +37,28 @@
         "jobStartTime": "2024-12-12T13:41:07Z",
         "jobID": "176b08ca-7fb7-4568-8636-2cd34da1cb3d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1867203026536632320",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2024-12-12T16:54:17Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 106,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 27
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -47,9 +68,46 @@
         "jobStartTime": "2024-12-12T13:41:12Z",
         "jobID": "4f638100-ea9e-406a-9240-e82689aaf325",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1867203048049217536",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2024-12-12T17:02:21Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 106,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2024-12-12T17:27:09Z",
+          "jobID": "4475a2ec-90f9-4843-a05b-3530bf4d66f5",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1867259909960110080",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2024-12-12T17:27:14Z",
+          "jobID": "e51d6ead-22a7-4e58-97b0-f30ad4c81aae",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1867259931334283264",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.15-gcp-ipi-f999",
