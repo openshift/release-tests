@@ -37,13 +37,58 @@
           "jobStartTime": "2024-12-19T17:31:07Z",
           "jobID": "8ffe22d7-1e74-4bd9-84f0-e8cdd5fc3695",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-f999/1869797626329698304",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2024-12-19T20:25:04Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 84,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-64296-disable CORS headers on Thanos querier [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2024-12-19T17:31:12Z",
           "jobID": "8a4c4112-c3cc-444c-b1ce-ce0cb069129c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-f999/1869797647615791104",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2024-12-19T20:18:47Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 84,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -137,5 +182,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.14.0-0.nightly-2024-12-19-081645",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.14.0-0.nightly-2024-12-19-081645"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
