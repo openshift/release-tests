@@ -697,7 +697,7 @@ class Advisory(Erratum):
             list: All architecture grades of build {nvr, architecture, grade}.
         """
         nvr_url = "https://pyxis.engineering.redhat.com/v1/images/nvr/%s?include=data.freshness_grades&include=data.architecture" % nvr
-        resp = requests.get(nvr_url, auth=self._auth, verify=self.ssl_verify)
+        resp = self._get(nvr_url, raw=True)
         nvr_grades = []
 
         if resp.ok:
@@ -736,9 +736,7 @@ class Advisory(Erratum):
             str: Overall grade of advisory.
         """
         container_url = "https://errata.devel.redhat.com/errata/container/%i" % self.errata_id
-
-        resp = requests.get(container_url, auth=self._auth,
-                            verify=self.ssl_verify)
+        resp = self._get(container_url, raw=True)
 
         if resp.ok:
             search_result = re.search(
