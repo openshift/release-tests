@@ -94,7 +94,32 @@
           "jobStartTime": "2025-01-08T19:42:25Z",
           "jobID": "0620fe23-b766-4553-876c-2ef092028d7c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-f999/1877078426494439424",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-01-08T23:17:20Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-StagerunBoth-High-52383-Keda Install",
+                "[sig-storage] STORAGE ARO-Author:wduan-LEVEL0-High-50918-[Azure-File-CSI-Driver] support nfs file share protocol"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
