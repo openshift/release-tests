@@ -102,9 +102,48 @@
         "jobStartTime": "2025-01-08T15:31:04Z",
         "jobID": "1fa76fec-646a-40e1-858a-bc539f38a667",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1877015169515655168",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-01-08T19:55:44Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 105,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP, eBPF and Console metrics: when processor.metrics.TLS == Disabled and agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Critical-72959-Verify flowlogs-pipeline and eBPF metrics and health [Serial]",
+              "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup ",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-StagerunBoth-High-52383-Keda Install"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-01-08T20:27:47Z",
+          "jobID": "b6395dd6-7391-43ba-9c5f-1835f81c5dca",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1877089840512634880",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-01-08T20:27:52Z",
+          "jobID": "6237b46d-d63c-4e2f-becc-e1d7ac1ca58a",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1877089861807116288",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.16-gcp-ipi-f999",
