@@ -45,13 +45,39 @@
           "jobStartTime": "2025-01-10T05:31:06Z",
           "jobID": "a1cd6a16-973a-4340-ae6e-b4a69beaa5d6",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1877588959815536640",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-01-10T10:49:03Z"
         },
         {
           "jobStartTime": "2025-01-10T05:31:11Z",
           "jobID": "22618f1f-134e-4b86-8c52-d2890510f250",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1877588980967411712",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-01-10T11:21:40Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 5,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP, eBPF and Console metrics: when processor.metrics.TLS == Auto and ebpf.agent.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Critical-72959-Verify flowlogs-pipeline, eBPF and Console metrics [Serial]",
+                "[sig-scheduling] Workloads Validate Secondary Scheduler Operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -114,5 +140,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-01-09-202853",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-01-09-202853"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
