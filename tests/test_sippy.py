@@ -3,8 +3,8 @@ import logging
 import sys
 import urllib3
 import json
-from job.sippy import Sippy, DataAnalyzer
-from job.sippy import ParamBuilder, FilterBuilder, DatetimePicker, StartEndTimePicker
+from prow.job.sippy import Sippy, DataAnalyzer
+from prow.job.sippy import ParamBuilder, FilterBuilder, DatetimePicker, StartEndTimePicker
 
 logging.basicConfig(
     format="%(asctime)s: %(levelname)s: %(message)s",
@@ -88,22 +88,23 @@ class TestSippy(unittest.TestCase):
 
         base_startendtime = StartEndTimePicker(DatetimePicker.lastmonth())
         sample_startendtime = StartEndTimePicker()
-        params = ParamBuilder().base_release("4.15") \
-            .base_starttime(base_startendtime.last4weeks()) \
-            .base_endtime(base_startendtime.today()) \
-            .sample_release("4.16") \
-            .sample_starttime(sample_startendtime.lastweek()) \
-            .sample_endtime(sample_startendtime.today()) \
-            .confidence() \
-            .exclude_arches() \
-            .exclude_clouds() \
-            .exclude_variants() \
-            .ignore_disruption() \
-            .ignore_missing() \
-            .group_by() \
-            .min_fail() \
-            .pity() \
-            .done()
+        # params = ParamBuilder().base_release("4.17") \
+        #     .base_starttime(base_startendtime.last4weeks()) \
+        #     .base_endtime(base_startendtime.today()) \
+        #     .sample_release("4.18") \
+        #     .sample_starttime(sample_startendtime.lastweek()) \
+        #     .sample_endtime(sample_startendtime.today()) \
+        #     .confidence() \
+        #     .exclude_arches() \
+        #     .exclude_clouds() \
+        #     .exclude_variants() \
+        #     .ignore_disruption() \
+        #     .ignore_missing() \
+        #     .group_by() \
+        #     .min_fail() \
+        #     .pity() \
+        #     .done()
+        params = ParamBuilder().view("4.18-main").done()
         resp = self.sippy.query_component_readiness(params)
         rows = resp.get("rows")
         self.assertGreater(len(rows), 1)
@@ -132,21 +133,22 @@ class TestSippy(unittest.TestCase):
 
         base_startendtime = StartEndTimePicker(DatetimePicker.lastmonth())
         sample_startendtime = StartEndTimePicker()
-        params = ParamBuilder().base_release("4.15") \
-            .base_starttime(base_startendtime.last4weeks()) \
-            .base_endtime(base_startendtime.today()) \
-            .sample_release("4.16") \
-            .sample_starttime(sample_startendtime.lastweek()) \
-            .sample_endtime(sample_startendtime.today()) \
-            .confidence() \
-            .exclude_arches() \
-            .exclude_clouds() \
-            .exclude_variants() \
-            .ignore_disruption() \
-            .ignore_missing() \
-            .group_by() \
-            .done()
+        # params = ParamBuilder().base_release("4.15") \
+        #     .base_starttime(base_startendtime.last4weeks()) \
+        #     .base_endtime(base_startendtime.today()) \
+        #     .sample_release("4.16") \
+        #     .sample_starttime(sample_startendtime.lastweek()) \
+        #     .sample_endtime(sample_startendtime.today()) \
+        #     .confidence() \
+        #     .exclude_arches() \
+        #     .exclude_clouds() \
+        #     .exclude_variants() \
+        #     .ignore_disruption() \
+        #     .ignore_missing() \
+        #     .group_by() \
+        #     .done()
 
+        params = ParamBuilder().view("4.18-main").done()
         analyzer = self.sippy.analyze_component_readiness(params)
         self.assertTrue(
             analyzer.is_component_readiness_status_green() == False)
@@ -163,7 +165,7 @@ class TestSippy(unittest.TestCase):
 
     def test_risk_analysis(self):
 
-        resp = self.sippy.query_risk_analysis(job_run_id='1767798075599884288')
+        resp = self.sippy.query_risk_analysis(job_run_id='1878776373485506560')
         logger.info(resp)
         self.assertIn('OverallRisk', resp)
         self.assertIn('Level', resp.get('OverallRisk'))
@@ -219,5 +221,5 @@ class TestSippy(unittest.TestCase):
     def test_analyze_job_run_risk(self):
 
         analyzer = self.sippy.analyze_job_run_risk(
-            job_run_id='1767798075599884288')
+            job_run_id='1878776373485506560')
         self.assertFalse(analyzer.is_job_run_risky())

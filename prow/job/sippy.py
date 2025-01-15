@@ -193,6 +193,10 @@ class ParamBuilder():
         self._params.update(prow_job_run_id=prow_job_run_id)
         return self
 
+    def view(self, name):
+        self._params.update(view=name)
+        return self
+
     def done(self):
         return self._params
 
