@@ -3,8 +3,13 @@ import logging
 import sys
 import urllib3
 import json
-from prow.job.sippy import Sippy, DataAnalyzer
-from prow.job.sippy import ParamBuilder, FilterBuilder, DatetimePicker, StartEndTimePicker
+from prow.job.sippy import (
+    Sippy,
+    DataAnalyzer,
+    ParamBuilder,
+    FilterBuilder,
+    DatetimePicker,
+    StartEndTimePicker)
 
 logging.basicConfig(
     format="%(asctime)s: %(levelname)s: %(message)s",
