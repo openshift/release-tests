@@ -6,9 +6,50 @@
         "jobStartTime": "2025-01-15T05:37:56Z",
         "jobID": "e2c4e724-e22a-4614-a031-e6d4d46b7d76",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1879402620108410880",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-01-15T08:37:48Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 6,
+            "errors": 0,
+            "skipped": 20,
+            "failingScenarios": [
+              "[sig-cli] Workloads ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-Critical-63002-oc new-app propagate containerPort information to the deployment if import-mode is PreserveOriginal",
+              "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup ",
+              "[sig-scheduling] Workloads Validate Secondary Scheduler Operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44903-[CSI-Driver] [Dynamic PV] [ext4] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-01-15T09:50:06Z",
+          "jobID": "07b02e61-c968-4f29-b2de-cbb0111a86d3",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1879466093987237888",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-01-15T09:50:11Z",
+          "jobID": "f4edf2e0-4a91-4dab-a28f-5e3b5a24fec4",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1879466112446369792",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999",
@@ -16,9 +57,47 @@
         "jobStartTime": "2025-01-15T05:38:01Z",
         "jobID": "44f83c17-4fff-4950-8f1c-cda8481dd087",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1879402641503555584",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-01-15T09:46:55Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-auth] CFE cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-cli] Workloads NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Low-51093-oc-mirror init"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-01-15T09:50:20Z",
+          "jobID": "794f4dc6-ba0f-4f83-b58e-cae3bd898faf",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1879466137809326080",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-01-15T09:50:25Z",
+          "jobID": "ffff3860-790e-4598-b618-0082f4f868ee",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1879466159632289792",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
@@ -26,7 +105,28 @@
         "jobStartTime": "2025-01-15T05:38:07Z",
         "jobID": "3eaf60ae-1b55-43ba-b093-a803880d2068",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1879402662990974976",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-01-15T08:35:06Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 25
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
