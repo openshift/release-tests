@@ -54,14 +54,14 @@ def get_col_test_summary(file_content):
     for job in job_result:
         results = []
         first_job = job['firstJob']
-        if 'jobState' not in first_job:
+        if 'jobURL' not in first_job:
             # it means the job is just triggered, skip this file
             continue
         results.append(first_job['jobState'])
         job_links.append(first_job['jobURL'])
         if 'retriedJobs' in job:
             for retried_job in job['retriedJobs']:
-                if 'jobState' not in retried_job:
+                if 'jobURL' not in retried_job:
                     continue
                 results.append(retried_job['jobState'])
                 job_links.append(retried_job['jobURL'])
