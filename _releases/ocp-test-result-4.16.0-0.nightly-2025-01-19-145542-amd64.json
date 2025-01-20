@@ -37,7 +37,28 @@
         "jobStartTime": "2025-01-19T20:22:49Z",
         "jobID": "0504deb1-70ac-41c0-ad47-7fc39a3f2b46",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1881074857299415040",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-01-19T23:28:25Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 27
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -47,9 +68,46 @@
         "jobStartTime": "2025-01-19T20:22:54Z",
         "jobID": "9409eb77-4e3a-4897-89c6-2a6ec0452a16",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1881074878585507840",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-01-19T23:31:00Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads Validate Secondary Scheduler Operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-01-20T00:26:35Z",
+          "jobID": "102a3fa7-205f-4ee6-9b26-89059eeed5d2",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1881136205333008384",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-01-20T00:26:40Z",
+          "jobID": "e8167613-9ca3-4bbe-b3b4-704e81c608c6",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1881136226661044224",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.15-gcp-ipi-f999",
