@@ -99,7 +99,31 @@
           "jobStartTime": "2025-01-20T16:33:18Z",
           "jobID": "4fb856a5-5704-4235-907e-ff8d8cd64468",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/1881379484637073408",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-01-20T19:50:49Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-01-20T16:33:23Z",
@@ -158,5 +182,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.14.0-0.nightly-2025-01-20-073249",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.14.0-0.nightly-2025-01-20-073249"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
