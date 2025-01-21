@@ -211,8 +211,10 @@ class JobController:
         self._trigger_prow_job = trigger_prow_job
         self._arch = Architectures.fromString(arch)
         self._build_type = 'nightly' if self._nightly else 'stable'
-        self._build_file_for_nightly = f"{DIR_RELEASE}/ocp-latest-{self._release}-nightly-{self._arch}.json"
-        self._build_file_for_stable = f"{DIR_RELEASE}/ocp-latest-{self._release}-stable-{self._arch}.json"
+        self._build_file_for_nightly = f"{
+            DIR_RELEASE}/ocp-latest-{self._release}-nightly-{self._arch}.json"
+        self._build_file_for_stable = f"{
+            DIR_RELEASE}/ocp-latest-{self._release}-stable-{self._arch}.json"
         self._build_file = self._build_file_for_nightly if self._nightly else self._build_file_for_stable
         self.job_api = Jobs()
         self.job_registry = TestJobRegistry(self._arch)
@@ -300,7 +302,8 @@ class JobController:
                 data = json.dumps(
                     {"result": test_result, "build": build.to_dict()}, indent=2)
                 logger.debug(f"Test result file content {data}")
-                file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}-{self._arch}.json"
+                file_path = f"{
+                    DIR_RELEASE}/ocp-test-result-{build.name}-{self._arch}.json"
                 self.release_test_record.push_file(data=data, path=file_path)
                 logger.info(
                     f"Test result of {build.name} is saved to {file_path}")
@@ -524,6 +527,10 @@ class ProwJobResult():
     def from_dict(self, result):
         if result:
             self._result = result
+        else:
+            # raise exception if the result from Gangway is None
+            raise Exception("result from Gangway is empty")
+
         return self
 
     def fetch(self, job_id):
@@ -794,8 +801,10 @@ class TestResultAggregator():
 
     def update_releasepayload(self, build):
 
-        ns = "ocp" if self._arch == Architectures.AMD64 else f"ocp-{self._arch}"
-        cmd = f"oc label releasepayloads/{build} release.openshift.io/qe_state=Accepted -n {ns}"
+        ns = "ocp" if self._arch == Architectures.AMD64 else f"ocp-{
+            self._arch}"
+        cmd = f"oc label releasepayloads/{
+            build} release.openshift.io/qe_state=Accepted -n {ns}"
         try:
             subprocess.run(shlex.split(cmd), check=True)
         except CalledProcessError as e:

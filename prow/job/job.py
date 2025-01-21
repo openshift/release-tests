@@ -63,7 +63,8 @@ class Jobs:
         version = version_pattern.findall(payload)
         if len(version) > 0:
             version_string = "".join(version[0])
-            self.base_image = f"quay.io/openshift-release-dev/ocp-release:{version_string}-x86_64"
+            self.base_image = f"quay.io/openshift-release-dev/ocp-release:{
+                version_string}-x86_64"
             print(
                 f"Infer the amd64 image: {self.base_image} from arm payload: {payload}")
         else:
@@ -188,7 +189,8 @@ class Jobs:
 
     def push_versions(self, content, file, run):
         """Function push OCP payload version info to the Github repo"""
-        url = f"https://api.github.com/repos/openshift/release-tests/contents/_releases/{file}?ref=record"
+        url = f"https://api.github.com/repos/openshift/release-tests/contents/_releases/{
+            file}?ref=record"
         base64_content = base64.b64encode(bytes(content, encoding="utf-8")).decode(
             "utf-8"
         )
@@ -316,9 +318,11 @@ class Jobs:
                     for prow_job in job_dict[channel]:
                         print(f"Hanling {prow_job}")
                         # amd64 as default
-                        payload = f"quay.io/openshift-release-dev/ocp-release:{version}-x86_64"
+                        payload = f"quay.io/openshift-release-dev/ocp-release:{
+                            version}-x86_64"
                         if "arm64" in prow_job:
-                            payload = f"quay.io/openshift-release-dev/ocp-release:{version}-aarch64"
+                            payload = f"quay.io/openshift-release-dev/ocp-release:{
+                                version}-aarch64"
                         # specify the latest stable payload for upgrade test
                         if "upgrade-from-stable" in prow_job:
                             self.run_job(prow_job, None, None,
@@ -385,7 +389,8 @@ class Jobs:
             if not file_name.endswith(".yaml") or "periodics" not in file_name:
                 continue
             print(">>>> " + file_name)
-            url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=master"
+            url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{
+                file_name}?ref=master"
             res = requests.get(
                 url=url, headers=self.get_github_headers(), timeout=3)
             if res.status_code != 200:
@@ -412,7 +417,7 @@ class Jobs:
     def get_job_results(self, job_id, job_name=None, payload=None, upgrade_from=None, upgrade_to=None):
         """Function get job results"""
         if job_id:
-            resp = requests.get(url=self.prow_job_url.format(job_id.strip()))
+            resp = self._get_session().get(url=self.prow_job_url.format(job_id.strip()))
             if resp.status_code == 200 and resp.text:
                 job_result = yaml.safe_load(resp.text)
                 if job_result:
@@ -458,7 +463,8 @@ class Jobs:
             component = "openshift/openshift-tests-private"
         if branch is None:
             branch = "master"
-        base_url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/config/{component}/?ref={branch}"
+        base_url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/config/{
+            component}/?ref={branch}"
         req = requests.get(url=base_url, timeout=3)
         if req.status_code == 200:
             file_dict = yaml.load(req.text, Loader=yaml.FullLoader)
@@ -536,9 +542,11 @@ class Jobs:
             for prow_job in jobs:
                 print(f"Run job: {prow_job}")
                 # amd64 as default
-                payload = f"quay.io/openshift-release-dev/ocp-release:{latest_version}-x86_64"
+                payload = f"quay.io/openshift-release-dev/ocp-release:{
+                    latest_version}-x86_64"
                 if "arm64" in prow_job:
-                    payload = f"quay.io/openshift-release-dev/ocp-release:{latest_version}-aarch64"
+                    payload = f"quay.io/openshift-release-dev/ocp-release:{
+                        latest_version}-aarch64"
                 # specify the latest stable payload for upgrade test
                 if "upgrade-from-stable" in prow_job:
                     self.run_job(prow_job, None, None, upgrade_to=payload)
