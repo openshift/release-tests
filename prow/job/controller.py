@@ -798,8 +798,7 @@ class TestResultAggregator():
 
     def update_releasepayload(self, build):
 
-        ns = "ocp" if self._arch == Architectures.AMD64 else f"ocp-{
-            self._arch}"
+        ns = "ocp" if self._arch == Architectures.AMD64 else f"ocp-{self._arch}"
         cmd = f"oc label releasepayloads/{build} release.openshift.io/qe_state=Accepted -n {ns}"
         try:
             subprocess.run(shlex.split(cmd), check=True)
