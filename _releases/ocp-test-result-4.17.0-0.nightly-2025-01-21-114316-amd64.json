@@ -99,13 +99,58 @@
           "jobStartTime": "2025-01-22T02:39:25Z",
           "jobID": "63fcf811-39b7-4850-89de-ec809af67e5d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1881894409767751680",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-01-22T05:37:12Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-01-22T02:39:30Z",
           "jobID": "25541e02-eb48-49ee-83a5-812964ab21e3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1881894430953181184",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-01-22T05:47:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:knarra-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -123,7 +168,8 @@
           "jobStartTime": "2025-01-22T00:33:17Z",
           "jobID": "5f3abad1-a2a0-40ea-9240-da2a7ec54baf",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.16-gcp-ipi-f999/1881862664771080192",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-01-22T04:01:57Z"
         },
         {
           "jobStartTime": "2025-01-22T00:33:22Z",
@@ -151,5 +197,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-01-21-114316",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-01-21-114316"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
