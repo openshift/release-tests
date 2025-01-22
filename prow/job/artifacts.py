@@ -22,9 +22,9 @@ class Artifacts():
         self._root_dir = f"logs/{job_name}/{job_run_id}"
 
     def get_junit_files(self):
-        patterns = ['.*\/junit.*import-.*xml',
-                    '.*\/junit.*TEST-features-.*xml',
-                    '.*\/gui_test.*console-cypress.xml']
+        patterns = [r'.*/junit.*import-.*xml',
+                    r'.*/junit.*TEST-features-.*xml',
+                    r'.*/gui_test.*console-cypress.xml']
         return self._gcs.get_files(self._root_dir, patterns)
 
     def get_test_failures_summary(self):
