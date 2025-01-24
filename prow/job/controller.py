@@ -12,7 +12,7 @@ import yaml
 from .job import Jobs
 from .artifacts import Artifacts
 from github import Auth, Github
-from github.GithubException import UnknownObjectException
+from github.GithubException import UnknownObjectException, GithubException
 from requests.exceptions import RequestException
 from subprocess import CalledProcessError
 from requests.adapters import HTTPAdapter
@@ -395,11 +395,12 @@ class GithubUtil:
         try:
             self._repo.get_contents(path=path, ref=self._branch)
             logger.info(f"File {path} can be found")
-        except UnknownObjectException:
+            return True
+        except (UnknownObjectException, GithubException) as e:
+            if isinstance(e, GithubException) and e.status != 404:
+                raise
             logger.info(f"File {path} not found")
             return False
-
-        return True
 
     def delete_file(self, path):
         if self.file_exists(path):
