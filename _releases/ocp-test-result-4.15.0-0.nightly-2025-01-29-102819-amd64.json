@@ -68,13 +68,58 @@
           "jobStartTime": "2025-01-29T22:36:44Z",
           "jobID": "a88686b7-c8d3-4a55-ad5f-44cf09b60a79",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-f999/1884732436705710080",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-01-30T01:44:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 90,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 28
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-01-29T22:36:49Z",
           "jobID": "d02d14c5-fe0b-418b-85b4-293927577ad6",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-f999/1884732458121826304",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-01-30T02:05:33Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 90,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 28
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19672:UserInterface Check cronjob on console"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -137,5 +182,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-01-29-102819",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-01-29-102819"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
