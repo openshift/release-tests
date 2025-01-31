@@ -37,7 +37,33 @@
         "jobStartTime": "2025-01-31T05:44:03Z",
         "jobID": "d84c8ee1-ed6c-4431-8f50-92ea7e92e2f3",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-azure-ipi-f999/1885202362147016704",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-01-31T09:47:54Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI-Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -100,5 +126,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.14.0-0.nightly-2025-01-30-231906",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.14.0-0.nightly-2025-01-30-231906"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
