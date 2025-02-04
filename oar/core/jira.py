@@ -206,6 +206,31 @@ class JiraManager:
             raise JiraException(
                 "invalid input argument key or comment is empty")
 
+    def get_high_severity_and_can_drop_issues(self, jira_issue_keys):
+        """
+        Get list of critical, blocker, customer or CVE issues and list of issues that can be dropped without confirming
+
+        Args:
+            jira_issue_keys (list[str]): jira issues keys to be processed
+
+        Returns:
+            tuple[list[str], list[str]]: list of high severity jira keys that are still to be verified, list of jira keys that can be dropped
+        """
+        high_severity_issues = []
+        can_drop_issues = []
+        if jira_issue_keys:
+            for key in jira_issue_keys:
+                issue = self.get_issue(key)
+                if issue.is_verified() or issue.is_closed():
+                    continue
+                else:
+                    if issue.is_high_severity_issue():
+                        high_severity_issues.append(key)
+                    else:
+                        can_drop_issues.append(key)
+
+        return high_severity_issues, can_drop_issues
+
 
 class JiraIssue:
     """
@@ -359,3 +384,22 @@ class JiraIssue:
         check whether the issue is QE subtask.
         """
         return self.get_summary() in JIRA_QE_TASK_SUMMARIES
+
+    def is_high_severity_issue(self):
+        """
+        Check if the issue is critical, blocker, customer case, or CVE
+
+        Returns:
+            bool: True if the issue has high severity
+        """
+        if self.is_cve_tracker():
+            logger.warning(
+                f"jira issue {self.get_key()} is cve tracker: {self.is_cve_tracker()}, it must be verified"
+            )
+            return True
+        if self.is_critical_issue() or self.is_customer_case():
+            logger.warning(
+                f"jira issue {self.get_key()} is critical: {self.is_critical_issue()} or customer case: {self.is_customer_case()}, it should be verified"
+            )
+            return True
+        return False

@@ -193,56 +193,41 @@ class AdvisoryManager:
 
     def drop_bugs(self):
         """
-        Go thru all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case
+        Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case/CVE
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
 
         Returns:
-            list: bugs cannot be dropped
+            tuple[list[str], list[str]]: list of jira keys that were dropped, list of high severity jira keys that are still to be verified
         """
         jm = JiraManager(self._cs)
         ads = self.get_advisories()
         all_dropped_bugs = []
-        all_must_verify_bugs = []
+        all_high_severity_bugs = []
         for ad in ads:
-            bug_list = []
             issues = ad.jira_issues
-            if len(issues):
-                for key in issues:
+            high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
+            all_high_severity_bugs.extend(high_severity_bugs)
+
+            if drop_bug_list:
+                all_dropped_bugs.extend(drop_bug_list)
+                for key in drop_bug_list:
                     issue = jm.get_issue(key)
-                    if issue.is_verified() or issue.is_closed():
-                        continue
-                    else:
-                        # check whether the issue must be verified
-                        if (
-                            issue.is_critical_issue()
-                            or issue.is_customer_case()
-                            or issue.is_cve_tracker()
-                        ):
-                            logger.warning(
-                                f"jira issue {key} is critical: {issue.is_critical_issue()} or customer case: {issue.is_customer_case()} or cve tracker: {issue.is_cve_tracker()}, it must be verified"
-                            )
-                            all_must_verify_bugs.append(key)
-                        else:
-                            # issue can be dropped
-                            logger.info(
-                                f"jira issue {key} is {issue.get_status()} will be dropped from advisory {ad.errata_id}"
-                            )
-                            bug_list.append(key)
+                # issue can be dropped
+                logger.info(
+                    f"jira issue {key} is {issue.get_status()}, it will be dropped from advisory {ad.errata_id}"
+                )
+                ad.remove_bugs(drop_bug_list)
+                logger.info(
+                    f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
+                )
+            else:
+                logger.info(
+                    f"there is no bug in advisory {ad.errata_id} that can be dropped"
+                )
 
-                if len(bug_list):
-                    all_dropped_bugs += bug_list
-                    ad.remove_bugs(bug_list)
-                    logger.info(
-                        f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
-                    )
-                else:
-                    logger.info(
-                        f"there is no bug in advisory {ad.errata_id} can be dropped"
-                    )
-
-        return all_dropped_bugs, all_must_verify_bugs
+        return all_dropped_bugs, all_high_severity_bugs
 
     def check_cve_tracker_bug(self):
         """
@@ -806,6 +791,6 @@ class Advisory(Erratum):
                 logger.info("kernel tag early-kernel-stop-ship is detected")
                 return True
         return False
-    
+
     def is_rhsa(self):
         return self.errata_type == 'RHSA'
