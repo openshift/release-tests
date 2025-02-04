@@ -30,7 +30,7 @@ class AdvisoryManager:
         Get all advisories
 
         Returns:
-            []Advisory: all advisory wrappers
+            list[Advisory]: all advisory wrappers
         """
         ads = []
         for k, v in self._cs.get_advisories().items():
@@ -50,7 +50,7 @@ class AdvisoryManager:
         Get all jira issues from advisories in a release
 
         Returns:
-            []: all jira issues from advisories
+            list: all jira issues from advisories
         """
         all_jira_issues = []
         try:
@@ -62,6 +62,27 @@ class AdvisoryManager:
 
         return all_jira_issues
 
+    def get_must_verify_issues(self):
+        """
+        Get issues that must be verified in advisories and are not verified yet
+
+        Raises:
+            AdvisoryException: error when getting jira keys from advisory
+
+        Returns:
+            list (str): list of jira keys that must be still verified
+        """
+        jm = JiraManager(self._cs)
+        jira_issue_keys= self.get_jira_issues()
+
+        must_verify_issues = []
+        for key in jira_issue_keys:
+            issue = jm.get_issue(key)
+            if issue.is_must_verify_issue() and issue.is_to_be_verified():
+                must_verify_issues.append(key)
+
+        return must_verify_issues
+
     def change_ad_owners(self):
         """
         Change QA owner of all the advisories
@@ -70,8 +91,8 @@ class AdvisoryManager:
             AdvisoryException: error when communicate with errata tool
 
         Returns:
-            updated_ads ([]): updated advisory id list
-            abnormal_ads ([]): advisory id list of the ones state are not QE
+            updated_ads (list): updated advisory id list
+            abnormal_ads (list): advisory id list of the ones state are not QE
         """
         updated_ads = []
         abnormal_ads = []
@@ -100,7 +121,7 @@ class AdvisoryManager:
             AdvisoryException: error found when checking CVP test result
 
         Returns:
-            []test: abnormal test list
+            list[test]: abnormal test list
         """
         abnormal_tests = []
         valid_status = [CVP_TEST_STATUS_PASSED, CVP_TEST_STATUS_WAIVED]
@@ -192,13 +213,13 @@ class AdvisoryManager:
 
     def drop_bugs(self):
         """
-        Go thru all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case
+        Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
 
         Returns:
-            []: bugs cannot be dropped
+            list: bugs cannot be dropped
         """
         jm = JiraManager(self._cs)
         ads = self.get_advisories()
@@ -210,18 +231,11 @@ class AdvisoryManager:
             if len(issues):
                 for key in issues:
                     issue = jm.get_issue(key)
-                    if issue.is_verified() or issue.is_closed():
+                    if issue.is_to_be_verified():
                         continue
                     else:
                         # check whether the issue must be verified
-                        if (
-                            issue.is_critical_issue()
-                            or issue.is_customer_case()
-                            or issue.is_cve_tracker()
-                        ):
-                            logger.warning(
-                                f"jira issue {key} is critical: {issue.is_critical_issue()} or customer case: {issue.is_customer_case()} or cve tracker: {issue.is_cve_tracker()}, it must be verified"
-                            )
+                        if issue.is_must_verify_issue():
                             all_must_verify_bugs.append(key)
                         else:
                             # issue can be dropped
@@ -403,7 +417,7 @@ class Advisory(Erratum):
         Drop bugs from advisory
 
         Args:
-            bugs (str[]): bug list
+            bug_list (list[str]): bug list
         """
         self.removeJIRAIssues(bug_list)
         need_refresh = self.commit()

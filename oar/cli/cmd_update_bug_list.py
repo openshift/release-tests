@@ -13,8 +13,9 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.pass_context
-@click.option("--notify/--no-notify", default=True, help="Send notification to bug owner, default value is true")
-def update_bug_list(ctx, notify):
+@click.option("--notify/--no-notify", default=True, help="Send notification to bug owners, default value is true")
+@click.option('--must-verify', is_flag=True, default=False, help='Send notification only to must-verify bug owners, default value is false')
+def update_bug_list(ctx, notify, must_verify):
     """
     Update bug status listed in report, update existing bug status and append new ON_QA bug
     """
@@ -30,7 +31,11 @@ def update_bug_list(ctx, notify):
         report.update_bug_list(jira_issues)
         # send notification
         if notify:
-            NotificationManager(cs).share_bugs_to_be_verified(jira_issues)
+            if must_verify:
+                must_verify_issues = AdvisoryManager(cs).get_must_verify_issues()
+                NotificationManager(cs).share_must_verify_bugs(must_verify_issues)
+            else:
+                NotificationManager(cs).share_bugs_to_be_verified(jira_issues)
         # check if all bugs are verified
         if report.are_all_bugs_verified():
             report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)

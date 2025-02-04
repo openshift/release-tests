@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class NotificationManager:
     """
-    NotificationManager is used to send notification messages via email or slack.
+    NotificationManager is used to send notification messages via email or Slack.
     """
 
     def __init__(self, cs: ConfigStore):
@@ -34,7 +34,7 @@ class NotificationManager:
 
     def share_new_report(self, report: TestReport):
         """
-        Send email and slack message for new report info
+        Send email and Slack message for new report info
 
         Args:
             report (TestReport): newly created test report
@@ -49,7 +49,7 @@ class NotificationManager:
             # self.mc.send_email(
             #     self.cs.get_email_contact("qe"), mail_subject, mail_content
             # )
-            # Send slack message
+            # Send Slack message
             slack_msg = self.mh.get_slack_message_for_new_report(report)
             self.sc.post_message(
                 self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
@@ -64,17 +64,17 @@ class NotificationManager:
         Send notification for take ownership result
 
         Args:
-            updated_ads ([]): updated advisory list
-            abnormal_ads ([]): advisory list that state is not QE
-            updated_subtasks ([]): updated jira subtasks
-            new_owner ([]): email address of the new owner
+            updated_ads (list): updated advisory list
+            abnormal_ads (list): advisory list that state is not QE
+            updated_subtasks (list): updated jira subtasks
+            new_owner (list): email address of the new owner
 
         Raises:
             NotificationException: error when share this info
         """
 
         try:
-            # Send slack message only
+            # Send Slack message only
             slack_msg = self.mh.get_slack_message_for_ownership_change(
                 updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
@@ -94,10 +94,10 @@ class NotificationManager:
 
     def share_bugs_to_be_verified(self, jira_issues):
         """
-        Send slack message to all QA Contacts, ask them to verify ON_QA bugs
+        Send Slack message to all QA Contacts, ask them to verify ON_QA bugs
 
         Args:
-            jira_issues ([]): jira issue list
+            jira_issues (list): jira issue list
 
         Raises:
             NotificationException: error when share this info
@@ -114,12 +114,34 @@ class NotificationManager:
             raise NotificationException(
                 "share bugs to be verified failed") from e
 
-    def share_new_cve_tracker_bugs(self, cve_tracker_bugs):
+    def share_must_verify_bugs(self, jira_issues):
         """
-        Send slack message to ART team with new CVE tracker bugs
+        Send Slack message to all QA Contacts, ask them to verify ON_QA bugs and confirm the verification
 
         Args:
-            cve_tracker_bugs ([]): list of new CVE tracker bug
+            jira_issues (list): must verify jira issue list
+
+        Raises:
+            NotificationException: error when share this info
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_must_verify_bugs(
+                jira_issues)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact(
+                        "qe-forum"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share must verify bugs failed") from e
+
+    def share_new_cve_tracker_bugs(self, cve_tracker_bugs):
+        """
+        Send Slack message to ART team with new CVE tracker bugs
+
+        Args:
+            cve_tracker_bugs (list): list of new CVE tracker bug
 
         Raises:
             NotificationException: error when checking new CVE tracker bugs
@@ -137,7 +159,7 @@ class NotificationManager:
         
     def share_unhealthy_advisories(self, unhealthy_advisories):
         """
-        Send slack message to ART team with unhealthy advisories 
+        Send Slack message to ART team with unhealthy advisories
 
         Args:
             list: unhealthy_advisories
@@ -158,11 +180,11 @@ class NotificationManager:
 
     def share_dropped_and_must_verify_bugs(self, dropped_bugs, must_verify_bugs):
         """
-        Send slack message to QE release lead with dropped and must verified bugs
+        Send Slack message to QE release lead with dropped and must verified bugs
 
         Args:
-            dropped_bugs ([]): list of dropped bugs
-            must_verified_bugs ([]): list of must verify bugs, could be [Critical/Blocker/Customer Case]
+            dropped_bugs (list): list of dropped bugs
+            must_verified_bugs (list): list of must verify bugs, could be [Critical/Blocker/Customer Case]
 
         Raises:
             NotificationException: error when sending message
@@ -183,7 +205,7 @@ class NotificationManager:
 
     def share_doc_prodsec_approval_result(self, doc_appr, prodsec_appr):
         """
-        send notification for request doc or security approval
+        Send notification for request doc or security approval
         """
         try:
             slack_msg = self.mh.get_slack_message_for_docs_and_prodsec_approval(
@@ -200,7 +222,7 @@ class NotificationManager:
 
     def share_jenkins_build_url(self, job_name, build_url):
         """
-        share notification for new jenkins build info
+        Share notification for new jenkins build info
         """
         try:
             slack_msg = self.mh.get_slack_message_for_jenkins_build(
@@ -266,7 +288,7 @@ class SlackClient:
 
     def post_message(self, channel, msg):
         """
-        Send slack message
+        Send Slack message
         """
         try:
             self.client.chat_postMessage(channel=channel, text=msg)
@@ -277,7 +299,7 @@ class SlackClient:
 
     def get_user_id_by_email(self, email):
         """
-        Query slack user id by email address
+        Query Slack user id by email address
 
         Args:
             email (str): valid email address
@@ -306,13 +328,13 @@ class SlackClient:
 
     def get_group_id_by_name(self, name):
         """
-        Query slack group id by group name
+        Query Slack group id by group name
 
         Args:
-            group_name (str): slack group name
+            group_name (str): Slack group name
 
         Returns:
-            group id: slack group id
+            group id: Slack group id
         """
         ret_id = ""
         if name in self.cache_dict:
@@ -342,8 +364,8 @@ class SlackClient:
 
     def transform_email(self, email):
         '''
-        Email id in JIRA profile is not same as slack profile, 
-        e.g. in JIRA it's xxx+jira, in slack it's xxx
+        Email id in JIRA profile is not same as Slack profile,
+        e.g. in JIRA it's xxx+jira, in Slack it's xxx
         '''
         at_index = email.find('@')
         before_at = email[:at_index]
@@ -366,7 +388,7 @@ class MessageHelper:
 
     def get_mail_content_for_new_report(self, report: TestReport):
         """
-        manipulate mail text content for newly generated report
+        Get mail text content for newly generated report
 
         Args:
             report (TestReport): new test report
@@ -385,13 +407,13 @@ class MessageHelper:
 
     def get_slack_message_for_new_report(self, report: TestReport):
         """
-        manipulate slack message for newly generated report
+        Get Slack message for newly generated report
 
         Args:
             report (TestReport): new test report
 
         Returns:
-            str: slack message for new test report
+            str: Slack message for new test report
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact(
@@ -405,13 +427,13 @@ class MessageHelper:
         self, updated_ads, abnormal_ads, updated_subtasks, new_owner
     ):
         """
-        manipulate slack message for ownership change
+        Get Slack message for ownership change
 
         Args:
-            updated_ads ([]): updated advisory list
-            abnormal_ads ([]): advisory list that state is not QE
-            updated_subtasks ([]): updated jira subtasks
-            new_owner ([]): email address of the new owner
+            updated_ads (list): updated advisory list
+            abnormal_ads (list): advisory list that state is not QE
+            updated_subtasks (list): updated jira subtasks
+            new_owner (list): email address of the new owner
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact(
@@ -438,38 +460,65 @@ class MessageHelper:
 
     def get_slack_message_for_bug_verification(self, jira_issues):
         """
-        manipulate slack message for bug verification
+        Get Slack message for bug verification
 
         Args:
-            jira_issues ([]): jira issue list
+            jira_issues (list): jira issue list
 
         Returns:
-            str: slack message
+            str: Slack message
+        """
+        message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
+        return self.__get_slack_message_for_jira_issues(jira_issues, message)
+
+    def get_slack_message_for_must_verify_bugs(self, jira_issues):
+        """
+        Get Slack message for must verify bug verification
+
+        Args:
+            jira_issues (list): must verify jira issue list
+
+        Returns:
+            str: Slack message
+        """
+        message = "Please confirm you are working on the following bugs verification. They must be verified with this release. Let's verify them ASAP, thanks for your cooperation"
+        return self.__get_slack_message_for_jira_issues(jira_issues, message)
+
+    def __get_slack_message_for_jira_issues(self, jira_issues, message):
+        """
+        Get Slack message for given jira issues and message
+
+        Args:
+            jira_issues (list): jira issue list
+            message (str): message to be included alongside the jira list
+
+        Returns:
+            str: Slack message
         """
         has_onqa_issue = False
-        message = f"[{self.cs.release}] Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for the cooperation\n"
+        slack_message = f"[{self.cs.release}] {message}\n"
         for key in jira_issues:
             issue = self.jm.get_issue(key)
             if issue.is_on_qa():
-                message += (
-                    self._to_link(util.get_jira_link(key), key)
-                    + " "
-                    + self.sc.get_user_id_by_email(issue.get_qa_contact())
-                    + "\n"
+                slack_message += (
+                        self._to_link(util.get_jira_link(key), key)
+                        + " "
+                        + self.sc.get_user_id_by_email(issue.get_qa_contact())
+                        + "\n"
                 )
                 has_onqa_issue = True
 
-        return message if has_onqa_issue else ""
+        return slack_message if has_onqa_issue else ""
 
     def get_slack_message_for_abnormal_advisory(self, abnormal_ads):
         """
-        manipulate slack message for abnormal advisories, raise this issue with ART team
+        Get Slack message for abnormal advisories, raise this issue with ART team
 
         Args:
-            abnormal_ads ([]): advisory list
+            abnormal_ads (list): advisory list
 
         Returns:
-            str: slack message
+            str: Slack message
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact_by_id("art")
@@ -484,13 +533,13 @@ class MessageHelper:
 
     def get_slack_message_for_cve_tracker_bugs(self, cve_tracker_bugs):
         """
-        manipulate slack message for new CVE tracker bugs
+        Get Slack message for new CVE tracker bugs
 
         Args:
-            cve_tracker_bugs ([]): list of new CVE tracker bugs
+            cve_tracker_bugs (list): list of new CVE tracker bugs
 
         Returns:
-            str: slack message
+            str: Slack message
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact_by_id("art")
@@ -505,13 +554,13 @@ class MessageHelper:
     
     def get_slack_message_for_unhealthy_advisories(self, unhealthy_advisories):
         """
-        manipulate slack message for unhealthy advisories
+        Get Slack message for unhealthy advisories
 
         Args:
             list: unhealthy advisories
 
         Returns:
-            str: slack message
+            str: Slack message
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact_by_id("art")
@@ -530,11 +579,11 @@ class MessageHelper:
         self, dropped_bugs, must_verify_bugs
     ):
         """
-        manipulate slack message for dropped bugs and must verify bugs
+        Get Slack message for dropped bugs and must verify bugs
 
         Args:
-            dropped_bugs ([]): list of dropped bugs
-            must_verify_bugs ([]): list of must verify bugs
+            dropped_bugs (list): list of dropped bugs
+            must_verify_bugs (list): list of must verify bugs
 
         Returns:
             str: slack message
@@ -561,14 +610,14 @@ class MessageHelper:
 
     def get_slack_message_for_docs_and_prodsec_approval(self, doc_appr, prodsec_appr):
         """
-        manipulate slack message for docs and prodsec approval
+        Get Slack message for docs and prodsec approval
 
         Args:
-            doc_appr ([]): list of no doc approved advisories
-            prodsec_appr ([]): list of no product security approved advisories
+            doc_appr (list): list of no doc approved advisories
+            prodsec_appr (list): list of no product security approved advisories
 
         Returns:
-            str: slack message
+            str: Slack message
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact("approver", "doc_id")
@@ -592,14 +641,14 @@ class MessageHelper:
 
     def get_slack_message_for_jenkins_build(self, job_name, build_info):
         """
-        manipulate slack message for jenkins build
+        Get Slack message for jenkins build
 
         Args:
             job_name (str): jenkins job name
             build_url (str): jenkins build url
 
         Returns:
-            str: slack message
+            str: Slack message
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact(
@@ -617,13 +666,13 @@ class MessageHelper:
 
     def _to_link(self, link, text):
         """
-        private func to generate linked text
+        Private func to generate linked text
 
         Args:
             link (str): link url
             text (str): text
 
         Returns:
-            linked_text: slack linked text
+            linked_text: Slack linked text
         """
         return f"<{link}|{text}>"

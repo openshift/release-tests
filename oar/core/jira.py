@@ -135,7 +135,7 @@ class JiraManager:
             partent_key (str): parent issue key
 
         Returns:
-            []JiraIssue: jira subtask list
+            list[JiraIssue]: jira subtask list
         """
         subtasks = []
         if not parent_key:
@@ -161,7 +161,7 @@ class JiraManager:
         Change assignee of all QE subtasks from ART ticket
 
         Returns:
-            updated_tasks([]): jira keys of updated subtasks
+            updated_tasks(list): jira keys of updated subtasks
         """
         updated_tasks = []
         subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
@@ -359,3 +359,26 @@ class JiraIssue:
         check whether the issue is QE subtask.
         """
         return self.get_summary() in JIRA_QE_TASK_SUMMARIES
+
+    def is_must_verify_issue(self):
+        """
+        Check if the issue must be verified
+
+        Returns:
+            bool: True if the issue must be verified
+        """
+        if self.is_critical_issue() or self.is_customer_case() or self.is_cve_tracker():
+            logger.warning(
+                f"jira issue {self.get_key()} is critical: {self.is_critical_issue()} or customer case: {self.is_customer_case()} or cve tracker: {self.is_cve_tracker()}, it must be verified"
+            )
+            return True
+        return False
+
+    def is_to_be_verified(self):
+        """
+        Check if the issue needs to be still verified
+
+        Returns:
+            bool: True if the issue is neither verified nor closed
+        """
+        return not self.is_verified() and not self.is_closed()
