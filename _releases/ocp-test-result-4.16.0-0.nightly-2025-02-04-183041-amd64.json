@@ -45,13 +45,61 @@
           "jobStartTime": "2025-02-05T15:36:43Z",
           "jobID": "4b9af22d-9722-4256-962b-4247983d349f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1887163450791038976",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-05T18:58:06Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP, eBPF and Console metrics: when processor.metrics.TLS == Disabled and agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Critical-72959-Verify flowlogs-pipeline and eBPF metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-05T15:36:48Z",
           "jobID": "43acceff-12fd-44ac-8423-e05e350bf89a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-f999/1887163472249098240",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-05T19:05:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring ConnectedOnly-Author:tagao-LEVEL0-Medium-55696-add telemeter alert TelemeterClientFailures"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -114,5 +162,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-02-04-183041",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-02-04-183041"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
