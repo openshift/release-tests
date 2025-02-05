@@ -474,11 +474,9 @@ class TestJobRegistry():
 class ProwJobResult():
 
     def __init__(self, job_data):
-        self._result = None
+        self._result = job_data
         self.job_api = Jobs()
-        if "jobCompletionTime" in job_data:
-            self.from_dict(job_data)
-        else:
+        if "jobCompletionTime" not in job_data:
             self.fetch(job_data.get("jobID"))
         # if job is completed, get test report from artifacts
         self._get_test_result_summary()
@@ -536,8 +534,7 @@ class ProwJobResult():
             self.from_dict(self.job_api.get_job_results(job_id))
         except Exception as e:
             logger.error(f"fetch job result error: {e}")
-            # if job info cannot be retrieved from gangway, init result as empty dict
-            self._result = {}
+
         return self
 
     def _get_test_result_summary(self):
