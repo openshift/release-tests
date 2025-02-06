@@ -32,7 +32,7 @@ def update_bug_list(ctx, notify, must_verify):
         # send notification
         if notify:
             if must_verify:
-                must_verify_issues = AdvisoryManager(cs).get_must_verify_issues()
+                must_verify_issues, _ = JiraManager(cs).get_must_verify_and_can_drop_issues(jira_issues)
                 NotificationManager(cs).share_must_verify_bugs(must_verify_issues)
             else:
                 NotificationManager(cs).share_bugs_to_be_verified(jira_issues)

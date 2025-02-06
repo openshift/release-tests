@@ -62,27 +62,6 @@ class AdvisoryManager:
 
         return all_jira_issues
 
-    def get_must_verify_issues(self):
-        """
-        Get issues that must be verified in advisories and are not verified yet
-
-        Raises:
-            AdvisoryException: error when getting jira keys from advisory
-
-        Returns:
-            list (str): list of jira keys that must be still verified
-        """
-        jm = JiraManager(self._cs)
-        jira_issue_keys= self.get_jira_issues()
-
-        must_verify_issues = []
-        for key in jira_issue_keys:
-            issue = jm.get_issue(key)
-            if issue.is_must_verify_issue() and issue.is_to_be_verified():
-                must_verify_issues.append(key)
-
-        return must_verify_issues
-
     def change_ad_owners(self):
         """
         Change QA owner of all the advisories
@@ -213,47 +192,39 @@ class AdvisoryManager:
 
     def drop_bugs(self):
         """
-        Go thru all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case
+        Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
 
         Returns:
-            list: bugs cannot be dropped
+            tuple[list[str], list[str]]: list of jira keys that were dropped, list of jira keys that must be verified
         """
         jm = JiraManager(self._cs)
         ads = self.get_advisories()
         all_dropped_bugs = []
         all_must_verify_bugs = []
         for ad in ads:
-            bug_list = []
             issues = ad.jira_issues
-            if len(issues):
-                for key in issues:
-                    issue = jm.get_issue(key)
-                    if issue.is_to_be_verified():
-                        continue
-                    else:
-                        # check whether the issue must be verified
-                        if issue.is_must_verify_issue():
-                            all_must_verify_bugs.append(key)
-                        else:
-                            # issue can be dropped
-                            logger.info(
-                                f"jira issue {key} is {issue.get_status()} will be dropped from advisory {ad.errata_id}"
-                            )
-                            bug_list.append(key)
+            must_verify_bugs, drop_bug_list = jm.get_must_verify_and_can_drop_issues(issues)
+            all_must_verify_bugs.extend(must_verify_bugs)
 
-                if len(bug_list):
-                    all_dropped_bugs += bug_list
-                    ad.remove_bugs(bug_list)
-                    logger.info(
-                        f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
-                    )
-                else:
-                    logger.info(
-                        f"there is no bug in advisory {ad.errata_id} can be dropped"
-                    )
+            if drop_bug_list:
+                all_dropped_bugs.extend(drop_bug_list)
+                for key in drop_bug_list:
+                    issue = jm.get_issue(key)
+                # issue can be dropped
+                logger.info(
+                    f"jira issue {key} is {issue.get_status()}, it will be dropped from advisory {ad.errata_id}"
+                )
+                ad.remove_bugs(drop_bug_list)
+                logger.info(
+                    f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
+                )
+            else:
+                logger.info(
+                    f"there is no bug in advisory {ad.errata_id} that can be dropped"
+                )
 
         return all_dropped_bugs, all_must_verify_bugs
 

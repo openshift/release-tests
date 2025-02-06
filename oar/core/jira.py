@@ -206,6 +206,31 @@ class JiraManager:
             raise JiraException(
                 "invalid input argument key or comment is empty")
 
+    def get_must_verify_and_can_drop_issues(self, jira_issue_keys):
+        """
+        Get list of issues that must be verified and list of issues that can be dropped
+
+        Args:
+            jira_issue_keys (list[str]): jira issues keys to be processed
+
+        Returns:
+            tuple[list[str], list[str]]: list of jira keys that must be still verified, list of jira keys that can be dropped
+        """
+        must_verify_issues = []
+        can_drop_issues = []
+        if jira_issue_keys:
+            for key in jira_issue_keys:
+                issue = self.get_issue(key)
+                if issue.is_verified() or issue.is_closed():
+                    continue
+                else:
+                    if issue.is_must_verify_issue():
+                        must_verify_issues.append(key)
+                    else:
+                        can_drop_issues.append(key)
+
+        return must_verify_issues, can_drop_issues
+
 
 class JiraIssue:
     """
@@ -373,12 +398,3 @@ class JiraIssue:
             )
             return True
         return False
-
-    def is_to_be_verified(self):
-        """
-        Check if the issue needs to be still verified
-
-        Returns:
-            bool: True if the issue is neither verified nor closed
-        """
-        return not self.is_verified() and not self.is_closed()
