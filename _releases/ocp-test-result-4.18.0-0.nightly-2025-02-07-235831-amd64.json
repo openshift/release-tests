@@ -126,7 +126,31 @@
           "jobStartTime": "2025-02-08T12:32:46Z",
           "jobID": "f1a8db13-e519-4aaa-b3d1-35842f0d7808",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1888204321787482112",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-08T15:33:42Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-cluster-lifecycle] Cluster_Infrastructure CCM Author:zhsun-LEVEL0-Critical-70627-Service of type LoadBalancer can be created successful"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -158,5 +182,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2025-02-07-235831",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2025-02-07-235831"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
