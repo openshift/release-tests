@@ -39,13 +39,47 @@
           "jobStartTime": "2025-02-10T22:48:07Z",
           "jobID": "86a72099-7b34-4fa0-a34d-1213226d3bf3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-azure-ipi-mini-perm-fips-f999/1889083955580243968",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-11T01:34:05Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 10,
+              "failingScenarios": [
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46358-[CSI Driver] [CSI Clone] Clone a pvc with filesystem VolumeMode"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-10T22:48:12Z",
           "jobID": "d0e7b59a-2f38-4443-aa21-2548d885d047",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-azure-ipi-mini-perm-fips-f999/1889083976962805760",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-02-11T01:35:34Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 10
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -102,5 +136,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2025-02-10-140044",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2025-02-10-140044"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
