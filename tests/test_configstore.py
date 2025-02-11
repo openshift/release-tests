@@ -1,4 +1,5 @@
 import unittest
+import oar.core.util as util
 from oar.core.exceptions import ConfigStoreException
 from oar.core.advisory import AdvisoryManager
 from oar.core.jira import JiraManager
@@ -95,3 +96,16 @@ class TestConfigStore(unittest.TestCase):
         server_url = self.cs.get_jenkins_server()
         self.assertTrue(
             "dno.corp.redhat.com" in server_url)
+        
+    def test_get_release_version(self):
+        version = "4.18.1"
+        self.assertEqual(version, util.get_release_key(version))
+        version = "4.18.0-rc.8"
+        self.assertEqual("rc.8", util.get_release_key(version))
+        version = "4.19.0-ec.1"
+        self.assertEqual("ec.1", util.get_release_key(version))
+
+        for r in ["4.18.0-rc.8", "4.19.0-ec.1"]:
+            cs = ConfigStore(r)
+            self.assertGreater(len(cs.get_advisories()), 0)
+        
