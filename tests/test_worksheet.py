@@ -80,3 +80,7 @@ class TestWorksheetManager(unittest.TestCase):
         self.step_3_update_bug_list()
         self.step_4_update_cve_bug_list()
         self.step_n_delete_report()
+
+    def test_create_report_for_candidate_release(self):
+        wm = WorksheetManager(ConfigStore("4.18.0-rc.8"))
+        wm.create_test_report()

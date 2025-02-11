@@ -28,9 +28,9 @@ class ConfigStore:
         if release == "":
             raise ConfigStoreException("argument release is required")
 
-        if not util.is_valid_z_release(release):
+        if not util.validate_release_version(release):
             raise ConfigStoreException(
-                f"invalid z-stream release format {release}")
+                f"invalid release format {release}")
 
         self.release = release
 
@@ -58,8 +58,9 @@ class ConfigStore:
                 raise ConfigStoreException(
                     "ocp build data format is invalid") from ye
 
-        if self.release in self._build_data["releases"]:
-            self._assembly = self._build_data["releases"][self.release]["assembly"]
+        release_key = util.get_release_key(self.release)
+        if release_key in self._build_data["releases"]:
+            self._assembly = self._build_data["releases"][release_key]["assembly"]
         else:
             raise ConfigStoreException(
                 f"[{self.release}] ocp build data is not ready you can check file: {url}")
