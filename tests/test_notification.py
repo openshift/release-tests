@@ -44,13 +44,13 @@ class TestNotificationManager(unittest.TestCase):
 
     def test_share_dropped_bugs(self):
         dropped_bugs = ["OCPQE-123", "OCPQE-456", "OCPQE-789"]
-        must_verify_bugs = ["OCPQE-911"]
-        self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)
-        must_verify_bugs = []
-        self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)
+        high_severity_bugs = ["OCPQE-911"]
+        self.nm.share_dropped_and_high_severity_bugs(dropped_bugs, high_severity_bugs)
+        high_severity_bugs = []
+        self.nm.share_dropped_and_high_severity_bugs(dropped_bugs, high_severity_bugs)
         dropped_bugs = []
-        must_verify_bugs = ["OCPQE-911"]
-        self.nm.share_dropped_and_must_verify_bugs(dropped_bugs, must_verify_bugs)
+        high_severity_bugs = ["OCPQE-911"]
+        self.nm.share_dropped_and_high_severity_bugs(dropped_bugs, high_severity_bugs)
 
     @unittest.skip("disabled by default, avoid message flood")
     def test_share_new_report(self):
