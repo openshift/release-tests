@@ -260,7 +260,7 @@ class AdvisoryManager:
             "--group",
             f"openshift-{util.get_y_release(self._cs.release)}",
             "--assembly",
-            self._cs.release,
+            util.get_release_key(self._cs.release),
             "find-bugs:sweep",
             "--cve-only",
             "--report",
