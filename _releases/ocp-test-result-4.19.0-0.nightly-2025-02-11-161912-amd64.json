@@ -159,7 +159,40 @@
           "jobStartTime": "2025-02-13T19:54:25Z",
           "jobID": "54c224d5-2754-4cfe-9b51-db05685477b5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1890127406849593344",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-13T23:31:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 7,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19672:UserInterface Check cronjob on console",
+                "OCP-19717:UserInterface Check configmap on console",
+                "OCP-20020:UserInterface Source Secret",
+                "OCP-20800:UserInterface Key/Value Secret",
+                "OCP-25763:UserInterface Users management on console",
+                "OCP-26910:UserInterface Check project page",
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-13T19:54:30Z",
@@ -343,5 +376,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-02-11-161912",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-02-11-161912"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
