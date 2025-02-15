@@ -166,7 +166,37 @@
           "jobStartTime": "2025-02-15T02:28:57Z",
           "jobID": "0b8ec537-ce77-474a-86bb-5c43d9f9e8d4",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1890589082589859840",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-15T06:04:35Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 30
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 7,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19672:UserInterface Check cronjob on console",
+                "OCP-19717:UserInterface Check configmap on console",
+                "OCP-20020:UserInterface Source Secret",
+                "OCP-20800:UserInterface Key/Value Secret",
+                "OCP-25763:UserInterface Users management on console",
+                "OCP-26910:UserInterface Check project page",
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -253,5 +283,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-02-14-143316",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-02-14-143316"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
