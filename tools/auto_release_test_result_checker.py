@@ -2,6 +2,7 @@ import os
 import time
 import re
 import click
+import json
 from github import Github
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
@@ -66,7 +67,6 @@ class TestResultChecker:
             print(f"An error occurred while getting files: {e}")
 
     def check_file(self, file, release, current_time):
-        import json
         content = file.decoded_content.decode('utf-8')
         try:
             data = json.loads(content)
