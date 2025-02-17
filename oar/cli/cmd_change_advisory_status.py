@@ -30,6 +30,9 @@ def change_advisory_status(ctx, status):
         am = AdvisoryManager(cs)
         # update task status to in progress
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_INPROGRESS)
+        # check kernel tag before change advisories' status
+        if am.check_kernel_tag():
+            return "kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check."
         # change all advisories' status
         am.change_advisory_status(status)
         # close jira tickets

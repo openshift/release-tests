@@ -12,6 +12,8 @@ import json
 import re
 import requests
 import urllib3
+from requests_kerberos import HTTPKerberosAuth, REQUIRED
+import koji, json, jq
 
 logger = logging.getLogger(__name__)
 
@@ -749,3 +751,45 @@ class Advisory(Erratum):
         else:
             raise AdvisoryException(
                 f"error when accessing advisory containers - {self.errata_id}")
+
+    def check_kernel_tag(self):
+        # get advisories url
+        """
+        Get kernel tag from advisory build image.
+
+        Returns:
+            bool: True if kernel tagged with early-kernel-stop-ship.
+        """
+        candidate_builds = self._cs.get_candidate_builds()
+        if candidate_builds:
+            for k, v in candidate_builds.items():
+                build_url = "https://errata.devel.redhat.com/api/v1/erratum/"+v+"/builds"
+                logger.info(k+" build url:"+v+"\n")
+                session = requests.Session()
+                session.hooks['response'] = lambda response, *args, **kwargs: response
+                session.auth = ('', '')
+                kerberos_auth = HTTPKerberosAuth(mutual_authentication=REQUIRED)
+                try:
+                    response = session.get(build_url, auth=kerberos_auth)
+                    if response.status_code == 401:
+                        logger.error("401 Unauthorized: Authentication failed or missing.")
+                    else:
+                        rhos_nvr = jq.compile('.. | objects | to_entries[] | select(.key | startswith("rhcos-x86")) | .key').\
+                            input(text=response.text).all()
+                        logger.info("rhcos nvr is:"+rhos_nvr[0])
+                except BaseException as e:
+                    logger.error(e)
+                rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr[0])
+                rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewro.jot/packages/"+rhos_nvr_url+"/metadata.json"
+                try:
+                    rhos_meta_data_full = requests.get(rhos_nvr_url_full).text
+                except BaseException as e:
+                    logger.error(e)
+                rhos_meta_data = jq.compile('.output[]|select(.components!="")|.components[]|select(.name=="kernel")|.name +"-"+ .version +"-"+ .release').\
+                    input(text=rhos_meta_data_full).all()[0]
+                session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
+                tags = session.listTags(build=rhos_meta_data)
+                for t in tags:
+                    if t["name"]=='early-kernel-stop-ship':
+                        return True
+                return False
