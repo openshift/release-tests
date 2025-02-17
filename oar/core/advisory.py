@@ -776,7 +776,7 @@ class Advisory(Erratum):
                     input(text=response.text).all()
                 except jq.SyntaxError as e:
                     logger.error(e)
-                    logger.info(f"rhcos nvr is: {rhos_nvr[0]}")
+                logger.info(f"rhcos nvr is: {rhos_nvr[0]}")
         except BaseException as e:
             logger.error(e)
         rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr[0])
