@@ -95,7 +95,7 @@ class TestResultChecker:
                 channel=self.slack_channel,
                 text=message
             )
-            print(f"Slack notification sent: {response['ts']}")
+            print(f"Slack notification sent for {file.name}: {response['ts']}")
         except SlackApiError as e:
             print(f"Error sending Slack notification: {e}")
 
