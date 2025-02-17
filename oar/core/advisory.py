@@ -776,23 +776,27 @@ class Advisory(Erratum):
                     input(text=response.text).all()
                 except jq.SyntaxError as e:
                     logger.error(e)
-                logger.info(f"rhcos nvr is: {rhos_nvr[0]}")
         except BaseException as e:
             logger.error(e)
-        rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr[0])
-        rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
-        try:
-            rhos_meta_data_full = requests.get(rhos_nvr_url_full).text
-        except BaseException as e:
-            logger.error(e)
-        try:
-            rhos_meta_data = jq.compile('.output[]|select(.components!="")|.components[]|select(.name=="kernel")|.name +"-"+ .version +"-"+ .release').\
-            input(text=rhos_meta_data_full).all()[0]
-        except jq.SyntaxError as e:
-            logger.error(e)
-        session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
-        tags = session.listTags(build=rhos_meta_data)
-        for t in tags:
-            if t["name"]=='early-kernel-stop-ship':
-                return True
-        return False
+        if len(rhos_nvr)==0:
+            logger.info(f"rhcos nvr cannot be filtered")
+            return False
+        else:
+            logger.info(f"rhcos nvr is: {rhos_nvr[0]}")
+            rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr[0])
+            rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
+            try:
+                rhos_meta_data_full = requests.get(rhos_nvr_url_full).text
+            except BaseException as e:
+                logger.error(e)
+            try:
+                rhos_meta_data = jq.compile('.output[]|select(.components!="")|.components[]|select(.name=="kernel")|.name +"-"+ .version +"-"+ .release').\
+                input(text=rhos_meta_data_full).all()[0]
+            except jq.SyntaxError as e:
+                logger.error(e)
+            session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
+            tags = session.listTags(build=rhos_meta_data)
+            for t in tags:
+                if t["name"]=='early-kernel-stop-ship':
+                    return True
+            return False
