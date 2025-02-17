@@ -780,7 +780,7 @@ class Advisory(Erratum):
                 except BaseException as e:
                     logger.error(e)
                 rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr[0])
-                rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewro.jot/packages/"+rhos_nvr_url+"/metadata.json"
+                rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
                 try:
                     rhos_meta_data_full = requests.get(rhos_nvr_url_full).text
                 except BaseException as e:
