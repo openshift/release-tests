@@ -13,7 +13,7 @@ import re
 import requests
 import urllib3
 from requests_kerberos import HTTPKerberosAuth, REQUIRED
-import koji, json, jq
+import koji
 
 logger = logging.getLogger(__name__)
 
@@ -753,50 +753,40 @@ class Advisory(Erratum):
                 f"error when accessing advisory containers - {self.errata_id}")
 
     def check_kernel_tag(self):
-        # get advisories url
         """
-        Get kernel tag from advisory build image.
+        Check kernel tag from advisory build image.
 
         Returns:
-            bool: True if kernel tagged with early-kernel-stop-ship.
+            bool: True if kernel is tagged with early-kernel-stop-ship.
         """
+        #Check if impetus is image or not, if it's not image then skip this function.
+        if self.impetus != AD_IMPETUS_IMAGE:
+            logger.info("check kernel tag function skipped, only image advisory need to check.")
+            return False
+        #Get rhcos nvr from image advisory build
         build_url = "https://errata.devel.redhat.com/api/v1/erratum/" + str(self.errata_id) + "/builds"
-        logger.info(f"build url: {build_url}")
-        session = requests.Session()
-        session.hooks['response'] = lambda response, *args, **kwargs: response
-        session.auth = ('', '')
-        kerberos_auth = HTTPKerberosAuth(mutual_authentication=REQUIRED)
-        try:
-            response = session.get(build_url, auth=kerberos_auth)
-            if response.status_code == 401:
-                logger.error("401 Unauthorized: Authentication failed or missing.")
-            else:
-                try:
-                    rhos_nvr = jq.compile('.. | objects | to_entries[] | select(.key | startswith("rhcos-x86")) | .key').\
-                    input(text=response.text).all()
-                except jq.SyntaxError as e:
-                    logger.error(e)
-        except BaseException as e:
-            logger.error(e)
-        if len(rhos_nvr)==0:
-            logger.info(f"rhcos nvr cannot be filtered")
-            return False
-        else:
-            logger.info(f"rhcos nvr is: {rhos_nvr[0]}")
-            rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr[0])
-            rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
-            try:
-                rhos_meta_data_full = requests.get(rhos_nvr_url_full).text
-            except BaseException as e:
-                logger.error(e)
-            try:
-                rhos_meta_data = jq.compile('.output[]|select(.components!="")|.components[]|select(.name=="kernel")|.name +"-"+ .version +"-"+ .release').\
-                input(text=rhos_meta_data_full).all()[0]
-            except jq.SyntaxError as e:
-                logger.error(e)
-            session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
-            tags = session.listTags(build=rhos_meta_data)
-            for t in tags:
-                if t["name"]=='early-kernel-stop-ship':
-                    return True
-            return False
+        build_response = self._get(build_url)
+        for value in build_response.values():
+            for build in value['builds']:
+                for build_name in build:
+                    if re.match(r'^rhcos-x86_64', build_name):
+                        rhos_nvr = build_name
+        #Download the commit metadata based on info in nvr.
+        rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr)
+        rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
+        rhos_meta_data_full = self._get(rhos_nvr_url_full)
+        rhos_meta_data = [
+            f"{comp['name']}-{comp['version']}-{comp['release']}"
+            for entry in rhos_meta_data_full['output']
+            if entry['components']
+            for comp in entry['components']
+            if comp['name'] == 'kernel'
+        ][0]
+        #Use koji api to query tags of this build
+        session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
+        tags = session.listTags(build=rhos_meta_data)
+        for t in tags:
+            if t["name"] == 'early-kernel-stop-ship':
+                logger.info("Tag of early-kernel-stop-ship is detected")
+                return True
+        return False
