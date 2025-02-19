@@ -257,7 +257,32 @@
           "jobStartTime": "2025-02-18T17:37:12Z",
           "jobID": "b520197a-3267-4e75-be46-385a3baa6598",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1891904816225980416",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-18T22:42:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-Critical-24485-[CSI-Driver] [Dynamic PV] [Filesystem default] volumes should store data and allow exec of files"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -289,5 +314,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2025-02-18-050228",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2025-02-18-050228"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
