@@ -771,6 +771,7 @@ class Advisory(Erratum):
                 for build_name in build:
                     if re.match(r'^rhcos-x86_64', build_name):
                         rhos_nvr = build_name
+                        logger.info(f"RHCOS nvr is {rhos_nvr}")
         #Download the commit metadata based on info in nvr.
         rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr)
         rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
@@ -782,9 +783,11 @@ class Advisory(Erratum):
             for comp in entry['components']
             if comp['name'] == 'kernel'
         ][0]
+        logger.info(f"The commit metadata is {rhos_meta_data}")
         #Use koji api to query tags of this build
         session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
         tags = session.listTags(build=rhos_meta_data)
+        logger.info(f"Tags of this build is str{tags}")
         for t in tags:
             if t["name"] == 'early-kernel-stop-ship':
                 logger.info("Tag of early-kernel-stop-ship is detected")

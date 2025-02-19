@@ -68,3 +68,7 @@ class TestAdvisoryManager(unittest.TestCase):
         ads = self.me.get_advisories()
         for ad in ads:
             self.assertFalse(ad.has_blocking_secruity_alert(), f"advisory {ad.errata_id} has blocking security alerts")
+
+    def test_kernel_tag(self):
+       Advisory(errata_id=144853, impetus='image').check_kernel_tag()
+       Advisory(errata_id=144854, impetus='metadata').check_kernel_tag()
