@@ -132,7 +132,31 @@
           "jobStartTime": "2025-02-19T07:52:53Z",
           "jobID": "90056f2e-c4f1-42ba-b4b3-c451a63c52c5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1892120155870203904",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-19T12:04:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-19T07:52:58Z",
@@ -267,5 +291,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-02-18-214228",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-02-18-214228"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
