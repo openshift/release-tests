@@ -763,14 +763,15 @@ class Advisory(Erratum):
             logger.info("check kernel tag function skipped, only image advisory need to check.")
             return False
         #Get rhcos nvr from image advisory build
-        build_url = "https://errata.devel.redhat.com/api/v1/erratum/" + str(self.errata_id) + "/builds"
-        build_response = self._get(build_url)
+        build_response = self._get(f"/api/v1/erratum/{self.errata_id}/builds")
+        rhos_nvr = None
         for value in build_response.values():
             for build in value['builds']:
-                for build_name in build:
-                    if re.match(r'^rhcos-x86_64', build_name):
+                for build_name in build.keys():
+                    if build_name.startswith("rhcos-x86"):
                         rhos_nvr = build_name
-                        logger.info(f"RHCOS nvr is {rhos_nvr}")
+                        break
+        logger.info(f"RHCOS nvr is {rhos_nvr}")
         #Download the commit metadata based on info in nvr.
         rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr)
         rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
