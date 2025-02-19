@@ -103,9 +103,47 @@
         "jobStartTime": "2025-02-19T13:34:41Z",
         "jobID": "b98be044-8c42-4699-a33e-551366df2398",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1892206171197018112",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-02-19T18:01:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 104,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 17,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-02-19T18:38:13Z",
+          "jobID": "dbbf24a7-b49d-404c-b302-22fc2a47596c",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1892282558566109184",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-02-19T18:38:18Z",
+          "jobID": "8114eb98-4ba9-4fb7-8f41-f89faac2b90f",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1892282579810258944",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999",
