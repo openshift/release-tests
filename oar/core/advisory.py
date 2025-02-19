@@ -12,7 +12,6 @@ import json
 import re
 import requests
 import urllib3
-from requests_kerberos import HTTPKerberosAuth, REQUIRED
 import koji
 
 logger = logging.getLogger(__name__)
