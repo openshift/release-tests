@@ -127,13 +127,61 @@
           "jobStartTime": "2025-02-20T02:40:02Z",
           "jobID": "51be3ff2-e4b1-4691-9c5d-60bf13f52f8c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1892403811360706560",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-20T06:11:03Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 90,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Acceptance testing vector to loki[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-20T02:40:07Z",
           "jobID": "296e048c-4606-4b5a-9c59-c0dd674adbf5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1892403832537747456",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-20T06:03:15Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 90,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-64296-disable CORS headers on Thanos querier [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -196,5 +244,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-02-19-152233",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-02-19-152233"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
