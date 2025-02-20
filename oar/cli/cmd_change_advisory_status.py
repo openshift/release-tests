@@ -1,7 +1,7 @@
 import click
 import logging
 from oar.core.worksheet import WorksheetManager
-from oar.core.advisory import AdvisoryManager
+from oar.core.advisory import *
 from oar.core.jira import JiraManager
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
@@ -30,6 +30,11 @@ def change_advisory_status(ctx, status):
         am = AdvisoryManager(cs)
         # update task status to in progress
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_INPROGRESS)
+        # check kernel tag before change advisories' status
+        ads = am.get_advisories()
+        for ad in ads:
+            if Advisory(errata_id=ad.errata_id, impetus=ad.impetus).check_kernel_tag():
+                raise AdvisoryException("kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check.")
         # change all advisories' status
         am.change_advisory_status(status)
         # close jira tickets
