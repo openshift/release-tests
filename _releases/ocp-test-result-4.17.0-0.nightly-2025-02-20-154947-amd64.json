@@ -132,7 +132,31 @@
           "jobStartTime": "2025-02-21T04:44:53Z",
           "jobID": "071b3695-9241-4af8-87a4-6cf4231afcc4",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1892797618023567360",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-21T09:29:35Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:knarra-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-21T04:44:58Z",
@@ -266,5 +290,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-02-20-154947",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-02-20-154947"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
