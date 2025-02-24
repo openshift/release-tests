@@ -3,11 +3,12 @@ from oar.core.advisory import AdvisoryManager
 from oar.core.advisory import Advisory
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
+from oar.core.exceptions import AdvisoryException
 
 
 class TestAdvisoryManager(unittest.TestCase):
     def setUp(self):
-        self.am = AdvisoryManager(ConfigStore("4.12.11"))
+        self.am = AdvisoryManager(ConfigStore("4.17.14"))
 
     def test_init(self):
         pass
@@ -70,5 +71,8 @@ class TestAdvisoryManager(unittest.TestCase):
             self.assertFalse(ad.has_blocking_secruity_alert(), f"advisory {ad.errata_id} has blocking security alerts")
 
     def test_kernel_tag(self):
-       self.assertTrue(Advisory(errata_id=144853, impetus='image').check_kernel_tag())
-       self.assertFalse(Advisory(errata_id=144854, impetus='metadata').check_kernel_tag())
+        ads = self.am.get_advisories()
+        for ad in ads:
+            if ad.check_kernel_tag():
+                raise AdvisoryException("kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check.")
+        self.assertTrue(Advisory(errata_id=144853, impetus='image').check_kernel_tag())

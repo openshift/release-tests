@@ -33,7 +33,7 @@ def change_advisory_status(ctx, status):
         # check kernel tag before change advisories' status
         ads = am.get_advisories()
         for ad in ads:
-            if Advisory(errata_id=ad.errata_id, impetus=ad.impetus).check_kernel_tag():
+            if ad.check_kernel_tag():
                 raise AdvisoryException("kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check.")
         # change all advisories' status
         am.change_advisory_status(status)
