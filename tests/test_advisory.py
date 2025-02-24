@@ -3,7 +3,6 @@ from oar.core.advisory import AdvisoryManager
 from oar.core.advisory import Advisory
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.exceptions import AdvisoryException
 
 
 class TestAdvisoryManager(unittest.TestCase):
