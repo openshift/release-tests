@@ -12,6 +12,7 @@ import json
 import re
 import requests
 import urllib3
+import koji
 
 logger = logging.getLogger(__name__)
 
@@ -749,3 +750,46 @@ class Advisory(Erratum):
         else:
             raise AdvisoryException(
                 f"error when accessing advisory containers - {self.errata_id}")
+
+    def check_kernel_tag(self):
+        """
+        Check kernel tag from advisory build image.
+
+        Returns:
+            bool: True if kernel build is tagged with early-kernel-stop-ship.
+        """
+        #Check if impetus is image or not, if it's not image then skip this function.
+        if self.impetus != AD_IMPETUS_IMAGE:
+            logger.info(f"{self.impetus} advisory does not have RHCOS build, skip checking kernel tag")
+            return False
+        #Get rhcos nvr from image advisory build
+        build_response = self._get(f"/api/v1/erratum/{self.errata_id}/builds")
+        rhos_nvr = None
+        for value in build_response.values():
+            for build in value['builds']:
+                for build_name in build.keys():
+                    if build_name.startswith("rhcos-x86"):
+                        rhos_nvr = build_name
+                        break
+        logger.info(f"RHCOS nvr is {rhos_nvr}")
+        #Download the commit metadata based on info in nvr.
+        rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr)
+        rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
+        rhos_meta_data_full = self._get(rhos_nvr_url_full)
+        kernel_build = [
+            f"{comp['name']}-{comp['version']}-{comp['release']}"
+            for entry in rhos_meta_data_full['output']
+            if entry['components']
+            for comp in entry['components']
+            if comp['name'] == 'kernel'
+        ][0]
+        logger.info(f"The commit metadata is {kernel_build}")
+        #Use koji api to query tags of this build
+        session = koji.ClientSession("https://brewhub.engineering.redhat.com/brewhub")
+        tags = session.listTags(build=kernel_build)
+        logger.info(f"Tags of this build is {tags}")
+        for t in tags:
+            if t["name"] == 'early-kernel-stop-ship':
+                logger.info("kernel tag early-kernel-stop-ship is detected")
+                return True
+        return False
