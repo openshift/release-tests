@@ -72,7 +72,7 @@ class TestResultChecker:
         content = file.decoded_content.decode('utf-8')
         try:
             data = json.loads(content)
-            if 'accepted' in data and not data['accepted']:
+            if 'manual_promotion' not in data and ('accepted' in data and not data['accepted']):
                 if release not in self.notified_files_per_release:
                     self.notified_files_per_release[release] = {}
                 if file.name not in self.notified_files_per_release[release]:
