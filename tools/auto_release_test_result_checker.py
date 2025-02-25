@@ -104,7 +104,7 @@ class TestResultChecker:
 def main(repo_name, slack_channel, notified_file_path,
          limit, path, branch):
     github_token = os.getenv('GITHUB_TOKEN')
-    slack_token = os.getenv('SLACK_TOKEN')
+    slack_token = os.getenv('SLACK_BOT_TOKEN')
 
     if not github_token:
         raise click.ClickException("GITHUB_TOKEN environment variable is not set.")
