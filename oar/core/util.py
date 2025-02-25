@@ -1,5 +1,5 @@
 import logging
-import semver
+from semver.version import Version
 
 def is_valid_z_release(version):
     strs = version.split(".")
@@ -24,13 +24,13 @@ def get_y_release(version):
 
 def validate_release_version(version):
     try:
-        semver.parse_version_info(version)
+        Version.parse(version)
         return True
     except ValueError:
         return False
 
 def get_release_key(version):
-    version_info = semver.parse_version_info(version)
+    version_info = Version.parse(version)
     if version_info.prerelease:
         prerelease = version_info.prerelease
         if prerelease.startswith("ec") or prerelease.startswith("rc"):
