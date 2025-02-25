@@ -280,14 +280,23 @@ class AdvisoryManager:
         cve_tracker_bugs = []
         result = stdout.decode("utf-8")
         if result:
-            logger.info("found new CVE tracker bug")
+            logger.info("found new CVE tracker bug by elliott")
             logger.debug(result)
             json_obj = json.loads(result)
+            # OCPERT-66 double check if the bug is already attached on advisory
+            # get all jira issues from RHSA advisories
+            rhsa_ads = [ad for ad in self.get_advisories() if ad.is_rhsa()]
+            rhsa_jira_issues = []
+            for ad in rhsa_ads:
+                rhsa_jira_issues += ad.jira_issues
             for tracker in json_obj:
                 id = tracker["id"]
                 summary = tracker["summary"]
                 logger.info(f"{id}: {summary}")
-                cve_tracker_bugs.append(id)
+                # add it to missed bug list if it is not attached on advisories
+                if id not in rhsa_jira_issues:
+                    logger.info(f"bug {id} is not found in RHSA advisories")
+                    cve_tracker_bugs.append(id)
 
         return cve_tracker_bugs
 
@@ -793,3 +802,6 @@ class Advisory(Erratum):
                 logger.info("kernel tag early-kernel-stop-ship is detected")
                 return True
         return False
+    
+    def is_rhsa(self):
+        return self.errata_type == 'RHSA'
