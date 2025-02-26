@@ -37,13 +37,62 @@
           "jobStartTime": "2025-02-26T19:35:32Z",
           "jobID": "bb654bb4-1e83-40c5-96a7-8bc804f8738a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1894836958597746688",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-26T22:43:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-50954-Allow the deployment of a dedicated UWM Alertmanager [Serial]",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-26T19:35:37Z",
           "jobID": "d5e094d6-d4f4-440a-a4c7-56f5960b0d45",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1894835113326284800",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-26T22:44:33Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 105,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-50954-Allow the deployment of a dedicated UWM Alertmanager [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -273,5 +322,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-02-26-050226",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-02-26-050226"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
