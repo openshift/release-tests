@@ -53,9 +53,50 @@
         "jobStartTime": "2025-02-28T19:46:01Z",
         "jobID": "d0733803-a26c-48d0-a296-3b0aafb937c5",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1895561113865555968",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-02-28T23:06:53Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 105,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 31,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-50954-Allow the deployment of a dedicated UWM Alertmanager [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+              "OCP-14688:Workloads pod will be scheduled on the node which meets pod affinity - In"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-02-28T23:34:24Z",
+          "jobID": "94aeb0bd-4182-47de-b0dc-8208fce8a654",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1895618585775050752",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-02-28T23:34:29Z",
+          "jobID": "fd10d0ba-8abf-454d-ab6c-d39f4e010bbb",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1895618606943703040",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999",
