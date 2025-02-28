@@ -68,13 +68,58 @@
           "jobStartTime": "2025-02-28T17:26:55Z",
           "jobID": "576b4e47-1d37-4e42-9874-84076acec108",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1895526104786014208",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-02-28T20:41:41Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 29
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-02-28T17:27:00Z",
           "jobID": "acdf5272-f2be-4acd-abdb-3e49a38336a2",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1895526125963055104",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-02-28T21:02:25Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 29,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -147,5 +192,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2025-02-28-064241",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2025-02-28-064241"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
