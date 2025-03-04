@@ -64,10 +64,10 @@ class NotificationManager:
         Send notification for take ownership result
 
         Args:
-            updated_ads ([]): updated advisory list
-            abnormal_ads ([]): advisory list that state is not QE
-            updated_subtasks ([]): updated jira subtasks
-            new_owner ([]): email address of the new owner
+            updated_ads (list): updated advisory list
+            abnormal_ads (list): advisory list that state is not QE
+            updated_subtasks (list): updated jira subtasks
+            new_owner (list): email address of the new owner
 
         Raises:
             NotificationException: error when share this info
@@ -97,7 +97,7 @@ class NotificationManager:
         Send slack message to all QA Contacts, ask them to verify ON_QA bugs
 
         Args:
-            jira_issues ([]): jira issue list
+            jira_issues (list): jira issue list
 
         Raises:
             NotificationException: error when share this info
@@ -119,7 +119,7 @@ class NotificationManager:
         Send slack message to ART team with new CVE tracker bugs
 
         Args:
-            cve_tracker_bugs ([]): list of new CVE tracker bug
+            cve_tracker_bugs (list): list of new CVE tracker bug
 
         Raises:
             NotificationException: error when checking new CVE tracker bugs
@@ -161,8 +161,8 @@ class NotificationManager:
         Send slack message to QE release lead with dropped and must verified bugs
 
         Args:
-            dropped_bugs ([]): list of dropped bugs
-            must_verified_bugs ([]): list of must verify bugs, could be [Critical/Blocker/Customer Case]
+            dropped_bugs (list): list of dropped bugs
+            must_verified_bugs (list): list of must verify bugs, could be [Critical/Blocker/Customer Case]
 
         Raises:
             NotificationException: error when sending message
@@ -408,10 +408,10 @@ class MessageHelper:
         manipulate slack message for ownership change
 
         Args:
-            updated_ads ([]): updated advisory list
-            abnormal_ads ([]): advisory list that state is not QE
-            updated_subtasks ([]): updated jira subtasks
-            new_owner ([]): email address of the new owner
+            updated_ads (list): updated advisory list
+            abnormal_ads (list): advisory list that state is not QE
+            updated_subtasks (list): updated jira subtasks
+            new_owner (list): email address of the new owner
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact(
@@ -441,7 +441,7 @@ class MessageHelper:
         manipulate slack message for bug verification
 
         Args:
-            jira_issues ([]): jira issue list
+            jira_issues (list): jira issue list
 
         Returns:
             str: slack message
@@ -466,7 +466,7 @@ class MessageHelper:
         manipulate slack message for abnormal advisories, raise this issue with ART team
 
         Args:
-            abnormal_ads ([]): advisory list
+            abnormal_ads (list): advisory list
 
         Returns:
             str: slack message
@@ -487,7 +487,7 @@ class MessageHelper:
         manipulate slack message for new CVE tracker bugs
 
         Args:
-            cve_tracker_bugs ([]): list of new CVE tracker bugs
+            cve_tracker_bugs (list): list of new CVE tracker bugs
 
         Returns:
             str: slack message
@@ -533,8 +533,8 @@ class MessageHelper:
         manipulate slack message for dropped bugs and must verify bugs
 
         Args:
-            dropped_bugs ([]): list of dropped bugs
-            must_verify_bugs ([]): list of must verify bugs
+            dropped_bugs (list): list of dropped bugs
+            must_verify_bugs (list): list of must verify bugs
 
         Returns:
             str: slack message
@@ -564,8 +564,8 @@ class MessageHelper:
         manipulate slack message for docs and prodsec approval
 
         Args:
-            doc_appr ([]): list of no doc approved advisories
-            prodsec_appr ([]): list of no product security approved advisories
+            doc_appr (list): list of no doc approved advisories
+            prodsec_appr (list): list of no product security approved advisories
 
         Returns:
             str: slack message

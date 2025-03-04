@@ -314,7 +314,7 @@ class TestReport:
         Generate bug list of on_qa bugs
 
         Args:
-            jira_issues (str[]): jira issue keys from advisories
+            jira_issues (list): jira issue keys from advisories
         """
         logger.info("waiting for the bugs to be verified to update in sheet")
         jm = JiraManager(self._cs)
@@ -358,7 +358,7 @@ class TestReport:
         append new ON_QA bugs
 
         Args:
-            jira_issues ([]): updated jira issues
+            jira_issues (list): updated jira issues
         """
         jm = JiraManager(self._cs)
         # iterate cell value from C8 in colum C, update existing bug status
