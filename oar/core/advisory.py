@@ -31,7 +31,7 @@ class AdvisoryManager:
         Get all advisories
 
         Returns:
-            []Advisory: all advisory wrappers
+             Advisory (list): all advisory wrappers
         """
         ads = []
         for k, v in self._cs.get_advisories().items():
@@ -51,7 +51,7 @@ class AdvisoryManager:
         Get all jira issues from advisories in a release
 
         Returns:
-            []: all jira issues from advisories
+           list: all jira issues from advisories
         """
         all_jira_issues = []
         try:
@@ -71,8 +71,8 @@ class AdvisoryManager:
             AdvisoryException: error when communicate with errata tool
 
         Returns:
-            updated_ads ([]): updated advisory id list
-            abnormal_ads ([]): advisory id list of the ones state are not QE
+            updated_ads (list): updated advisory id list
+            abnormal_ads (list): advisory id list of the ones state are not QE
         """
         updated_ads = []
         abnormal_ads = []
@@ -101,7 +101,7 @@ class AdvisoryManager:
             AdvisoryException: error found when checking CVP test result
 
         Returns:
-            []test: abnormal test list
+            test (list): abnormal test list
         """
         abnormal_tests = []
         valid_status = [CVP_TEST_STATUS_PASSED, CVP_TEST_STATUS_WAIVED]
@@ -199,7 +199,7 @@ class AdvisoryManager:
             AdvisoryException: error when dropping bugs from advisory
 
         Returns:
-            []: bugs cannot be dropped
+            list: bugs cannot be dropped
         """
         jm = JiraManager(self._cs)
         ads = self.get_advisories()
@@ -413,7 +413,7 @@ class Advisory(Erratum):
         Drop bugs from advisory
 
         Args:
-            bugs (str[]): bug list
+            bugs (list): bug list
         """
         self.removeJIRAIssues(bug_list)
         need_refresh = self.commit()

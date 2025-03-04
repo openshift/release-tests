@@ -135,7 +135,7 @@ class JiraManager:
             partent_key (str): parent issue key
 
         Returns:
-            []JiraIssue: jira subtask list
+            JiraIssue (list): jira subtask list
         """
         subtasks = []
         if not parent_key:
@@ -161,7 +161,7 @@ class JiraManager:
         Change assignee of all QE subtasks from ART ticket
 
         Returns:
-            updated_tasks([]): jira keys of updated subtasks
+            updated_tasks(list): jira keys of updated subtasks
         """
         updated_tasks = []
         subtasks = self.get_sub_tasks(self._cs.get_jira_ticket())
