@@ -773,18 +773,22 @@ class Advisory(Erratum):
             return False
         #Get rhcos nvr from image advisory build
         build_response = self._get(f"/api/v1/erratum/{self.errata_id}/builds")
-        rhos_nvr = None
+        rhcos_nvr = None
         for value in build_response.values():
             for build in value['builds']:
                 for build_name in build.keys():
                     if build_name.startswith("rhcos-x86"):
-                        rhos_nvr = build_name
+                        rhcos_nvr = build_name
                         break
-        logger.info(f"RHCOS nvr is {rhos_nvr}")
+        logger.info(f"RHCOS nvr is {rhcos_nvr}")
+        # if there is no rhcos build found, skip checking
+        if rhcos_nvr is None:
+            logger.warning("No RHCOS nvr found, skip kernel tag checking")
+            return False
         #Download the commit metadata based on info in nvr.
-        rhos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhos_nvr)
-        rhos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhos_nvr_url+"/metadata.json"
-        rhos_meta_data_full = self._get(rhos_nvr_url_full)
+        rhcos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhcos_nvr)
+        rhcos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhcos_nvr_url+"/metadata.json"
+        rhos_meta_data_full = self._get(rhcos_nvr_url_full)
         kernel_build = [
             f"{comp['name']}-{comp['version']}-{comp['release']}"
             for entry in rhos_meta_data_full['output']

@@ -72,3 +72,4 @@ class TestAdvisoryManager(unittest.TestCase):
     def test_kernel_tag(self):
         self.assertTrue(Advisory(errata_id=144853, impetus='image').check_kernel_tag())
         self.assertFalse(Advisory(errata_id=144854, impetus='metadata').check_kernel_tag())
+        self.assertFalse(Advisory(errata_id=146595, impetus='image').check_kernel_tag())
