@@ -32,7 +32,28 @@
         "jobStartTime": "2025-03-05T09:34:36Z",
         "jobID": "2e5d5766-34d7-44bb-8604-de2a65ed366f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1897219194206818304",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-03-05T12:53:13Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 90,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 28
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -42,9 +63,46 @@
         "jobStartTime": "2025-03-05T09:34:41Z",
         "jobID": "930430e7-f6d6-4b1d-ba47-04ff68c71fdc",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1897219204348645376",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-03-05T12:53:41Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 90,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47930-[CSI-Driver] [Snapshot] [Filesystem ext4] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-03-05T13:45:57Z",
+          "jobID": "373e9526-1949-470a-a7b3-3ca40b8b3208",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1897282438149705728",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-03-05T13:46:02Z",
+          "jobID": "c98b4c9e-005f-4ee3-bcf7-851bb0247dfa",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1897282459532267520",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-stable-4.15-upgrade-from-stable-4.14-gcp-ipi-f999",
