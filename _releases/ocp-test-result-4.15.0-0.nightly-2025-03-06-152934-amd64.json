@@ -54,9 +54,46 @@
         "jobStartTime": "2025-03-07T14:23:50Z",
         "jobID": "edaff0b1-2a7d-49db-bbb6-11152f2425a7",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1898016746695036928",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-03-07T17:39:04Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 90,
+            "failures": 6,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP, eBPF and Console metrics: when processor.metrics.TLS == Auto and ebpf.agent.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Critical-72959-Verify flowlogs-pipeline, eBPF and Console metrics [Serial]",
+              "[sig-netobserv] Network_Observability FLP, eBPF and Console metrics: when processor.metrics.TLS == Disabled and agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Critical-72959-Verify flowlogs-pipeline and eBPF metrics and health [Serial]",
+              "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Acceptance testing vector to loki[Slow][Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-03-07T18:30:21Z",
+          "jobID": "fa9a969d-4694-4ae2-b785-1820a2a61030",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-03-07T18:30:26Z",
+          "jobID": "416aaf07-654e-4578-bea7-bce45794224a",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
