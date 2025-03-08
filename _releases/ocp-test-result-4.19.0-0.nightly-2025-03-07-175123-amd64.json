@@ -68,13 +68,65 @@
           "jobStartTime": "2025-03-08T05:32:03Z",
           "jobID": "41e778d2-40a6-48b7-addf-e0e667172998",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1898245307687243776",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-03-08T10:06:47Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-Longduration-NonPreRelease-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2025-03-08T05:32:08Z",
           "jobID": "7a595f62-7a8a-4e12-bf4e-d99f9504b63c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1898245328956559360",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-03-08T10:09:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 31,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -137,5 +189,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-03-07-175123",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-03-07-175123"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
