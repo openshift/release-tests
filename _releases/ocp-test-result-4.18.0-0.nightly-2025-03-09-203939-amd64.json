@@ -99,7 +99,31 @@
           "jobStartTime": "2025-03-10T05:32:26Z",
           "jobID": "f4c5329f-8134-407f-b243-84b97530ff32",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1898970180030042112",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-03-10T09:43:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 99,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -162,5 +186,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2025-03-09-203939",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2025-03-09-203939"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
