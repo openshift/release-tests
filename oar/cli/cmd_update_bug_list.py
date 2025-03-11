@@ -20,6 +20,8 @@ def update_bug_list(ctx, notify, confirm_droppable):
     """
     Update bug status listed in report, update existing bug status and append new ON_QA bug
     """
+    if not notify and confirm_droppable:
+        raise click.UsageError("Error: --no-notify and --confirm-droppable cannot be used together")
     # get config store from context
     cs = ctx.obj["cs"]
     try:
