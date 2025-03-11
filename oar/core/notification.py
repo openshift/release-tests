@@ -514,10 +514,10 @@ class MessageHelper:
             str: slack message
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact_by_id("art")
+            self.cs.get_slack_user_group_from_contact_by_id("ert")
         )
 
-        message = f"Hello {gid}, Found unhealthy advisories, could you please take a look, thanks\n"
+        message = f"Hello {gid}, Found unhealthy advisories, please check if this is a known issue before ping artist in channel #forum-ocp-release, thanks\n"
 
         for ua in unhealthy_advisories:
             message += f"Advisory {util.get_advisory_link(ua['errata_id'])} has grade {ua['ad_grade']} with unhealthy builds:\n"
