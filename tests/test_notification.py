@@ -5,6 +5,7 @@ from oar.core.notification import NotificationManager
 from oar.core.configstore import ConfigStore
 from oar.core.worksheet import WorksheetManager
 from oar.core.worksheet import TestReport
+import oar.core.util as util
 
 logging.basicConfig(
     level=logging.DEBUG,  # Set the minimum log level to DEBUG
@@ -58,3 +59,11 @@ class TestNotificationManager(unittest.TestCase):
         wm = WorksheetManager(cs)
         nm = NotificationManager(cs)
         nm.share_new_report(wm.get_test_report())
+
+    def test_get_qe_release_slack(self):
+        gid = self.nm.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+        self.assertTrue(gid.startswith("<!subteam"))
