@@ -150,7 +150,7 @@ class NotificationManager:
                 unhealthy_advisories)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                    self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
