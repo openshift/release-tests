@@ -514,7 +514,9 @@ class MessageHelper:
             str: slack message
         """
         gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact_by_id("ert")
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
         )
 
         message = f"Hello {gid}, Found unhealthy advisories, please check if this is a known issue before ping artist in channel #forum-ocp-release, thanks\n"
