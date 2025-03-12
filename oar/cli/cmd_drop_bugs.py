@@ -26,16 +26,16 @@ def drop_bugs(ctx):
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
         # check doc and product security approval advisories
         approved_doc_ads, approved_prodsec_ads = am.get_doc_prodsec_approved_ads()
-        dropped_bugs, must_verify_bugs = am.drop_bugs()
+        dropped_bugs, high_severity_bugs = am.drop_bugs()
         # check if all bugs are verified
         nm = NotificationManager(cs)
         requested_doc_ads = []
         requested_prodsec_ads = []
-        if len(dropped_bugs) or len(must_verify_bugs):
+        if len(dropped_bugs) or len(high_severity_bugs):
             logger.info("updating test report")
             report.update_bug_list(am.get_jira_issues())
-            NotificationManager(cs).share_dropped_and_must_verify_bugs(
-                dropped_bugs, must_verify_bugs
+            NotificationManager(cs).share_dropped_and_high_severity_bugs(
+                dropped_bugs, high_severity_bugs
             )
             if len(approved_doc_ads):
                 for ad in approved_doc_ads:

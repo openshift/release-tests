@@ -114,6 +114,28 @@ class NotificationManager:
             raise NotificationException(
                 "share bugs to be verified failed") from e
 
+    def share_high_severity_bugs(self, jira_issues):
+        """
+        Send Slack message to all high severity issue QA Contacts, ask them to confirm dropping them from the release
+
+        Args:
+            jira_issues (list): high severity jira issue list
+
+        Raises:
+            NotificationException: error when share this info
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_high_severity_bugs(
+                jira_issues)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact(
+                        "qe-forum"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share high severity bugs failed") from e
+
     def share_new_cve_tracker_bugs(self, cve_tracker_bugs):
         """
         Send slack message to ART team with new CVE tracker bugs
@@ -156,20 +178,20 @@ class NotificationManager:
             raise NotificationException(
                 "share unhealthy advisories failed") from e
 
-    def share_dropped_and_must_verify_bugs(self, dropped_bugs, must_verify_bugs):
+    def share_dropped_and_high_severity_bugs(self, dropped_bugs, high_severity_bugs):
         """
-        Send slack message to QE release lead with dropped and must verified bugs
+        Send Slack message to QE release lead with dropped and high severity bugs
 
         Args:
-            dropped_bugs (list): list of dropped bugs
-            must_verified_bugs (list): list of must verify bugs, could be [Critical/Blocker/Customer Case]
+            dropped_bugs (list[str]): list of dropped bugs
+            high_severity_bugs (list[str]): list of high severity bugs, could be [Critical/Blocker/Customer Case/CVE]
 
         Raises:
             NotificationException: error when sending message
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_dropped_and_must_verify_bugs(
-                dropped_bugs, must_verify_bugs
+            slack_msg = self.mh.get_slack_message_for_dropped_and_high_severity_bugs(
+                dropped_bugs, high_severity_bugs
             )
             if len(slack_msg):
                 self.sc.post_message(
@@ -178,7 +200,7 @@ class NotificationManager:
                 )
         except Exception as e:
             raise NotificationException(
-                "share dropped and must verified bugs failed"
+                "share dropped and high severity bugs failed"
             ) from e
 
     def share_doc_prodsec_approval_result(self, doc_appr, prodsec_appr):
@@ -444,22 +466,49 @@ class MessageHelper:
             jira_issues (list): jira issue list
 
         Returns:
-            str: slack message
+            str: Slack message
+        """
+        message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
+        return self.__get_slack_message_for_jira_issues(jira_issues, message)
+
+    def get_slack_message_for_high_severity_bugs(self, jira_issues):
+        """
+        Get Slack message for high severity bug verification
+
+        Args:
+            jira_issues (list): high severity jira issue list
+
+        Returns:
+            str: Slack message
+        """
+        message = "The following bugs should be verified in this release. Please confirm whether they can be dropped or if you will verify them soon. Note that CVE issues still require verification. Thank you for your cooperation"
+        return self.__get_slack_message_for_jira_issues(jira_issues, message)
+
+    def __get_slack_message_for_jira_issues(self, jira_issues, message):
+        """
+        Get Slack message for given jira issues and message
+
+        Args:
+            jira_issues (list): jira issue list
+            message (str): message to be included alongside the jira list
+
+        Returns:
+            str: Slack message
         """
         has_onqa_issue = False
-        message = f"[{self.cs.release}] Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for the cooperation\n"
+        slack_message = f"[{self.cs.release}] {message}\n"
         for key in jira_issues:
             issue = self.jm.get_issue(key)
             if issue.is_on_qa():
-                message += (
-                    self._to_link(util.get_jira_link(key), key)
-                    + " "
-                    + self.sc.get_user_id_by_email(issue.get_qa_contact())
-                    + "\n"
+                slack_message += (
+                        self._to_link(util.get_jira_link(key), key)
+                        + " "
+                        + self.sc.get_user_id_by_email(issue.get_qa_contact())
+                        + "\n"
                 )
                 has_onqa_issue = True
 
-        return message if has_onqa_issue else ""
+        return slack_message if has_onqa_issue else ""
 
     def get_slack_message_for_abnormal_advisory(self, abnormal_ads):
         """
@@ -528,18 +577,18 @@ class MessageHelper:
 
         return message
 
-    def get_slack_message_for_dropped_and_must_verify_bugs(
-        self, dropped_bugs, must_verify_bugs
+    def get_slack_message_for_dropped_and_high_severity_bugs(
+        self, dropped_bugs, high_severity_bugs
     ):
         """
-        manipulate slack message for dropped bugs and must verify bugs
+        Get Slack message for dropped bugs and high severity bugs
 
         Args:
-            dropped_bugs (list): list of dropped bugs
-            must_verify_bugs (list): list of must verify bugs
+            dropped_bugs (list[str]): list of dropped bugs
+            high_severity_bugs (list[str]): list of high severity bugs
 
         Returns:
-            str: slack message
+            str: Slack message
         """
         gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact(
@@ -553,10 +602,10 @@ class MessageHelper:
             for bug in dropped_bugs:
                 message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
-        if len(must_verify_bugs):
+        if len(high_severity_bugs):
             message += "\n" if len(message) else ""
-            message += f"[{self.cs.release}] Hello {gid}, following bugs are Critical/CVE Tracker/Customer Case, must be verified, if any of them can be dropped, do it manually, thanks\n"
-            for bug in must_verify_bugs:
+            message += f"[{self.cs.release}] Hello {gid}, following bugs are Critical/Blocker/Customer Case/CVE Tracker, if any of them can be dropped, do it manually. CVE can not be dropped. Thanks\n"
+            for bug in high_severity_bugs:
                 message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
         return message
