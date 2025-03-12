@@ -304,7 +304,7 @@ class ConfigStore:
         we should get advisories from parent assembly i.e. 4.14.0
 
         Args:
-            keypath (_str_): attribute key path e.g. group/advisories!
+            keypath (str): attribute key path e.g. group/advisories!
         """
         attr_val = None
         basis = self._assembly["basis"]
@@ -327,8 +327,8 @@ class ConfigStore:
         e.g. releases/4.14.1/assembly
 
         Args:
-            json (_dict_): json object
-            path (_str_): attribute path based on current json object
+            json (dict): json object
+            path (str): attribute path based on current json object
         """
         tmp = json
         if tmp:

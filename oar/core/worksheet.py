@@ -266,7 +266,7 @@ class TestReport:
 
     def is_task_pass(self, label):
         """
-        Util func to check whether task is pass
+        Util func to check whether task status is 'Pass'
 
         Args:
             label (str): cell label of different tasks
@@ -275,7 +275,7 @@ class TestReport:
 
     def is_task_fail(self, label):
         """
-        Util func to check whether task is fail
+        Util func to check whether task status is 'Fail'
 
         Args:
             label (str): cell label of different tasks
@@ -309,12 +309,12 @@ class TestReport:
         """
         return OVERALL_STATUS_RED == self.get_overall_status()
 
-    def generate_bug_list(self, jira_issues: list):
+    def generate_bug_list(self, jira_issues: list[str]):
         """
         Generate bug list of on_qa bugs
 
         Args:
-            jira_issues (list): jira issue keys from advisories
+            jira_issues (list[str]): jira issue keys from advisories
         """
         logger.info("waiting for the bugs to be verified to update in sheet")
         jm = JiraManager(self._cs)
@@ -354,8 +354,8 @@ class TestReport:
 
     def update_bug_list(self, jira_issues: list):
         """
-        update existing bug status in report
-        append new ON_QA bugs
+        Update existing bug status in report
+        Append new ON_QA bugs
 
         Args:
             jira_issues (list): updated jira issues
@@ -468,7 +468,7 @@ class TestReport:
 
     def append_missed_cve_tracker_bugs(self, cve_tracker_bugs):
         """
-        Append missed cve tracker bugs
+        Append missed CVE tracker bugs
         """
         if len(cve_tracker_bugs) == 0:
             logger.warning("no cve bugs found, won't update report")
