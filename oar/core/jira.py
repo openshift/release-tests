@@ -251,7 +251,13 @@ class JiraIssue:
         Get issue field `QA Contact`
         """
         field = self._issue.fields.customfield_12315948
-        return field.emailAddress if field else "Unknown"
+        if field:
+            return field.emailAddress
+        else:
+            logger.warning(
+                f"jira issue {self.get_key()} does not have assigned QA contact, please contact responsible team to find it"
+            )
+            return "Unknown"
 
     def get_status(self):
         """

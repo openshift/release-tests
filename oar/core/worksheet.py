@@ -366,6 +366,7 @@ class TestReport:
         row_idx = 8
         while True:
             bug_key = self._ws.acell("C" + str(row_idx)).value
+            bug_qa_contact = self._ws.acell("D" + str(row_idx)).value
             bug_status = self._ws.acell("E" + str(row_idx)).value
             # if bug_key is empty exit the loop. i.e. at the end of bug list
             if not bug_key:
@@ -373,6 +374,13 @@ class TestReport:
             logger.info(f"found existing bug {bug_key} in report, checking...")
             try:
                 issue = jm.get_issue(bug_key)
+                # check QA contact of bug and update if needed
+                if bug_qa_contact != issue.get_qa_contact():
+                    self._ws.update_acell(
+                        "D" + str(row_idx), issue.get_qa_contact())
+                    logger.info(
+                        f"QA contact of bug {issue.get_key()} is updated to {issue.get_qa_contact()}"
+                    )
                 # check bug status is updated or not. if yes, update it accordingly
                 if bug_status != issue.get_status():
                     self._ws.update_acell(
