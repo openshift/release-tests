@@ -31,7 +31,7 @@ class AdvisoryManager:
         Get all advisories
 
         Returns:
-             Advisory (list): all advisory wrappers
+            list[Advisory]: all advisory wrappers
         """
         ads = []
         for k, v in self._cs.get_advisories().items():
@@ -169,13 +169,11 @@ class AdvisoryManager:
         Change advisories status, e.g. REL_PREP
 
         Args:
-            status (str, optional): status used to update. Defaults to REL_PREP.
+            target_status (str, optional): status used to update. Defaults to REL_PREP.
 
         Raises:
             AdvisoryException: error when update advisory status
 
-        Returns:
-            _type_: _description_
         """
         try:
             ads = self.get_advisories()

@@ -135,7 +135,7 @@ class JiraManager:
             partent_key (str): parent issue key
 
         Returns:
-            JiraIssue (list): jira subtask list
+            list[JiraIssue]: jira subtask list
         """
         subtasks = []
         if not parent_key:
