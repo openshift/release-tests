@@ -37,9 +37,44 @@
         "jobStartTime": "2025-03-19T12:32:07Z",
         "jobID": "9e054980-8084-48ed-a395-ad19bff01797",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1902337288709345280",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-03-19T15:47:21Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation "
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-03-19T17:31:24Z",
+          "jobID": "15391717-978b-4758-9af7-06d2a655d26c",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-03-19T17:31:30Z",
+          "jobID": "51263374-116f-493d-8f91-4903eb47952f",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
