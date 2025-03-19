@@ -45,13 +45,58 @@
           "jobStartTime": "2025-03-19T12:37:52Z",
           "jobID": "7d1d5d72-a6b1-4121-8846-0e20b30fda5e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1902338734725009408",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-03-19T15:37:15Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-cluster-lifecycle] Cluster_Infrastructure CCM Author:zhsun-LEVEL0-Critical-70627-Service of type LoadBalancer can be created successful"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-03-19T12:37:57Z",
           "jobID": "8aba2eb7-6e64-4d0f-81ed-3947c1a3871d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1902338755923021824",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-03-19T15:42:20Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -114,5 +159,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-03-19-011606",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-03-19-011606"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
