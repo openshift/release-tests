@@ -31,7 +31,7 @@ class AdvisoryManager:
         Get all advisories
 
         Returns:
-             Advisory (list): all advisory wrappers
+            list[Advisory]: all advisory wrappers
         """
         ads = []
         for k, v in self._cs.get_advisories().items():
@@ -169,13 +169,10 @@ class AdvisoryManager:
         Change advisories status, e.g. REL_PREP
 
         Args:
-            status (str, optional): status used to update. Defaults to REL_PREP.
+            target_status (str, optional): status used to update. Defaults to REL_PREP.
 
         Raises:
             AdvisoryException: error when update advisory status
-
-        Returns:
-            _type_: _description_
         """
         try:
             ads = self.get_advisories()
@@ -237,7 +234,7 @@ class AdvisoryManager:
             AdvisoryException: error when invoke elliott cmd
 
         Returns:
-            json: missed CVE tracker bugs
+            list: CVE tracker bugs not found in RHSA advisories
         """
         cmd = [
             "elliott",
@@ -287,7 +284,7 @@ class AdvisoryManager:
 
     def get_doc_prodsec_approved_ads(self):
         """
-        get Docs and product security approved advisories
+        Get Docs and product security approved advisories
         """
         try:
             approved_doc_ads = []
@@ -393,12 +390,12 @@ class Advisory(Erratum):
         logger.info(
             f"advisory {self.errata_id} state is updated to {state.upper()}")
 
-    def remove_bugs(self, bug_list: list):
+    def remove_bugs(self, bug_list: list[str]):
         """
         Drop bugs from advisory
 
         Args:
-            bugs (list): bug list
+            bug_list (list[str]): bug list
         """
         self.removeJIRAIssues(bug_list)
         need_refresh = self.commit()
@@ -545,6 +542,7 @@ class Advisory(Erratum):
     def is_doc_approved(self):
         """
         Check if doc is approved for an advisory
+
         Returns:
             bool: True if doc for an advisory is approved, otherwise False
         """
@@ -553,6 +551,7 @@ class Advisory(Erratum):
     def is_prodsec_approved(self):
         """
         Check if prodsec is approved for an advisory
+
         Returns:
             bool: True if prodsec is approved, otherwise False
         """
@@ -561,6 +560,7 @@ class Advisory(Erratum):
     def is_doc_requested(self):
         """
         Check if doc for an advisory is requested
+
         Returns:
             bool: True if doc for an advisory is requested, otherwise False
         """
@@ -569,14 +569,15 @@ class Advisory(Erratum):
     def is_prodsec_requested(self):
         """
         Check if prodsec for an advisory is requested
+
         Returns:
-        bool: False if prodsec for an advisory is requested, otherwise False
+            bool: False if prodsec for an advisory is requested, otherwise False
         """
         return self.get_erratum_data()["security_approved"] == False
 
     def request_doc_approval(self):
         """
-        send doc approval request for an advisory
+        Send doc approval request for an advisory
         """
         pdata = {"advisory[text_ready]": 1}
         url = "/api/v1/erratum/%i" % self.errata_id
@@ -585,7 +586,7 @@ class Advisory(Erratum):
 
     def request_prodsec_approval(self):
         """
-        send product security approval request for an advisory
+        Send product security approval request for an advisory
         """
         pdata = {"advisory[security_approved]": False}
         url = "/api/v1/erratum/%i" % self.errata_id

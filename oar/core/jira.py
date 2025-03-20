@@ -132,10 +132,10 @@ class JiraManager:
         Get jira subtasks by parent key
 
         Args:
-            partent_key (str): parent issue key
+            parent_key (str): parent issue key
 
         Returns:
-            JiraIssue (list): jira subtask list
+            list[JiraIssue]: jira subtask list
         """
         subtasks = []
         if not parent_key:
@@ -194,6 +194,7 @@ class JiraManager:
         Add comment for jira issue
 
         Args:
+            key (str): jira issue key
             comment (str): description
         """
         if key and comment:
@@ -387,7 +388,7 @@ class JiraIssue:
 
     def is_qe_subtask(self):
         """
-        check whether the issue is QE subtask.
+        Check whether the issue is QE subtask.
         """
         return self.get_summary() in JIRA_QE_TASK_SUMMARIES
 
