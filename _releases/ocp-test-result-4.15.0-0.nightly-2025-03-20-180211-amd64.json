@@ -37,9 +37,47 @@
         "jobStartTime": "2025-03-21T01:59:22Z",
         "jobID": "4b7b2e8a-36da-46a3-ae17-dc634cd337fb",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1902902825197768704",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-03-21T05:02:02Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges",
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-64296-disable CORS headers on Thanos querier [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-03-21T05:29:04Z",
+          "jobID": "c881fecc-c4e4-45c9-a81d-e3e55a05e415",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1902955596945035264",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-03-21T05:29:09Z",
+          "jobID": "c545c3ec-5b26-4539-83dc-0dc4c85277e6",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1902955618239516672",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
@@ -47,7 +85,28 @@
         "jobStartTime": "2025-03-21T01:59:27Z",
         "jobID": "af6a84e8-3b10-4c88-956d-240d50f396e8",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1902902846341255168",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-03-21T04:46:23Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 25
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
