@@ -31,9 +31,42 @@
         "jobStartTime": "2025-03-26T08:02:14Z",
         "jobID": "75ea0945-5b7e-48df-8a80-2b96dc082c93",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1904806093217861632",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-03-26T11:10:26Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 71,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-operators] OLM should Author:jiazha-LEVEL0-Critical-72192-OLM is not correctly refreshing operator catalogs due to IfNotPresent imagePullPolicy",
+              "[sig-storage] STORAGE ARO-Author:wduan-LEVEL0-High-50918-[Azure-File-CSI-Driver] support nfs file share protocol",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-03-26T11:35:39Z",
+          "jobID": "74a93b42-b5bc-4355-bd0a-45aa5b24ed11",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1904859791587545088",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-03-26T11:35:44Z",
+          "jobID": "05b4edff-3564-4737-a608-8f09541209bb",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1904859813175627776",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999",
