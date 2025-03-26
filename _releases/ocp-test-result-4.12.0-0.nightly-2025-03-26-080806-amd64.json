@@ -64,7 +64,33 @@
           "jobStartTime": "2025-03-26T16:00:33Z",
           "jobID": "c2a03c23-6453-4713-82a9-979293391238",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-mini-perm-custom-type-f999/1904929445978836992",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-03-26T20:37:48Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 10,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-StagerunBoth-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-check the gracePeriod is configurable [Serial]",
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-High-54043-High-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-High-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+                "[sig-networking] SDN metallb Author:asood-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation",
+                "[sig-networking] SDN nmstate-operator installation LEVEL0-NonHyperShiftHOST-StagerunBoth-Author:qiowang-Critical-47088-NMState Operator installation ",
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-Critical-55957-Sriov operator can be setup ",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46358-[CSI Driver] [CSI Clone] Clone a pvc with filesystem VolumeMode"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-03-26T16:00:38Z",
@@ -127,5 +153,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2025-03-26-080806",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2025-03-26-080806"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
