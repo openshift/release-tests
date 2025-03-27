@@ -333,7 +333,24 @@ class AdvisoryManager:
                     f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
 
         return unhealthy_advisories
+    
+    def has_finished_all_advisories_jiras(self):
+        """
+        Check all advisories jiras are finished (Closed, Verified or Release Pending) or they are dropped from advisories.
 
+        Returns:
+            bool: True if all advisories jiras are finished, False otherwise
+        """
+        jm = JiraManager(self._cs)
+        has_finished_all_advisories_jiras = True
+
+        for ad in self.get_advisories():
+            for jira_key in ad.jira_issues:
+                if not jm.get_issue(jira_key).is_finished():
+                    logger.warning(f"Advisory {ad.errata_id} has unfinished jira {jira_key}")
+                    has_finished_all_advisories_jiras = False
+
+        return has_finished_all_advisories_jiras
 
 class Advisory(Erratum):
     """

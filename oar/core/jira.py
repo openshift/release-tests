@@ -358,7 +358,25 @@ class JiraIssue:
                 break
 
         return summary.startswith("CVE") or label_check
+    
+    def is_finished(self):
+        """
+        Bug status is `Verified`, `Closed` or `Release Pending`
 
+        Returns:
+            bool: is verified, closed or release pending
+        """
+        return self.is_verified() or self.is_closed() or self.is_release_pending()
+    
+    def is_release_pending(self):
+        """
+        Bug status is `Release Pending`
+
+        Returns:
+            bool: is release pending or not
+        """
+        return self.get_status() == JIRA_STATUS_RELEASE_PENDING
+    
     def is_verified(self):
         """
         Bug status is `Verified`
