@@ -73,3 +73,7 @@ class TestAdvisoryManager(unittest.TestCase):
         self.assertTrue(Advisory(errata_id=144853, impetus='image').check_kernel_tag())
         self.assertFalse(Advisory(errata_id=144854, impetus='metadata').check_kernel_tag())
         self.assertFalse(Advisory(errata_id=146595, impetus='image').check_kernel_tag())
+    
+    def test_finished_jiras(self):
+        self.assertTrue(self.am.has_finished_all_advisories_jiras())
+

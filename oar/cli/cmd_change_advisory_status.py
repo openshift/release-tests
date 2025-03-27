@@ -31,6 +31,9 @@ def change_advisory_status(ctx, status):
         am = AdvisoryManager(cs)
         # update task status to in progress
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_INPROGRESS)
+        # check all advisory issues are finished or dropped before moving the status
+        if not am.has_finished_all_advisories_jiras():
+            raise AdvisoryException(f"there are unfinished jiras in advisories, please check or drop them manually before moving the status")
         # check kernel tag before change advisories' status
         ads = am.get_advisories()
         for ad in ads:
