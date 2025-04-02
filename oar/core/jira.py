@@ -1,5 +1,8 @@
 import logging
+import os
 import time
+from collections import defaultdict
+
 from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JiraException
 from oar.core.exceptions import JiraUnauthorizedException
@@ -78,12 +81,13 @@ class JiraManager:
         Returns:
             JiraIssue: JiraIssue
         """
-
+        logger.info("Creating jira issue...")
         try:
             issue = self._svc.create_issue(fields=issue_dict)
         except JIRAError as je:
             raise JiraException("create jira issue failed") from je
 
+        logger.info(f"Created jira issue {issue.key}")
         return JiraIssue(issue)
 
     def transition_issue(self, key, status):
@@ -232,6 +236,65 @@ class JiraManager:
 
         return high_severity_issues, can_drop_issues
 
+    def create_cvp_issue(self, abnormal_tests):
+        """
+        Create CVP issue with abnormal test details
+
+        Args:
+            abnormal_tests: details to be included in issue description
+
+        Returns:
+             JiraIssue: created issue
+        """
+        issue = self.create_issue(
+            project = "CVP",
+            summary = self.prepare_cvp_issue_summary(),
+            description = self._prepare_greenwave_cvp_jira_description(abnormal_tests),
+            issuetype = {"name": "Bug"},
+            priority = {"name": "Blocker"}
+        )
+
+        return JiraIssue(issue)
+
+    def prepare_cvp_issue_summary(self):
+        """
+        Prepare Greenwave CVP issue summary
+
+        Returns:
+             str: issue summary
+        """
+        return f"[{self._cs.release}] Greenwave CVP test failures in advisories"
+
+    def _prepare_greenwave_cvp_jira_description(self, abnormal_tests: list[dict]):
+        """
+        Prepare Greenwave CVP jira description
+
+        Args:
+            abnormal_tests(list[dict]): abnormal tests to be included in the description
+
+        Returns:
+            str: Greenwave CVP jira description
+        """
+        grouped_nvrs = defaultdict(list)
+        for test in abnormal_tests:
+            errata_id = test["relationships"]["errata"]["id"]
+            test_id = test["id"]
+            nvr = test["relationships"]["brew_build"]["nvr"]
+            grouped_nvrs[errata_id].append({"test_id": test_id, "nvr": nvr})
+
+        cvp_details = []
+        for errata_id, test_details in grouped_nvrs.items():
+            cvp_details.append(f"Failed Nvrs in advisory [{errata_id}|https://errata.devel.redhat.com/advisory/{errata_id}]:")
+            for entry in test_details:
+                test_id = entry['test_id']
+                nvr = entry['nvr']
+                cvp_details.append(f"* {nvr} ([test_run/{test_id}|https://errata.devel.redhat.com/advisory/{errata_id}/test_run/{test_id}])")
+            cvp_details.append("")
+
+        jira_description = f"[{(self._cs.release)}] Greenwave CVP test failed in the advisories listed below.{os.linesep}{os.linesep}"
+        jira_description += os.linesep.join(cvp_details)
+
+        return jira_description
 
 class JiraIssue:
     """

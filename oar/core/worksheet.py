@@ -1,3 +1,5 @@
+from itertools import chain
+
 import gspread
 import os
 import re
@@ -499,6 +501,58 @@ class TestReport:
         # if cve_tracker_bugs list is not empty, it means a new tracker bug is found
         # we need to send out notification
         return len(cve_tracker_bugs) > 0
+
+    def add_jira_to_others_section(self, jira_key):
+        """
+        Add jira to "others" section
+
+        Find the first available cell starting with H8, and add jira to it. If the cell is not empty, move to the next cell below.
+
+        Args:
+             jira_key(str): jira key to be added
+        """
+        column = "H"
+        row_idx = 8
+        range_values = self._ws.get_values(f"{column}{row_idx}:{column}")
+        issue_keys = list(chain.from_iterable(range_values))
+
+        # Find first empty cell
+        try:
+            row_idx += issue_keys.index("")
+        except ValueError:
+            row_idx += len(issue_keys)
+
+        jira_hyperlink = self._to_hyperlink(
+            util.get_jira_link(jira_key), jira_key)
+        self._ws.update_acell(f"{column}{row_idx}", jira_hyperlink)
+
+    def is_cvp_issue_reported(self):
+        """
+        Identify the presence of CVP issue with specific cvp summary in test report
+
+        Returns:
+             bool: True if CVP issue is reported
+        """
+        jm = JiraManager(self._cs)
+        for key in self._get_cvp_issues_from_others_section():
+            jira_issue = jm.get_issue(key)
+            if jira_issue.get_summary() == jm.prepare_cvp_issue_summary():
+                return True
+        return False
+
+    def _get_cvp_issues_from_others_section(self):
+        """
+        Get CVP issue keys from "others" section in H column in work sheet
+
+        Returns:
+            list[str]: list of CVP issue keys
+        """
+        column = "H"
+        row_idx = 8
+        range_values = self._ws.get_values(f"{column}{row_idx}:{column}")
+        issue_keys = list(chain.from_iterable(range_values))
+        cvp_issues = [key for key in issue_keys if key.startswith("CVP")]
+        return cvp_issues
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'

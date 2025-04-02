@@ -234,6 +234,21 @@ class NotificationManager:
             raise NotificationException(
                 "share jenkins build url failed") from e
 
+    def share_greenwave_cvp_failures(self, jira_key):
+        """
+        Share greenwave cvp failures
+
+        Args:
+            jira_key(str): jira to be shared
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_failed_cvp(jira_key)
+            self.sc.post_message(self.cs.get_slack_channel_from_contact(
+                "qe-release"), slack_msg)
+        except Exception as e:
+            raise NotificationException(
+                "share greenwave cvp failures failed") from e
+
 
 class MailClient:
     """
@@ -663,6 +678,24 @@ class MessageHelper:
             message += f"[{self.cs.release}] Hello {gid}, triggered jenkins build for job [{job_name}], url is {build_info}"
         else:
             message += f"[{self.cs.release}] Hello {gid}, {build_info}"
+
+        return message
+
+    def get_slack_message_for_failed_cvp(self, jira_key):
+        """
+        Get Slack message for failed Greenwave CVP tests
+
+        Args:
+         jira_key(str): jira to be added as part of the message
+
+        Returns: Slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+        message = f"[{self.cs.release}] Hello {gid}, there are Greenwave CVP failures in advisories. Please contact CVP team. Use the following jira for reference: {util.get_jira_link(jira_key)}."
 
         return message
 
