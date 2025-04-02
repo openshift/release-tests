@@ -6,9 +6,49 @@
         "jobStartTime": "2025-04-02T11:26:58Z",
         "jobID": "eadbf416-f93a-4e05-91d4-d3d4d194d8b8",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1907394319715667968",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-04-02T14:35:19Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 99,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 20,
+            "failingScenarios": [
+              "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-04-02T14:36:44Z",
+          "jobID": "e8baa541-a61f-486f-a27a-235dee0ca0af",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1907442075817742336",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-04-02T14:36:49Z",
+          "jobID": "76f7dab4-c300-4ef8-ba33-d9d1e9ff081b",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1907442097007366144",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999",
