@@ -11,6 +11,8 @@ from jira import JIRA
 from jira import Issue
 from jira.exceptions import JIRAError
 
+from oar.core.util import get_advisory_link
+
 logger = logging.getLogger(__name__)
 
 
@@ -284,11 +286,11 @@ class JiraManager:
 
         cvp_details = []
         for errata_id, test_details in grouped_nvrs.items():
-            cvp_details.append(f"Failed Nvrs in advisory [{errata_id}|https://errata.devel.redhat.com/advisory/{errata_id}]:")
+            cvp_details.append(f"Failed Nvrs in advisory [{errata_id}|{get_advisory_link(errata_id)}]:")
             for entry in test_details:
                 test_id = entry['test_id']
                 nvr = entry['nvr']
-                cvp_details.append(f"* {nvr} ([test_run/{test_id}|https://errata.devel.redhat.com/advisory/{errata_id}/test_run/{test_id}])")
+                cvp_details.append(f"* {nvr} ([test_run/{test_id}|{get_advisory_link(errata_id)}/test_run/{test_id}])")
             cvp_details.append("")
 
         jira_description = f"[{(self._cs.release)}] Greenwave CVP test failed in the advisories listed below.{os.linesep}{os.linesep}"
