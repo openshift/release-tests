@@ -506,25 +506,23 @@ class TestReport:
         """
         Add jira to "others" section
 
-        Find the first available cell starting with H8, and add jira to it. If the cell is not empty, move to the next cell below.
+        Find the first available cell in section, and add jira to it.
 
         Args:
              jira_key(str): jira key to be added
         """
-        column = "H"
-        row_idx = 8
-        range_values = self._ws.get_values(f"{column}{row_idx}:{column}")
-        issue_keys = list(chain.from_iterable(range_values))
+        issue_keys = self._get_issues_from_others_section()
 
+        row_idx = LABEL_ISSUES_OTHERS_ROW
         # Find first empty cell
-        try:
+        if "" in issue_keys:
             row_idx += issue_keys.index("")
-        except ValueError:
+        else:
             row_idx += len(issue_keys)
 
         jira_hyperlink = self._to_hyperlink(
             util.get_jira_link(jira_key), jira_key)
-        self._ws.update_acell(f"{column}{row_idx}", jira_hyperlink)
+        self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", jira_hyperlink)
 
     def is_cvp_issue_reported(self):
         """
@@ -542,17 +540,24 @@ class TestReport:
 
     def _get_cvp_issues_from_others_section(self):
         """
-        Get CVP issue keys from "others" section in H column in work sheet
+        Get CVP issue keys from "others" section in work sheet
 
         Returns:
             list[str]: list of CVP issue keys
         """
-        column = "H"
-        row_idx = 8
-        range_values = self._ws.get_values(f"{column}{row_idx}:{column}")
-        issue_keys = list(chain.from_iterable(range_values))
+        issue_keys = self._get_issues_from_others_section()
         cvp_issues = [key for key in issue_keys if key.startswith("CVP")]
         return cvp_issues
+
+    def _get_issues_from_others_section(self):
+        """
+        Get issue keys from "others" section in work sheet
+
+        Returns:
+            list[str]: list of issue keys
+        """
+        range_values = self._ws.get_values(f"{LABEL_ISSUES_OTHERS_COLUMN}{LABEL_ISSUES_OTHERS_ROW}:{LABEL_ISSUES_OTHERS_COLUMN}")
+        return list(chain.from_iterable(range_values))
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
