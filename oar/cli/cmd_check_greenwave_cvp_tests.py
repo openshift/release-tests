@@ -35,9 +35,10 @@ def check_greenwave_cvp_tests(ctx):
             if not report.is_cvp_issue_reported():
                 issue = JiraManager(cs).create_cvp_issue(abnormal_tests)
                 # Update test report
-                report.add_jira_to_others_section(issue.get_key())
+                issue_key = issue.get_key()
+                report.add_jira_to_others_section(issue_key)
                 # Send Slack notification
-                NotificationManager(cs).share_greenwave_cvp_failures(issue.get_key())
+                NotificationManager(cs).share_greenwave_cvp_failures(issue_key)
         else:
             report.update_task_status(LABEL_TASK_GREENWAVE_CVP_TEST, TASK_STATUS_PASS)
     except Exception as e:

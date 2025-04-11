@@ -1,3 +1,4 @@
+import time
 from itertools import chain
 
 import gspread
@@ -502,7 +503,7 @@ class TestReport:
         # we need to send out notification
         return len(cve_tracker_bugs) > 0
 
-    def add_jira_to_others_section(self, jira_key):
+    def add_jira_to_others_section(self, jira_key, max_retries = 3, delay = 2):
         """
         Add jira to "others" section
 
@@ -510,6 +511,8 @@ class TestReport:
 
         Args:
              jira_key(str): jira key to be added
+             max_retries: optional maximum number of attempts, default value is 3
+             delay: optional delay between worksheet calls, default value is 2
         """
         issue_keys = self._get_issues_from_others_section()
 
@@ -522,7 +525,18 @@ class TestReport:
 
         jira_hyperlink = self._to_hyperlink(
             util.get_jira_link(jira_key), jira_key)
-        self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", jira_hyperlink)
+
+        for attempt in range(1, max_retries + 1):
+            try:
+                self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", jira_hyperlink)
+                logger.info(f"Jira {jira_key} was added to test report")
+                break
+            except Exception as e:
+                logger.warning(f"Adding jira {jira_key} to test report failed on attempt: {attempt}")
+                if attempt < max_retries:
+                    time.sleep(delay)
+                else:
+                    logger.error(f"Adding jira {jira_key} to test report failed after all retries: {e}")
 
     def is_cvp_issue_reported(self):
         """
