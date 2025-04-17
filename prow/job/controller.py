@@ -538,7 +538,7 @@ class ProwJobResult():
         return self
 
     def _get_test_result_summary(self):
-        if self.is_completed() and not self.test_result_summary:
+        if self.is_completed() and self.job_url and not self.test_result_summary:
             url_split = self.job_url.split("/")
             job_name = url_split[-2]
             job_run_id = url_split[-1]
