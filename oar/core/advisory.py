@@ -748,7 +748,7 @@ class Advisory(Erratum):
         Retruns:
             str: Overall grade of advisory.
         """
-        container_url = "https://errata.devel.redhat.com/errata/container/%i" % self.errata_id
+        container_url = f"{util.get_advisory_domain_url()}/errata/container/{self.errata_id}"
         resp = self._get(container_url, raw=True)
 
         if resp.ok:

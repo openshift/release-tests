@@ -7,6 +7,7 @@ from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JiraException
 from oar.core.jira import Issue, JIRA, JiraManager
 from oar.core.const import *
+from oar.core.util import get_advisory_link
 
 
 class TestJiraManager(unittest.TestCase):
@@ -237,3 +238,43 @@ class TestJiraManager(unittest.TestCase):
         mock_issue.fields = mock_field
 
         return mock_issue
+
+    def test__prepare_greenwave_cvp_jira_description(self):
+        test_data = [
+            {"nvr_id": 200, "errata_id": 100, "nvr": "nvrB"},
+            {"nvr_id": 201, "errata_id": 100, "nvr": "nvrC"},
+            {"nvr_id": 202, "errata_id": 102, "nvr": "nvrD"},
+            {"nvr_id": 203, "errata_id": 103, "nvr": "nvrE"}
+        ]
+
+        abnormal_tests = []
+        for data in test_data:
+            abnormal_tests.append(
+                {
+                    "id": data["nvr_id"],
+                    "relationships": {
+                        "errata": {
+                            "id": data["errata_id"]
+                        },
+                        "brew_build": {
+                            "nvr": data["nvr"]
+                        }
+                    }
+                }
+            )
+
+        expected_description = f"""[{self.jm._cs.release}] Greenwave CVP test failed in the advisories listed below.
+
+Failed Nvrs in advisory [{test_data[0]["errata_id"]}|{get_advisory_link(test_data[0]["errata_id"])}]:
+* nvrB ([test_run/{test_data[0]["nvr_id"]}|{get_advisory_link(test_data[0]["errata_id"])}/test_run/{test_data[0]["nvr_id"]}])
+* nvrC ([test_run/{test_data[1]["nvr_id"]}|{get_advisory_link(test_data[1]["errata_id"])}/test_run/{test_data[1]["nvr_id"]}])
+
+Failed Nvrs in advisory [{test_data[2]["errata_id"]}|{get_advisory_link(test_data[2]["errata_id"])}]:
+* nvrD ([test_run/{test_data[2]["nvr_id"]}|{get_advisory_link(test_data[2]["errata_id"])}/test_run/{test_data[2]["nvr_id"]}])
+
+Failed Nvrs in advisory [{test_data[3]["errata_id"]}|{get_advisory_link(test_data[3]["errata_id"])}]:
+* nvrE ([test_run/{test_data[3]["nvr_id"]}|{get_advisory_link(test_data[3]["errata_id"])}/test_run/{test_data[3]["nvr_id"]}])
+"""
+
+        jira_description = self.jm._prepare_greenwave_cvp_jira_description(abnormal_tests)
+        assert jira_description == expected_description

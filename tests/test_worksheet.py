@@ -1,13 +1,20 @@
-import unittest
+from unittest import TestCase
+from unittest.mock import Mock, patch
+
+from gspread import Spreadsheet
+from jira import Issue
+
+from oar.core.jira import JiraManager, JiraIssue
+
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
 from oar.core.advisory import AdvisoryManager
-from oar.core.worksheet import TestReport
+from oar.core.worksheet import Worksheet
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
 
 
-class TestWorksheetManager(unittest.TestCase):
+class TestWorksheetManager(TestCase):
     @classmethod
     def setUpClass(self):
         cs = ConfigStore("4.15.4")
@@ -84,3 +91,49 @@ class TestWorksheetManager(unittest.TestCase):
     def test_create_report_for_candidate_release(self):
         wm = WorksheetManager(ConfigStore("4.18.0-rc.8"))
         wm.create_test_report()
+
+
+class TestTestReport(TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.cs = ConfigStore("4.17.18")
+        self.wm = WorksheetManager(self.cs)
+
+    def test_is_cvp_issue_reported(self):
+        # Issues containing CVP
+        assert self._run_is_cvp_issue_reported([['CVP-x4431'], ['CVP-x4433'], [''], ['OCPBUGS-x1234']])
+        # Issues without CVP
+        assert not self._run_is_cvp_issue_reported([['OCPBUGS-x1234']])
+        # No issues
+        assert not self._run_is_cvp_issue_reported([])
+
+    @patch.object(JiraManager, 'get_issue')
+    def _run_is_cvp_issue_reported(self, issues_data, mock_get_issue):
+        # Prepare spreadsheet mocks
+        mock_worksheet = Mock(spec=Worksheet)
+        mock_worksheet.get_values.return_value = issues_data
+        spreadsheet_mock = Mock(spec=Spreadsheet)
+        spreadsheet_mock.worksheet.return_value = mock_worksheet
+        self.wm._doc = spreadsheet_mock
+
+        # Prepare jira mocks
+        mock_issues = {
+            'CVP-x4431': self._mock_issue('CVP-x4431', JiraManager(self.cs).prepare_cvp_issue_summary()),
+            'CVP-x4433': self._mock_issue('CVP-x4433', "Another CVP issue"),
+            'OCPBUGS-x1234': self._mock_issue('OCPBUGS-x1234', "Some OCP bug")
+        }
+        mock_get_issue.side_effect = lambda key: JiraIssue(mock_issues.get(key, None))
+
+        self.test_report = self.wm.get_test_report()
+
+        # Execute tested method
+        return self.test_report.is_cvp_issue_reported()
+
+    def _mock_issue(self, key, summary):
+        mock_issue = Mock(spec=Issue)
+        mock_issue.key = key
+        mock_field = Mock()
+        mock_field.summary = summary
+        mock_issue.fields = mock_field
+
+        return mock_issue
