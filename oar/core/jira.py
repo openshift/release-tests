@@ -258,6 +258,38 @@ class JiraManager:
 
         return JiraIssue(issue)
 
+    def is_cvp_issue_reported(self):
+        """
+        Check if CVP issue with specific cvp summary is reported
+
+        Returns:
+             bool: True if CVP issue is reported
+        """
+        summary = self.prepare_cvp_issue_summary()
+        summary_jql = summary.replace('[', '').replace(']', '')
+        issues = self.search_issues_by_summary("CVP", summary_jql)
+
+        return True if issues else False
+
+    def search_issues_by_summary(self, project, summary):
+        """
+        Search issues by summary in given Jira project
+
+        Args:
+            project(str): project to look for the issue in
+            summary(str): issue summary to look for, expected format: JQL
+
+        Returns:
+            ResultList[Issue]: found issues
+        """
+        logger.debug(f'Looking for issue with summary "{summary}"')
+        try:
+            issues = self._svc.search_issues(f'project = "{project}" AND summary ~ "{summary}"')
+        except JIRAError as je:
+            raise JiraException(f'Looking for issue with summary "{summary}" failed') from je
+
+        return issues
+
     def prepare_cvp_issue_summary(self):
         """
         Prepare Greenwave CVP issue summary

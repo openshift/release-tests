@@ -32,8 +32,9 @@ def check_greenwave_cvp_tests(ctx):
         if len(abnormal_tests):
             report.update_task_status(LABEL_TASK_GREENWAVE_CVP_TEST, TASK_STATUS_FAIL)
             # create jira ticket under project CVP with abnormal test details
-            if not report.is_cvp_issue_reported():
-                issue = JiraManager(cs).create_cvp_issue(abnormal_tests)
+            jm = JiraManager(cs)
+            if not jm.is_cvp_issue_reported():
+                issue = jm.create_cvp_issue(abnormal_tests)
                 # Update test report
                 issue_key = issue.get_key()
                 report.add_jira_to_others_section(issue_key)

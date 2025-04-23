@@ -3,6 +3,8 @@ import os
 from collections import ChainMap
 from unittest.mock import Mock
 
+from jira.client import ResultList
+
 from oar.core.configstore import ConfigStore
 from oar.core.exceptions import JiraException
 from oar.core.jira import Issue, JIRA, JiraManager
@@ -278,3 +280,18 @@ Failed Nvrs in advisory [{test_data[3]["errata_id"]}|{get_advisory_link(test_dat
 
         jira_description = self.jm._prepare_greenwave_cvp_jira_description(abnormal_tests)
         assert jira_description == expected_description
+
+    def test_is_cvp_issue_reported(self):
+        self._mock_jira_with_issues(True)
+        assert self.jm.is_cvp_issue_reported()
+
+        self._mock_jira_with_issues(False)
+        assert not self.jm.is_cvp_issue_reported()
+
+    def _mock_jira_with_issues(self, issues_present: bool):
+        mock_jira = Mock(spec=JIRA)
+        result_list = ResultList()
+        if issues_present:
+            result_list.append(Mock(spec=Issue))
+        mock_jira.search_issues.return_value = result_list
+        self.jm._svc = mock_jira

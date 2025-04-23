@@ -538,31 +538,6 @@ class TestReport:
                 else:
                     logger.error(f"Adding jira {jira_key} to test report failed after all retries: {e}")
 
-    def is_cvp_issue_reported(self):
-        """
-        Identify the presence of CVP issue with specific cvp summary in test report
-
-        Returns:
-             bool: True if CVP issue is reported
-        """
-        jm = JiraManager(self._cs)
-        for key in self._get_cvp_issues_from_others_section():
-            jira_issue = jm.get_issue(key)
-            if jira_issue.get_summary() == jm.prepare_cvp_issue_summary():
-                return True
-        return False
-
-    def _get_cvp_issues_from_others_section(self):
-        """
-        Get CVP issue keys from "others" section in work sheet
-
-        Returns:
-            list[str]: list of CVP issue keys
-        """
-        issue_keys = self._get_issues_from_others_section()
-        cvp_issues = [key for key in issue_keys if key.startswith("CVP")]
-        return cvp_issues
-
     def _get_issues_from_others_section(self):
         """
         Get issue keys from "others" section in work sheet
