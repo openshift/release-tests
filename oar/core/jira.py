@@ -3,14 +3,14 @@ import os
 import time
 from collections import defaultdict
 
-from oar.core.configstore import ConfigStore
-from oar.core.exceptions import JiraException
-from oar.core.exceptions import JiraUnauthorizedException
-from oar.core.const import *
-from jira import JIRA
 from jira import Issue
+from jira import JIRA
 from jira.exceptions import JIRAError
 
+from oar.core.configstore import ConfigStore
+from oar.core.const import *
+from oar.core.exceptions import JiraException
+from oar.core.exceptions import JiraUnauthorizedException
 from oar.core.util import get_advisory_link
 
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 
 from setuptools import find_packages, setup
-import job
 
+import job
 
 setup(
     name='job',

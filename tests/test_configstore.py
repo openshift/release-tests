@@ -1,10 +1,8 @@
 import unittest
+
 import oar.core.util as util
-from oar.core.exceptions import ConfigStoreException
-from oar.core.advisory import AdvisoryManager
-from oar.core.jira import JiraManager
-from oar.core.worksheet import WorksheetManager
 from oar.core.configstore import ConfigStore
+from oar.core.exceptions import ConfigStoreException
 
 
 class TestConfigStore(unittest.TestCase):

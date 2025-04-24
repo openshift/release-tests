@@ -1,12 +1,13 @@
-import re
-import time
-import jenkins
 import logging
-import oar.core.util as util
+import time
+
+import jenkins
 from jenkins import JenkinsException
-from oar.core.exceptions import JenkinsHelperException
+
+import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
+from oar.core.exceptions import JenkinsHelperException
 
 logger = logging.getLogger(__name__)
 

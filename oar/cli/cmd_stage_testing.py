@@ -1,8 +1,10 @@
-import click
 import logging
+
+import click
+
+from oar.core.const import *
 from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins import JenkinsHelper
-from oar.core.const import *
 from oar.core.notification import NotificationManager
 from oar.core.worksheet import WorksheetManager
 

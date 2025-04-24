@@ -1,14 +1,16 @@
-import requests
 import json
-import yaml
-import os
 import logging
-import oar.core.util as util
-from oar.core.exceptions import ConfigStoreException
-from oar.core.const import *
+import os
+
+import requests
+import yaml
+from jose import jwe
 from requests.exceptions import RequestException
 from yaml import YAMLError
-from jose import jwe
+
+import oar.core.util as util
+from oar.core.const import *
+from oar.core.exceptions import ConfigStoreException
 
 # get module level logger
 logger = logging.getLogger(__name__)

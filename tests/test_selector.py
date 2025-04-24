@@ -1,8 +1,9 @@
 import json
-import unittest
 import logging
 import random
 import string
+import unittest
+
 from job.selector import AutoReleaseJobs, TestJobRegistryUpdater
 
 logging.basicConfig(

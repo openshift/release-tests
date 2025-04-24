@@ -1,12 +1,12 @@
-import os
-import fnmatch
-import logging
 import json
+import logging
+import os
 import re
 from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
-from google.oauth2.service_account import Credentials
+
 from google.cloud import storage
+from google.oauth2.service_account import Credentials
 
 logger = logging.getLogger(__name__)
 

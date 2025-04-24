@@ -1,14 +1,14 @@
-import unittest
 import os
+import unittest
 from collections import ChainMap
 from unittest.mock import Mock
 
 from jira.client import ResultList
 
 from oar.core.configstore import ConfigStore
+from oar.core.const import *
 from oar.core.exceptions import JiraException
 from oar.core.jira import Issue, JIRA, JiraManager
-from oar.core.const import *
 from oar.core.util import get_advisory_link
 
 

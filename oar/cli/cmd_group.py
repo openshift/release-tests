@@ -1,20 +1,22 @@
-import click
 import logging
 import sys
-from oar.cli.cmd_image_consistency_check import image_consistency_check
-from oar.cli.cmd_image_signed_check import image_signed_check
-from oar.cli.cmd_stage_testing import stage_testing
+
+import click
+
 import oar.core.util as util
 from oar import version
-from oar.cli.cmd_create_test_report import create_test_report
-from oar.cli.cmd_take_ownership import take_ownership
-from oar.cli.cmd_update_bug_list import update_bug_list
-from oar.cli.cmd_check_greenwave_cvp_tests import check_greenwave_cvp_tests
-from oar.cli.cmd_push_to_cdn import push_to_cdn_staging
-from oar.cli.cmd_drop_bugs import drop_bugs
 from oar.cli.cmd_change_advisory_status import change_advisory_status
 from oar.cli.cmd_check_cve_tracker_bug import check_cve_tracker_bug
-from oar.core.configstore import ConfigStore, ConfigStoreException
+from oar.cli.cmd_check_greenwave_cvp_tests import check_greenwave_cvp_tests
+from oar.cli.cmd_create_test_report import create_test_report
+from oar.cli.cmd_drop_bugs import drop_bugs
+from oar.cli.cmd_image_consistency_check import image_consistency_check
+from oar.cli.cmd_image_signed_check import image_signed_check
+from oar.cli.cmd_push_to_cdn import push_to_cdn_staging
+from oar.cli.cmd_stage_testing import stage_testing
+from oar.cli.cmd_take_ownership import take_ownership
+from oar.cli.cmd_update_bug_list import update_bug_list
+from oar.core.configstore import ConfigStore
 from oar.core.const import CONTEXT_SETTINGS
 
 logger = logging.getLogger(__name__)

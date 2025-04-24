@@ -1,19 +1,20 @@
+import logging
+import os
+import re
 import time
 from itertools import chain
 
 import gspread
-import os
-import re
-import logging
+from google.oauth2.service_account import Credentials
+from gspread import Worksheet
+from gspread.exceptions import *
+
 import oar.core.util as util
-from oar.core.exceptions import WorksheetException, WorksheetExistsException, JiraUnauthorizedException
+from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.advisory import AdvisoryManager
+from oar.core.exceptions import WorksheetException, WorksheetExistsException, JiraUnauthorizedException
 from oar.core.jira import JiraManager
-from google.oauth2.service_account import Credentials
-from gspread.exceptions import *
-from gspread import Worksheet
 
 logger = logging.getLogger(__name__)
 

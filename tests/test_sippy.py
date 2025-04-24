@@ -1,8 +1,9 @@
-import unittest
-import logging
-import sys
-import urllib3
 import json
+import logging
+import unittest
+
+import urllib3
+
 from prow.job.sippy import (
     Sippy,
     DataAnalyzer,

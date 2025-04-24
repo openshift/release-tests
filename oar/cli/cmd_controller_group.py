@@ -1,6 +1,8 @@
-import click
 import logging
 import sys
+
+import click
+
 import oar.core.util as util
 from oar import version
 from oar.controller.detector import start_release_detector

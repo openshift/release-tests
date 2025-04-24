@@ -1,18 +1,19 @@
+import json
+import logging
+import re
+import subprocess
 from datetime import datetime, timezone
+
+import koji
+import urllib3
 from dateutil import parser
 from errata_tool import Erratum, ErrataException, security
-from oar.core.configstore import ConfigStore
-from oar.core.exceptions import AdvisoryException
-from oar.core.jira import JiraManager, JiraException
-from oar.core.const import *
+
 import oar.core.util as util
-import logging
-import subprocess
-import json
-import re
-import requests
-import urllib3
-import koji
+from oar.core.configstore import ConfigStore
+from oar.core.const import *
+from oar.core.exceptions import AdvisoryException
+from oar.core.jira import JiraManager
 
 logger = logging.getLogger(__name__)
 

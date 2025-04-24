@@ -1,8 +1,9 @@
-import click
 import logging
-import oar.core.util as util
-from oar.core.worksheet import WorksheetManager, WorksheetException, WorksheetExistsException
+
+import click
+
 from oar.core.notification import NotificationManager, NotificationException
+from oar.core.worksheet import WorksheetManager, WorksheetException, WorksheetExistsException
 
 logger = logging.getLogger(__name__)
 

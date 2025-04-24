@@ -1,7 +1,8 @@
 import os
 import re
-import click
 import time
+
+import click
 from github import Github
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError

@@ -1,13 +1,13 @@
-import click
 import logging
 import re
-import oar.core.util as util
-from oar.core.worksheet import WorksheetManager, WorksheetException
-from oar.core.jira import JiraManager, JiraException
-from oar.core.advisory import AdvisoryManager, AdvisoryException
-from oar.core.configstore import ConfigStore
-from oar.core.notification import NotificationManager, NotificationException
+
+import click
+
+from oar.core.advisory import AdvisoryManager
 from oar.core.const import *
+from oar.core.jira import JiraManager
+from oar.core.notification import NotificationManager
+from oar.core.worksheet import WorksheetManager
 
 logger = logging.getLogger(__name__)
 
