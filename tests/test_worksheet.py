@@ -1,13 +1,20 @@
-import unittest
+from unittest import TestCase
+from unittest.mock import Mock, patch
+
+from gspread import Spreadsheet
+from jira import Issue
+
+from oar.core.jira import JiraManager, JiraIssue
+
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
 from oar.core.advisory import AdvisoryManager
-from oar.core.worksheet import TestReport
+from oar.core.worksheet import Worksheet
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
 
 
-class TestWorksheetManager(unittest.TestCase):
+class TestWorksheetManager(TestCase):
     @classmethod
     def setUpClass(self):
         cs = ConfigStore("4.15.4")

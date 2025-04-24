@@ -60,7 +60,10 @@ def get_jira_link(key):
 
 
 def get_advisory_link(advisory):
-    return "https://errata.devel.redhat.com/advisory/%s" % advisory
+    return f"{get_advisory_domain_url()}/advisory/{advisory}"
+
+def get_advisory_domain_url():
+    return "https://errata.devel.redhat.com"
 
 def is_grade_healthy(grade):
     return grade in ("A", "B")

@@ -1,3 +1,6 @@
+import time
+from itertools import chain
+
 import gspread
 import os
 import re
@@ -90,7 +93,7 @@ class WorksheetManager:
             # update advisory info
             ad_cell_value = ""
             for k, v in self._cs.get_advisories().items():
-                ad_cell_value += f"{k}: https://errata.devel.redhat.com/advisory/{v}\n"
+                ad_cell_value += f"{k}: {util.get_advisory_link(v)}\n"
             self._report.update_advisory_info(ad_cell_value[:-1])
             logger.info("advisory info is updated")
             logger.debug(f"advisory info:\n{ad_cell_value}")
@@ -499,6 +502,51 @@ class TestReport:
         # if cve_tracker_bugs list is not empty, it means a new tracker bug is found
         # we need to send out notification
         return len(cve_tracker_bugs) > 0
+
+    def add_jira_to_others_section(self, jira_key, max_retries = 3, delay = 2):
+        """
+        Add jira to "others" section
+
+        Find the first available cell in section, and add jira to it.
+
+        Args:
+             jira_key(str): jira key to be added
+             max_retries: optional maximum number of attempts, default value is 3
+             delay: optional delay between worksheet calls, default value is 2
+        """
+        issue_keys = self._get_issues_from_others_section()
+
+        row_idx = LABEL_ISSUES_OTHERS_ROW
+        # Find first empty cell
+        if "" in issue_keys:
+            row_idx += issue_keys.index("")
+        else:
+            row_idx += len(issue_keys)
+
+        jira_hyperlink = self._to_hyperlink(
+            util.get_jira_link(jira_key), jira_key)
+
+        for attempt in range(1, max_retries + 1):
+            try:
+                self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", jira_hyperlink)
+                logger.info(f"Jira {jira_key} was added to test report")
+                break
+            except Exception as e:
+                logger.warning(f"Adding jira {jira_key} to test report failed on attempt: {attempt}")
+                if attempt < max_retries:
+                    time.sleep(delay)
+                else:
+                    logger.error(f"Adding jira {jira_key} to test report failed after all retries: {e}")
+
+    def _get_issues_from_others_section(self):
+        """
+        Get issue keys from "others" section in work sheet
+
+        Returns:
+            list[str]: list of issue keys
+        """
+        range_values = self._ws.get_values(f"{LABEL_ISSUES_OTHERS_COLUMN}{LABEL_ISSUES_OTHERS_ROW}:{LABEL_ISSUES_OTHERS_COLUMN}")
+        return list(chain.from_iterable(range_values))
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
