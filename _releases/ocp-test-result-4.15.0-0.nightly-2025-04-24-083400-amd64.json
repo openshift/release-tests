@@ -37,13 +37,55 @@
           "jobStartTime": "2025-04-24T22:23:31Z",
           "jobID": "e4edbbe5-3dd6-4ad4-ad02-d9be14c7e16e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/1915532078825345024",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-04-25T01:11:15Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-04-24T22:23:36Z",
           "jobID": "02d48083-93f4-4b43-a775-c80b0e44f221",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/1915532100304375808",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-04-25T01:19:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -115,13 +157,60 @@
           "jobStartTime": "2025-04-24T22:23:46Z",
           "jobID": "e5d1c83f-0a74-4f8c-b139-6f0bc7bb821e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1915532145091153920",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-04-25T01:11:19Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 26
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-04-24T22:23:52Z",
           "jobID": "39271eec-e7b3-4aca-9404-8fe5f61241d5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1915532166645682176",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-04-25T01:23:10Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges",
+                "[sig-network-edge] Network_Edge Component_Router Author:hongli-WRS-LEVEL0-Critical-43300-V-ACS.05-enable client certificate with optional policy",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44906-[CSI-Driver] [Dynamic PV] [Delete reclaimPolicy] volumes should be deleted after the pvc deletion"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -172,5 +261,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-04-24-083400",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-04-24-083400"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
