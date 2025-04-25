@@ -394,6 +394,10 @@ class TestReport:
                     logger.info(f"bug {bug_key} is dropped")
                 else:
                     logger.info(f"bug status of {bug_key} is not changed")
+                if issue.is_cve_tracker():
+                    logger.warning(
+                        f"jira issue {issue.get_key()} is cve tracker: {issue.is_cve_tracker()}, it must be verified"
+                    )
             except JiraUnauthorizedException:
                 pass
             except Exception as e:

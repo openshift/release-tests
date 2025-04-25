@@ -84,3 +84,9 @@ class TestWorksheetManager(unittest.TestCase):
     def test_create_report_for_candidate_release(self):
         wm = WorksheetManager(ConfigStore("4.18.0-rc.8"))
         wm.create_test_report()
+
+    def test_update_list(self):
+        cs = ConfigStore("4.18.10")
+        wm = WorksheetManager(cs)
+        am = AdvisoryManager(cs)
+        wm.get_test_report().update_bug_list(am.get_jira_issues())
