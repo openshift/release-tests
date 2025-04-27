@@ -500,14 +500,17 @@ class MessageHelper:
         for key in jira_issues:
             issue = self.jm.get_issue(key)
             if issue.is_on_qa():
+                if issue.is_cve_tracker():
+                    cve_warning = " This is a CVE bug and must be verified."
+                else:
+                    cve_warning = ""
                 slack_message += (
                         self._to_link(util.get_jira_link(key), key)
                         + " "
                         + self.sc.get_user_id_by_email(issue.get_qa_contact())
-                        + "\n"
+                        + cve_warning + "\n"
                 )
                 has_onqa_issue = True
-
         return slack_message if has_onqa_issue else ""
 
     def get_slack_message_for_abnormal_advisory(self, abnormal_ads):
