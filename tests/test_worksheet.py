@@ -84,4 +84,3 @@ class TestWorksheetManager(unittest.TestCase):
     def test_create_report_for_candidate_release(self):
         wm = WorksheetManager(ConfigStore("4.18.0-rc.8"))
         wm.create_test_report()
-
