@@ -70,7 +70,17 @@ class TestNotificationManager(unittest.TestCase):
         self.assertTrue(gid.startswith("<!subteam"))
 
     def test_get_slack_message_for_bug_verification(self):
-        cs = ConfigStore("4.17.27")
-        am = AdvisoryManager(cs)
-        mh = MessageHelper(cs)
-        mh.get_slack_message_for_bug_verification(am.get_jira_issues())
+        """Test the formatting of Slack messages for bug verification requests."""
+        # Test with CVE tracker issues
+        test_issues = ["OCPBUGS-53509"]
+        msg = self.nm.mh.get_slack_message_for_bug_verification(test_issues)
+
+        # Verify message contains required components
+        for issue in test_issues:
+            self.assertIn(issue, msg)
+
+        # Verify message format
+        self.assertIn("Please pay attention to the following ON_QA bugs", msg)
+        self.assertIn("let's verify them ASAP", msg)
+        self.assertIn("Thanks for your cooperation", msg)
+        self.assertIn("This is a CVE bug and must be verified", msg)
