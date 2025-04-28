@@ -1,10 +1,11 @@
 import unittest
 import logging
 import sys
-from oar.core.notification import NotificationManager
+from oar.core.notification import *
 from oar.core.configstore import ConfigStore
 from oar.core.worksheet import WorksheetManager
 from oar.core.worksheet import TestReport
+from oar.core.advisory import AdvisoryManager
 import oar.core.util as util
 
 logging.basicConfig(
@@ -67,3 +68,19 @@ class TestNotificationManager(unittest.TestCase):
             )
         )
         self.assertTrue(gid.startswith("<!subteam"))
+
+    def test_get_slack_message_for_bug_verification(self):
+        """Test the formatting of Slack messages for bug verification requests."""
+        # Test with CVE tracker issues
+        test_issues = ["OCPBUGS-53509"]
+        msg = self.nm.mh.get_slack_message_for_bug_verification(test_issues)
+
+        # Verify message contains required components
+        for issue in test_issues:
+            self.assertIn(issue, msg)
+
+        # Verify message format
+        self.assertIn("Please pay attention to following ON_QA bugs", msg)
+        self.assertIn("let's verify them ASAP", msg)
+        self.assertIn("thanks for your cooperation", msg)
+        self.assertIn("This is a CVE bug and must be verified", msg)
