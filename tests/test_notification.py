@@ -80,7 +80,7 @@ class TestNotificationManager(unittest.TestCase):
             self.assertIn(issue, msg)
 
         # Verify message format
-        self.assertIn("Please pay attention to the following ON_QA bugs", msg)
+        self.assertIn("Please pay attention to following ON_QA bugs", msg)
         self.assertIn("let's verify them ASAP", msg)
-        self.assertIn("Thanks for your cooperation", msg)
+        self.assertIn("thanks for your cooperation", msg)
         self.assertIn("This is a CVE bug and must be verified", msg)
