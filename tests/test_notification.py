@@ -1,10 +1,11 @@
 import unittest
 import logging
 import sys
-from oar.core.notification import NotificationManager
+from oar.core.notification import *
 from oar.core.configstore import ConfigStore
 from oar.core.worksheet import WorksheetManager
 from oar.core.worksheet import TestReport
+from oar.core.advisory import AdvisoryManager
 import oar.core.util as util
 
 logging.basicConfig(
@@ -67,3 +68,9 @@ class TestNotificationManager(unittest.TestCase):
             )
         )
         self.assertTrue(gid.startswith("<!subteam"))
+
+    def test_get_slack_message_for_bug_verification(self):
+        cs = ConfigStore("4.17.27")
+        am = AdvisoryManager(cs)
+        mh = MessageHelper(cs)
+        mh.get_slack_message_for_bug_verification(am.get_jira_issues())
