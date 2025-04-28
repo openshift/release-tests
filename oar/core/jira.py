@@ -248,7 +248,7 @@ class JiraManager:
         Returns:
              JiraIssue: created issue
         """
-        issue = self.create_issue(
+        jira_issue = self.create_issue(
             project = "CVP",
             summary = self.prepare_cvp_issue_summary(),
             description = self._prepare_greenwave_cvp_jira_description(abnormal_tests),
@@ -256,7 +256,7 @@ class JiraManager:
             priority = {"name": "Blocker"}
         )
 
-        return JiraIssue(issue)
+        return jira_issue
 
     def is_cvp_issue_reported(self):
         """
