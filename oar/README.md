@@ -98,7 +98,7 @@ $ oar -r $release-version stage-testing -n 123
 ```
 $ oar -r $release-version image-signed-check
 ```
-10. This command checks all not verified bugs from advisories. If any bug is `Critical`, `CVE Tracker` or `Customer Case` it is "must-verify" bug. In that case, they need to be confirmed with a bug owner, a Slack notification is sent out. The rest of the bugs are dropped automatically
+10. This command checks all not verified bugs from advisories. If any bug is `Critical`, `CVE Tracker` or `Customer Case`, it is a "high severity" bug. These bugs need to be confirmed with a bug owner, a Slack notification is sent out. The rest of the bugs are dropped automatically
 ```
 $ oar -r $release-version drop-bugs
 ```
