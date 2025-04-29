@@ -1,12 +1,12 @@
-import click
 import logging
 
+import click
+
+from oar.core.advisory import AdvisoryManager
+from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
 from oar.core.worksheet import WorksheetManager
-from oar.core.advisory import AdvisoryManager
-from oar.core.configstore import ConfigStore
-from oar.core.const import *
 
 logger = logging.getLogger(__name__)
 

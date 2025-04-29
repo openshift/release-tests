@@ -1,23 +1,20 @@
 #!/usr/bin/python3
 # author : xzha
-import genericpath
-import os
-import re
-import time
-import sys
-from unittest import skip
-import urllib3
-import requests
 import argparse
 import json
 import logging
-import yaml
-from urllib3.exceptions import InsecureRequestWarning
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
-from datetime import date, datetime, timedelta
+import os
+import re
+from datetime import date, datetime
+
 import gspread
+import requests
+import urllib3
 from oauth2client.service_account import ServiceAccountCredentials
+from requests.adapters import HTTPAdapter
+from urllib3.exceptions import InsecureRequestWarning
+from urllib3.util import Retry
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def get_logger(filePath):

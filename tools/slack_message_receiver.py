@@ -1,14 +1,15 @@
+import logging
+import os
+import re
+import shlex
+import subprocess
 from threading import Event
+
+from langchain_community.llms.vllm import VLLMOpenAI
+from slack_sdk.socket_mode import SocketModeClient
 from slack_sdk.socket_mode.request import SocketModeRequest
 from slack_sdk.socket_mode.response import SocketModeResponse
 from slack_sdk.web import WebClient
-from slack_sdk.socket_mode import SocketModeClient
-from langchain_community.llms.vllm import VLLMOpenAI
-import os
-import logging
-import re
-import subprocess
-import shlex
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("QEReleaseBot")

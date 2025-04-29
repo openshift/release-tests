@@ -1,12 +1,10 @@
-import unittest
 import logging
-import sys
-from oar.core.notification import *
-from oar.core.configstore import ConfigStore
-from oar.core.worksheet import WorksheetManager
-from oar.core.worksheet import TestReport
-from oar.core.advisory import AdvisoryManager
+import unittest
+
 import oar.core.util as util
+from oar.core.configstore import ConfigStore
+from oar.core.notification import NotificationManager
+from oar.core.worksheet import WorksheetManager
 
 logging.basicConfig(
     level=logging.DEBUG,  # Set the minimum log level to DEBUG

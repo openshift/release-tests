@@ -1,23 +1,24 @@
 #!/usr/bin/python3
 # author : xzha
-import os
-import re
-import time
-import subprocess
-from unittest import skip
-import urllib3
-import requests
 import argparse
+import glob
 import json
 import logging
-import yaml
-import glob
-from urllib3.exceptions import InsecureRequestWarning
-from requests.adapters import HTTPAdapter
-from urllib3.util import Retry
+import os
+import re
+import subprocess
+import time
 from datetime import datetime
+
 import gspread
+import requests
+import urllib3
+import yaml
 from oauth2client.service_account import ServiceAccountCredentials
+from requests.adapters import HTTPAdapter
+from urllib3.exceptions import InsecureRequestWarning
+from urllib3.util import Retry
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def get_logger(filePath):
@@ -54,7 +55,7 @@ class SummaryClient:
                         token =data["ginkgo_rp_mmtoken"]
         if not token:
             raise BaseException("ERROR: token is empty, please input the token using -t")
-        
+
         urllib3.disable_warnings(category=InsecureRequestWarning)
         self.session = requests.Session()
         self.session.headers["Authorization"] = "bearer {0}".format(token)
@@ -71,7 +72,7 @@ class SummaryClient:
         self.release_path = args.release_path
         self.config_sub_path = "ci-operator/config/openshift/openshift-tests-private/"
         self.gclient = self.getclient()
-        
+
         self.target_file = 'https://docs.google.com/spreadsheets/d/1v43fn27WDqDuKbG1kDFkl5UZ_Km6InIvEC1Z7_SN2Eo/edit#gid=1613481050'
         self.base_url = "https://reportportal-openshift.apps.ocp-c1.prod.psi.redhat.com"
         self.launch_url = self.base_url +"/api/v1/prow/launch"
@@ -88,14 +89,14 @@ class SummaryClient:
         scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
         creds = ServiceAccountCredentials.from_json_keyfile_name(self.key_file, scope)
         return gspread.authorize(creds)
-    
+
     def get_release_path(self):
         if not self.release_path:
             self.release_path= "/Users/zhaoxia/go/src/github.com/openshift/release/"
         if not os.path.exists(self.release_path):
             self.release_path= "./release"
             subprocess.run("git clone git@github.com:openshift/release.git")
-            
+
     def get_e2e_profile_list_config(self):
         self.get_release_path()
         for arch in ["amd64", "arm64", "multi", "ppc64le"]:
@@ -143,12 +144,12 @@ class SummaryClient:
             self.logger.debug(all_profile_list)
             self.upgrade_profile_list[arch][from_version]=all_profile_list
         self.logger.debug(json.dumps(self.upgrade_profile_list, indent=4, sort_keys=True))
-       
+
     def get_e2e_test_result(self, profile_name_input, arch, build_type):
         launchs=dict()
         profile = re.sub('e2e-|-p[1-9]|-f[0-9]{1,2}',"", profile_name_input)
         self.logger.info("profile: %s", profile)
-        launchs= self.get_e2e_rp_result(profile, arch, build_type) 
+        launchs= self.get_e2e_rp_result(profile, arch, build_type)
         if not launchs:
             self.logger.error("ERROR: no Launch is found")
         self.logger.debug(launchs)
@@ -171,7 +172,7 @@ class SummaryClient:
         filter_arch = "architecture:"+arch
         filter_build_type = "build:"+build_type
         filter_url = self.launch_url + '?filter.has.compositeAttribute={0},{1},{2},version:{3}&filter.btw.startTime=-{4};1440;-0000&page.size=2000'.format(filterProfile, filter_arch, filter_build_type, self.version, str(1440*day_number))
-        
+
         self.logger.info("filter_url is "+filter_url)
         try:
             r = self.session.get(url=filter_url)
@@ -201,7 +202,7 @@ class SummaryClient:
                 if architecture != arch:
                     self.logger.debug("architecture %s is not %s", architecture, arch)
                     continue
-               
+
                 name = ret["name"]
                 if "-destructive" in profile_name_input:
                     if "-destructive" not in name:
@@ -227,10 +228,10 @@ class SummaryClient:
                     if "long-duration" in name or "-destructive" in name:
                         self.logger.debug("name %s doesn't end with %s", name, profile_name)
                         continue
-                    
+
                 start_time = ret["startTime"]
                 date_str = datetime.fromtimestamp(int(start_time)/1000).strftime('%Y-%m-%d')
-                
+
                 if not ret["statistics"]["executions"]:
                     self.logger.debug("%s: statistics.executions is empty", name )
                     continue
@@ -265,7 +266,7 @@ class SummaryClient:
         except BaseException as e:
             print(e)
             return dict()
-    
+
     def write_e2e_google_sheet(self):
         spreadsheet_target = self.gclient.open_by_url(self.target_file)
         worksheet_target = spreadsheet_target.worksheet(self.version+"-e2e")
@@ -325,8 +326,8 @@ class SummaryClient:
                     worksheet_target.update_acell('T'+str(row),test_result[max_start_time]['date'])
                     worksheet_target.update_acell('S'+str(row),test_result[max_start_time]['link'])
                     worksheet_target.update_acell('R'+str(row),test_result[max_start_time]['number'])
-                    
-                    
+
+
                     if "Fail" in test_result[max_start_time]['passRate']:
                         for start_index in start_time_list:
                             if "Fail" not in test_result[start_index]['passRate']:
@@ -355,7 +356,7 @@ class SummaryClient:
                     worksheet_target.update_acell('U'+str(row),os.linesep.join(history_list))
                     time.sleep(10)
                     self.logger.info("================ update %s ======================", profile_name)
-    
+
         if self.update_range:
             return
         for arch in self.profile_list.keys():
@@ -374,7 +375,7 @@ class SummaryClient:
                     worksheet_target.update_acell('V'+str(row),arch)
                     worksheet_target.update_acell('X'+str(row),'PROW')
                     worksheet_target.update_acell('Y'+str(row),build_type)
-                    
+
                     test_result = self.get_e2e_test_result(profile_name, arch, build_type)
                     if not test_result:
                         self.logger.error("ERROR: Cannot get test result %s for row %s, please update manually", profile_name, row)
@@ -405,7 +406,7 @@ class SummaryClient:
                         worksheet_target.update_acell('K'+str(row),test_result[max_start_time]['build']+os.linesep+test_result[max_start_time]['date'])
                         worksheet_target.update_acell('L'+str(row),test_result[max_start_time]['passed'])
                         worksheet_target.update_acell('M'+str(row),test_result[max_start_time]['failed'])
-                    worksheet_target.update_acell('P'+str(row),'=L4+M4+N4+O4')    
+                    worksheet_target.update_acell('P'+str(row),'=L4+M4+N4+O4')
                     worksheet_target.update_acell('Q'+str(row),'=IFerror(L4/P4, 0)')
 
                     history_list = []
@@ -425,7 +426,7 @@ class SummaryClient:
         launchs=dict()
         profiles = []
         profile_name = re.sub('e2e-|-p[1-9]|-f[0-9]{1,2}',"", profile_name_input)
-        profiles.append(profile_name)   
+        profiles.append(profile_name)
         self.logger.debug("profiles: %s", profiles)
         for profile in profiles:
             launchs_index= self.get_upgrade_rp_result(profile, arch, from_version_input)
@@ -435,7 +436,7 @@ class SummaryClient:
             self.logger.error("ERROR: no Launch is found")
         self.logger.debug(launchs)
         return launchs
-    
+
     def get_upgrade_rp_result(self, profile_name, arch="amd64", from_version_input="4.11"):
         day_number = 20
         launchs=dict()
@@ -463,7 +464,7 @@ class SummaryClient:
                         initial_version = attribute['value']
                     if attribute['key'] == 'install':
                         install_status = attribute['value']
-               
+
                 start_time = ret["startTime"]
                 date_str = datetime.fromtimestamp(int(start_time)/1000).strftime('%Y-%m-%d')
                 self.logger.debug("check testrun: "+str(start_time))
@@ -501,7 +502,7 @@ class SummaryClient:
         except BaseException as e:
             print(e)
             return launchs
-    
+
     def get_failed_case_id(self, launchId):
         item_url = self.item_url + "?filter.eq.launchId={0}&filter.eq.status=FAILED&isLatest=false&launchesLimit=0&page.size=150".format(launchId)
         self.logger.debug(item_url)
@@ -569,7 +570,7 @@ class SummaryClient:
                     self.logger.info("%s has been deleted", profile_name)
                     worksheet_target.update_acell('A'+str(row), profile_name+os.linesep+"!!!!! profile has been remove it form config !!!!!")
                     continue
-                
+
                 test_result = self.get_upgrade_test_result(profile_name_input, arch, from_version_input)
                 if not test_result:
                     self.logger.error("ERROR: Cannot get test result %s for row %s, please update manually", profile_name, row)
@@ -678,7 +679,7 @@ if __name__ == "__main__":
 
     sclient = SummaryClient(args)
     sclient.collectResult()
-    
+
     exit(0)
 
     

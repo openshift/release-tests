@@ -1,8 +1,10 @@
-import unittest
+import json
 import logging
 import os
-import json
+import unittest
+
 import yaml
+
 from job.artifacts import Artifacts
 from job.sippy import Sippy
 

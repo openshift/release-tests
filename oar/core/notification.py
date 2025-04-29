@@ -1,17 +1,17 @@
-import os
+import logging
 import re
 import smtplib
-import logging
-import oar.core.util as util
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from oar.core.configstore import ConfigStore
-from oar.core.exceptions import NotificationException
-from oar.core.worksheet import TestReport
-from oar.core.jira import JiraManager
+from email.mime.text import MIMEText
+
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
+import oar.core.util as util
+from oar.core.configstore import ConfigStore
+from oar.core.exceptions import NotificationException
+from oar.core.jira import JiraManager
+from oar.core.worksheet import TestReport
 
 logger = logging.getLogger(__name__)
 

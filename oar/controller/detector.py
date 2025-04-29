@@ -1,11 +1,13 @@
-import yaml
-import requests
-import click
-import re
 import logging
-from oar.core.configstore import ConfigStore
-from oar.cli.cmd_create_test_report import create_test_report
+import re
+
+import click
+import requests
+import yaml
 from semver import VersionInfo
+
+from oar.cli.cmd_create_test_report import create_test_report
+from oar.core.configstore import ConfigStore
 
 logger = logging.getLogger(__name__)
 

@@ -1,16 +1,16 @@
 import logging
+import os
+import tempfile
+from datetime import datetime
+from pathlib import Path
+
 import requests
 import yaml
-import tempfile
-import os
-from .controller import GithubUtil
-from .controller import Architectures
-from pathlib import Path
-from github import Auth, Github, GithubIntegration
-from github.Installation import Installation
-from github.Repository import Repository
 from git import Repo, Actor
-from datetime import datetime
+from github import Auth, GithubIntegration
+
+from .controller import Architectures
+from .controller import GithubUtil
 
 logger = logging.getLogger(__name__)
 

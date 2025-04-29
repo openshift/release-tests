@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 
-import requests
 import json
 import logging
 import os
 import re
-import click
-import subprocess
 import shlex
+import subprocess
+from subprocess import CalledProcessError
+
+import click
+import requests
 import yaml
-from .job import Jobs
-from .artifacts import Artifacts
 from github import Auth, Github
 from github.GithubException import UnknownObjectException, GithubException
-from requests.exceptions import RequestException
-from subprocess import CalledProcessError
 from requests.adapters import HTTPAdapter
+from requests.exceptions import RequestException
 from urllib3 import Retry
 
+from .artifacts import Artifacts
+from .job import Jobs
 
 logger = logging.getLogger(__name__)
 

@@ -4,6 +4,7 @@ from oar.core.advisory import Advisory, AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.exceptions import AdvisoryException
 
+
 class TestAdvisoryGrade(unittest.TestCase):
     def test_overall_grade(self):
         self.assertEqual("B", Advisory(errata_id=140504).get_overall_grade())

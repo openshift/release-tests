@@ -1,12 +1,13 @@
-import click
 import logging
-import re
+import time
+
+import click
 import requests
-from requests.exceptions import RequestException
 from requests.exceptions import InvalidJSONError
+from requests.exceptions import RequestException
+
 from oar.core.const import *
 from oar.core.worksheet import WorksheetManager
-import time
 
 logger = logging.getLogger(__name__)
 

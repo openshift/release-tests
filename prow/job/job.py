@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 # coding:utf-8
-import requests
-import time
-import json
-from semver import VersionInfo
-import yaml
 import base64
-import os
-import sys
-import re
 import csv
-import click
-import logging
-import yaml
 import http.client as httpclient
+import json
+import logging
+import os
+import re
+import sys
+import time
+
+import click
+import requests
+import yaml
 from requests.adapters import HTTPAdapter
+from semver import VersionInfo
 from urllib3.util import Retry
 
 
