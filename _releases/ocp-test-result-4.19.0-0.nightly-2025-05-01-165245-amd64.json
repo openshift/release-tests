@@ -132,13 +132,65 @@
           "jobStartTime": "2025-05-02T06:28:13Z",
           "jobID": "c13d9061-2339-4152-9177-4ae2c149af83",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1918190774923563008",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-02T09:49:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 112,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 32,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46358-[CSI-Driver] [CSI Clone] Clone a pvc with filesystem VolumeMode"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-05-02T06:28:18Z",
           "jobID": "994e0ba0-4e3e-48ed-8eb6-860348f28e1d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1918190796243210240",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-02T09:47:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 112,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 32
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -284,5 +336,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-05-01-165245",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-05-01-165245"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
