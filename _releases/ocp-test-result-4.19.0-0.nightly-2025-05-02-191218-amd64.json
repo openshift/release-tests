@@ -132,13 +132,61 @@
           "jobStartTime": "2025-05-03T05:34:02Z",
           "jobID": "27240c54-f265-431b-9966-ec25d0680f1e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1918539527941525504",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-03T08:53:49Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 112,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 32
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-05-03T05:34:07Z",
           "jobID": "b4067052-6a1c-4782-aef5-91a4d36fdec9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1918539549391196160",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-03T08:40:43Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 112,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 32
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -284,5 +332,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-05-02-191218",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-05-02-191218"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
