@@ -39,13 +39,49 @@
           "jobStartTime": "2025-05-07T19:22:58Z",
           "jobID": "d49fc96a-541d-44a1-ba3d-dc2aafe6edca",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1920197685839663104",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-07T22:21:27Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_Router Author:shudili-LEVEL0-Critical-41110-The threadCount ingresscontroller parameter controls the nbthread option for the haproxy router"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-05-07T19:23:03Z",
           "jobID": "0bc58fae-53d9-4c36-a8ee-b8da550c6b67",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1920197707142533120",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-07T22:23:08Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 23
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19672:UserInterface Check cronjob on console"
+              ]
+            }
+          }
         }
       ]
     },
@@ -102,5 +138,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2025-05-07-105508",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2025-05-07-105508"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
