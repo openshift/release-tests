@@ -6,7 +6,28 @@
         "jobStartTime": "2025-05-07T13:39:01Z",
         "jobID": "f998bc5f-0ecd-4baa-b63e-50fe9d1adfbb",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1920118856546783232",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-05-07T16:51:11Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 110,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 20
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -16,9 +37,44 @@
         "jobStartTime": "2025-05-07T13:39:06Z",
         "jobID": "1b4f751c-cc40-45c0-b23c-c4aaaed3e3bf",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1920113502802939904",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-05-07T16:54:32Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 110,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 28
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14603:Workloads pod will not be scheduled if pod affinity not match"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-05-07T17:34:50Z",
+          "jobID": "2d748387-4543-4c5b-adfc-7b0897465ad5",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-05-07T17:34:55Z",
+          "jobID": "f417c2f2-049a-4356-b590-1a463b944482",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999",
