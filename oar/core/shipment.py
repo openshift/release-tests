@@ -6,6 +6,7 @@ import logging
 from typing import List, Optional, Set
 from urllib.parse import urlparse
 from glom import glom
+from oar.core.configstore import ConfigStore
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +92,7 @@ class GitLabMergeRequest:
 class ShipmentData:
     """Class for handling shipment merge request operations"""
     
-    def __init__(self, config_store):
+    def __init__(self, config_store: ConfigStore):
         """Initialize with ConfigStore instance"""
         self._cs = config_store
         self._mrs = self._initialize_mrs()
