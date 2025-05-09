@@ -121,7 +121,7 @@ class TestShipmentData(unittest.TestCase):
     @patch('oar.core.configstore.ConfigStore')
     def setUp(self, mock_config):
         self.mock_config = mock_config
-        self.mock_config.get_gitlab_base_url.return_value = "https://gitlab.cee.redhat.com"
+        self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
         self.mock_config.get_shipment_mrs.return_value = ["https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/15"]
         self.mock_config.get_gitlab_token.return_value = None
         self.shipment = ShipmentData(self.mock_config)

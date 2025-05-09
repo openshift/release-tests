@@ -271,11 +271,11 @@ class ConfigStore:
         """
         return self._get_env_var(ENV_VAR_GITLAB_TOKEN)
 
-    def get_gitlab_base_url(self):
+    def get_gitlab_url(self):
         """
         Get gitlab base url from local config
         """
-        return self._local_conf["gitlab_base_url"]
+        return self._local_conf["gitlab_url"]
 
     def get_google_app_passwd(self):
         """

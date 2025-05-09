@@ -108,7 +108,7 @@ class ShipmentData:
                 
             try:
                 project, mr_id = self._parse_mr_url(url)
-                gitlab_url = self._cs.get_gitlab_base_url()
+                gitlab_url = self._cs.get_gitlab_url()
                 token = self._cs.get_gitlab_token()
                 
                 mrs.append(GitLabMergeRequest(
