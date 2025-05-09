@@ -106,4 +106,7 @@ class TestConfigStore(unittest.TestCase):
         for r in ["4.18.0-rc.8", "4.19.0-ec.1"]:
             cs = ConfigStore(r)
             self.assertGreater(len(cs.get_advisories()), 0)
+    
+    def test_get_gitlab_url(self):
+        self.assertEqual(self.cs.get_gitlab_url(), "https://gitlab.cee.redhat.com")
         

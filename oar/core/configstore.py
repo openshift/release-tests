@@ -265,6 +265,18 @@ class ConfigStore:
         """
         return self._get_env_var(ENV_VAR_SLACK_APP_TOKEN)
 
+    def get_gitlab_token(self):
+        """
+        Get gitlab token from env var GITLAB_TOKEN
+        """
+        return self._get_env_var(ENV_VAR_GITLAB_TOKEN)
+
+    def get_gitlab_url(self):
+        """
+        Get gitlab base url from local config
+        """
+        return self._local_conf["gitlab_url"]
+
     def get_google_app_passwd(self):
         """
         Get google account application password
@@ -282,6 +294,15 @@ class ConfigStore:
         Get release url
         """
         return self._local_conf["signature_url"]
+
+    def get_shipment_mrs(self):
+        """Get the list of shipment MR URLs from the assembly configuration.
+
+        Returns:
+            list: List of MR URLs (empty list if none found)
+        """
+        mrs = self._get_assembly_attr("group/shipments/mrs")
+        return [mr["url"] for mr in mrs] if mrs else []
 
     def _get_env_var(self, var):
         """
