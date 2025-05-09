@@ -100,7 +100,7 @@ class ShipmentData:
     def _initialize_mrs(self) -> List[GitLabMergeRequest]:
         """Initialize GitLabMergeRequest objects from shipment MRs"""
         mrs = []
-        mr_urls = self._cs.get_shipment_mrs() or []
+        mr_urls = self._cs.get_shipment_mrs()
         
         for url in mr_urls:
             if not url:
