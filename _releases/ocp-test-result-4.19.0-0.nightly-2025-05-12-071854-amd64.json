@@ -36,7 +36,8 @@
         {
           "jobStartTime": "2025-05-12T18:43:41Z",
           "jobID": "f415c1e8-a082-4de8-bb42-bfbce0c1f321",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1921999991929311232",
+          "jobState": "pending"
         },
         {
           "jobStartTime": "2025-05-12T18:43:46Z",
@@ -82,12 +83,14 @@
         {
           "jobStartTime": "2025-05-12T18:43:56Z",
           "jobID": "c3383769-fe06-4e17-b096-66b77377a2bd",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1922001196034297856",
+          "jobState": "pending"
         },
         {
           "jobStartTime": "2025-05-12T18:44:01Z",
           "jobID": "d8775081-39f7-4544-a126-9c67f4f85144",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1922008190979936256",
+          "jobState": "pending"
         }
       ]
     },
@@ -97,9 +100,47 @@
         "jobStartTime": "2025-05-12T15:11:52Z",
         "jobID": "43f593b1-5030-4270-ba8a-9b82e8786838",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/1921960043280863232",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-05-12T19:14:16Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 112,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-20800:UserInterface Key/Value Secret"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-05-12T19:30:13Z",
+          "jobID": "d9195c53-cd78-4c1e-8767-55506faecc52",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2025-05-12T19:30:18Z",
+          "jobID": "11cb8ce2-c70c-44d4-b283-c60a33f9b093",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-disruptive-f999",
