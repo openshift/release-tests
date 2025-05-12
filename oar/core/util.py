@@ -1,5 +1,6 @@
 import logging
 from semver.version import Version
+import re
 
 def is_valid_z_release(version):
     strs = version.split(".")
@@ -13,7 +14,6 @@ def is_valid_z_release(version):
             break
 
     return valid
-
 
 def get_y_release(version):
     strs = version.split(".")
@@ -37,10 +37,8 @@ def get_release_key(version):
             return prerelease
     return version
 
-
 def init_logging(log_level=logging.INFO):
     logging.basicConfig(
-        # format="%(module)s: %(asctime)s: %(levelname)s: %(message)s",
         format="%(asctime)s: %(levelname)s: %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%SZ",
         level=log_level,
@@ -67,3 +65,13 @@ def get_advisory_domain_url():
 
 def is_grade_healthy(grade):
     return grade in ("A", "B")
+
+def validate_email(email):
+    """Validate email format using regex pattern.
+    Args:
+        email (str): Email address to validate
+    Returns:
+        bool: True if email is valid, False otherwise
+    """
+    pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+    return bool(re.match(pattern, email))
