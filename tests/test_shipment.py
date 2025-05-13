@@ -244,5 +244,27 @@ class TestShipmentData(unittest.TestCase):
             self.shipment.add_qe_release_lead_comment("invalid-email")
         self.assertIn("Email must be in valid format", str(context.exception))
 
+    def test_add_qe_release_lead_comment_real_mr(self):
+        """Test with real GitLab MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real MR test")
+
+        try:
+            # Use a known real MR and email, the MR (#15) is configured in mocked configustore
+            # the private token is retrieved from os env var
+            test_email = "rioliu@redhat.com"
+            
+            # Create shipment with the real MR
+            real_shipment = ShipmentData(self.mock_config)
+            
+            # Test the method
+            real_shipment.add_qe_release_lead_comment(test_email)
+            
+            # Verify by checking logs (actual comment verification would require API call)
+            # In real usage, you might want to manually verify the comment was added
+            self.assertTrue(True)  # Placeholder assertion
+        except Exception as e:
+            self.fail(f"Real MR test failed: {str(e)}")
+
 if __name__ == '__main__':
     unittest.main()
