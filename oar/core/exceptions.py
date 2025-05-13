@@ -28,3 +28,15 @@ class NotificationException(BaseException):
 
 class JenkinsHelperException(BaseException):
     """Exception class to raise error in JenkinsHelper"""
+
+
+class GitLabMergeRequestException(BaseException):
+    """Exception class to raise error in GitLabMergeRequest"""
+
+
+class GitLabServerException(BaseException):
+    """Exception class to raise error in GitLabServer"""
+
+
+class ShipmentDataException(BaseException):
+    """Exception class to raise error in ShipmentData"""

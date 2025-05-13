@@ -3,10 +3,16 @@ import re
 import yaml
 import os
 import logging
+from oar.core.util import is_valid_email
 from typing import List, Optional, Set
 from urllib.parse import urlparse
 from glom import glom
 from oar.core.configstore import ConfigStore
+from oar.core.exceptions import (
+    GitLabMergeRequestException,
+    GitLabServerException,
+    ShipmentDataException
+)
 
 logger = logging.getLogger(__name__)
 
@@ -24,10 +30,9 @@ class GitLabMergeRequest:
         self.project_name = project_name
         self.merge_request_id = merge_request_id
         
-        
         self.private_token = private_token or os.getenv('GITLAB_TOKEN')
         if not self.private_token:
-            raise ValueError("No GitLab token provided and GITLAB_TOKEN env var not set")
+            raise GitLabMergeRequestException("No GitLab token provided and GITLAB_TOKEN env var not set")
             
         self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token)
         # First get the project, then get the merge request
@@ -41,14 +46,14 @@ class GitLabMergeRequest:
                 mrs = project.mergerequests.list()
                 self.mr = next((mr for mr in mrs if mr.iid == merge_request_id), None)
                 if not self.mr:
-                    raise Exception(f"Merge request {merge_request_id} not found")
+                    raise GitLabMergeRequestException(f"Merge request {merge_request_id} not found")
         except gitlab.exceptions.GitlabGetError as e:
-            raise Exception(f"Failed to get merge request: {str(e)}")
+            raise GitLabMergeRequestException(f"Failed to get merge request: {str(e)}")
 
     def get_file_content(self, file_path: str) -> str:
         """Get raw file content from the merge request"""
         if not file_path or not isinstance(file_path, str):
-            raise ValueError("File path must be a non-empty string")
+            raise GitLabMergeRequestException("File path must be a non-empty string")
             
         try:
             file_content = self.gl.projects.get(self.project_name).files.get(
@@ -59,7 +64,7 @@ class GitLabMergeRequest:
                 return file_content
             return file_content.decode().decode("utf-8")
         except Exception as e:
-            raise Exception(f"Failed to access file '{file_path}': {str(e)}")
+            raise GitLabMergeRequestException(f"Failed to access file '{file_path}': {str(e)}")
 
     def get_all_files(self, file_extension: str = None) -> List[str]:
         """Get all files changed in the merge request, optionally filtered by extension
@@ -79,14 +84,61 @@ class GitLabMergeRequest:
                 return [f for f in all_files if f.lower().endswith(f'.{file_extension.lower()}')]
             return all_files
         except Exception as e:
-            raise Exception(f"Failed to get changed files: {str(e)}")
+            raise GitLabMergeRequestException(f"Failed to get changed files: {str(e)}")
 
     def add_comment(self, comment: str) -> None:
         """Add comment to the merge request"""
         try:
             self.mr.notes.create({'body': comment})
         except Exception as e:
-            raise Exception(f"Failed to add comment: {e}")
+            raise GitLabMergeRequestException(f"Failed to add comment: {e}")
+
+
+class GitLabServer:
+    """Class for performing GitLab server-level operations"""
+    
+    def __init__(self, gitlab_url: str, private_token: str = None):
+        """Initialize with GitLab connection details
+        
+        Args:
+            gitlab_url: URL of GitLab instance (hostname only)
+            private_token: Optional token, falls back to GITLAB_TOKEN env var
+        """
+        self.gitlab_url = gitlab_url
+        self.private_token = private_token or os.getenv('GITLAB_TOKEN')
+        
+        if not self.private_token:
+            raise ValueError("No GitLab token provided and GITLAB_TOKEN env var not set")
+            
+        self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token)
+        
+    def get_username_by_email(self, email: str) -> Optional[str]:
+        """Query GitLab username by email address
+        
+        Args:
+            email: email address to search for
+            
+        Returns:
+            first matching GitLab username if found, None otherwise
+            
+        Raises:
+            ValueError: if email is empty, not a string, or invalid format
+            Exception: if there are errors accessing GitLab API
+        """
+        if not email or not isinstance(email, str):
+            raise ValueError("Email must be a non-empty string")
+            
+        if not is_valid_email(email):
+            raise ValueError("Email must be in valid format (e.g. user@example.com)")
+            
+        try:
+            users = self.gl.users.list(search=email)
+            if users:
+                return users[0].username
+            return None
+        except Exception as e:
+            logger.error(f"Failed to query GitLab users: {str(e)}")
+            raise GitLabServerException(f"GitLab API error: {str(e)}")
 
 
 class ShipmentData:
@@ -132,16 +184,16 @@ class ShipmentData:
             tuple: (project_path, mr_id)
             
         Raises:
-            ValueError: If URL is invalid
+            ShipmentDataException: If URL is invalid
         """
         parsed = urlparse(url)
         if not parsed.netloc or not parsed.path:
-            raise ValueError("Invalid MR URL")
+            raise ShipmentDataException("Invalid MR URL")
             
         # Extract project path (namespace/project)
         path_parts = parsed.path.split('/-/merge_requests/')
         if len(path_parts) != 2:
-            raise ValueError("Invalid MR URL format")
+            raise ShipmentDataException("Invalid MR URL format")
             
         project_path = path_parts[0].strip('/')
         mr_id = int(path_parts[1].split('/')[0])
@@ -234,3 +286,38 @@ class ShipmentData:
                 continue
                 
         return sorted(nvrs)
+
+    def add_qe_release_lead_comment(self, email: str) -> None:
+        """Add comment to all shipment merge requests identifying QE release lead
+        
+        Args:
+            email: Email address of QE release lead to look up in GitLab
+            
+        Raises:
+            ShipmentDataException: If email is invalid or username not found
+        """
+        if not email or not isinstance(email, str):
+            raise ShipmentDataException("Email must be a non-empty string")
+            
+        try:
+            gitlab_url = self._cs.get_gitlab_url()
+            token = self._cs.get_gitlab_token()
+            gl_server = GitLabServer(gitlab_url, token)
+            
+            username = gl_server.get_username_by_email(email)
+            if not username:
+                raise ShipmentDataException(f"No GitLab user found for email: {email}")
+                
+            comment = f"QE Release Lead is @{username}"
+            
+            for mr in self._mrs:
+                try:
+                    mr.add_comment(comment)
+                    logger.info(f"Added QE release lead comment to MR {mr.merge_request_id}")
+                except Exception as e:
+                    logger.error(f"Failed to add comment to MR {mr.merge_request_id}: {str(e)}")
+                    continue
+                    
+        except Exception as e:
+            logger.error(f"Error adding QE release lead comments: {str(e)}")
+            raise ShipmentDataException(f"Failed to add QE release lead comments: {str(e)}")
