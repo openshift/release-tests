@@ -82,3 +82,53 @@ class TestNotificationManager(unittest.TestCase):
         self.assertIn("let's verify them ASAP", msg)
         self.assertIn("thanks for your cooperation", msg)
         self.assertIn("This is a CVE bug and must be verified", msg)
+
+    def test_shipment_mrs_message_format(self):
+        """Test formatting of shipment MR notification message"""
+        test_mrs = ["https://git.example.com/mr/1", "https://git.example.com/mr/2"]
+        test_owner = "test@example.com"
+        
+        # Mock group ID lookup
+        self.nm.mh.sc.get_group_id_by_name = unittest.mock.Mock(
+            return_value="<!subteam^TEST>"
+        )
+        
+        message = self.nm.mh.get_slack_message_for_shipment_mrs(test_mrs, test_owner)
+        logging.debug("Generated Slack message: %s", message)
+        
+        # Verify message components
+        self.assertIn(test_owner, message)
+        for mr in test_mrs:
+            self.assertIn(mr, message)
+        self.assertIn("QE release lead has been transferred", message)
+        self.assertIn("Shipment merge requests", message)
+
+    def test_share_shipment_mrs_success(self):
+        """Test successful shipment MR notification posting"""
+        test_mrs = ["https://git.example.com/mr/1"]
+        test_owner = "test@example.com"
+        
+        # Mock dependencies
+        self.cs.get_shipment_mr_urls = unittest.mock.Mock(return_value=test_mrs)
+        self.nm.sc.post_message = unittest.mock.Mock()
+        
+        self.nm.share_shipment_mrs(test_mrs, test_owner)
+        
+        # Verify Slack client called with formatted message
+        self.nm.sc.post_message.assert_called_once_with(
+            self.cs.get_slack_channel_from_contact("qe-release"),
+            unittest.mock.ANY  # We already validated message format separately
+        )
+            
+    def test_share_shipment_mrs_error(self):
+        """Test notification when Slack API fails"""
+        test_mrs = ["https://git.example.com/mr/1"]
+        test_owner = "test@example.com"
+        
+        # Mock SlackClient to raise error
+        self.nm.sc.post_message = unittest.mock.Mock(
+            side_effect=Exception("Slack API error")
+        )
+        
+        with self.assertRaises(Exception):
+            self.nm.share_shipment_mrs(test_mrs, test_owner)
