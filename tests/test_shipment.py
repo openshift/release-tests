@@ -219,7 +219,7 @@ class TestShipmentData(unittest.TestCase):
             self.mock_config.get_gitlab_token()
         )
         mock_server.get_username_by_email.assert_called_once_with("test@example.com")
-        mock_mr.add_comment.assert_called_once_with("QE Release Lead from ERT is @testuser")
+        mock_mr.add_comment.assert_called_once_with("QE Release Lead is @testuser")
 
     @patch('oar.core.shipment.GitLabServer')
     def test_add_qe_release_lead_comment_user_not_found(self, mock_gl_server):
