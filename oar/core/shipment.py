@@ -308,7 +308,7 @@ class ShipmentData:
             if not username:
                 raise ShipmentDataException(f"No GitLab user found for email: {email}")
                 
-            comment = f"QE Release Lead from is @{username}"
+            comment = f"QE Release Lead is @{username}"
             
             for mr in self._mrs:
                 try:
