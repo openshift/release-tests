@@ -3,7 +3,7 @@ import re
 import yaml
 import os
 import logging
-from oar.core.util import validate_email
+from oar.core.util import is_valid_email
 from typing import List, Optional, Set
 from urllib.parse import urlparse
 from glom import glom
@@ -128,11 +128,8 @@ class GitLabServer:
         if not email or not isinstance(email, str):
             raise ValueError("Email must be a non-empty string")
             
-        if not validate_email(email):
+        if not is_valid_email(email):
             raise ValueError("Email must be in valid format (e.g. user@example.com)")
-            
-        if not email.strip():
-            raise ValueError("Email cannot be empty or whitespace")
             
         try:
             users = self.gl.users.list(search=email)
@@ -311,7 +308,7 @@ class ShipmentData:
             if not username:
                 raise ShipmentDataException(f"No GitLab user found for email: {email}")
                 
-            comment = f"QE Release Lead from ERT is @{username}"
+            comment = f"QE Release Lead from is @{username}"
             
             for mr in self._mrs:
                 try:

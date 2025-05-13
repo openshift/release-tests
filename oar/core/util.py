@@ -66,7 +66,7 @@ def get_advisory_domain_url():
 def is_grade_healthy(grade):
     return grade in ("A", "B")
 
-def validate_email(email):
+def is_valid_email(email):
     """Validate email format using regex pattern.
     Args:
         email (str): Email address to validate

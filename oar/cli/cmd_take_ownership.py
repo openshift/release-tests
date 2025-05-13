@@ -6,14 +6,14 @@ from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
 from oar.core.shipment import ShipmentData
-from oar.core.util import validate_email
+from oar.core.util import is_valid_email
 from oar.core.worksheet import WorksheetManager
 
 logger = logging.getLogger(__name__)
 
 def validate_email_for_cli(email):
     """Validate email address using util.validate_email and raise click exception if invalid"""
-    if not validate_email(email):
+    if not is_valid_email(email):
         raise click.BadParameter(f"{email} is not a valid email")
     return email
 
