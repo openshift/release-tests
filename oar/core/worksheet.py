@@ -87,7 +87,7 @@ class WorksheetManager:
                 for k, v in candidate_builds.items():
                     build_cell_value += f"{k}: {v}\n"
             # if attr reference_releases! does not have anything, update the cell with empty
-            self._report.update_build_info(build_cell_value[:-1])
+            self._report.update_build_info(build_cell_value.strip())
             logger.info("build info is updated")
             logger.debug(f"build info:\n{build_cell_value}")
 
@@ -95,7 +95,7 @@ class WorksheetManager:
             ad_cell_value = ""
             for k, v in self._cs.get_advisories().items():
                 ad_cell_value += f"{k}: {util.get_advisory_link(v)}\n"
-            self._report.update_advisory_info(ad_cell_value[:-1])
+            self._report.update_advisory_info(ad_cell_value.strip())
             logger.info("advisory info is updated")
             logger.debug(f"advisory info:\n{ad_cell_value}")
 
