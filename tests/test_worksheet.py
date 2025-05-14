@@ -20,7 +20,7 @@ class TestWorksheetManager(TestCase):
 
     def step_0_create_report(self):
         self.report = self.wm.create_test_report()
-        self.assertRegex(self.report.get_advisory_info(), "129357")
+        self.assertRegex(self.report.get_shipment_info(), "129357")
         self.assertRegex(
             self.report.get_build_info(), "4.15.0-0.nightly-2024-03-20-032212"
         )
