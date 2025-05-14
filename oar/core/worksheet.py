@@ -87,13 +87,13 @@ class WorksheetManager:
                 for k, v in candidate_builds.items():
                     build_cell_value += f"{k}: {v}\n"
             # if attr reference_releases! does not have anything, update the cell with empty
-            self._report.update_build_info(build_cell_value[:-1])
+            self._report.update_build_info(build_cell_value.strip())
             logger.info("build info is updated")
             logger.debug(f"build info:\n{build_cell_value}")
 
             # update shipment MRs
             shipment_cell_value = "\n".join(self._cs.get_shipment_mrs())
-            self._report.update_shipment_info(shipment_cell_value[:-1])
+            self._report.update_shipment_info(shipment_cell_value)
             logger.info("shipment info is updated")
             logger.debug(f"shipment info:\n{shipment_cell_value}")
 
