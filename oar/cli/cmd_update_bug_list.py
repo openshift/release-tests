@@ -2,11 +2,11 @@ import logging
 
 import click
 
-from oar.core.advisory import AdvisoryManager
 from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
 from oar.core.worksheet import WorksheetManager
+from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ def update_bug_list(ctx, notify, confirm_droppable):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_INPROGRESS)
         # refresh bug list
-        jira_issues = AdvisoryManager(cs).get_jira_issues()
+        jira_issues = ShipmentData(cs).get_jira_issues()
         report.update_bug_list(jira_issues)
         # send notification
         if notify:

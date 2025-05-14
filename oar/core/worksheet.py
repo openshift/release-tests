@@ -10,11 +10,11 @@ from gspread import Worksheet
 from gspread.exceptions import *
 
 import oar.core.util as util
-from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
 from oar.core.exceptions import WorksheetException, WorksheetExistsException, JiraUnauthorizedException
 from oar.core.jira import JiraManager
+from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
 
@@ -91,13 +91,11 @@ class WorksheetManager:
             logger.info("build info is updated")
             logger.debug(f"build info:\n{build_cell_value}")
 
-            # update advisory info
-            ad_cell_value = ""
-            for k, v in self._cs.get_advisories().items():
-                ad_cell_value += f"{k}: {util.get_advisory_link(v)}\n"
-            self._report.update_advisory_info(ad_cell_value[:-1])
-            logger.info("advisory info is updated")
-            logger.debug(f"advisory info:\n{ad_cell_value}")
+            # update shipment MRs
+            shipment_cell_value = "\n".join(self._cs.get_shipment_mrs())
+            self._report.update_shipment_info(shipment_cell_value[:-1])
+            logger.info("shipment info is updated")
+            logger.debug(f"shipment info:\n{shipment_cell_value}")
 
             # update jira info
             self._report.update_jira_info(self._cs.get_jira_ticket())
@@ -105,8 +103,8 @@ class WorksheetManager:
             logger.debug(f"jira info:\n{self._cs.get_jira_ticket()}")
 
             # update on_qa bugs list
-            am = AdvisoryManager(self._cs)
-            self._report.generate_bug_list(am.get_jira_issues())
+            shipment = ShipmentData(self._cs)
+            self._report.generate_bug_list(shipment.get_jira_issues())
 
         except Exception as ge:  # catch all the exceptions here
             raise WorksheetException("create test report failed") from ge
@@ -153,20 +151,20 @@ class TestReport:
         """
         return self._ws.url
 
-    def update_advisory_info(self, ad):
+    def update_shipment_info(self, shipment):
         """
-        Update advisory info in test report
+        Update shipment info in test report
 
         Args:
-            ad (str): advisories of current release
+            shipment (str): shipment info of current release
         """
-        self._ws.update_acell(LABEL_ADVISORY, ad)
+        self._ws.update_acell(LABEL_SHIPMENT, shipment)
 
-    def get_advisory_info(self):
+    def get_shipment_info(self):
         """
-        Get advisory info from test report
+        Get shipment info from test report
         """
-        return self._ws.acell(LABEL_ADVISORY).value
+        return self._ws.acell(LABEL_SHIPMENT).value
 
     def update_build_info(self, build):
         """

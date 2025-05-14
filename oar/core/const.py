@@ -1,7 +1,7 @@
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
 # cell labels
-LABEL_ADVISORY = "B2"
+LABEL_SHIPMENT = "B2"
 LABEL_BUILD = "B3"
 LABEL_JIRA = "B4"
 LABEL_OVERALL_STATUS = "B1"
