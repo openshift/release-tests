@@ -93,7 +93,7 @@ class WorksheetManager:
 
             # update shipment MRs
             shipment_cell_value = "\n".join(self._cs.get_shipment_mrs())
-            self._report.update_shipment_info(shipment_cell_value.strip())
+            self._report.update_shipment_info(shipment_cell_value)
             logger.info("shipment info is updated")
             logger.debug(f"shipment info:\n{shipment_cell_value}")
 
