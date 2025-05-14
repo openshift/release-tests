@@ -2,7 +2,6 @@ import logging
 
 import click
 
-from oar.core.advisory import AdvisoryManager
 from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
