@@ -93,6 +93,19 @@ class GitLabMergeRequest:
         except Exception as e:
             raise GitLabMergeRequestException(f"Failed to add comment: {e}")
 
+    def get_status(self) -> str:
+        """Get the current status of the merge request
+        
+        Returns:
+            str: Current state of MR ('opened', 'merged', 'closed')
+            
+        Raises:
+            GitLabMergeRequestException: If unable to get status
+        """
+        try:
+            return self.mr.state
+        except Exception as e:
+            raise GitLabMergeRequestException(f"Failed to get MR status: {str(e)}")
 
 class GitLabServer:
     """Class for performing GitLab server-level operations"""
@@ -150,7 +163,11 @@ class ShipmentData:
         self._mrs = self._initialize_mrs()
         
     def _initialize_mrs(self) -> List[GitLabMergeRequest]:
-        """Initialize GitLabMergeRequest objects from shipment MRs"""
+        """Initialize GitLabMergeRequest objects from shipment MRs
+        
+        Returns:
+            List of GitLabMergeRequest objects that are in 'opened' state
+        """
         mrs = []
         mr_urls = self._cs.get_shipment_mrs()
         
@@ -163,13 +180,18 @@ class ShipmentData:
                 gitlab_url = self._cs.get_gitlab_url()
                 token = self._cs.get_gitlab_token()
                 
-                mrs.append(GitLabMergeRequest(
+                mr = GitLabMergeRequest(
                     gitlab_url=gitlab_url,
                     project_name=project,
                     merge_request_id=mr_id,
                     private_token=token
-                ))
+                )
+                
+                # Only include opened MRs
+                if mr.get_status() == 'opened':
+                    mrs.append(mr)
             except Exception as e:
+                logger.warning(f"Failed to initialize MR from {url}: {str(e)}")
                 continue
                 
         return mrs
