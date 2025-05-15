@@ -296,13 +296,30 @@ class ConfigStore:
         return self._local_conf["signature_url"]
 
     def get_shipment_mrs(self):
-        """Get the list of shipment MR URLs from the assembly configuration.
+        """Get shipment MR URLs from assembly config, handling both single and multiple shipments.
 
         Returns:
             list: List of MR URLs (empty list if none found)
         """
-        mrs = self._get_assembly_attr("group/shipments/mrs")
-        return [mr["url"] for mr in mrs] if mrs else []
+        shipments = self._get_assembly_attr("group/shipments")
+        if not shipments:
+            return []
+        if isinstance(shipments, dict):  # Single shipment case
+            return [shipments["url"]]
+        return [s["url"] for s in shipments]  # Multiple shipments case
+
+    def get_advisories(self):
+        """
+        Get advisories info from build data e.g.
+        group:
+            advisories:
+                extras: 113027
+                image: 113026
+                metadata: 113028
+                rpm: 113025
+        """
+
+        return self._get_assembly_attr("group/advisories")
 
     def _get_env_var(self, var):
         """
