@@ -37,7 +37,31 @@
           "jobStartTime": "2025-05-15T21:21:27Z",
           "jobID": "37b05a1b-1a86-42df-aa5d-be31f47c118e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/1923126605924798464",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-16T01:29:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-05-15T21:21:32Z",
@@ -177,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-05-15-102508",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-05-15-102508"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
