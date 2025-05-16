@@ -66,11 +66,11 @@ class GitLabMergeRequest:
         except Exception as e:
             raise GitLabMergeRequestException(f"Failed to access file '{file_path}': {str(e)}")
 
-    def get_all_files(self, file_extension: str = None) -> List[str]:
+    def get_all_files(self, file_extension: str = 'yaml') -> List[str]:
         """Get all files changed in the merge request, optionally filtered by extension
         
         Args:
-            file_extension: Optional file extension to filter by (e.g. 'yaml')
+            file_extension: File extension to filter by (default: 'yaml')
             
         Returns:
             List of file paths changed in the merge request
@@ -244,8 +244,8 @@ class ShipmentData:
         for mr in self._mrs:
             try:
                 logger.info(f"Processing MR {mr.merge_request_id} for Jira issues")
-                # Get all YAML files from merge request using get_all_files()
-                yaml_files = mr.get_all_files('yaml')
+                # Get all YAML files from merge request
+                yaml_files = mr.get_all_files()
                 
                 for file_path in yaml_files:
                     try:
@@ -270,31 +270,26 @@ class ShipmentData:
         return sorted(issues)
 
     def get_nvrs(self) -> List[str]:
-        """Get all NVRS from image shipment YAML files
+        """Get all NVRS from shipment YAML files by checking jsonpath shipment.snapshot.spec.nvrs
         
         Returns:
             List of unique NVRS (e.g. ["package-1.2.3-1", "package-4.5.6-2"])
         """
         nvrs: Set[str] = set()
-        pattern = re.compile(r'^\d+\.\d+\.\d+-image\.\d+\.yaml$')
         
         for mr in self._mrs:
             try:
                 logger.info(f"Processing MR {mr.merge_request_id} for NVRS")
                 # Get all YAML files from merge request
-                yaml_files = mr.get_all_files('yaml')
+                yaml_files = mr.get_all_files()
                 
                 for file_path in yaml_files:
                     try:
-                        if not pattern.match(os.path.basename(file_path)):
-                            logger.debug(f"Skipping non-image file: {file_path}")
-                            continue
-                            
-                        logger.debug(f"Processing image file: {file_path}")
+                        logger.debug(f"Processing file: {file_path}")
                         content = mr.get_file_content(file_path)
                         data = yaml.safe_load(content)
                         
-                        # Extract NVRS from YAML structure
+                        # Try to extract NVRS from YAML structure
                         nvrs_list = glom(data, 'shipment.snapshot.spec.nvrs', default=[])
                         
                         if isinstance(nvrs_list, list):
