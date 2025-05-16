@@ -35,6 +35,7 @@ class GitLabMergeRequest:
             raise GitLabMergeRequestException("No GitLab token provided and GITLAB_TOKEN env var not set")
             
         self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token)
+        self.gl.auth()
         # First get the project, then get the merge request
         try:
             project = self.gl.projects.get(project_name)
@@ -106,6 +107,40 @@ class GitLabMergeRequest:
             return self.mr.state
         except Exception as e:
             raise GitLabMergeRequestException(f"Failed to get MR status: {str(e)}")
+
+    def approve(self) -> None:
+        """Approve the current merge request (adds your approval)
+        
+        Note: 
+        - This does not merge the MR, just adds your approval
+        - The MR will still need all required approvals before it can be merged
+        - Will not approve if current user has already approved
+        
+        Raises:
+            GitLabMergeRequestException: If unable to approve the MR
+        """
+        try:
+            if self.mr.state != 'opened':
+                raise GitLabMergeRequestException(
+                    f"Cannot approve MR in state: {self.mr.state}"
+                )
+            
+            # Get current user
+            current_user = self.gl.user
+            if not current_user:
+                raise GitLabMergeRequestException("Could not identify current user")
+                
+            # Check if already approved
+            approved_by = [a['user']['username'] for a in self.mr.approvals.get().approved_by]
+            if current_user.username in approved_by:
+                logger.info(f"User {current_user.username} has already approved MR {self.merge_request_id}")
+                return
+                
+            self.mr.approve()
+            logger.info(f"Successfully approved MR {self.merge_request_id}")
+        except Exception as e:
+            logger.error(f"Failed to approve MR {self.merge_request_id}: {str(e)}")
+            raise GitLabMergeRequestException(f"Failed to approve merge request: {str(e)}")
 
 class GitLabServer:
     """Class for performing GitLab server-level operations"""
@@ -338,3 +373,17 @@ class ShipmentData:
         except Exception as e:
             logger.error(f"Error adding QE release lead comments: {str(e)}")
             raise ShipmentDataException(f"Failed to add QE release lead comments: {str(e)}")
+
+    def add_qe_approval(self) -> None:
+        """Add QE approval to all shipment merge requests
+        
+        Raises:
+            ShipmentDataException: If any MR approval fails
+        """
+        for mr in self._mrs:
+            try:
+                mr.approve()
+                logger.info(f"Successfully added QE approval to MR {mr.merge_request_id}")
+            except Exception as e:
+                logger.error(f"Failed to approve MR {mr.merge_request_id}: {str(e)}")
+                raise ShipmentDataException(f"Failed to approve merge request: {str(e)}")
