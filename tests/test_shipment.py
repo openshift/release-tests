@@ -5,7 +5,8 @@ from unittest.mock import MagicMock, patch
 from oar.core.shipment import GitLabMergeRequest, ShipmentData, GitLabServer
 from oar.core.exceptions import (
     GitLabServerException,
-    ShipmentDataException
+    ShipmentDataException,
+    GitLabMergeRequestException
 )
 
 class TestGitLabServer(unittest.TestCase):
@@ -180,7 +181,118 @@ class TestGitLabMergeRequest(unittest.TestCase):
             else:
                 self.fail(f"Failed to get files from real MR: {str(e)}")
 
-    # Other test methods...
+    def test_approve_success(self):
+        """Test successful approval of merge request"""
+        # Setup mock MR state and approvals
+        self.mock_mr.state = 'opened'
+        self.mock_gl.user = MagicMock()
+        self.mock_gl.user.username = 'testuser'
+        
+        # Setup mock approvals
+        mock_approvals = MagicMock()
+        mock_approvals.approved_by = []
+        self.mock_mr.approvals.get.return_value = mock_approvals
+        
+        # Setup logger mock
+        with patch('oar.core.shipment.logger') as mock_logger:
+            # Test approval
+            self.client.approve()
+            
+            # Verify calls
+            self.mock_mr.approve.assert_called_once()
+            self.mock_mr.approvals.get.assert_called_once()
+            mock_logger.info.assert_called_with(
+                f"Successfully approved MR {self.client.merge_request_id}"
+            )
+
+    def test_approve_already_approved(self):
+        """Test approval when already approved"""
+        # Setup mock MR state and approvals
+        self.mock_mr.state = 'opened'
+        self.mock_gl.user = MagicMock()
+        self.mock_gl.user.username = 'testuser'
+        
+        # Setup mock approvals showing already approved
+        mock_approvals = MagicMock()
+        mock_approvals.approved_by = [{'user': {'username': 'testuser'}}]
+        self.mock_mr.approvals.get.return_value = mock_approvals
+        
+        # Setup logger mock
+        with patch('oar.core.shipment.logger') as mock_logger:
+            # Test approval
+            self.client.approve()
+            
+            # Verify approve() was NOT called
+            self.mock_mr.approve.assert_not_called()
+            mock_logger.info.assert_called_with(
+                f"User {self.mock_gl.user.username} has already approved MR {self.client.merge_request_id}"
+            )
+
+    def test_approve_invalid_state(self):
+        """Test approval when MR is not in opened state"""
+        # Setup mock MR state
+        self.mock_mr.state = 'merged'
+        
+        # Test approval
+        with self.assertRaises(GitLabMergeRequestException) as context:
+            self.client.approve()
+        self.assertIn("Cannot approve MR in state", str(context.exception))
+        self.mock_mr.approve.assert_not_called()
+
+    def test_approve_user_not_found(self):
+        """Test approval when current user cannot be identified"""
+        # Setup mock MR state
+        self.mock_mr.state = 'opened'
+        self.mock_gl.user = None
+        
+        # Setup logger mock
+        with patch('oar.core.shipment.logger') as mock_logger:
+            # Test approval
+            with self.assertRaises(GitLabMergeRequestException) as context:
+                self.client.approve()
+            self.assertIn("Could not identify current user", str(context.exception))
+            self.mock_mr.approve.assert_not_called()
+
+    def test_approve_api_error(self):
+        """Test approval when GitLab API fails"""
+        # Setup mock MR state
+        self.mock_mr.state = 'opened'
+        self.mock_gl.user = MagicMock()
+        self.mock_gl.user.username = 'testuser'
+        
+        # Setup mock approvals to raise error
+        self.mock_mr.approvals.get.side_effect = gitlab.exceptions.GitlabError("API error")
+        
+        # Setup logger mock
+        with patch('oar.core.shipment.logger') as mock_logger:
+            # Test approval
+            with self.assertRaises(GitLabMergeRequestException) as context:
+                self.client.approve()
+            self.assertIn("Failed to approve merge request", str(context.exception))
+            self.mock_mr.approve.assert_not_called()
+            mock_logger.error.assert_called_with(
+                f"Failed to approve MR {self.client.merge_request_id}: API error"
+            )
+
+    def test_approve_real_mr(self):
+        """Test approval with real MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            client = GitLabMergeRequest(
+                "https://gitlab.cee.redhat.com",
+                "hybrid-platforms/art/ocp-shipment-data",
+                15
+            )
+            client.approve()
+            print(f"\nSuccessfully approved MR 15")
+        except Exception as e:
+            if "Merge request 15 not found" in str(e):
+                self.skipTest("Merge request 15 not found - skipping real API test")
+            else:
+                self.fail(f"Failed to approve real MR: {str(e)}")
+
 
 class TestShipmentData(unittest.TestCase):
     @patch('oar.core.configstore.ConfigStore')
@@ -233,7 +345,6 @@ class TestShipmentData(unittest.TestCase):
             self.shipment.add_qe_release_lead_comment("notfound@example.com")
         self.assertIn("No GitLab user found for email", str(context.exception))
 
-    # @patch('oar.core.shipment.GitLabServer')
     def test_add_qe_release_lead_comment_invalid_email(self):
         # Test invalid email formats
         with self.assertRaises(ShipmentDataException) as context:
@@ -265,6 +376,39 @@ class TestShipmentData(unittest.TestCase):
             self.assertTrue(True)  # Placeholder assertion
         except Exception as e:
             self.fail(f"Real MR test failed: {str(e)}")
+
+    @patch('oar.core.shipment.GitLabMergeRequest')
+    def test_add_qe_approval_success(self, mock_mr_class):
+        """Test successful approval of all MRs"""
+        # Setup mock MRs
+        mock_mr1 = MagicMock()
+        mock_mr2 = MagicMock()
+        self.shipment._mrs = [mock_mr1, mock_mr2]
+
+        # Test the method
+        self.shipment.add_qe_approval()
+
+        # Verify each MR was approved
+        mock_mr1.approve.assert_called_once()
+        mock_mr2.approve.assert_called_once()
+
+    @patch('oar.core.shipment.GitLabMergeRequest')
+    def test_add_qe_approval_partial_failure(self, mock_mr_class):
+        """Test approval when some MRs fail"""
+        # Setup mock MRs - one succeeds, one fails
+        mock_mr1 = MagicMock()
+        mock_mr2 = MagicMock()
+        expected_exception = GitLabMergeRequestException("Failed to approve")
+        mock_mr2.approve.side_effect = expected_exception
+        self.shipment._mrs = [mock_mr1, mock_mr2]
+
+        # Test the method - should raise exception for partial failure
+        with self.assertRaises(GitLabMergeRequestException):
+            self.shipment.add_qe_approval()
+
+        # Verify each MR was attempted
+        mock_mr1.approve.assert_called_once()
+        mock_mr2.approve.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()

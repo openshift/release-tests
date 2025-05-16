@@ -5,6 +5,7 @@ import click
 
 import oar.core.util as util
 from oar import version
+from oar.cli.cmd_add_qe_approval import add_qe_approval
 from oar.cli.cmd_change_advisory_status import change_advisory_status
 from oar.cli.cmd_check_cve_tracker_bug import check_cve_tracker_bug
 from oar.cli.cmd_check_greenwave_cvp_tests import check_greenwave_cvp_tests
@@ -58,7 +59,7 @@ def cli(ctx, release, debug):
         ctx.ensure_object(dict)
         ctx.obj["cs"] = cs
 
-
+# TODO removed eliminated commands
 cli.add_command(create_test_report)
 cli.add_command(take_ownership)
 cli.add_command(update_bug_list)
@@ -70,3 +71,4 @@ cli.add_command(stage_testing)
 cli.add_command(image_signed_check)
 cli.add_command(drop_bugs)
 cli.add_command(change_advisory_status)
+cli.add_command(add_qe_approval)
