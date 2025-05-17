@@ -38,13 +38,58 @@
           "jobStartTime": "2025-05-16T20:35:06Z",
           "jobID": "423d5bee-7b6f-408a-8f5b-e8c0856cfd49",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1923477329892347904",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-17T00:33:19Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-05-16T20:35:11Z",
           "jobID": "4ae0b141-8c32-4b5f-80a0-ad6e0d2c7265",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1923477351551733760",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-05-17T00:28:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 20
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -157,5 +202,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-05-16-105942",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-05-16-105942"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
