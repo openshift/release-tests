@@ -59,7 +59,7 @@ def cli(ctx, release, debug):
         ctx.ensure_object(dict)
         ctx.obj["cs"] = cs
 
-# TODO removed eliminated commands
+# TODO remove eliminated commands
 cli.add_command(create_test_report)
 cli.add_command(take_ownership)
 cli.add_command(update_bug_list)
