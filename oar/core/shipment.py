@@ -4,11 +4,17 @@ import yaml
 import os
 import logging
 import time
-from gitlab.exceptions import GitlabError
+from gitlab.exceptions import (
+    GitlabError,
+    GitlabGetError,
+    GitlabAuthenticationError,
+    GitlabCreateError,
+    GitlabListError
+)
 from oar.core.util import is_valid_email
 from typing import List, Optional, Set
 from urllib.parse import urlparse
-from glom import glom
+from glom import glom, PathAccessError
 from oar.core.configstore import ConfigStore
 from oar.core.jira import JiraManager
 from oar.core.exceptions import (
@@ -46,13 +52,13 @@ class GitLabMergeRequest:
             # Try to get merge request directly by ID first
             try:
                 self.mr = project.mergerequests.get(merge_request_id)
-            except gitlab.exceptions.GitlabGetError:
+            except GitlabGetError:
                 # Fall back to listing and filtering if direct get fails
                 mrs = project.mergerequests.list()
                 self.mr = next((mr for mr in mrs if mr.iid == merge_request_id), None)
                 if not self.mr:
                     raise GitLabMergeRequestException(f"Merge request {merge_request_id} not found")
-        except gitlab.exceptions.GitlabGetError as e:
+        except GitlabGetError as e:
             raise GitLabMergeRequestException(f"Failed to get merge request: {str(e)}")
 
     def get_file_content(self, file_path: str, use_cache: bool = True) -> str:
@@ -82,8 +88,10 @@ class GitLabMergeRequest:
             content = file_content.decode().decode("utf-8") if not isinstance(file_content, str) else file_content
             self._file_content_cache[file_path] = content
             return content
-        except Exception as e:
-            raise GitLabMergeRequestException(f"Failed to access file '{file_path}': {str(e)}")
+        except (GitlabGetError, GitlabAuthenticationError) as e:
+            raise GitLabMergeRequestException(f"Failed to access file '{file_path}': GitLab API error") from e
+        except UnicodeDecodeError as e:
+            raise GitLabMergeRequestException(f"Failed to decode file '{file_path}' content") from e
 
     def get_all_files(self, file_extension: str = 'yaml') -> List[str]:
         """Get all files changed in the merge request, optionally filtered by extension
@@ -102,8 +110,8 @@ class GitLabMergeRequest:
             if file_extension:
                 return [f for f in all_files if f.lower().endswith(f'.{file_extension.lower()}')]
             return all_files
-        except Exception as e:
-            raise GitLabMergeRequestException(f"Failed to get changed files: {str(e)}")
+        except GitlabError as e:
+            raise GitLabMergeRequestException(f"Failed to get changed files: GitLab API error") from e
 
     def get_jira_issues_from_file(self, file_path: str) -> Set[str]:
         """Get all Jira issue IDs from a specific file in the merge request
@@ -130,8 +138,10 @@ class GitLabMergeRequest:
                 if isinstance(issue, dict) and issue.get('source') == 'issues.redhat.com':
                     issues.add(issue['id'])
                     
+        except (yaml.YAMLError, KeyError, glom.PathAccessError) as e:
+            logger.warning(f"Failed to process file {file_path}: Invalid YAML structure")
         except Exception as e:
-            logger.warning(f"Failed to process file {file_path}: {str(e)}")
+            logger.warning(f"Failed to process file {file_path}: Unexpected error", exc_info=False)
             
         return issues
 
@@ -146,9 +156,12 @@ class GitLabMergeRequest:
             logger.info(f"Processing MR {self.merge_request_id} for Jira issues")
             for file_path in self.get_all_files():
                 issues.update(self.get_jira_issues_from_file(file_path))
+        except GitlabError as e:
+            logger.error(f"Error processing MR {self.merge_request_id}: GitLab API error")
+            raise GitLabMergeRequestException("Failed to get Jira issues due to GitLab error") from e
         except Exception as e:
-            logger.error(f"Error processing MR {self.merge_request_id}: {str(e)}")
-            raise GitLabMergeRequestException(f"Failed to get Jira issues: {str(e)}")
+            logger.error(f"Error processing MR {self.merge_request_id}: Unexpected error", exc_info=False)
+            raise GitLabMergeRequestException("Failed to get Jira issues") from e
             
         return sorted(issues)
 
@@ -156,8 +169,8 @@ class GitLabMergeRequest:
         """Add comment to the merge request"""
         try:
             self.mr.notes.create({'body': comment})
-        except Exception as e:
-            raise GitLabMergeRequestException(f"Failed to add comment: {e}")
+        except GitlabCreateError as e:
+            raise GitLabMergeRequestException("Failed to add comment to merge request") from e
 
     def add_suggestion(self, file_path: str, old_line: int, new_line: int, suggestion: str, relative_lines: str = "-0+0") -> None:
         """Add a suggestion comment to a specific line in the merge request diff
@@ -189,8 +202,8 @@ class GitLabMergeRequest:
                 'body': comment,
                 'position': position
             })
-        except Exception as e:
-            raise GitLabMergeRequestException(f"Failed to add suggestion comment: {str(e)}")
+        except GitlabCreateError as e:
+            raise GitLabMergeRequestException("Failed to add suggestion comment") from e
 
     def _get_jira_issue_line_numbers(self, jira_key: str, file_path: str) -> Optional[int]:
         """Get the line number where a Jira issue is referenced in a file
@@ -220,10 +233,10 @@ class GitLabMergeRequest:
                     return i
                     
             return None
-        except Exception as e:
+        except (GitlabError, UnicodeDecodeError) as e:
             raise GitLabMergeRequestException(
-                f"Failed to get line number for Jira issue {jira_key} in {file_path}: {str(e)}"
-            )
+                f"Failed to get line number for Jira issue {jira_key} in {file_path}"
+            ) from e
 
     def clear_file_cache(self, file_path: str = None) -> None:
         """Clear cached file content
@@ -304,9 +317,12 @@ class GitLabMergeRequest:
                 
             self.mr.approve()
             logger.info(f"Successfully approved MR {self.merge_request_id}")
+        except GitlabError as e:
+            logger.error(f"Failed to approve MR {self.merge_request_id}: GitLab API error")
+            raise GitLabMergeRequestException("Failed to approve merge request due to GitLab error") from e
         except Exception as e:
-            logger.error(f"Failed to approve MR {self.merge_request_id}: {str(e)}")
-            raise GitLabMergeRequestException(f"Failed to approve merge request: {str(e)}")
+            logger.error(f"Failed to approve MR {self.merge_request_id}: Unexpected error", exc_info=False)
+            raise GitLabMergeRequestException("Failed to approve merge request") from e
 
 class GitLabServer:
     """Class for performing GitLab server-level operations"""
@@ -350,9 +366,12 @@ class GitLabServer:
             if users:
                 return users[0].username
             return None
+        except GitlabListError as e:
+            logger.error("Failed to query GitLab users: API error")
+            raise GitLabServerException("GitLab API error") from e
         except Exception as e:
-            logger.error(f"Failed to query GitLab users: {str(e)}")
-            raise GitLabServerException(f"GitLab API error: {str(e)}")
+            logger.error("Failed to query GitLab users: Unexpected error", exc_info=False)
+            raise GitLabServerException("Failed to query users") from e
 
 
 class ShipmentData:
