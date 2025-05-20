@@ -37,7 +37,28 @@
         "jobStartTime": "2025-05-20T05:32:28Z",
         "jobID": "158045a3-21e8-49da-9518-b2532741adf1",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1924699724703600640",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-05-20T08:36:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 110,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 29
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -47,9 +68,49 @@
         "jobStartTime": "2025-05-20T05:32:33Z",
         "jobID": "a0657651-b339-4f13-8be4-a8ecff444717",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1924699745910001664",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-05-20T08:48:52Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 110,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-cluster-lifecycle] Cluster_Infrastructure CCM Author:zhsun-LEVEL0-Critical-70627-Service of type LoadBalancer can be created successful",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI-Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-Critical-64157-[CSI-Driver] [Dynamic PV] [Filesystem default] ReadWriteOncePod volume will succeed mounting when consumed by a single pod on a node, and will fail to mount when consumed by second pod",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51139-[CSI-Driver] [Dynamic PV] [Filesystem xfs] volumes resize on-line"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-05-20T09:31:23Z",
+          "jobID": "16f4c51b-eb78-4f4e-85b9-7c9917e32456",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1924759851532029952",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-05-20T09:31:28Z",
+          "jobID": "892ff91e-b3a7-464b-887f-8b646d3bf9fc",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1924759872914591744",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999",
