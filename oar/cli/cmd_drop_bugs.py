@@ -5,6 +5,7 @@ import click
 from oar.core.advisory import AdvisoryManager
 from oar.core.const import *
 from oar.core.notification import NotificationManager
+from oar.core.shipment import ShipmentData
 from oar.core.worksheet import WorksheetManager
 
 logger = logging.getLogger(__name__)
@@ -23,11 +24,14 @@ def drop_bugs(ctx):
         report = WorksheetManager(cs).get_test_report()
         # init advisory manager
         am = AdvisoryManager(cs)
+        # init shipment data
+        sd = ShipmentData(cs)
         # update task status to in progress
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
         # check doc and product security approval advisories
+        # TODO: need to confirm how to collabrate with doc and prodsec team 
         approved_doc_ads, approved_prodsec_ads = am.get_doc_prodsec_approved_ads()
-        dropped_bugs, high_severity_bugs = am.drop_bugs()
+        dropped_bugs, high_severity_bugs = sd.drop_bugs()
         # check if all bugs are verified
         nm = NotificationManager(cs)
         requested_doc_ads = []

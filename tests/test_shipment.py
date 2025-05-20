@@ -293,6 +293,33 @@ class TestGitLabMergeRequest(unittest.TestCase):
             else:
                 self.fail(f"Failed to approve real MR: {str(e)}")
 
+    def test_add_suggestion_real_mr(self):
+        """Test adding suggestion with real MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            mr_id = 15
+            client = GitLabMergeRequest(
+                "https://gitlab.cee.redhat.com",
+                "hybrid-platforms/art/ocp-shipment-data",
+                mr_id
+            )
+            suggestion = "drop this bug"
+            client.add_suggestion(
+                file_path="shipment/ocp/openshift-4.18/openshift-4-18/prod/4.18.3-image.20250414000000.yaml",
+                old_line=None,
+                new_line=23,
+                relative_lines="-0+1",
+                suggestion=""
+            )
+            print(f"\nSuccessfully added suggestion to MR {mr_id}")
+        except Exception as e:
+            if "Merge request 15 not found" in str(e):
+                self.skipTest(f"Merge request {mr_id} not found - skipping real API test")
+            else:
+                self.fail(f"Failed to add suggestion to real MR: {str(e)}")
+
 
 class TestShipmentData(unittest.TestCase):
     @patch('oar.core.configstore.ConfigStore')
