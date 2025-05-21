@@ -205,7 +205,7 @@ class GitLabMergeRequest:
         except GitlabCreateError as e:
             raise GitLabMergeRequestException("Failed to add suggestion comment") from e
 
-    def _get_jira_issue_line_numbers(self, jira_key: str, file_path: str) -> Optional[int]:
+    def _get_jira_issue_line_number(self, jira_key: str, file_path: str) -> Optional[int]:
         """Get the line number where a Jira issue is referenced in a file
         
         Args:
@@ -566,7 +566,7 @@ class ShipmentData:
                                     continue
                                     
                                 # Get line number where issue appears
-                                line_num = mr._get_jira_issue_line_numbers(issue_key, file_path)
+                                line_num = mr._get_jira_issue_line_number(issue_key, file_path)
                                 if line_num:
                                     # Initialize discussions cache for this MR if not already done
                                     if mr.merge_request_id not in existing_suggestions_cache:

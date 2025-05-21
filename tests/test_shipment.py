@@ -458,26 +458,26 @@ class TestShipmentData(unittest.TestCase):
             lines = content.splitlines()
             
             # Find first Jira issue key in file
-            jira_key = None
+            jira_num = None
             for i, line in enumerate(lines, 1):
                 if "OCPBUGS-" in line:
-                    jira_key = line.split("OCPBUGS-")[1].split()[0]
-                    jira_key = f"OCPBUGS-{jira_key}"
+                    jira_num = line.split("OCPBUGS-")[1].split()[0]
+                    jira_num = f"OCPBUGS-{jira_num}"
                     expected_line = i
                     break
             
-            if not jira_key:
+            if not jira_num:
                 self.skipTest(f"No Jira issues found in {test_file} - skipping test")
             
             # Test the method
-            found_line = client._get_jira_issue_line_numbers(jira_key, test_file)
+            found_line = client._get_jira_issue_line_number(jira_num, test_file)
             
             # Verify results
             self.assertEqual(found_line, expected_line)
-            print(f"\nFound Jira issue {jira_key} at line {found_line} in {test_file}")
+            print(f"\nFound Jira issue {jira_num} at line {found_line} in {test_file}")
             
             # Test with non-existent key
-            not_found_line = client._get_jira_issue_line_numbers("OCPBUGS-999999", test_file)
+            not_found_line = client._get_jira_issue_line_number("OCPBUGS-999999", test_file)
             self.assertIsNone(not_found_line)
             
         except Exception as e:
