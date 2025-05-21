@@ -44,11 +44,11 @@ class GitLabMergeRequest:
         if not self.private_token:
             raise GitLabMergeRequestException("No GitLab token provided and GITLAB_TOKEN env var not set")
             
-        self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token)
+        self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token, retry_transient_errors=True)
         self.gl.auth()
         # First get the project, then get the merge request
         try:
-            project = self.gl.projects.get(project_name)
+            project = self.gl.projects.get(project_name, max_retries=5)
             # Try to get merge request directly by ID first
             try:
                 self.mr = project.mergerequests.get(merge_request_id)
@@ -237,30 +237,6 @@ class GitLabMergeRequest:
             raise GitLabMergeRequestException(
                 f"Failed to get line number for Jira issue {jira_key} in {file_path}"
             ) from e
-
-    def get_discussions_with_retry(self, max_retries: int = 3) -> list:
-        """Get merge request discussions with retry logic
-        
-        Args:
-            max_retries: Maximum number of retry attempts (default: 3)
-            
-        Returns:
-            List of discussions or empty list if all retries fail
-            
-        Raises:
-            GitLabMergeRequestException: For non-retryable errors
-        """
-        for attempt in range(max_retries):
-            try:
-                return self.mr.discussions.list()
-            except GitlabError as e:
-                if attempt == max_retries - 1:
-                    logger.warning(f"Failed to load discussions for MR {self.merge_request_id} after {max_retries} attempts: {str(e)}")
-                    return []
-                logger.debug(f"Retry {attempt + 1} for MR {self.merge_request_id} discussions failed: {str(e)}")
-                time.sleep(1)  # Brief delay between retries
-            except Exception as e:
-                raise GitLabMergeRequestException(f"Unexpected error getting discussions: {str(e)}")
 
     def get_status(self) -> str:
         """Get the current status of the merge request
@@ -594,24 +570,29 @@ class ShipmentData:
                                 if line_num:
                                     # Initialize discussions cache for this MR if not already done
                                     if mr.merge_request_id not in existing_suggestions_cache:
-                                        existing_suggestions_cache[mr.merge_request_id] = mr.get_discussions_with_retry()
+                                        try:
+                                            existing_suggestions_cache[mr.merge_request_id] = mr.mr.discussions.list()
+                                        except GitlabError:
+                                            existing_suggestions_cache[mr.merge_request_id] = []
                                     
-                                    # Check if suggestion already exists for this issue
+                                    # Check if suggestion already exists for this issue or line
                                     has_suggestion = any(
-                                        f"Drop bug {issue_key}" in note['body']
+                                        f"Drop bug {issue_key}" in note['body'] or
+                                        (note.get('position', {}).get('new_path') == file_path and
+                                         note.get('position', {}).get('new_line') == line_num)
                                         for discussion in existing_suggestions_cache[mr.merge_request_id]
                                         for note in discussion.attributes['notes']
                                     )
                                     
-                                    # Only add suggestion if none exists
+                                    # Only add suggestion if none exists for this issue or line
                                     # When dropping a bug from YAML, need to remove both lines:
                                     #   - id: OCPBUGS-12345
                                     #     source: issues.redhat.com
                                     if not has_suggestion:
                                         mr.add_suggestion(
                                             file_path=file_path,
-                                            old_line=line_num,
-                                            new_line=None,
+                                            old_line=None,
+                                            new_line=line_num,
                                             suggestion=f"Drop bug {issue_key}",
                                             relative_lines="-0+1"
                                         )
