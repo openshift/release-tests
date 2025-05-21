@@ -437,5 +437,54 @@ class TestShipmentData(unittest.TestCase):
         mock_mr1.approve.assert_called_once()
         mock_mr2.approve.assert_called_once()
 
+    def test_get_jira_issue_line_numbers_real_mr(self):
+        """Test finding Jira issue line numbers in real MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            # Use MR 15 which has known files with Jira issues
+            client = GitLabMergeRequest(
+                "https://gitlab.cee.redhat.com",
+                "hybrid-platforms/art/ocp-shipment-data",
+                15
+            )
+            
+            # Test file that should contain Jira issues
+            test_file = "shipment/ocp/openshift-4.18/openshift-4-18/prod/4.18.3-image.20250414000000.yaml"
+            
+            # Get the file content to find actual Jira issues
+            content = client.get_file_content(test_file)
+            lines = content.splitlines()
+            
+            # Find first Jira issue key in file
+            jira_key = None
+            for i, line in enumerate(lines, 1):
+                if "OCPBUGS-" in line:
+                    jira_key = line.split("OCPBUGS-")[1].split()[0]
+                    jira_key = f"OCPBUGS-{jira_key}"
+                    expected_line = i
+                    break
+            
+            if not jira_key:
+                self.skipTest(f"No Jira issues found in {test_file} - skipping test")
+            
+            # Test the method
+            found_line = client._get_jira_issue_line_numbers(jira_key, test_file)
+            
+            # Verify results
+            self.assertEqual(found_line, expected_line)
+            print(f"\nFound Jira issue {jira_key} at line {found_line} in {test_file}")
+            
+            # Test with non-existent key
+            not_found_line = client._get_jira_issue_line_numbers("OCPBUGS-999999", test_file)
+            self.assertIsNone(not_found_line)
+            
+        except Exception as e:
+            if "Merge request 15 not found" in str(e):
+                self.skipTest("Merge request 15 not found - skipping real API test")
+            else:
+                self.fail(f"Failed to test Jira issue line numbers: {str(e)}")
+
 if __name__ == '__main__':
     unittest.main()
