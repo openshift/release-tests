@@ -470,14 +470,14 @@ class TestShipmentData(unittest.TestCase):
                 self.skipTest(f"No Jira issues found in {test_file} - skipping test")
             
             # Test the method
-            found_line = client._get_jira_issue_line_number(jira_num, test_file)
+            found_line = client.get_jira_issue_line_number(jira_num, test_file)
             
             # Verify results
             self.assertEqual(found_line, expected_line)
             print(f"\nFound Jira issue {jira_num} at line {found_line} in {test_file}")
             
             # Test with non-existent key
-            not_found_line = client._get_jira_issue_line_number("OCPBUGS-999999", test_file)
+            not_found_line = client.get_jira_issue_line_number("OCPBUGS-999999", test_file)
             self.assertIsNone(not_found_line)
             
         except Exception as e:
