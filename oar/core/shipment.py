@@ -1,9 +1,7 @@
-import gitlab
-import re
 import yaml
 import os
 import logging
-import time
+from gitlab import Gitlab
 from gitlab.exceptions import (
     GitlabError,
     GitlabGetError,
@@ -14,7 +12,7 @@ from gitlab.exceptions import (
 from oar.core.util import is_valid_email
 from typing import List, Optional, Set
 from urllib.parse import urlparse
-from glom import glom, PathAccessError
+from glom import glom
 from oar.core.configstore import ConfigStore
 from oar.core.jira import JiraManager
 from oar.core.exceptions import (
@@ -44,7 +42,7 @@ class GitLabMergeRequest:
         if not self.private_token:
             raise GitLabMergeRequestException("No GitLab token provided and GITLAB_TOKEN env var not set")
             
-        self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token, retry_transient_errors=True)
+        self.gl = Gitlab(gitlab_url, private_token=self.private_token, retry_transient_errors=True)
         self.gl.auth()
         # First get the project, then get the merge request
         try:
@@ -205,7 +203,7 @@ class GitLabMergeRequest:
         except GitlabCreateError as e:
             raise GitLabMergeRequestException("Failed to add suggestion comment") from e
 
-    def _get_jira_issue_line_number(self, jira_key: str, file_path: str) -> Optional[int]:
+    def get_jira_issue_line_number(self, jira_key: str, file_path: str) -> Optional[int]:
         """Get the line number where a Jira issue is referenced in a file
         
         Args:
@@ -566,7 +564,7 @@ class ShipmentData:
                                     continue
                                     
                                 # Get line number where issue appears
-                                line_num = mr._get_jira_issue_line_number(issue_key, file_path)
+                                line_num = mr.get_jira_issue_line_number(issue_key, file_path)
                                 if line_num:
                                     # Initialize discussions cache for this MR if not already done
                                     if mr.merge_request_id not in existing_suggestions_cache:
