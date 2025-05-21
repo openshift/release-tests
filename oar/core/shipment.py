@@ -40,7 +40,7 @@ class GitLabMergeRequest:
         self.merge_request_id = merge_request_id
         
         self.private_token = private_token or os.getenv('GITLAB_TOKEN')
-        self._file_content_cache = {}
+        self._file_content_cache = {}  # Used to cache file contents during runtime to avoid GitLab API rate limits
         if not self.private_token:
             raise GitLabMergeRequestException("No GitLab token provided and GITLAB_TOKEN env var not set")
             
@@ -237,17 +237,6 @@ class GitLabMergeRequest:
             raise GitLabMergeRequestException(
                 f"Failed to get line number for Jira issue {jira_key} in {file_path}"
             ) from e
-
-    def clear_file_cache(self, file_path: str = None) -> None:
-        """Clear cached file content
-        
-        Args:
-            file_path: Specific file to clear from cache (None clears all)
-        """
-        if file_path:
-            self._file_content_cache.pop(file_path, None)
-        else:
-            self._file_content_cache.clear()
 
     def get_discussions_with_retry(self, max_retries: int = 3) -> list:
         """Get merge request discussions with retry logic
