@@ -158,7 +158,7 @@ class TestReport:
         Args:
             shipment (str): shipment info of current release
         """
-        self._ws.update_acell(LABEL_SHIPMENT, shipment)
+        self._to_hyperlink(self._ws.update_acell(LABEL_SHIPMENT, shipment))
 
     def get_shipment_info(self):
         """
