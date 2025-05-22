@@ -160,7 +160,7 @@ class TestReport:
         Args:
             ad (str): advisories of current release
         """
-        self._ws.update_acell(LABEL_ADVISORY, ad)
+        self._to_hyperlink(self._ws.update_acell(LABEL_ADVISORY, ad))
 
     def get_advisory_info(self):
         """
