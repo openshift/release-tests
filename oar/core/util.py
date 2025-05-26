@@ -1,4 +1,5 @@
 import logging
+import warnings
 from semver.version import Version
 
 def is_valid_z_release(version):
@@ -46,6 +47,14 @@ def init_logging(log_level=logging.INFO):
         level=log_level,
     )
 
+    # Suppress specific SSL patching warning
+    warnings.filterwarnings(
+        "ignore",
+        message="Failed to patch SSL settings for unverified requests",
+        category=UserWarning,
+        module="pip_system_certs.wrapt_requests"
+    )
+    
     loggers = logging.Logger.manager.loggerDict
     for k in loggers.keys():
         if "requests" in k or "urllib3" in k or "gssapi" in k:
