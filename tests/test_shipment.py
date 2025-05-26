@@ -9,13 +9,15 @@ from oar.core.exceptions import (
     GitLabMergeRequestException
 )
 
+
 class TestGitLabServer(unittest.TestCase):
     @patch('os.getenv', return_value="test-token")
-    @patch('gitlab.Gitlab')
+    @patch('oar.core.shipment.Gitlab')
     def setUp(self, mock_gitlab, mock_getenv):
         self.mock_gl = MagicMock()
         mock_gitlab.return_value = self.mock_gl
-        self.server = GitLabServer("https://gitlab.cee.redhat.com", "test-token")
+        self.server = GitLabServer(
+            "https://gitlab.cee.redhat.com", "test-token")
 
     def test_get_username_by_email_success(self):
         # Setup mock user response
@@ -27,7 +29,8 @@ class TestGitLabServer(unittest.TestCase):
         # Test valid email
         username = self.server.get_username_by_email("test@example.com")
         self.assertEqual(username, "testuser")
-        self.mock_gl.users.list.assert_called_once_with(search="test@example.com")
+        self.mock_gl.users.list.assert_called_once_with(
+            search="test@example.com")
 
     def test_get_username_by_email_not_found(self):
         # Setup empty response
@@ -41,13 +44,14 @@ class TestGitLabServer(unittest.TestCase):
         # Test invalid email formats
         with self.assertRaises(ValueError):
             self.server.get_username_by_email("")
-        
+
         with self.assertRaises(ValueError):
             self.server.get_username_by_email("invalid-email")
 
     def test_get_username_by_email_api_error(self):
         # Setup API error
-        self.mock_gl.users.list.side_effect = gitlab.exceptions.GitlabError("API error")
+        self.mock_gl.users.list.side_effect = gitlab.exceptions.GitlabError(
+            "API error")
 
         with self.assertRaises(GitLabServerException) as context:
             self.server.get_username_by_email("test@example.com")
@@ -57,7 +61,7 @@ class TestGitLabServer(unittest.TestCase):
         """Test with real GitLab API (requires GITLAB_TOKEN env var)"""
         if not os.getenv('GITLAB_TOKEN'):
             self.skipTest("GITLAB_TOKEN not set - skipping real API test")
-            
+
         try:
             # Use a known Red Hat email that should exist in GitLab
             test_email = "rioliu@redhat.com"
@@ -72,17 +76,20 @@ class TestGitLabServer(unittest.TestCase):
 
 class TestGitLabMergeRequest(unittest.TestCase):
     @patch('os.getenv', return_value="test-token")
-    @patch('gitlab.Gitlab')
+    @patch('oar.core.shipment.Gitlab')
     def setUp(self, mock_gitlab, mock_getenv):
         self.mock_gl = MagicMock()
         self.mock_project = MagicMock()
         self.mock_mr = MagicMock()
         self.mock_file = MagicMock()
-        self.mock_file.decode.return_value = "test content"  # Mock decode() to return string
-        
+        # Mock decode() to return string
+        self.mock_file.decode.return_value = "test content"
+
+        # Mock the Gitlab class and its instance
         mock_gitlab.return_value = self.mock_gl
+        self.mock_gl.auth = MagicMock(return_value=None)
         self.mock_gl.projects.get.return_value = self.mock_project
-        
+
         # Setup both direct get and list fallback scenarios
         self.mock_project.mergerequests.get.side_effect = [
             self.mock_mr,  # First call succeeds
@@ -90,17 +97,19 @@ class TestGitLabMergeRequest(unittest.TestCase):
         ]
         self.mock_project.mergerequests.list.return_value = [self.mock_mr]
         self.mock_mr.files.get.return_value = self.mock_file
-        
+
         self.client = GitLabMergeRequest(
             "https://gitlab.cee.redhat.com",
-            "hybrid-platforms/art/ocp-shipment-data", 
+            "hybrid-platforms/art/ocp-shipment-data",
             123,
             "test-token"
         )
 
     def test_init(self):
-        self.assertEqual(self.client.gitlab_url, "https://gitlab.cee.redhat.com")
-        self.assertEqual(self.client.project_name, "hybrid-platforms/art/ocp-shipment-data")
+        self.assertEqual(self.client.gitlab_url,
+                         "https://gitlab.cee.redhat.com")
+        self.assertEqual(self.client.project_name,
+                         "hybrid-platforms/art/ocp-shipment-data")
         self.assertEqual(self.client.private_token, "test-token")
         self.assertEqual(self.client.merge_request_id, 123)
 
@@ -108,7 +117,7 @@ class TestGitLabMergeRequest(unittest.TestCase):
         # Setup mock project files to return string content directly
         self.mock_project.files.get.return_value = "test content"
         self.mock_mr.source_branch = "test-branch"
-        
+
         # Test with mock file path
         file_path = "test.txt"
         content = self.client.get_file_content(file_path)
@@ -133,32 +142,34 @@ class TestGitLabMergeRequest(unittest.TestCase):
             self.assertIsInstance(content, str)
         except Exception as e:
             if "Merge request 15 not found" in str(e):
-                self.skipTest("Merge request 15 not found - skipping real API test")
+                self.skipTest(
+                    "Merge request 15 not found - skipping real API test")
             else:
                 self.fail(f"Failed to get file content from real MR: {str(e)}")
 
     def test_get_all_files(self):
         """Test getting all files from merge request"""
-        # Setup mock changes data
-        mock_changes = {
+        # Setup mock changes response to match GitLab API
+        mock_changes_response = {
             'changes': [
                 {'new_path': 'file1.txt'},
-                {'new_path': 'file2.yaml'}, 
+                {'new_path': 'file2.yaml'},
                 {'new_path': 'file3.py'}
             ]
         }
-        self.mock_mr.changes.return_value = mock_changes
-        
+        self.mock_mr.changes.return_value = mock_changes_response
+
         # Test without filter
         files = self.client.get_all_files()
-        self.assertEqual(len(files), 3)
-        self.assertIn('file1.txt', files)
-        
+        # default file extension is yaml, so only 1 file matched
+        self.assertEqual(len(files), 1)
+        self.assertIn('file2.yaml', files)
+
         # Test with filter
         yaml_files = self.client.get_all_files('yaml')
         self.assertEqual(len(yaml_files), 1)
         self.assertEqual(yaml_files[0], 'file2.yaml')
-        
+
         # Verify API calls
         self.mock_gl.projects.get.assert_called_with(self.client.project_name)
         self.mock_mr.changes.assert_called()
@@ -173,11 +184,13 @@ class TestGitLabMergeRequest(unittest.TestCase):
             )
             files = client.get_all_files()
             self.assertIsInstance(files, list)
-            self.assertIn('shipment/ocp/openshift-4.18/openshift-4-18/prod/4.18.3-image.20250414000000.yaml', files)
+            self.assertIn(
+                'shipment/ocp/openshift-4.18/openshift-4-18/prod/4.18.3-image.20250414000000.yaml', files)
             print(f"\nFiles in MR 15:\n{files}")
         except Exception as e:
             if "Merge request 15 not found" in str(e):
-                self.skipTest("Merge request 15 not found - skipping real API test")
+                self.skipTest(
+                    "Merge request 15 not found - skipping real API test")
             else:
                 self.fail(f"Failed to get files from real MR: {str(e)}")
 
@@ -187,17 +200,17 @@ class TestGitLabMergeRequest(unittest.TestCase):
         self.mock_mr.state = 'opened'
         self.mock_gl.user = MagicMock()
         self.mock_gl.user.username = 'testuser'
-        
+
         # Setup mock approvals
         mock_approvals = MagicMock()
         mock_approvals.approved_by = []
         self.mock_mr.approvals.get.return_value = mock_approvals
-        
+
         # Setup logger mock
         with patch('oar.core.shipment.logger') as mock_logger:
             # Test approval
             self.client.approve()
-            
+
             # Verify calls
             self.mock_mr.approve.assert_called_once()
             self.mock_mr.approvals.get.assert_called_once()
@@ -211,17 +224,17 @@ class TestGitLabMergeRequest(unittest.TestCase):
         self.mock_mr.state = 'opened'
         self.mock_gl.user = MagicMock()
         self.mock_gl.user.username = 'testuser'
-        
+
         # Setup mock approvals showing already approved
         mock_approvals = MagicMock()
         mock_approvals.approved_by = [{'user': {'username': 'testuser'}}]
         self.mock_mr.approvals.get.return_value = mock_approvals
-        
+
         # Setup logger mock
         with patch('oar.core.shipment.logger') as mock_logger:
             # Test approval
             self.client.approve()
-            
+
             # Verify approve() was NOT called
             self.mock_mr.approve.assert_not_called()
             mock_logger.info.assert_called_with(
@@ -232,7 +245,7 @@ class TestGitLabMergeRequest(unittest.TestCase):
         """Test approval when MR is not in opened state"""
         # Setup mock MR state
         self.mock_mr.state = 'merged'
-        
+
         # Test approval
         with self.assertRaises(GitLabMergeRequestException) as context:
             self.client.approve()
@@ -244,13 +257,14 @@ class TestGitLabMergeRequest(unittest.TestCase):
         # Setup mock MR state
         self.mock_mr.state = 'opened'
         self.mock_gl.user = None
-        
+
         # Setup logger mock
         with patch('oar.core.shipment.logger') as mock_logger:
             # Test approval
             with self.assertRaises(GitLabMergeRequestException) as context:
                 self.client.approve()
-            self.assertIn("Could not identify current user", str(context.exception))
+            self.assertIn("Could not identify current user",
+                          str(context.exception))
             self.mock_mr.approve.assert_not_called()
 
     def test_approve_api_error(self):
@@ -259,19 +273,21 @@ class TestGitLabMergeRequest(unittest.TestCase):
         self.mock_mr.state = 'opened'
         self.mock_gl.user = MagicMock()
         self.mock_gl.user.username = 'testuser'
-        
+
         # Setup mock approvals to raise error
-        self.mock_mr.approvals.get.side_effect = gitlab.exceptions.GitlabError("API error")
-        
+        self.mock_mr.approvals.get.side_effect = gitlab.exceptions.GitlabError(
+            "API error")
+
         # Setup logger mock
         with patch('oar.core.shipment.logger') as mock_logger:
             # Test approval
             with self.assertRaises(GitLabMergeRequestException) as context:
                 self.client.approve()
-            self.assertIn("Failed to approve merge request", str(context.exception))
+            self.assertIn("Failed to approve merge request",
+                          str(context.exception))
             self.mock_mr.approve.assert_not_called()
             mock_logger.error.assert_called_with(
-                f"Failed to approve MR {self.client.merge_request_id}: API error"
+                f"Failed to approve MR {self.client.merge_request_id}: GitLab API error"
             )
 
     def test_approve_real_mr(self):
@@ -289,7 +305,8 @@ class TestGitLabMergeRequest(unittest.TestCase):
             print(f"\nSuccessfully approved MR 15")
         except Exception as e:
             if "Merge request 15 not found" in str(e):
-                self.skipTest("Merge request 15 not found - skipping real API test")
+                self.skipTest(
+                    "Merge request 15 not found - skipping real API test")
             else:
                 self.fail(f"Failed to approve real MR: {str(e)}")
 
@@ -316,7 +333,8 @@ class TestGitLabMergeRequest(unittest.TestCase):
             print(f"\nSuccessfully added suggestion to MR {mr_id}")
         except Exception as e:
             if "Merge request 15 not found" in str(e):
-                self.skipTest(f"Merge request {mr_id} not found - skipping real API test")
+                self.skipTest(
+                    f"Merge request {mr_id} not found - skipping real API test")
             else:
                 self.fail(f"Failed to add suggestion to real MR: {str(e)}")
 
@@ -326,7 +344,8 @@ class TestShipmentData(unittest.TestCase):
     def setUp(self, mock_config):
         self.mock_config = mock_config
         self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
-        self.mock_config.get_shipment_mrs.return_value = ["https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/15"]
+        self.mock_config.get_shipment_mrs.return_value = [
+            "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/15"]
         self.mock_config.get_gitlab_token.return_value = None
         self.shipment = ShipmentData(self.mock_config)
 
@@ -336,7 +355,8 @@ class TestShipmentData(unittest.TestCase):
 
     def test_get_nvrs_with_real_mr(self):
         nvrs = self.shipment.get_nvrs()
-        self.assertEqual(nvrs, ["microshift-bootc-v4.18.0-202503121435.p0.gc0eec47.assembly.4.18.2.el9"])
+        self.assertEqual(
+            nvrs, ["microshift-bootc-v4.18.0-202503121435.p0.gc0eec47.assembly.4.18.2.el9"])
 
     @patch('oar.core.shipment.GitLabServer')
     def test_add_qe_release_lead_comment_success(self, mock_gl_server):
@@ -357,8 +377,10 @@ class TestShipmentData(unittest.TestCase):
             self.mock_config.get_gitlab_url(),
             self.mock_config.get_gitlab_token()
         )
-        mock_server.get_username_by_email.assert_called_once_with("test@example.com")
-        mock_mr.add_comment.assert_called_once_with("QE Release Lead is @testuser")
+        mock_server.get_username_by_email.assert_called_once_with(
+            "test@example.com")
+        mock_mr.add_comment.assert_called_once_with(
+            "QE Release Lead is @testuser")
 
     @patch('oar.core.shipment.GitLabServer')
     def test_add_qe_release_lead_comment_user_not_found(self, mock_gl_server):
@@ -376,7 +398,8 @@ class TestShipmentData(unittest.TestCase):
         # Test invalid email formats
         with self.assertRaises(ShipmentDataException) as context:
             self.shipment.add_qe_release_lead_comment("")
-        self.assertIn("Email must be a non-empty string", str(context.exception))
+        self.assertIn("Email must be a non-empty string",
+                      str(context.exception))
 
         with self.assertRaises(ShipmentDataException) as context:
             self.shipment.add_qe_release_lead_comment("invalid-email")
@@ -391,13 +414,13 @@ class TestShipmentData(unittest.TestCase):
             # Use a known real MR and email, the MR (#15) is configured in mocked configustore
             # the private token is retrieved from os env var
             test_email = "rioliu@redhat.com"
-            
+
             # Create shipment with the real MR
             real_shipment = ShipmentData(self.mock_config)
-            
+
             # Test the method
             real_shipment.add_qe_release_lead_comment(test_email)
-            
+
             # Verify by checking logs (actual comment verification would require API call)
             # In real usage, you might want to manually verify the comment was added
             self.assertTrue(True)  # Placeholder assertion
@@ -449,14 +472,14 @@ class TestShipmentData(unittest.TestCase):
                 "hybrid-platforms/art/ocp-shipment-data",
                 15
             )
-            
+
             # Test file that should contain Jira issues
             test_file = "shipment/ocp/openshift-4.18/openshift-4-18/prod/4.18.3-image.20250414000000.yaml"
-            
+
             # Get the file content to find actual Jira issues
             content = client.get_file_content(test_file)
             lines = content.splitlines()
-            
+
             # Find first Jira issue key in file
             jira_num = None
             for i, line in enumerate(lines, 1):
@@ -465,26 +488,31 @@ class TestShipmentData(unittest.TestCase):
                     jira_num = f"OCPBUGS-{jira_num}"
                     expected_line = i
                     break
-            
+
             if not jira_num:
-                self.skipTest(f"No Jira issues found in {test_file} - skipping test")
-            
+                self.skipTest(
+                    f"No Jira issues found in {test_file} - skipping test")
+
             # Test the method
             found_line = client.get_jira_issue_line_number(jira_num, test_file)
-            
+
             # Verify results
             self.assertEqual(found_line, expected_line)
-            print(f"\nFound Jira issue {jira_num} at line {found_line} in {test_file}")
-            
+            print(
+                f"\nFound Jira issue {jira_num} at line {found_line} in {test_file}")
+
             # Test with non-existent key
-            not_found_line = client.get_jira_issue_line_number("OCPBUGS-999999", test_file)
+            not_found_line = client.get_jira_issue_line_number(
+                "OCPBUGS-999999", test_file)
             self.assertIsNone(not_found_line)
-            
+
         except Exception as e:
             if "Merge request 15 not found" in str(e):
-                self.skipTest("Merge request 15 not found - skipping real API test")
+                self.skipTest(
+                    "Merge request 15 not found - skipping real API test")
             else:
                 self.fail(f"Failed to test Jira issue line numbers: {str(e)}")
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -334,7 +334,7 @@ class GitLabServer:
             raise GitLabServerException("GitLab API error") from e
         except Exception as e:
             logger.error("Failed to query GitLab users: Unexpected error", exc_info=False)
-            raise GitLabServerException("Failed to query users") from e
+            raise GitLabServerException(f"GitLab API error: Failed to query users - {str(e)}") from e
 
 
 class ShipmentData:
