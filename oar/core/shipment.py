@@ -303,7 +303,7 @@ class GitLabServer:
         if not self.private_token:
             raise ValueError("No GitLab token provided and GITLAB_TOKEN env var not set")
             
-        self.gl = gitlab.Gitlab(gitlab_url, private_token=self.private_token)
+        self.gl = Gitlab(gitlab_url, private_token=self.private_token)
         
     def get_username_by_email(self, email: str) -> Optional[str]:
         """Query GitLab username by email address
