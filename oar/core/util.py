@@ -1,6 +1,7 @@
 import logging
-from semver.version import Version
+import warnings
 import re
+from semver.version import Version
 
 def is_valid_z_release(version):
     strs = version.split(".")
@@ -42,6 +43,14 @@ def init_logging(log_level=logging.INFO):
         format="%(asctime)s: %(levelname)s: %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%SZ",
         level=log_level,
+    )
+
+    # Suppress specific SSL patching warning
+    warnings.filterwarnings(
+        "ignore",
+        message="Failed to patch SSL settings for unverified requests",
+        category=UserWarning,
+        module="pip_system_certs.wrapt_requests"
     )
 
     loggers = logging.Logger.manager.loggerDict
