@@ -56,7 +56,28 @@
           "jobStartTime": "2025-05-27T18:36:56Z",
           "jobID": "5879aeaf-d163-45eb-aae8-2e55164e6b7b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1927433943502557184",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-05-27T21:37:43Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-operators] OLM for an end user handle within a namespace Author:bandrade-LEVEL0-Critical-41026-OCS should only one installplan generated when creating subscription"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19672:UserInterface Check cronjob on console"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2025-05-27T18:37:01Z",
@@ -149,5 +170,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2025-05-27-071210",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2025-05-27-071210"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
