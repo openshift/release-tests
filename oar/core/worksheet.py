@@ -94,7 +94,8 @@ class WorksheetManager:
             # update advisory info
             ad_cell_value = ""
             for k, v in self._cs.get_advisories().items():
-                ad_cell_value += f"{k}: {util.get_advisory_link(v)}\n"
+                ad_link = {util.get_advisory_link(v)}
+                ad_cell_value += f"{k}: {self._report._to_hyperlink(ad_link, ad_link)}\n"
             self._report.update_advisory_info(ad_cell_value.strip())
             logger.info("advisory info is updated")
             logger.debug(f"advisory info:\n{ad_cell_value}")
@@ -160,7 +161,7 @@ class TestReport:
         Args:
             ad (str): advisories of current release
         """
-        self._to_hyperlink(self._ws.update_acell(LABEL_ADVISORY, ad))
+        self._ws.update_acell(LABEL_ADVISORY, ad)
 
     def get_advisory_info(self):
         """
