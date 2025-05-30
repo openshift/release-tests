@@ -12,6 +12,7 @@ from oar.core.configstore import ConfigStore
 from oar.core.exceptions import NotificationException
 from oar.core.jira import JiraManager
 from oar.core.worksheet import TestReport
+from oar.core.ldap import LdapHelper
 
 logger = logging.getLogger(__name__)
 
@@ -267,7 +268,28 @@ class NotificationManager:
             )
         except Exception as e:
             raise NotificationException("share shipment MRs failed") from e
+        
+    def share_unverified_cve_issues_to_managers(self, jira_issues):
+        """
+        Share unverified CVE issues to managers of QA contacts
 
+        Args:
+            jira_issues (list[str]): jira issue list
+
+        Raises:
+            NotificationException: error when sharing unverified CVE issues failed
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_unverified_issues_to_managers(
+                jira_issues)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact(
+                        "qe-forum"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share unverified CVE issues to managers failed") from e
 
 class MailClient:
     """
@@ -419,6 +441,7 @@ class MessageHelper:
         self.cs = cs
         self.sc = SlackClient(self.cs.get_slack_bot_token())
         self.jm = JiraManager(cs)
+        self.ldap = LdapHelper()
 
     def get_mail_content_for_new_report(self, report: TestReport):
         """
@@ -504,6 +527,36 @@ class MessageHelper:
         """
         message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
         return self.__get_slack_message_for_jira_issues(jira_issues, message)
+    
+    def get_slack_message_for_unverified_issues_to_managers(self, jira_issues):
+        """
+        Get Slack message for unverified CVE issues to managers of QA contacts
+
+        Args:
+            jira_issues (list[str]): jira issue list
+
+        Returns:
+            str: Slack message for unverified CVE issues to managers of QA contacts
+        """
+
+        message = "The following issues must be verified in this release. As the managers of the assigned QA contacts who have not yet verified these Jiras, could you please prioritize their verification or reassign them to other available QA contacts?"
+        
+        # currently notify only managers of unverified cve issues
+        unverified_cve_issues = JiraManager(self.cs).get_unverified_cve_issues(jira_issues)
+        if len(unverified_cve_issues):
+            slack_message = f"[{self.cs.release}] {message}\n"
+            for issue in unverified_cve_issues:
+                qa_contact_email = issue.get_qa_contact()
+                manager_email = self.ldap.get_manager_email(qa_contact_email)
+                key = issue.get_key()
+                slack_message += (self._to_link(util.get_jira_link(key), key)
+                                        + " "
+                                        + self.sc.get_user_id_by_email(manager_email)
+                                        + "\n"
+                                )
+            return slack_message
+        else:
+            return ""
 
     def get_slack_message_for_high_severity_bugs(self, jira_issues):
         """

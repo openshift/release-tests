@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 @click.option("--notify/--no-notify", default=True, help="Send notification to bug owners, default value is true")
 @click.option("--confirm-droppable", is_flag=True, default=False,
               help="Send notification only to bug owners with critical and higher issue severity, default value is false")
-def update_bug_list(ctx, notify, confirm_droppable):
+@click.option("--notify-team-leads", is_flag=True, default=False, help="Send notification to team leads of unverified issues, default value is false")
+@click.option("--notify-managers", is_flag=True, default=False, help="Send notification to managers of unverified issues, default value is false")
+def update_bug_list(ctx, notify, confirm_droppable, notify_team_leads, notify_managers):
     """
     Update bug status listed in report, update existing bug status and append new ON_QA bug
     """
@@ -37,6 +39,10 @@ def update_bug_list(ctx, notify, confirm_droppable):
             if confirm_droppable:
                 high_severity_issues, _ = JiraManager(cs).get_high_severity_and_can_drop_issues(jira_issues)
                 NotificationManager(cs).share_high_severity_bugs(high_severity_issues)
+            elif notify_team_leads:
+                logger.warning("Command 'notify-team-leads' is not yet implemented.")
+            elif notify_managers:
+                NotificationManager(cs).share_unverified_cve_issues_to_managers(jira_issues)
             else:
                 NotificationManager(cs).share_bugs_to_be_verified(jira_issues)
         # check if all bugs are verified
