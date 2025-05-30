@@ -237,6 +237,23 @@ class JiraManager:
                         can_drop_issues.append(key)
 
         return high_severity_issues, can_drop_issues
+    
+    def get_unverified_cve_issues(self, jira_issue_keys: list[str]):
+        """
+        Get list of unverified CVE issues
+
+        Args:
+            jira_issue_keys (list[str]): List of all jira issues keys
+
+        Returns:
+            List[JiraIssue]: List of all unverified CVE issues
+        """
+        unverified_cve_issues = list()
+        for key in jira_issue_keys:
+            issue = self.get_issue(key)
+            if issue.is_on_qa() and issue.is_cve_tracker():
+                unverified_cve_issues.append(issue)
+        return unverified_cve_issues
 
     def create_cvp_issue(self, abnormal_tests):
         """
