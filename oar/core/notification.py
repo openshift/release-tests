@@ -280,7 +280,7 @@ class NotificationManager:
             NotificationException: error when sharing unverified CVE issues failed
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_unverified_issues_to_managers(
+            slack_msg = self.mh.get_slack_message_for_unverified_cve_issues_to_managers(
                 jira_issues)
             if len(slack_msg):
                 self.sc.post_message(
@@ -528,7 +528,7 @@ class MessageHelper:
         message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
         return self.__get_slack_message_for_jira_issues(jira_issues, message)
     
-    def get_slack_message_for_unverified_issues_to_managers(self, jira_issues):
+    def get_slack_message_for_unverified_cve_issues_to_managers(self, jira_issues):
         """
         Get Slack message for unverified CVE issues to managers of QA contacts
 
