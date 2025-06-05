@@ -22,7 +22,7 @@ def update_bug_list(ctx, notify, confirm_droppable, notify_managers):
     Update bug status listed in report, update existing bug status and append new ON_QA bug
     """
     if not notify and (confirm_droppable or notify_managers):
-        raise click.UsageError("Error: --no-notify cannot be used together with --confirm-droppableor --notify-managers")
+        raise click.UsageError("Error: --no-notify cannot be used together with --confirm-droppable or --notify-managers")
     if sum([confirm_droppable, notify_managers]) > 1:
         raise click.UsageError("Error: only one of parameters --confirm-droppable or --notify-managers can be used simultaneously")
     # get config store from context
