@@ -246,7 +246,7 @@ class JiraManager:
             jira_issue_keys (list[str]): List of all jira issues keys
 
         Returns:
-            List[JiraIssue]: List of all unverified CVE issues
+            list[JiraIssue]: List of all unverified CVE issues
         """
         unverified_cve_issues = list()
         for key in jira_issue_keys:
