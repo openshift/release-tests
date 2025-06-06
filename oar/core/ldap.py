@@ -31,9 +31,17 @@ class LdapHelper:
 
         Returns:
             str: Found manager email for specified user email
+
+        Raises:
+            LdapHelperException: Error when valid manager email was not found:
         """
         manager_id = self._get_manager_id(user_email)
-        return self._get_user_email(manager_id)
+        manager_email = self._get_user_email(manager_id)
+
+        if manager_email is None or not is_valid_email(manager_email):
+            raise LdapHelperException(f"Valid manager email was not found: {manager_email}")
+
+        return manager_email
 
     def get_group_members_emails(self, group_name: str) -> set[str]:
         """
@@ -44,6 +52,9 @@ class LdapHelper:
 
         Returns:
             set[str]: Emails of group members
+
+        Raises:
+            LdapHelperException: Error when input group name is not valid or Ldap connection failed
         """
 
         if group_name is None or group_name.strip() == "":
@@ -81,6 +92,9 @@ class LdapHelper:
 
         Returns:
             str: Found manager id for specified user email
+
+        Raises:
+            LdapHelperException: Error when input user email is not valid or Ldap connection failed
         """
 
         if user_email is None or not is_valid_email(user_email):
@@ -123,6 +137,9 @@ class LdapHelper:
 
         Returns:
             str: Found user email for specified user id
+
+        Raises:
+            LdapHelperException: Error when input user id is not valid or Ldap connection failed
         """
 
         if user_id is None or user_id.strip() == "":
