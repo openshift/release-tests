@@ -1,7 +1,11 @@
 import logging
+
 from ldap3 import Server, Connection, ALL, SUBTREE
 from ldap3.core.exceptions import LDAPException
 from ldap3.utils.dn import parse_dn
+
+from oar.core.exceptions import LdapHelperException
+from oar.core.util import is_valid_email
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +33,9 @@ class LdapHelper:
             str: Found manager email for specified user email
         """
 
+        if user_email is None or not is_valid_email(user_email):
+            raise LdapHelperException(f"Specified email is not valid: {user_email}")
+
         manager_id = self._get_manager_id(user_email)
         return self._get_user_email(manager_id)
 
@@ -42,6 +49,9 @@ class LdapHelper:
         Returns:
             set[str]: Emails of group members
         """
+
+        if group_name is None or group_name.strip() == "":
+            raise LdapHelperException(f"Specified group name is not valid: {group_name}")
 
         members = set()
 
@@ -58,7 +68,8 @@ class LdapHelper:
                 if LdapHelper.PRIMARY_MAIL in entry:
                     members.add(entry[LdapHelper.PRIMARY_MAIL].value)
         except LDAPException as e:
-            logger.error(f"LDAP connection failed: {e}")
+            logger.error("LDAP connection failed during 'get_manager_id'")
+            raise LdapHelperException("LDAP connection failed") from e
         finally:
             if conn:
                 conn.unbind()
@@ -95,7 +106,8 @@ class LdapHelper:
                             manager_id = value
                             break
         except LDAPException as e:
-            logger.error(f"LDAP connection failed: {e}")
+            logger.error("LDAP connection failed during 'get_manager_id'")
+            raise LdapHelperException("LDAP connection failed") from e
         finally:
             if conn:
                 conn.unbind()
@@ -130,7 +142,8 @@ class LdapHelper:
                     user_email = entry[LdapHelper.PRIMARY_MAIL].value
 
         except LDAPException as e:
-            logger.error(f"LDAP connection failed: {e}")
+            logger.error("LDAP connection failed during 'get_user_email'")
+            raise LdapHelperException("LDAP connection failed") from e
         finally:
             if conn:
                 conn.unbind()

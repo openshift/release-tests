@@ -269,19 +269,19 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share shipment MRs failed") from e
         
-    def share_unverified_cve_issues_to_managers(self, jira_issues):
+    def share_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
         Share unverified CVE issues to managers of QA contacts
 
         Args:
-            jira_issues (list[str]): jira issue list
+            unverified_cve_issues (list[JiraIssue]): unverified cve jira issues list
 
         Raises:
             NotificationException: error when sharing unverified CVE issues failed
         """
         try:
             slack_msg = self.mh.get_slack_message_for_unverified_cve_issues_to_managers(
-                jira_issues)
+                unverified_cve_issues)
             if len(slack_msg):
                 self.sc.post_message(
                     self.cs.get_slack_channel_from_contact(
@@ -528,12 +528,12 @@ class MessageHelper:
         message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
         return self.__get_slack_message_for_jira_issues(jira_issues, message)
     
-    def get_slack_message_for_unverified_cve_issues_to_managers(self, jira_issues):
+    def get_slack_message_for_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
         Get Slack message for unverified CVE issues to managers of QA contacts
 
         Args:
-            jira_issues (list[str]): jira issue list
+            unverified_cve_issues (list[JiraIssue]): unverified cve jira issues list
 
         Returns:
             str: Slack message for unverified CVE issues to managers of QA contacts
@@ -541,8 +541,6 @@ class MessageHelper:
 
         message = "The following issues must be verified in this release. As the managers of the assigned QA contacts who have not yet verified these Jiras, could you please prioritize their verification or reassign them to other available QA contacts?"
         
-        # currently notify only managers of unverified cve issues
-        unverified_cve_issues = JiraManager(self.cs).get_unverified_cve_issues(jira_issues)
         if len(unverified_cve_issues):
             slack_message = f"[{self.cs.release}] {message}\n"
             for issue in unverified_cve_issues:

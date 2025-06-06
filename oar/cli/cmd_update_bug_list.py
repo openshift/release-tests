@@ -41,7 +41,8 @@ def update_bug_list(ctx, notify, confirm_droppable, notify_managers):
                 high_severity_issues, _ = JiraManager(cs).get_high_severity_and_can_drop_issues(jira_issues)
                 NotificationManager(cs).share_high_severity_bugs(high_severity_issues)
             elif notify_managers:
-                NotificationManager(cs).share_unverified_cve_issues_to_managers(jira_issues)
+                unverified_cve_issues = JiraManager(cs).get_unverified_cve_issues(jira_issues)
+                NotificationManager(cs).share_unverified_cve_issues_to_managers(unverified_cve_issues)
             else:
                 NotificationManager(cs).share_bugs_to_be_verified(jira_issues)
         # check if all bugs are verified

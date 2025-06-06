@@ -1,6 +1,7 @@
 import unittest
 
 from oar.core.ldap import LdapHelper
+from oar.core.exceptions import LdapHelperException
 
 
 class TestLdapHelper(unittest.TestCase):
@@ -35,3 +36,17 @@ class TestLdapHelper(unittest.TestCase):
             "ocp-errata-reliability-team"
         )
         self.assertCountEqual(expected_members_emails, group_members_emails)
+
+    def test_get_manager_email_error(self):
+        with self.assertRaises(LdapHelperException):
+            self.ldap.get_manager_email(None)
+
+        with self.assertRaises(LdapHelperException):
+            self.ldap.get_manager_email("invalid@mail")
+
+    def test_get_group_members_emails_error(self):
+        with self.assertRaises(LdapHelperException):
+            self.ldap.get_group_members_emails(None)
+
+        with self.assertRaises(LdapHelperException):
+            self.ldap.get_group_members_emails("  ")
