@@ -37,12 +37,19 @@ class TestLdapHelper(unittest.TestCase):
         )
         self.assertCountEqual(expected_members_emails, group_members_emails)
 
-    def test_get_manager_email_error(self):
+    def test_get_manager_id_error(self):
         with self.assertRaises(LdapHelperException):
-            self.ldap.get_manager_email(None)
+            self.ldap._get_manager_id(None)
 
         with self.assertRaises(LdapHelperException):
-            self.ldap.get_manager_email("invalid@mail")
+            self.ldap._get_manager_id("invalid@mail")
+
+    def test_get_get_user_email_error(self):
+        with self.assertRaises(LdapHelperException):
+            self.ldap._get_user_email(None)
+
+        with self.assertRaises(LdapHelperException):
+            self.ldap._get_user_email("  ")
 
     def test_get_group_members_emails_error(self):
         with self.assertRaises(LdapHelperException):

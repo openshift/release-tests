@@ -32,10 +32,6 @@ class LdapHelper:
         Returns:
             str: Found manager email for specified user email
         """
-
-        if user_email is None or not is_valid_email(user_email):
-            raise LdapHelperException(f"Specified email is not valid: {user_email}")
-
         manager_id = self._get_manager_id(user_email)
         return self._get_user_email(manager_id)
 
@@ -86,6 +82,10 @@ class LdapHelper:
         Returns:
             str: Found manager id for specified user email
         """
+
+        if user_email is None or not is_valid_email(user_email):
+            raise LdapHelperException(f"Specified email is not valid: {user_email}")
+        
         manager_id = None
 
         try:
@@ -124,6 +124,9 @@ class LdapHelper:
         Returns:
             str: Found user email for specified user id
         """
+
+        if user_id is None or user_id.strip() == "":
+            raise LdapHelperException(f"Specified used id is not valid: {user_id}")
 
         user_email = None
 
