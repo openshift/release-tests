@@ -68,7 +68,7 @@ class LdapHelper:
                 if LdapHelper.PRIMARY_MAIL in entry:
                     members.add(entry[LdapHelper.PRIMARY_MAIL].value)
         except LDAPException as e:
-            logger.error("LDAP connection failed during 'get_manager_id'")
+            logger.error("LDAP connection failed during 'get_group_members_emails'")
             raise LdapHelperException("LDAP connection failed") from e
         finally:
             if conn:
