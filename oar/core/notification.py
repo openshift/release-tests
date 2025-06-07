@@ -9,10 +9,9 @@ from slack_sdk.errors import SlackApiError
 
 import oar.core.util as util
 from oar.core.configstore import ConfigStore
-from oar.core.exceptions import NotificationException
+from oar.core.exceptions import NotificationException, JiraUnauthorizedException
 from oar.core.jira import JiraManager
 from oar.core.worksheet import TestReport
-from oar.core.exceptions import JiraUnauthorizedException
 
 logger = logging.getLogger(__name__)
 
