@@ -43,7 +43,38 @@
           "jobStartTime": "2025-06-07T17:36:23Z",
           "jobID": "5d5a6b69-8b5c-4ab3-8a5c-f792677d8a5b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1931404888986619904",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-06-07T20:25:31Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 112,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24525-[LSO] [Filesystem ext4] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19717:UserInterface Check configmap on console",
+                "OCP-20800:UserInterface Key/Value Secret",
+                "OCP-25763:UserInterface Users management on console",
+                "OCP-26910:UserInterface Check project page"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-06-07T17:36:29Z",
@@ -156,7 +187,37 @@
           "jobStartTime": "2025-06-07T17:36:58Z",
           "jobID": "4dfeacb4-1291-48e2-bdfd-ebc99dabf5df",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/1931405034461859840",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-06-07T20:24:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 112,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19717:UserInterface Check configmap on console",
+                "OCP-20800:UserInterface Key/Value Secret",
+                "OCP-25763:UserInterface Users management on console",
+                "OCP-26910:UserInterface Check project page"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
