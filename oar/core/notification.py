@@ -12,6 +12,7 @@ from oar.core.configstore import ConfigStore
 from oar.core.exceptions import NotificationException
 from oar.core.jira import JiraManager
 from oar.core.worksheet import TestReport
+from oar.core.exceptions import JiraUnauthorizedException
 
 logger = logging.getLogger(__name__)
 
@@ -156,10 +157,10 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException(
                 "share missed CVE tracker bugs failed") from e
-        
+
     def share_unhealthy_advisories(self, unhealthy_advisories):
         """
-        Send slack message to ART team with unhealthy advisories 
+        Send slack message to ART team with unhealthy advisories
 
         Args:
             list: unhealthy_advisories
@@ -379,7 +380,7 @@ class SlackClient:
 
     def transform_email(self, email):
         '''
-        Email id in JIRA profile is not same as slack profile, 
+        Email id in JIRA profile is not same as slack profile,
         e.g. in JIRA it's xxx+jira, in slack it's xxx
         '''
         at_index = email.find('@')
@@ -513,7 +514,12 @@ class MessageHelper:
         has_onqa_issue = False
         slack_message = f"[{self.cs.release}] {message}\n"
         for key in jira_issues:
-            issue = self.jm.get_issue(key)
+            try:
+                issue = self.jm.get_issue(key)
+            except JiraUnauthorizedException:  #
+                logger.error(f"jira token does not have permission to access security bugs {key}, ignore and continue")
+                continue
+
             if issue.is_on_qa():
                 if issue.is_cve_tracker():
                     cve_warning = " This is a CVE bug and must be verified."
@@ -569,7 +575,7 @@ class MessageHelper:
         message += "\n"
 
         return message
-    
+
     def get_slack_message_for_unhealthy_advisories(self, unhealthy_advisories):
         """
         manipulate slack message for unhealthy advisories
