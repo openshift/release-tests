@@ -547,9 +547,14 @@ class MessageHelper:
                 qa_contact_email = issue.get_qa_contact()
                 manager_email = self.ldap.get_manager_email(qa_contact_email)
                 key = issue.get_key()
+                if manager_email:
+                    user_id = self.sc.get_user_id_by_email(manager_email)
+                else:
+                    logger.warning(f"Manager email was not found for user {qa_contact_email}")
+                    user_id = ""
                 slack_message += (self._to_link(util.get_jira_link(key), key)
                                         + " "
-                                        + self.sc.get_user_id_by_email(manager_email)
+                                        + user_id
                                         + "\n"
                                 )
             return slack_message

@@ -1,7 +1,6 @@
 import unittest
 
 from oar.core.ldap import LdapHelper
-from oar.core.exceptions import LdapHelperException
 
 
 class TestLdapHelper(unittest.TestCase):
@@ -37,23 +36,38 @@ class TestLdapHelper(unittest.TestCase):
         )
         self.assertCountEqual(expected_members_emails, group_members_emails)
 
-    def test_get_manager_id_error(self):
-        with self.assertRaises(LdapHelperException):
-            self.ldap._get_manager_id(None)
+    def test_get_manager_email_none_email(self):
+        self.assertEqual(None, self.ldap.get_manager_email(None))
 
-        with self.assertRaises(LdapHelperException):
-            self.ldap._get_manager_id("invalid@mail")
+    def test_get_manager_email_invalid_email(self):
+        self.assertEqual(None, self.ldap.get_manager_email("invalid@mail"))
 
-    def test_get_get_user_email_error(self):
-        with self.assertRaises(LdapHelperException):
-            self.ldap._get_user_email(None)
+    def test_get_manager_email_non_existent_email(self):
+        self.assertEqual(None, self.ldap.get_manager_email("nobody@redhat.com"))
 
-        with self.assertRaises(LdapHelperException):
-            self.ldap._get_user_email("  ")
+    def test_get_manager_id_none_email(self):
+        self.assertEqual(None, self.ldap._get_manager_id(None))
 
-    def test_get_group_members_emails_error(self):
-        with self.assertRaises(LdapHelperException):
-            self.ldap.get_group_members_emails(None)
+    def test_get_manager_id_invalid_email(self):
+        self.assertEqual(None, self.ldap._get_manager_id("invalid@mail"))
 
-        with self.assertRaises(LdapHelperException):
-            self.ldap.get_group_members_emails("  ")
+    def test_get_manager_id_non_existent_email(self):
+        self.assertEqual(None, self.ldap._get_manager_id("nobody@redhat.com"))
+
+    def test_get_get_user_email_none_id(self):
+        self.assertEqual(None, self.ldap._get_user_email(None))
+
+    def test_get_get_user_email_invalid_id(self):
+        self.assertEqual(None, self.ldap._get_user_email("    "))
+
+    def test_get_get_user_email_non_existent_id(self):
+        self.assertEqual(None, self.ldap._get_user_email("abcdxyz"))
+
+    def test_get_group_members_emails_none_group_name(self):
+        self.assertEqual(0, len(self.ldap.get_group_members_emails(None)))
+
+    def test_get_group_members_emails_invalid_group_name(self):
+        self.assertEqual(0, len(self.ldap.get_group_members_emails("   ")))
+
+    def test_get_group_members_emails_non_existent_group_name(self):
+        self.assertEqual(0, len(self.ldap.get_group_members_emails("abcdxyz")))
