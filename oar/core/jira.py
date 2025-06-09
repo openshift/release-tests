@@ -250,7 +250,11 @@ class JiraManager:
         """
         unverified_cve_issues = list()
         for key in jira_issue_keys:
-            issue = self.get_issue(key)
+            try:
+                issue = self.get_issue(key)
+            except JiraUnauthorizedException as e:
+                logger.error(f"Jira token does not have permission to access security bug {key}, ignore and continue: {e}")
+                continue
             if issue.is_on_qa() and issue.is_cve_tracker():
                 unverified_cve_issues.append(issue)
         return unverified_cve_issues
