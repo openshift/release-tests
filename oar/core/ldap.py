@@ -29,10 +29,13 @@ class LdapHelper:
         Returns:
             str: Found manager email for specified user email
         """
-        manager_id = self._get_manager_id(user_email)
-        manager_email = self._get_user_email(manager_id)
 
-        return manager_email
+        manager_id = self._get_manager_id(user_email)
+
+        if manager_id:
+            return self._get_user_email(manager_id) 
+        else:
+            return None
 
     def get_group_members_emails(self, group_name: str) -> set[str]:
         """
