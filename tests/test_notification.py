@@ -1,9 +1,10 @@
 import logging
 import unittest
+import unittest.mock
 
 import oar.core.util as util
 from oar.core.configstore import ConfigStore
-from oar.core.notification import NotificationManager
+from oar.core.notification import NotificationManager, NotificationException
 from oar.core.worksheet import WorksheetManager
 
 logging.basicConfig(
@@ -132,3 +133,44 @@ class TestNotificationManager(unittest.TestCase):
         
         with self.assertRaises(Exception):
             self.nm.share_shipment_mrs(test_mrs, test_owner)
+
+    def test_get_slack_message_for_unverified_cve_issues_to_managers(self):
+        empty_unverified_cve_msg = (
+            self.nm.mh.get_slack_message_for_unverified_cve_issues_to_managers([])
+        )
+        self.assertEqual("", empty_unverified_cve_msg)
+
+        unverified_cve_msg = (
+            self.nm.mh.get_slack_message_for_unverified_cve_issues_to_managers(
+                [self.nm.mh.jm.get_issue("OCPBUGS-57123")]
+            )
+        )
+
+        self.assertIn(
+            "[4.13.6] The following issues must be verified in this release.",
+            unverified_cve_msg,
+        )
+        self.assertIn(
+            "As the managers of the assigned QA contacts who have not yet verified these Jiras,",
+            unverified_cve_msg,
+        )
+        self.assertIn(
+            "could you please prioritize their verification or reassign them to other available QA contacts?",
+            unverified_cve_msg,
+        )
+        self.assertIn(
+            "<https://issues.redhat.com/browse/OCPBUGS-57123|OCPBUGS-57123> <@",
+            unverified_cve_msg,
+        )
+
+    def test_share_unverified_cve_issues_to_managers_error(self):
+        self.nm.sc.post_message = unittest.mock.Mock(
+            side_effect=Exception("Test error exception")
+        )
+
+        test_issue = self.nm.mh.jm.get_issue("OCPBUGS-57123")
+
+        with self.assertRaises(NotificationException):
+            self.nm.share_unverified_cve_issues_to_managers([test_issue])
+
+        self.nm.sc.post_message.assert_called_once()
