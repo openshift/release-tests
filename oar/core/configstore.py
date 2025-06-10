@@ -299,14 +299,17 @@ class ConfigStore:
         """Get shipment MR URLs from assembly config, handling both single and multiple shipments.
 
         Returns:
-            list: List of MR URLs (empty list if none found)
+            list: List of MR URLs from assembly config (empty list if none found)
         """
         shipments = self._get_assembly_attr("group/shipments")
         if not shipments:
             return []
+
         if isinstance(shipments, dict):  # Single shipment case
             return [shipments["url"]]
-        return [s["url"] for s in shipments]  # Multiple shipments case
+        else:  # Multiple shipments case
+            return [s["url"] for s in shipments]
+
 
     def get_advisories(self):
         """
