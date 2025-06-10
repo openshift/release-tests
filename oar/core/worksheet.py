@@ -92,13 +92,7 @@ class WorksheetManager:
             logger.debug(f"build info:\n{build_cell_value}")
 
             # update advisory info
-            ad_cell_value = ""
-            for k, v in self._cs.get_advisories().items():
-                ad_link = {util.get_advisory_link(v)}
-                ad_cell_value += f"{k}: {self._report._to_hyperlink(ad_link, ad_link)}\n"
-            self._report.update_advisory_info(ad_cell_value.strip())
-            logger.info("advisory info is updated")
-            logger.debug(f"advisory info:\n{ad_cell_value}")
+            self._report.update_advisory_info()
 
             # update jira info
             self._report.update_jira_info(self._cs.get_jira_ticket())
@@ -154,14 +148,43 @@ class TestReport:
         """
         return self._ws.url
 
-    def update_advisory_info(self, ad):
+    def update_advisory_info(self):
         """
         Update advisory info in test report
-
-        Args:
-            ad (str): advisories of current release
         """
-        self._ws.update_acell(LABEL_ADVISORY, ad)
+            obj = []
+            # Arrange AD names and urls as per needs of spreadsheet.batch_update API
+            for k, v in self._cs.get_advisories().items():
+                entry = {}
+                entry["ad_name"] = k
+                entry["ad_url"] = util.get_advisory_link(v)
+                obj.append(entry)
+            # Extract only the AD names
+            text = "\n".join([e["ad_name"] for e in obj])
+            cell_format = {"backgroundColor": {"red": 183/255, "green": 225/255, "blue": 205/255}}
+            sheet_id = self._ws.id
+            requests = [
+                {
+                    "updateCells": {
+                        "rows": [
+                            {
+                                "values": [
+                                    {
+                                        "userEnteredValue": {"stringValue": text},
+                                        "textFormatRuns": [{"format": {"link": {"uri": e["ad_url"]}}, "startIndex": text.find(e["ad_name"])} for e in obj],
+                                        "userEnteredFormat": cell_format
+                                    }
+                                ]
+                            }
+                        ],
+                        "range": {"sheetId": sheet_id, "startRowIndex": 1, "endRowIndex": 2, "startColumnIndex": 1, "endColumnIndex": 2},
+                        "fields": "userEnteredValue,textFormatRuns,userEnteredFormat"
+                    }
+                }
+            ]
+            spreadsheet.batch_update({"requests": requests})
+            logger.info("advisory info is updated")
+            logger.debug(f"advisory info:\n{obj}")
 
     def get_advisory_info(self):
         """
