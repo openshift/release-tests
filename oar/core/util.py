@@ -1,4 +1,5 @@
 import logging
+from urllib.parse import urlparse
 import warnings
 import re
 from semver.version import Version
@@ -84,3 +85,29 @@ def is_valid_email(email):
     """
     pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return bool(re.match(pattern, email))
+
+def parse_mr_url(url: str) -> tuple:
+    """Parse MR URL to extract project and MR ID
+    
+    Args:
+        url: MR URL in format https://gitlab.cee.redhat.com/namespace/project/-/merge_requests/123
+        
+    Returns:
+        tuple: (project_path, mr_id)
+        
+    Raises:
+        ValueError: If URL is invalid
+    """
+    parsed = urlparse(url)
+    if not parsed.netloc or not parsed.path:
+        raise ValueError("Invalid MR URL")
+        
+    # Extract project path (namespace/project)
+    path_parts = parsed.path.split('/-/merge_requests/')
+    if len(path_parts) != 2:
+        raise ValueError("Invalid MR URL format")
+        
+    project_path = path_parts[0].strip('/')
+    mr_id = int(path_parts[1].split('/')[0])
+    
+    return (project_path, mr_id)

@@ -9,9 +9,8 @@ from gitlab.exceptions import (
     GitlabCreateError,
     GitlabListError
 )
-from oar.core.util import is_valid_email
+from oar.core.util import is_valid_email, parse_mr_url
 from typing import List, Optional, Set
-from urllib.parse import urlparse
 from glom import glom
 from oar.core.configstore import ConfigStore
 from oar.core.jira import JiraManager
@@ -236,6 +235,14 @@ class GitLabMergeRequest:
                 f"Failed to get line number for Jira issue {jira_key} in {file_path}"
             ) from e
 
+    def get_id(self) -> int:
+        """Get the merge request ID
+
+        Returns:
+            The numeric ID of this merge request
+        """
+        return self.merge_request_id
+
     def get_status(self) -> str:
         """Get the current status of the merge request
         
@@ -250,6 +257,17 @@ class GitLabMergeRequest:
         except Exception as e:
             raise GitLabMergeRequestException(f"Failed to get MR status: {str(e)}")
 
+    def is_opened(self) -> bool:
+        """Check if the merge request is in 'opened' state
+
+        Returns:
+            bool: True if MR is opened, False otherwise
+
+        Raises:
+            GitLabMergeRequestException: If unable to get MR status
+        """
+        return self.get_status() == 'opened'
+
     def approve(self) -> None:
         """Approve the current merge request (adds your approval)
         
@@ -262,10 +280,8 @@ class GitLabMergeRequest:
             GitLabMergeRequestException: If unable to approve the MR
         """
         try:
-            if self.mr.state != 'opened':
-                raise GitLabMergeRequestException(
-                    f"Cannot approve MR in state: {self.mr.state}"
-                )
+            if not self.is_opened():
+                raise GitLabMergeRequestException(f"Cannot approve MR in state: {self.get_status()}")
             
             # Get current user
             current_user = self.gl.user
@@ -359,7 +375,7 @@ class ShipmentData:
                 continue
                 
             try:
-                project, mr_id = self._parse_mr_url(url)
+                project, mr_id = parse_mr_url(url)
                 gitlab_url = self._cs.get_gitlab_url()
                 token = self._cs.get_gitlab_token()
                 
@@ -371,40 +387,14 @@ class ShipmentData:
                 )
                 
                 # Only include opened MRs
-                if mr.get_status() == 'opened':
+                if mr.is_opened():
                     mrs.append(mr)
             except Exception as e:
                 logger.warning(f"Failed to initialize MR from {url}: {str(e)}")
                 continue
                 
         return mrs
-        
-    def _parse_mr_url(self, url: str) -> tuple:
-        """Parse MR URL to extract project and MR ID
-        
-        Args:
-            url: MR URL in format https://gitlab.cee.redhat.com/namespace/project/-/merge_requests/123
-            
-        Returns:
-            tuple: (project_path, mr_id)
-            
-        Raises:
-            ShipmentDataException: If URL is invalid
-        """
-        parsed = urlparse(url)
-        if not parsed.netloc or not parsed.path:
-            raise ShipmentDataException("Invalid MR URL")
-            
-        # Extract project path (namespace/project)
-        path_parts = parsed.path.split('/-/merge_requests/')
-        if len(path_parts) != 2:
-            raise ShipmentDataException("Invalid MR URL format")
-            
-        project_path = path_parts[0].strip('/')
-        mr_id = int(path_parts[1].split('/')[0])
-        
-        return (project_path, mr_id)
-        
+
     def get_mrs(self) -> List[GitLabMergeRequest]:
         """Get list of initialized merge requests"""
         return self._mrs

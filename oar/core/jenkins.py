@@ -8,6 +8,7 @@ import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
 from oar.core.exceptions import JenkinsHelperException
+from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,8 @@ class JenkinsHelper:
         self.errata_numbers = " ".join(
             [str(i) for i in [val for val in self._cs.get_advisories().values()]]
         )
+        # get shipment MR id
+        self.mr_id = ShipmentData(cs).get_mrs()[0].get_id()
         self.pull_spec = (
             "quay.io/openshift-release-dev/ocp-release:" + self._cs.release + "-x86_64"
         )
@@ -138,7 +141,7 @@ class JenkinsHelper:
             if (job_name == JENKINS_JOB_IMAGE_CONSISTENCY_CHECK):
                 parameters_value = {
                     "VERSION": "v" + self.version,
-                    "ERRATA_NUMBERS": self.errata_numbers,
+                    "SHIPMENT_MR_ID": self.mr_id,
                     "PAYLOAD_URL": pull_spec,
                 }
             elif (job_name == JENKINS_JOB_STAGE_PIPELINE):
