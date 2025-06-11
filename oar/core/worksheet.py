@@ -141,6 +141,7 @@ class TestReport:
     def __init__(self, ws: Worksheet, cs: ConfigStore):
         self._ws = ws
         self._cs = cs
+        self.wm = WorksheetManager(cs)
 
     def get_url(self):
         """
@@ -152,39 +153,36 @@ class TestReport:
         """
         Update advisory info in test report
         """
-            obj = []
-            # Arrange AD names and urls as per needs of spreadsheet.batch_update API
-            for k, v in self._cs.get_advisories().items():
-                entry = {}
-                entry["ad_name"] = k
-                entry["ad_url"] = util.get_advisory_link(v)
-                obj.append(entry)
-            # Extract only the AD names
-            text = "\n".join([e["ad_name"] for e in obj])
-            cell_format = {"backgroundColor": {"red": 183/255, "green": 225/255, "blue": 205/255}}
-            sheet_id = self._ws.id
-            requests = [
-                {
-                    "updateCells": {
-                        "rows": [
-                            {
-                                "values": [
-                                    {
-                                        "userEnteredValue": {"stringValue": text},
-                                        "textFormatRuns": [{"format": {"link": {"uri": e["ad_url"]}}, "startIndex": text.find(e["ad_name"])} for e in obj],
-                                        "userEnteredFormat": cell_format
-                                    }
-                                ]
-                            }
-                        ],
-                        "range": {"sheetId": sheet_id, "startRowIndex": 1, "endRowIndex": 2, "startColumnIndex": 1, "endColumnIndex": 2},
-                        "fields": "userEnteredValue,textFormatRuns,userEnteredFormat"
-                    }
+        obj = []
+        # Arrange AD names and urls as per needs of spreadsheet.batch_update API
+        for k, v in self._cs.get_advisories().items():
+            obj.append({"ad_name": k, "ad_number": str(v), "ad_url": util.get_advisory_link(v) })
+
+        # Extract only the AD names and number
+        text = "\n".join([e["ad_name"] + ": " + e["ad_number"] for e in obj])
+        spreadsheet =  self.wm._doc
+        sheet = spreadsheet.worksheet(self.wm._cs.release)
+        requests = [
+            {
+                "updateCells": {
+                    "rows": [
+                        {
+                            "values": [
+                                {
+                                    "userEnteredValue": {"stringValue": text},
+                                    "textFormatRuns": [{"format": {"link": {"uri": e["ad_url"]}}, "startIndex": text.find(e["ad_name"])} for e in obj],
+                                }
+                            ]
+                        }
+                    ],
+                    "range": {"sheetId": sheet.id, "startRowIndex": 1, "endRowIndex": 2, "startColumnIndex": 1, "endColumnIndex": 2},
+                    "fields": "userEnteredValue,textFormatRuns,userEnteredFormat"
                 }
-            ]
-            spreadsheet.batch_update({"requests": requests})
-            logger.info("advisory info is updated")
-            logger.debug(f"advisory info:\n{obj}")
+            }
+        ]
+        spreadsheet.batch_update({"requests": requests})
+        logger.info("advisory info is updated")
+        logger.debug(f"advisory info:\n{obj}")
 
     def get_advisory_info(self):
         """
