@@ -117,12 +117,13 @@ class AdvisoryManager:
                 if len(tests):
                     for t in tests:
                         status = t["attributes"]["status"]
+                        identifier = t['attributes']['external_data']['json_body']['subject_identifier']
                         logger.info(
-                            f"Greenwave CVP test {t['id']} status is {status}")
+                            f"Greenwave CVP test {t['id']} ({identifier}) status is {status}")
                         if status not in valid_status:
                             all_passed = False
                             logger.error(
-                                f"Greenwave CVP test {t['id']} status is not {valid_status}"
+                                f"Greenwave CVP test {t['id']} ({identifier}) status is not {valid_status}"
                             )
                             abnormal_tests.append(t)
                     logger.info(
@@ -334,7 +335,7 @@ class AdvisoryManager:
                     f"advisory {ad.errata_id} is healthy, overall grade is {ad_grade}")
 
         return unhealthy_advisories
-    
+
     def has_finished_all_advisories_jiras(self):
         """
         Check all advisories jiras are finished (Closed, Verified or Release Pending) or they are dropped from advisories.
