@@ -162,7 +162,31 @@
           "jobStartTime": "2025-06-12T04:28:19Z",
           "jobID": "b42925aa-7d4a-4f2a-b7e5-fa0b5e685f58",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1933018504605208576",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-06-12T07:56:39Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -309,5 +333,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-06-11-151246",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-06-11-151246"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
