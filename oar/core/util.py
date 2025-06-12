@@ -111,3 +111,48 @@ def parse_mr_url(url: str) -> tuple:
     mr_id = int(path_parts[1].split('/')[0])
     
     return (project_path, mr_id)
+
+def get_ocp_test_result_url(release: str) -> str:
+    """
+    Return OCP test result url for specified release
+
+    Args:
+        release (str): Release or candidate nighly version
+
+    Returns:
+        str: OCP test result release url
+    """
+    return f"https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-{release}-amd64.json"
+
+def get_qe_sippy_main_view_url(release: str) -> str:
+    """
+    Return QE Sippy main view url for specified release
+
+    Args:
+        release (str): Release version
+
+    Returns:
+        str: QE Sippy main view release url
+    """
+    return f"{get_qe_sippy_url()}/main?view={get_y_release(release)}-qe-main"
+
+def get_qe_sippy_auto_release_view_url(release: str) -> str:
+    """
+    Return QE Sippy auto release view url for specified release
+
+    Args:
+        release (str): Release version
+
+    Returns:
+        str: QE Sippy auto release view release url
+    """
+    return f"{get_qe_sippy_url()}/main?view={get_y_release(release)}-qe-auto-release"
+
+def get_qe_sippy_url() -> str:
+    """
+    Return QE Sippy url
+
+    Returns:
+        str: QE Sippy url
+    """
+    return "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness"

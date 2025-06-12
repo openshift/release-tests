@@ -106,6 +106,9 @@ class WorksheetManager:
             shipment = ShipmentData(self._cs)
             self._report.generate_bug_list(shipment.get_jira_issues())
 
+            # add tests results links
+            self._report.create_test_results_links()
+
         except Exception as ge:  # catch all the exceptions here
             raise WorksheetException("create test report failed") from ge
 
@@ -540,6 +543,44 @@ class TestReport:
                     time.sleep(delay)
                 else:
                     logger.error(f"Adding jira {jira_key} to test report failed after all retries: {e}")
+
+    def create_test_results_links(self):
+        self._ws.update_acell(LABEL_BLOCKING_TESTS, "Blocking jobs")
+        self._ws.update_acell(
+            LABEL_BLOCKING_TESTS_RELEASE,
+            self._to_hyperlink(
+                util.get_ocp_test_result_url(self._cs.release),
+                f"ocp-test-result-{self._cs.release}"
+            )
+        )
+
+        candidate_build_cell_value = "no-candidate-build-no-test-result"
+        candidate_builds = self._cs.get_candidate_builds()
+        if candidate_builds and "x86_64" in candidate_builds:
+            candidate_build_cell_value = self._to_hyperlink(
+                util.get_ocp_test_result_url(candidate_builds["x86_64"]),
+                f"ocp-test-result-{candidate_builds["x86_64"]}"
+            )
+        self._ws.update_acell(
+            LABEL_BLOCKING_TESTS_CANDIDATE,
+            candidate_build_cell_value
+        )
+
+        self._ws.update_acell(LABEL_SIPPY, "Sippy")
+        self._ws.update_acell(
+            LABEL_SIPPY_MAIN,
+            self._to_hyperlink(
+                util.get_qe_sippy_main_view_url(self._cs.release),
+                f"{util.get_y_release(self._cs.release)}-qe-main"
+            )
+        )
+        self._ws.update_acell(
+            LABEL_SIPPY_AUTO_RELEASE,
+            self._to_hyperlink(
+                util.get_qe_sippy_auto_release_view_url(self._cs.release),
+                f"{util.get_y_release(self._cs.release)}-qe-auto-release"
+            )
+        )
 
     def _get_issues_from_others_section(self):
         """
