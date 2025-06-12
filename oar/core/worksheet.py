@@ -106,7 +106,7 @@ class WorksheetManager:
             shipment = ShipmentData(self._cs)
             self._report.generate_bug_list(shipment.get_jira_issues())
 
-            # add tests results links
+            # add test results links
             self._report.create_test_results_links()
 
         except Exception as ge:  # catch all the exceptions here
@@ -554,7 +554,7 @@ class TestReport:
             )
         )
 
-        candidate_build_cell_value = "no-candidate-build-no-test-result"
+        candidate_build_cell_value = "no-candidate-build-no-test-results"
         candidate_builds = self._cs.get_candidate_builds()
         if candidate_builds and "x86_64" in candidate_builds:
             candidate_build_cell_value = self._to_hyperlink(
