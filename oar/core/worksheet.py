@@ -557,9 +557,10 @@ class TestReport:
         candidate_build_cell_value = "no-candidate-build-no-test-results"
         candidate_builds = self._cs.get_candidate_builds()
         if candidate_builds and "x86_64" in candidate_builds:
+            cb = candidate_builds["x86_64"]
             candidate_build_cell_value = self._to_hyperlink(
-                util.get_ocp_test_result_url(candidate_builds["x86_64"]),
-                f"ocp-test-result-{candidate_builds["x86_64"]}"
+                util.get_ocp_test_result_url(cb),
+                f"ocp-test-result-{cb}"
             )
         self._ws.update_acell(
             LABEL_BLOCKING_TESTS_CANDIDATE,
