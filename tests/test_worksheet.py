@@ -84,3 +84,35 @@ class TestWorksheetManager(TestCase):
     def test_create_report_for_candidate_release(self):
         wm = WorksheetManager(ConfigStore("4.18.0-rc.8"))
         wm.create_test_report()
+
+    def test_create_test_results_links(self):
+        tr = self.wm.get_test_report()
+        tr.create_test_results_links()
+
+        self.assertEqual("Blocking jobs", tr._ws.acell(LABEL_BLOCKING_TESTS).value)
+
+        self.assertEqual("ocp-test-result-4.15.4", tr._ws.acell(LABEL_BLOCKING_TESTS_RELEASE).value)
+        self.assertIn(
+            "https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.15.4-amd64.json",
+            tr._ws.get(LABEL_BLOCKING_TESTS_RELEASE, value_render_option="FORMULA")[0][0],
+        )
+
+        self.assertEqual("ocp-test-result-4.15.0-0.nightly-2024-03-20-032212", tr._ws.acell(LABEL_BLOCKING_TESTS_CANDIDATE).value)
+        self.assertIn(
+            "https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.15.0-0.nightly-2024-03-20-032212-amd64.json",
+            tr._ws.get(LABEL_BLOCKING_TESTS_CANDIDATE, value_render_option="FORMULA")[0][0],
+        )
+
+        self.assertEqual("Sippy", tr._ws.acell(LABEL_SIPPY).value)
+        
+        self.assertEqual("4.15-qe-main", tr._ws.acell(LABEL_SIPPY_MAIN).value)
+        self.assertIn(
+            "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-main",
+            tr._ws.get(LABEL_SIPPY_MAIN, value_render_option="FORMULA")[0][0],
+        )
+
+        self.assertEqual("4.15-qe-auto-release", tr._ws.acell(LABEL_SIPPY_AUTO_RELEASE).value)
+        self.assertIn(
+            "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-auto-release",
+            tr._ws.get(LABEL_SIPPY_AUTO_RELEASE, value_render_option="FORMULA")[0][0],
+        ) 
