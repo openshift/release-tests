@@ -141,7 +141,6 @@ class TestReport:
     def __init__(self, ws: Worksheet, cs: ConfigStore):
         self._ws = ws
         self._cs = cs
-        self.wm = WorksheetManager(cs)
 
     def get_url(self):
         """
@@ -153,15 +152,13 @@ class TestReport:
         """
         Update advisory info in test report
         """
-        obj = []
+        ad_info = []
         # Arrange AD names and urls as per needs of spreadsheet.batch_update API
         for k, v in self._cs.get_advisories().items():
-            obj.append({"ad_name": k, "ad_number": str(v), "ad_url": util.get_advisory_link(v) })
+            ad_info.append({"ad_name": k, "ad_number": str(v), "ad_url": util.get_advisory_link(v) })
 
         # Extract only the AD names and number
-        text = "\n".join([e["ad_name"] + ": " + e["ad_number"] for e in obj])
-        spreadsheet =  self.wm._doc
-        sheet = spreadsheet.worksheet(self.wm._cs.release)
+        text = "\n".join([e["ad_name"] + ": " + e["ad_url"] for e in ad_info])
         requests = [
             {
                 "updateCells": {
@@ -170,19 +167,19 @@ class TestReport:
                             "values": [
                                 {
                                     "userEnteredValue": {"stringValue": text},
-                                    "textFormatRuns": [{"format": {"link": {"uri": e["ad_url"]}}, "startIndex": text.find(e["ad_name"])} for e in obj],
+                                    "textFormatRuns": [{"format": {"link": {"uri": e["ad_url"]}}, "startIndex": text.find(e["ad_name"])} for e in ad_info],
                                 }
                             ]
                         }
                     ],
-                    "range": {"sheetId": sheet.id, "startRowIndex": 1, "endRowIndex": 2, "startColumnIndex": 1, "endColumnIndex": 2},
-                    "fields": "userEnteredValue,textFormatRuns,userEnteredFormat"
+                    "range": {"sheetId": self._ws.id, "startRowIndex": LABEL_START_ROW_INDEX, "endRowIndex": LABEL_END_ROW_INDEX, "startColumnIndex": LABEL_START_COL_INDEX, "endColumnIndex": LABEL_END_COL_INDEX},
+                    "fields": "userEnteredValue,textFormatRuns"
                 }
             }
         ]
-        spreadsheet.batch_update({"requests": requests})
+        self._ws.spreadsheet.batch_update({"requests": requests})
         logger.info("advisory info is updated")
-        logger.debug(f"advisory info:\n{obj}")
+        logger.debug(f"advisory info:\n{ad_info}")
 
     def get_advisory_info(self):
         """

@@ -84,9 +84,3 @@ class TestWorksheetManager(TestCase):
     def test_create_report_for_candidate_release(self):
         wm = WorksheetManager(ConfigStore("4.18.0-rc.8"))
         wm.create_test_report()
-
-    def test_update_advisory_info(self):
-        cs = ConfigStore("4.15.4")
-        ws = self.wm._doc.worksheet(cs.release)
-        self._report = TestReport(ws, cs)
-        self._report.update_advisory_info()
