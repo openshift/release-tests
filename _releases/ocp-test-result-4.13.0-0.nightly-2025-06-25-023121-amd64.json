@@ -40,9 +40,38 @@
         "jobStartTime": "2025-06-25T10:32:58Z",
         "jobID": "b45edda8-ba9b-4aae-bab5-41573f2fecd1",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/1937821322209923072",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-06-25T13:19:56Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 73,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 19,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-06-25T13:22:13Z",
+          "jobID": "73643b50-ba5a-402e-a9d4-4284b6c0b1bd",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2025-06-25T13:22:18Z",
+          "jobID": "85414746-d995-4223-a050-2bfb3491db92",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f999",
