@@ -6,7 +6,6 @@ from oar.core.const import *
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
 
-
 class TestWorksheetManager(TestCase):
     @classmethod
     def setUpClass(self):
