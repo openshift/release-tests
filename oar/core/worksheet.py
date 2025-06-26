@@ -155,7 +155,7 @@ class TestReport:
         ad_info = []
         # Arrange AD names and urls as per needs of spreadsheet.batch_update API
         for k, v in self._cs.get_advisories().items():
-            ad_info.append({"ad_name": k, "ad_number": str(v), "ad_url": util.get_advisory_link(v) })
+            ad_info.append({"ad_name": k, "ad_url": util.get_advisory_link(v) })
 
         # Extract only the AD names and number
         text = "\n".join([e["ad_name"] + ": " + e["ad_url"] for e in ad_info])
@@ -172,7 +172,7 @@ class TestReport:
                             ]
                         }
                     ],
-                    "range": {"sheetId": self._ws.id, "startRowIndex": LABEL_START_ROW_INDEX, "endRowIndex": LABEL_END_ROW_INDEX, "startColumnIndex": LABEL_START_COL_INDEX, "endColumnIndex": LABEL_END_COL_INDEX},
+                    "range": {"sheetId": self._ws.id, "startRowIndex": LABEL_ADVISORY_START_ROW_INDEX, "endRowIndex": LABEL_ADVISORY_END_ROW_INDEX, "startColumnIndex": LABEL_ADVISORY_START_COL_INDEX, "endColumnIndex": LABEL_ADVISORY_END_COL_INDEX},
                     "fields": "userEnteredValue,textFormatRuns"
                 }
             }

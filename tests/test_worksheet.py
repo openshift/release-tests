@@ -5,7 +5,6 @@ from oar.core.configstore import ConfigStore
 from oar.core.const import *
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
-from oar.core.worksheet import TestReport
 
 class TestWorksheetManager(TestCase):
     @classmethod
