@@ -338,6 +338,34 @@ class TestGitLabMergeRequest(unittest.TestCase):
             else:
                 self.fail(f"Failed to add suggestion to real MR: {str(e)}")
 
+    def test_get_pipeline_stage_info_real_mr(self):
+        """Test getting stage-release-triggers status from real MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+        
+        valid_statuses = ['created', 'pending', 'running','success', 'failed', 'canceled', 'skipped', 'not_found']
+
+        client = GitLabMergeRequest(
+            "https://gitlab.cee.redhat.com",
+            "hybrid-platforms/art/ocp-shipment-data",
+            15)
+
+        try:
+            # Test getting stage [stage-release-triggers] status
+            stage_detail = client.get_stage_release_info()
+            status = stage_detail['status']
+            if status == 'not_found':
+                self.skipTest("Stage 'stage-release-triggers' not found in pipeline")
+
+            self.assertIn(status, valid_statuses)
+                
+        except Exception as e:
+            if f"Merge request {client.merge_request_id} not found" in str(e):
+                self.skipTest(
+                    f"Merge request {client.merge_request_id} not found - skipping real API test")
+            else:
+                self.fail(f"Failed to test stage status: {str(e)}")
+
 
 class TestShipmentData(unittest.TestCase):
     @patch('oar.core.configstore.ConfigStore')

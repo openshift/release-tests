@@ -203,17 +203,21 @@ class GitLabMergeRequest:
             raise GitLabMergeRequestException("Failed to add suggestion comment") from e
 
     def get_jira_issue_line_number(self, jira_key: str, file_path: str) -> Optional[int]:
-        """Get the line number where a Jira issue is referenced in a file
+        """Get the line number where a Jira issue key appears in a file
+        
+        Searches for exact string match of the Jira key (case sensitive) and returns
+        the first line number where it appears.
         
         Args:
-            jira_key: Jira issue key (e.g. "OCPBUGS-123")
+            jira_key: Complete Jira issue key (e.g. "OCPBUGS-123")
             file_path: Path to file in repository
             
         Returns:
-            Line number where the Jira key appears (first match), or None if not found
+            int: First line number where jira_key appears, or None if not found
             
         Raises:
             GitLabMergeRequestException: If unable to read file or invalid inputs
+            UnicodeDecodeError: If file content cannot be decoded
         """
         if not jira_key or not isinstance(jira_key, str):
             raise GitLabMergeRequestException("Jira key must be a non-empty string")
@@ -256,6 +260,149 @@ class GitLabMergeRequest:
             return self.mr.state
         except Exception as e:
             raise GitLabMergeRequestException(f"Failed to get MR status: {str(e)}")
+
+    def _get_latest_pipeline(self):
+        """Get the latest pipeline for this merge request with full metadata
+        
+        Returns:
+            gitlab.v4.objects.ProjectPipeline: The most recent pipeline object with complete metadata,
+            including jobs, bridges, and status details
+            
+        Raises:
+            GitLabMergeRequestException: If no pipelines found or error occurs
+            GitlabError: For GitLab API communication failures
+        """
+        try:
+            project = self.gl.projects.get(self.project_name)
+            pipeline_list = self.mr.pipelines.list()
+            if not pipeline_list:
+                raise GitLabMergeRequestException("No pipelines found for merge request")
+            
+            # Get full pipeline objects with all metadata
+            pipelines = [
+                project.pipelines.get(p.id) 
+                for p in pipeline_list
+            ]
+            # Sort by creation date (newest first)
+            pipelines = sorted(
+                pipelines,
+                key=lambda p: p.created_at,
+                reverse=True
+            )
+            pipeline = pipelines[0]
+            logger.info(f"Found pipeline {pipeline.id} with status {pipeline.status}")
+            return pipeline
+        except GitlabError as e:
+            raise GitLabMergeRequestException(f"Failed to get pipeline: GitLab API error") from e
+        except Exception as e:
+            raise GitLabMergeRequestException(f"Failed to get pipeline: {str(e)}") from e
+
+    def _get_stage_info_from_pipeline(self, stage_name: str, pipeline) -> dict:
+        """Get status of a pipeline stage including regular jobs and trigger jobs/bridges
+        
+        Args:
+            stage_name: Name of stage to check
+            pipeline: gitlab.v4.objects.ProjectPipeline object to inspect
+            
+        Returns:
+            dict: {
+                'status': str - overall stage status ('running', 'success', 'failed', etc.),
+                'job': gitlab.v4.objects.ProjectPipelineJob - first job object in the stage
+            }
+            
+        Raises:
+            GitLabMergeRequestException: If stage not found in pipeline
+            GitlabError: For GitLab API communication failures
+        """
+        try:
+            # Get all jobs and bridges (trigger jobs) with detailed logging
+            jobs = pipeline.jobs.list(get_all=True)
+            bridges = pipeline.bridges.list(get_all=True)
+            logger.debug(f"Found {len(jobs)} jobs and {len(bridges)} bridges in pipeline {pipeline.id}")
+            
+            # Combine jobs and bridges for stage checking
+            all_work = list(jobs) + list(bridges)
+            
+            # Log all unique stages found
+            all_stages = {w.stage for w in all_work if hasattr(w, 'stage')}
+            logger.debug(f"Available stages in pipeline: {all_stages}")
+            
+            stage_work = [w for w in all_work if hasattr(w, 'stage') and w.stage == stage_name]
+            
+            if not stage_work:
+                # Log all work for debugging
+                logger.debug(f"All pipeline work: {[(w.name, getattr(w, 'stage', None), w.status) for w in all_work]}")
+                raise GitLabMergeRequestException(
+                    f"Stage '{stage_name}' not found in pipeline. Available stages: {all_stages}")
+                
+            # Return status from first job in stage (GitLab handles failed status automatically)
+            job = stage_work[0]
+            status = job.status
+            logger.debug(f"Stage '{stage_name}' status: {status}")
+            
+            return {
+                'status': status,
+                'job': job
+            }
+        except Exception as e:
+            logger.error(f"Error getting stage status: {str(e)}")
+            raise
+
+    def is_stage_release_success(self) -> bool:
+        """Check if the stage-release-triggers stage has succeeded
+        
+        Returns:
+            bool: True if stage status is 'success', False otherwise
+            
+        Raises:
+            GitLabMergeRequestException: If unable to get stage status
+        """
+        try:
+            stage_info = self.get_stage_release_info()
+            if stage_info['status'] == 'success':
+                return True
+                
+            logger.error(f"Stage release failed with status {stage_info['status']}")
+            logger.error(f"Job details: {stage_info['job'].pformat()}")
+            return False
+        except Exception as e:
+            logger.error(f"Failed to check stage release status: {str(e)}")
+            raise GitLabMergeRequestException(f"Failed to check stage release status: {str(e)}") from e
+
+    def get_stage_release_info(self) -> dict:
+        """Get detailed info about the 'stage-release-triggers' stage from latest pipeline
+        
+        Returns:
+            dict: {
+                'status': overall stage status (e.g. 'running', 'success', 'failed'),
+                'jobs': [list of failed jobs if stage failed]  # Each job includes pipeline_id
+            }
+            
+        Raises:
+            GitLabMergeRequestException: If stage not found or pipeline error
+        """
+        stage_name = "stage-release-triggers"
+        try:
+            pipeline = self._get_latest_pipeline()
+            
+            
+            try:
+                stage_status = self._get_stage_info_from_pipeline(stage_name, pipeline)
+                logger.info(f"Stage '{stage_name}' status: {stage_status}")
+                return stage_status
+            except GitLabMergeRequestException as e:
+                logger.error(f"Stage '{stage_name}' not found in pipeline {pipeline.id}")
+                return {
+                    'status': 'not_found',
+                    'jobs': []
+                }
+            
+        except GitlabError as e:
+            logger.error(f"Failed to get status for '{stage_name}': GitLab API error")
+            raise GitLabMergeRequestException(f"Failed to get status: GitLab API error") from e
+        except Exception as e:
+            logger.error(f"Failed to get status for '{stage_name}': Unexpected error", exc_info=False)
+            raise GitLabMergeRequestException(f"Failed to get status: {str(e)}") from e
 
     def is_opened(self) -> bool:
         """Check if the merge request is in 'opened' state
@@ -507,21 +654,47 @@ class ShipmentData:
                 logger.error(f"Failed to approve MR {mr.merge_request_id}: {str(e)}")
                 raise ShipmentDataException(f"Failed to approve merge request: {str(e)}")
 
+    def is_stage_release_success(self) -> bool:
+        """Check if stage-release-triggers stage has succeeded for all shipment MRs
+        
+        Returns:
+            bool: True if all MRs have successful stage releases, False otherwise
+            
+        Raises:
+            ShipmentDataException: If unable to check stage status for any MR
+        """
+        for mr in self._mrs:
+            try:
+                if not mr.is_stage_release_success():
+                    logger.error(f"Stage release failed for MR {mr.merge_request_id}")
+                    return False
+            except Exception as e:
+                logger.error(f"Failed to check stage release status for MR {mr.merge_request_id}: {str(e)}")
+                raise ShipmentDataException(f"Failed to check stage release status: {str(e)}") from e
+                
+        return True
+
     def drop_bugs(self) -> tuple[list[str], list[str]]:
         """Drop bugs from shipment files by adding suggestions to merge requests
         
-        For each merge request:
-        1. Gets all files changed in the MR
-        2. For each file:
-           a. Gets Jira issues from the file
-           b. Identifies high severity and droppable bugs
-           c. For each droppable bug, checks for existing suggestions before adding new one
-           
+        Processes all shipment merge requests to:
+        1. Identify high severity and droppable Jira issues
+        2. Add suggestions to remove droppable issues from YAML files
+        3. Cache processed issues to avoid duplicate suggestions
+        
+        Note:
+        - Uses JiraManager to classify issue severity
+        - Caches existing suggestions to avoid duplicates
+        - Tracks processed issues across all MRs/files
+        
         Returns:
-            tuple[list[str], list[str]]: list of high severity jira keys, list of jira keys that can be dropped
-            
+            tuple[list[str], list[str]]: 
+                [0] list of high severity Jira keys found,
+                [1] list of Jira keys that can be dropped
+                
         Raises:
             ShipmentDataException: If any operation fails
+            GitlabError: For GitLab API communication failures
         """
         jira_manager = JiraManager(self._cs)
         all_high_severity_bugs = []

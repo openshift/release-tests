@@ -7,6 +7,7 @@ from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins import JenkinsHelper
 from oar.core.notification import NotificationManager
 from oar.core.worksheet import WorksheetManager
+from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +36,8 @@ def stage_testing(ctx, build_number):
                     "job [Stage-Pipeline] already triggered and in progress, no need to trigger again"
                 )
             else:
-                cdn_result = report.get_task_status(LABEL_TASK_PUSH_TO_CDN)
-                if cdn_result == TASK_STATUS_PASS:
+                sd = ShipmentData(cs)
+                if sd.is_stage_release_success():
                     build_url = ""
                     try:
                         if jh.is_job_enqueue(JENKINS_JOB_STAGE_PIPELINE):
@@ -57,7 +58,7 @@ def stage_testing(ctx, build_number):
                             LABEL_TASK_STAGE_TEST, TASK_STATUS_INPROGRESS)
                 else:
                     logger.info(
-                        "push to cdn stage is not completed, will not trigger stage test")
+                        "stage release pipeline is not success, will not trigger stage test")
         except Exception as we:
             logger.exception("trigger stage testing failed")
     else:
