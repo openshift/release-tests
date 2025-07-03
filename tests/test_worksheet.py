@@ -120,12 +120,13 @@ class TestWorksheetManager(TestCase):
 
 
 class TestTestReport(TestCase):
+    # testing_test_report spreadsheet ID
+    SPREADSHEET_ID = "1DeGMra2o4dA56R_vGtYMcAVRrhXeHLJ9oGOQQTp4nS0"
+
     @classmethod
     def setUpClass(self):
         cs = ConfigStore("4.15.4")
-
-        doc_id = cs._local_conf["report_templates"]["testing_template"]
-        with patch.object(cs, "get_report_template", return_value=doc_id):
+        with patch.object(cs, "get_report_template", return_value=self.SPREADSHEET_ID):
             self.wm = WorksheetManager(cs)
 
         self.wm._create_release_sheet_from_template()
