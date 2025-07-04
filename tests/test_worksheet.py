@@ -1,10 +1,12 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
+
 
 class TestWorksheetManager(TestCase):
     @classmethod
@@ -103,7 +105,7 @@ class TestWorksheetManager(TestCase):
         )
 
         self.assertEqual("Sippy", tr._ws.acell(LABEL_SIPPY).value)
-        
+
         self.assertEqual("4.15-qe-main", tr._ws.acell(LABEL_SIPPY_MAIN).value)
         self.assertIn(
             "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-main",
@@ -114,4 +116,36 @@ class TestWorksheetManager(TestCase):
         self.assertIn(
             "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-auto-release",
             tr._ws.get(LABEL_SIPPY_AUTO_RELEASE, value_render_option="FORMULA")[0][0],
-        ) 
+        )
+
+
+class TestTestReport(TestCase):
+    # testing_test_report spreadsheet ID
+    SPREADSHEET_ID = "1DeGMra2o4dA56R_vGtYMcAVRrhXeHLJ9oGOQQTp4nS0"
+
+    @classmethod
+    def setUpClass(self):
+        cs = ConfigStore("4.15.4")
+        with patch.object(cs, "get_report_template", return_value=self.SPREADSHEET_ID):
+            self.wm = WorksheetManager(cs)
+
+        self.wm._create_release_sheet_from_template()
+
+    @classmethod
+    def tearDownClass(self):
+        self.wm.delete_test_report()
+
+    def test_update_advisory_info(self):
+        self.wm._report.update_advisory_info()
+
+        advisory_info_from_test_report = self.wm._report.get_advisory_info()
+        expected_advisories = [
+            "extras: https://errata.devel.redhat.com/advisory/129356",
+            "image: https://errata.devel.redhat.com/advisory/129357",
+            "metadata: https://errata.devel.redhat.com/advisory/129358",
+            "microshift: https://errata.devel.redhat.com/advisory/129359",
+            "rpm: https://errata.devel.redhat.com/advisory/129360"
+        ]
+
+        for advisory in expected_advisories:
+            self.assertIn(advisory, advisory_info_from_test_report)

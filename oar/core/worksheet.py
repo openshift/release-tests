@@ -67,17 +67,7 @@ class WorksheetManager:
         Update test report with info in ConfigStore
         """
         try:
-            # check report worksheet exists or not, if yes, skip duplicating
-            try:
-                existing_sheet = self._doc.worksheet(self._cs.release)
-                if existing_sheet:
-                    logger.info(
-                        f"test report of {self._cs.release} already exists, url: {existing_sheet.url}")
-                    raise WorksheetExistsException()
-            except WorksheetNotFound:
-                new_sheet = self._doc.duplicate_sheet(self._template.id)
-                new_sheet.update_title(self._cs.release)
-                self._report = TestReport(new_sheet, self._cs)
+            self._create_release_sheet_from_template()
 
             # get required info from config store and populate cell data
             # update build info
@@ -135,6 +125,26 @@ class WorksheetManager:
                 f"delete worksheet {self._report._ws.title} failed"
             ) from e
 
+    def _create_release_sheet_from_template(self):
+        """
+        Create release worksheet from template
+
+        If the release worksheet already exists, creation is skipped.
+
+        Raises:
+            WorksheetExistsException: If the worksheet already exists
+        """
+        try:
+            existing_sheet = self._doc.worksheet(self._cs.release)
+            if existing_sheet:
+                logger.info(
+                    f"test report of {self._cs.release} already exists, url: {existing_sheet.url}")
+                raise WorksheetExistsException()
+        except WorksheetNotFound:
+            new_sheet = self._doc.duplicate_sheet(self._template.id)
+            new_sheet.update_title(self._cs.release)
+            self._report = TestReport(new_sheet, self._cs)
+
 
 class TestReport:
     """
@@ -158,10 +168,9 @@ class TestReport:
         ad_info = []
         # Arrange AD names and urls as per needs of spreadsheet.batch_update API
         for k, v in self._cs.get_advisories().items():
-            ad_info.append({"ad_name": k, "ad_url": util.get_advisory_link(v) })
+            ad_info.append({"name": k, "url": util.get_advisory_link(v)})
 
-        # Extract only the AD names and number
-        text = "\n".join([e["ad_name"] + ": " + e["ad_url"] for e in ad_info])
+        text, text_format_runs = TestReport._prepare_hyperlink_text_format_runs(ad_info, True)
         requests = [
             {
                 "updateCells": {
@@ -170,12 +179,15 @@ class TestReport:
                             "values": [
                                 {
                                     "userEnteredValue": {"stringValue": text},
-                                    "textFormatRuns": [{"format": {"link": {"uri": e["ad_url"]}}, "startIndex": text.find(e["ad_name"])} for e in ad_info],
+                                    "textFormatRuns": text_format_runs
                                 }
                             ]
                         }
                     ],
-                    "range": {"sheetId": self._ws.id, "startRowIndex": LABEL_ADVISORY_START_ROW_INDEX, "endRowIndex": LABEL_ADVISORY_END_ROW_INDEX, "startColumnIndex": LABEL_ADVISORY_START_COL_INDEX, "endColumnIndex": LABEL_ADVISORY_END_COL_INDEX},
+                    "range": {"sheetId": self._ws.id, "startRowIndex": LABEL_ADVISORY_START_ROW_INDEX,
+                              "endRowIndex": LABEL_ADVISORY_END_ROW_INDEX,
+                              "startColumnIndex": LABEL_ADVISORY_START_COL_INDEX,
+                              "endColumnIndex": LABEL_ADVISORY_END_COL_INDEX},
                     "fields": "userEnteredValue,textFormatRuns"
                 }
             }
@@ -613,6 +625,55 @@ class TestReport:
         """
         range_values = self._ws.get_values(f"{LABEL_ISSUES_OTHERS_COLUMN}{LABEL_ISSUES_OTHERS_ROW}:{LABEL_ISSUES_OTHERS_COLUMN}")
         return list(chain.from_iterable(range_values))
+
+    @staticmethod
+    def _prepare_hyperlink_text_format_runs(link_entries: list[dict], format_separate_urls: bool = False):
+        """
+        Prepare text with hyperlink formatting for use in a Google Sheets API update request
+
+        This method constructs the data structure needed to apply hyperlink formatting to specific parts
+        of a text within a spreadsheet cell. The resulting output includes `textFormatRuns`,
+        which can be used with the Google Sheets API to update cell content with embedded clickable links.
+
+        By default, the returned text contains only the names as clickable hyperlinks.
+        When the `format_separate_urls` parameter is set to `True`, the returned text contains entries formatted as "name: url".
+
+        Args:
+            link_entries (list[dict]):
+                List of dictionaries with 'name' and 'url' keys.
+                Expected format: [{"name": "value", "url": "value"}, ...]
+            format_separate_urls (bool):
+                If False (default), returns only the names as clickable hyperlinks.
+                If True, returns text containing entries formatted as "name: url".
+
+        Returns:
+            tuple[str, list[dict]]:
+                A tuple containing the text and a list of text format runs to apply hyperlink formatting.
+        """
+        if format_separate_urls:
+            text = "\n".join([e["name"] + ": " + e["url"] for e in link_entries])
+            url_text = "url"
+        else:
+            text = "\n".join([e["name"] for e in link_entries])
+            url_text = "name"
+
+        # Prepare textFormatRuns
+        text_format_runs = []
+        for entry in link_entries:
+            visible_text_for_url = entry[url_text]
+            start_index = text.find(visible_text_for_url)
+            end_index = start_index + len(visible_text_for_url)
+            text_format_runs.append({
+                "startIndex": start_index,
+                "format": {"link": {"uri": entry["url"]}}
+            })
+            if end_index < len(text):
+                text_format_runs.append({
+                    "startIndex": end_index,
+                    "format": {}
+                })
+
+        return text, text_format_runs
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
