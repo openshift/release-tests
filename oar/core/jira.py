@@ -371,6 +371,10 @@ class JiraIssue:
         """
         field = self._issue.fields.customfield_12315948
         if field:
+            if not field.active:
+                logger.warning(
+                    f"jira issue {self.get_key()} has assigned QA contact which is not active, please contact responsible team to assign a replacement"
+                )
             return field.emailAddress
         else:
             logger.warning(
