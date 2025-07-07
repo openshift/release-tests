@@ -95,7 +95,31 @@
           "jobStartTime": "2025-07-07T09:24:50Z",
           "jobID": "43a58042-57f8-4a01-a3d8-0166cc903513",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1942152822153809920",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-07T12:44:41Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 104,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "++ grep -h -r -E 'cucumber.*features/.*.feature' /logs/artifacts/.."
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -177,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-07-06-183121",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-07-06-183121"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
