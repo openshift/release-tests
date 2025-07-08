@@ -219,7 +219,7 @@ class TestJiraManager(unittest.TestCase):
             self.assertNotIn(key, high_severity_issues)
             self.assertNotIn(key, can_drop_issues)
 
-        # Call the tested method with force=False
+        # Call the tested method with force=True
         high_severity_issues, can_drop_issues = self.jm.get_high_severity_and_can_drop_issues(all_issues_data, force=True)
 
         # Assertions
