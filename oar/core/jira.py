@@ -213,7 +213,7 @@ class JiraManager:
             raise JiraException(
                 "invalid input argument key or comment is empty")
 
-    def get_high_severity_and_can_drop_issues(self, jira_issue_keys):
+    def get_high_severity_and_can_drop_issues(self, jira_issue_keys, force):
         """
         Get list of critical, blocker, customer or CVE issues and list of issues that can be dropped without confirming
 
@@ -232,7 +232,13 @@ class JiraManager:
                     continue
                 else:
                     if issue.is_high_severity_issue():
-                        high_severity_issues.append(key)
+                        if force:
+                            if issue.is_cve_tracker():
+                                high_severity_issues.append(key)
+                            else:
+                                can_drop_issues.append(key)
+                        else:
+                            high_severity_issues.append(key)
                     else:
                         can_drop_issues.append(key)
 

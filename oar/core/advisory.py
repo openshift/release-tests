@@ -190,9 +190,10 @@ class AdvisoryManager:
         except Exception as e:
             raise AdvisoryException(f"change advisory status failed") from e
 
-    def drop_bugs(self):
+    def drop_bugs(self, force):
         """
-        Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case/CVE
+        Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case/CVE by defalut.
+        If force set, then drop all the not verified bug except CVEs.
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
@@ -206,7 +207,7 @@ class AdvisoryManager:
         all_high_severity_bugs = []
         for ad in ads:
             issues = ad.jira_issues
-            high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
+            high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues,force)
             all_high_severity_bugs.extend(high_severity_bugs)
 
             if drop_bug_list:
