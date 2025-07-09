@@ -375,7 +375,7 @@ class GitLabMergeRequest:
         Returns:
             dict: {
                 'status': overall stage status (e.g. 'running', 'success', 'failed'),
-                'jobs': [list of failed jobs if stage failed]  # Each job includes pipeline_id
+                'job': gitlab.v4.objects.ProjectPipelineJob - first job object in the stage
             }
             
         Raises:
@@ -394,7 +394,7 @@ class GitLabMergeRequest:
                 logger.error(f"Stage '{stage_name}' not found in pipeline {pipeline.id}")
                 return {
                     'status': 'not_found',
-                    'jobs': []
+                    'job': []
                 }
             
         except GitlabError as e:
@@ -663,16 +663,22 @@ class ShipmentData:
         Raises:
             ShipmentDataException: If unable to check stage status for any MR
         """
+        all_success = True
+        failed_mrs = []
+        
         for mr in self._mrs:
             try:
                 if not mr.is_stage_release_success():
-                    logger.error(f"Stage release failed for MR {mr.merge_request_id}")
-                    return False
+                    failed_mrs.append(mr.merge_request_id)
+                    all_success = False
             except Exception as e:
                 logger.error(f"Failed to check stage release status for MR {mr.merge_request_id}: {str(e)}")
                 raise ShipmentDataException(f"Failed to check stage release status: {str(e)}") from e
                 
-        return True
+        if not all_success:
+            logger.error(f"Stage release failed for MRs: {', '.join(str(mr_id) for mr_id in failed_mrs)}")
+            
+        return all_success
 
     def drop_bugs(self) -> tuple[list[str], list[str]]:
         """Drop bugs from shipment files by adding suggestions to merge requests
