@@ -12,8 +12,8 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.pass_context
-@click.option("--force", is_flag=True, default=False,
-              help="Drop all unverified bugs expect CVEs.")
+@click.option("-f", "--force", is_flag=True, default=False,
+              help="Drop all unverified bugs except CVEs.")
 def drop_bugs(ctx, force):
     """
     Drop bugs from advisories

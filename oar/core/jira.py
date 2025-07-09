@@ -213,7 +213,7 @@ class JiraManager:
             raise JiraException(
                 "invalid input argument key or comment is empty")
 
-    def get_high_severity_and_can_drop_issues(self, jira_issue_keys, force):
+    def get_high_severity_and_can_drop_issues(self, jira_issue_keys):
         """
         Get list of critical, blocker, customer or CVE issues and list of issues that can be dropped without confirming
 
@@ -232,18 +232,38 @@ class JiraManager:
                     continue
                 else:
                     if issue.is_high_severity_issue():
-                        if force:
-                            if issue.is_cve_tracker():
-                                high_severity_issues.append(key)
-                            else:
-                                can_drop_issues.append(key)
-                        else:
-                            high_severity_issues.append(key)
+                        high_severity_issues.append(key)
                     else:
                         can_drop_issues.append(key)
 
         return high_severity_issues, can_drop_issues
     
+    def get_unverified_issues_except_cve(self, jira_issue_keys):
+        """
+        Get list of CVE issues and list of the other issues that can be dropped by force after confirm droppable message sending.
+
+        Args:
+            jira_issue_keys (list[str]): jira issues keys to be processed
+
+        Returns:
+            tuple[list[str], list[str]]: list of CVE jira keys that are still to be verified, list of jira keys that can be dropped by force.
+        """
+        cve_issues = []
+        can_drop_issues = []
+        if jira_issue_keys:
+            for key in jira_issue_keys:
+                issue = self.get_issue(key)
+                if issue.is_verified() or issue.is_closed():
+                    continue
+                else:
+                    if issue.is_cve_tracker():
+                        logger.warning(f"jira issue {issue.get_key()} is cve tracker: {issue.is_cve_tracker()}, it must be verified")
+                        cve_issues.append(key)
+                    else:
+                        can_drop_issues.append(key)
+
+        return cve_issues, can_drop_issues
+
     def get_unverified_cve_issues(self, jira_issue_keys: list[str]):
         """
         Get list of unverified CVE issues

@@ -107,7 +107,7 @@ class TestJiraManager(unittest.TestCase):
         self.assertRaises(JiraException, self.jm.add_comment, "", "")
         self.assertRaises(JiraException, self.jm.add_comment, None, None)
 
-    def test_get_high_severity_and_can_drop_issues(self):
+    def test_get_high_severity_or_cve_and_can_drop_issues(self):
         # Prepare test data
         # Fields indicating CVE, release blocker and customer case issue at the same time
         fields_full = {
@@ -204,9 +204,7 @@ class TestJiraManager(unittest.TestCase):
         mock_jira = Mock(spec=JIRA)
         mock_jira.issue.side_effect = lambda key: mock_issues.get(key, None)
         self.jm._svc = mock_jira
-
-        # Call the tested method with force=False
-        high_severity_issues, can_drop_issues = self.jm.get_high_severity_and_can_drop_issues(all_issues_data, force=False)
+        high_severity_issues, can_drop_issues = self.jm.get_high_severity_and_can_drop_issues(all_issues_data)
 
         # Assertions
         for key in high_severity_issues_data:
@@ -218,9 +216,7 @@ class TestJiraManager(unittest.TestCase):
         for key in closed_issues_data:
             self.assertNotIn(key, high_severity_issues)
             self.assertNotIn(key, can_drop_issues)
-
-        # Call the tested method with force=True
-        high_severity_issues, can_drop_issues = self.jm.get_high_severity_and_can_drop_issues(all_issues_data, force=True)
+        high_severity_issues, can_drop_issues = self.jm.get_unverified_issues_except_cve(all_issues_data)
 
         # Assertions
         for key in cve_data:
