@@ -301,7 +301,7 @@ class ConfigStore:
         Returns:
             list: List of MR URLs from assembly config (empty list if none found)
         """
-        shipments = self._get_assembly_attr("group/shipments")
+        shipments = self._get_assembly_attr("group/shipment")
         if not shipments:
             return []
 
