@@ -84,7 +84,7 @@ class WorksheetManager:
             # update shipment MRs
             self._report.update_shipment_info()
             logger.info("shipment info is updated")
-            logger.debug(f"shipment info:\n{"\n".join(self._cs.get_shipment_mrs())}")
+            logger.debug(f"shipment info:\n{'\n'.join(self._cs.get_shipment_mrs())}")
 
             # update jira info
             self._report.update_jira_info(self._cs.get_jira_ticket())
