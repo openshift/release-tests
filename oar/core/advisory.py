@@ -211,9 +211,9 @@ class AdvisoryManager:
         for ad in ads:
             issues = ad.jira_issues
             if force:
-                high_severity_bugs, drop_bug_list = jm.get_unverified_issues_except_cve(issues)
+                drop_bug_list = jm.get_unverified_issues_except_cve(issues)
             else:
-                drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
+                high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
             all_high_severity_bugs.extend(high_severity_bugs)
 
             if drop_bug_list:
