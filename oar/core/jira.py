@@ -238,6 +238,30 @@ class JiraManager:
 
         return high_severity_issues, can_drop_issues
     
+    def get_unverified_issues_except_cve(self, jira_issue_keys):
+        """
+        Get list of all the other issues except CVEs that can be dropped by force after confirm droppable message sending.
+
+        Args:
+            jira_issue_keys (list[str]): jira issues keys to be processed
+
+        Returns:
+            tuple[list[str]]: list of jira keys that can be dropped by force.
+        """
+        can_drop_issues = []
+        if jira_issue_keys:
+            for key in jira_issue_keys:
+                issue = self.get_issue(key)
+                if issue.is_verified() or issue.is_closed():
+                    continue
+                else:
+                    if issue.is_cve_tracker():
+                        logger.warning(f"jira issue {issue.get_key()} is cve tracker, it cannot be dropped")
+                    else:
+                        can_drop_issues.append(key)
+
+        return can_drop_issues
+
     def get_unverified_cve_issues(self, jira_issue_keys: list[str]):
         """
         Get list of unverified CVE issues

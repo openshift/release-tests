@@ -160,16 +160,12 @@ class TestJiraManager(unittest.TestCase):
         high_severity_issues_data = {
             "OCPBUGS-n100": {"status": "ON_QA", "priority": "Blocker"},
             "OCPBUGS-n101": {"status": "ON_QA", "priority": "Critical"},
-            "OCPBUGS-n102": {"status": "ON_QA", "priority": "Major", "fields": fields_full},
-            "OCPBUGS-n103": {"status": "ON_QA", "priority": "Normal", "fields": fields_CVE_1},
-            "OCPBUGS-n104": {"status": "ON_QA", "priority": "Minor", "fields": fields_CVE_2},
             "OCPBUGS-n105": {"status": "ON_QA", "priority": "Major", "fields": fields_blocker_1},
             "OCPBUGS-n106": {"status": "ON_QA", "priority": "Major", "fields": fields_blocker_2},
             "OCPBUGS-n107": {"status": "ON_QA", "priority": "Undefined", "fields": fields_blocker_3},
             "OCPBUGS-n108": {"status": "ON_QA", "priority": "Major", "fields": fields_customer_case},
             "OCPBUGS-n109": {"status": "ON_QA", "priority": "Blocker", "fields": fields_low_severity},
-            "OCPBUGS-n110": {"status": "New", "priority": "Blocker"},
-            "OCPBUGS-n111": {"status": "Assigned", "priority": "Critical", "fields": fields_full},
+            "OCPBUGS-n110": {"status": "New", "priority": "Blocker"}
         }
 
         can_drop_issues_data = {
@@ -191,7 +187,14 @@ class TestJiraManager(unittest.TestCase):
             "OCPBUGS-n183": {"status": "Verified", "priority": "Normal"}
         }
 
-        all_issues_data = ChainMap(high_severity_issues_data, can_drop_issues_data, closed_issues_data)
+        cve_data = {
+            "OCPBUGS-n102": {"status": "ON_QA", "priority": "Major", "fields": fields_full},
+            "OCPBUGS-n103": {"status": "ON_QA", "priority": "Normal", "fields": fields_CVE_1},
+            "OCPBUGS-n104": {"status": "ON_QA", "priority": "Minor", "fields": fields_CVE_2},
+            "OCPBUGS-n111": {"status": "Assigned", "priority": "Critical", "fields": fields_full},
+        }
+
+        all_issues_data = ChainMap(high_severity_issues_data, can_drop_issues_data, closed_issues_data, cve_data)
 
         # Prepare mocks
         mock_issues = {}
@@ -201,13 +204,26 @@ class TestJiraManager(unittest.TestCase):
         mock_jira = Mock(spec=JIRA)
         mock_jira.issue.side_effect = lambda key: mock_issues.get(key, None)
         self.jm._svc = mock_jira
-
-        # Call the tested method
         high_severity_issues, can_drop_issues = self.jm.get_high_severity_and_can_drop_issues(all_issues_data)
 
         # Assertions
         for key in high_severity_issues_data:
             self.assertIn(key, high_severity_issues)
+        for key in cve_data:
+            self.assertIn(key, high_severity_issues)
+        for key in can_drop_issues_data:
+            self.assertIn(key, can_drop_issues)
+        for key in closed_issues_data:
+            self.assertNotIn(key, high_severity_issues)
+            self.assertNotIn(key, can_drop_issues)
+
+        can_drop_issues = self.jm.get_unverified_issues_except_cve(all_issues_data)
+
+        # Assertions
+        for key in cve_data:
+            self.assertNotIn(key, can_drop_issues)
+        for key in high_severity_issues_data:
+            self.assertIn(key, can_drop_issues)
         for key in can_drop_issues_data:
             self.assertIn(key, can_drop_issues)
         for key in closed_issues_data:

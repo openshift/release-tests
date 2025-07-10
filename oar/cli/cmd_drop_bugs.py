@@ -12,7 +12,9 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.pass_context
-def drop_bugs(ctx):
+@click.option("-f", "--force", is_flag=True, default=False,
+              help="Drop all unverified bugs except CVEs.")
+def drop_bugs(ctx, force):
     """
     Drop bugs from advisories
     """
@@ -27,7 +29,7 @@ def drop_bugs(ctx):
         report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
         # check doc and product security approval advisories
         approved_doc_ads, approved_prodsec_ads = am.get_doc_prodsec_approved_ads()
-        dropped_bugs, high_severity_bugs = am.drop_bugs()
+        dropped_bugs, high_severity_bugs = am.drop_bugs(force)
         # check if all bugs are verified
         nm = NotificationManager(cs)
         requested_doc_ads = []
