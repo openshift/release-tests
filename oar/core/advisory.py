@@ -196,7 +196,7 @@ class AdvisoryManager:
         If force is set, then drop all the not verified bugs except CVEs.
 
         Args:
-            force (bool): If True, drop all the not verified bug except CVEs.
+            force (bool): If True, drop all the not verified bugs except CVEs.
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
