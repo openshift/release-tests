@@ -216,6 +216,7 @@ class TestJiraManager(unittest.TestCase):
         for key in closed_issues_data:
             self.assertNotIn(key, high_severity_issues)
             self.assertNotIn(key, can_drop_issues)
+
         can_drop_issues = self.jm.get_unverified_issues_except_cve(all_issues_data)
 
         # Assertions
