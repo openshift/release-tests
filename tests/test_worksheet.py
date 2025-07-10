@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import patch
 
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
@@ -97,14 +98,15 @@ class TestWorksheetManager(TestCase):
             tr._ws.get(LABEL_BLOCKING_TESTS_RELEASE, value_render_option="FORMULA")[0][0],
         )
 
-        self.assertEqual("ocp-test-result-4.15.0-0.nightly-2024-03-20-032212", tr._ws.acell(LABEL_BLOCKING_TESTS_CANDIDATE).value)
+        self.assertEqual("ocp-test-result-4.15.0-0.nightly-2024-03-20-032212",
+                         tr._ws.acell(LABEL_BLOCKING_TESTS_CANDIDATE).value)
         self.assertIn(
             "https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.15.0-0.nightly-2024-03-20-032212-amd64.json",
             tr._ws.get(LABEL_BLOCKING_TESTS_CANDIDATE, value_render_option="FORMULA")[0][0],
         )
 
         self.assertEqual("Sippy", tr._ws.acell(LABEL_SIPPY).value)
-        
+
         self.assertEqual("4.15-qe-main", tr._ws.acell(LABEL_SIPPY_MAIN).value)
         self.assertIn(
             "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-main",
@@ -115,4 +117,32 @@ class TestWorksheetManager(TestCase):
         self.assertIn(
             "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-auto-release",
             tr._ws.get(LABEL_SIPPY_AUTO_RELEASE, value_render_option="FORMULA")[0][0],
-        ) 
+        )
+
+
+class TestTestReport(TestCase):
+    # testing_test_report spreadsheet ID
+    SPREADSHEET_ID = "1DeGMra2o4dA56R_vGtYMcAVRrhXeHLJ9oGOQQTp4nS0"
+
+    @classmethod
+    def setUpClass(self):
+        cs = ConfigStore("4.20.0-ec.3")
+        with patch.object(cs, "get_report_template", return_value=self.SPREADSHEET_ID):
+            self.wm = WorksheetManager(cs)
+
+        self.wm._create_release_sheet_from_template()
+
+    @classmethod
+    def tearDownClass(self):
+        self.wm.delete_test_report()
+
+    def test_update_shipment_info(self):
+        self.wm._report.update_shipment_info()
+
+        shipment_info_from_test_report = self.wm._report.get_shipment_info()
+        expected_shipment_info = [
+            "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/31"
+        ]
+
+        for shipment_info in expected_shipment_info:
+            self.assertIn(shipment_info, shipment_info_from_test_report)
