@@ -196,7 +196,7 @@ class AdvisoryManager:
         If force is set, then drop all the not verified bug except CVEs.
 
         Args:
-            force (bool): If True, drop all the not verified bug except CVEs
+            force (bool): If True, drop all the not verified bug except CVEs.
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
@@ -213,7 +213,7 @@ class AdvisoryManager:
             if force:
                 high_severity_bugs, drop_bug_list = jm.get_unverified_issues_except_cve(issues)
             else:
-                high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
+                drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
             all_high_severity_bugs.extend(high_severity_bugs)
 
             if drop_bug_list:

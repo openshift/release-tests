@@ -246,9 +246,8 @@ class JiraManager:
             jira_issue_keys (list[str]): jira issues keys to be processed
 
         Returns:
-            tuple[list[str], list[str]]: list of CVE jira keys that are still to be verified, list of jira keys that can be dropped by force.
+            tuple[list[str]]: list of jira keys that can be dropped by force.
         """
-        cve_issues = []
         can_drop_issues = []
         if jira_issue_keys:
             for key in jira_issue_keys:
@@ -258,11 +257,10 @@ class JiraManager:
                 else:
                     if issue.is_cve_tracker():
                         logger.warning(f"jira issue {issue.get_key()} is cve tracker: {issue.is_cve_tracker()}, it must be verified")
-                        cve_issues.append(key)
                     else:
                         can_drop_issues.append(key)
 
-        return cve_issues, can_drop_issues
+        return can_drop_issues
 
     def get_unverified_cve_issues(self, jira_issue_keys: list[str]):
         """
