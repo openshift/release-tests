@@ -256,7 +256,7 @@ class JiraManager:
                     continue
                 else:
                     if issue.is_cve_tracker():
-                        logger.warning(f"jira issue {issue.get_key()} is cve tracker: {issue.is_cve_tracker()}, it must be verified")
+                        logger.warning(f"jira issue {issue.get_key()} is cve tracker, it cannot be dropped")
                     else:
                         can_drop_issues.append(key)
 
