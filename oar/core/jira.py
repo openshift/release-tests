@@ -240,7 +240,7 @@ class JiraManager:
     
     def get_unverified_issues_except_cve(self, jira_issue_keys):
         """
-        Get list of CVE issues and list of the other issues that can be dropped by force after confirm droppable message sending.
+        Get list of all the other issues except CVEs that can be dropped by force after confirm droppable message sending.
 
         Args:
             jira_issue_keys (list[str]): jira issues keys to be processed

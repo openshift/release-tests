@@ -193,7 +193,7 @@ class AdvisoryManager:
     def drop_bugs(self, force):
         """
         Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case/CVE by default.
-        If force is set, then drop all the not verified bug except CVEs.
+        If force is set, then drop all the not verified bugs except CVEs.
 
         Args:
             force (bool): If True, drop all the not verified bug except CVEs.
