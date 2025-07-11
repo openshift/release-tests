@@ -611,7 +611,7 @@ class TestReport:
         
         Args:
             cell_label (str): The cell label to update (e.g. "A1")
-            links_data (list): List of tuples containing (link, display_text)
+            links_data (list): List of tuples containing (display_text, link)
         """
         try:
             # Try advanced formatting first
