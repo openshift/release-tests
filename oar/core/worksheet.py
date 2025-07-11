@@ -91,11 +91,12 @@ class WorksheetManager:
             logger.info("build info is updated")
             logger.debug(f"build info:\n{build_cell_value}")
 
-            # update shipment MRs
-            shipment_cell_value = "\n".join(self._cs.get_shipment_mrs())
-            self._report.update_shipment_info(shipment_cell_value)
+            # update shipment MRs and RPM advisory link
+            shipment_mrs = self._cs.get_shipment_mrs()
+            rpm_advisory = self._cs.get_rpm_advisory()
+            self._report.update_shipment_info(shipment_mrs, rpm_advisory)
             logger.info("shipment info is updated")
-            logger.debug(f"shipment info:\n{shipment_cell_value}")
+            logger.debug(f"shipment info:\n MR: {shipment_mrs}\nRPM advisory id: {rpm_advisory}")
 
             # update jira info
             self._report.update_jira_info(self._cs.get_jira_ticket())
@@ -154,14 +155,22 @@ class TestReport:
         """
         return self._ws.url
 
-    def update_shipment_info(self, shipment):
+    def update_shipment_info(self, shipment_mrs, rpm_advisory):
         """
-        Update shipment info in test report
+        Update shipment info in test report with shipment MRs and RPM advisory link
 
         Args:
-            shipment (str): shipment info of current release
+            shipment_mrs (list): List of shipment MR URLs
+            rpm_advisory (str): RPM advisory ID (will be converted to full link)
         """
-        self._ws.update_acell(LABEL_SHIPMENT, self._to_hyperlink(shipment, shipment))
+        links_data = []
+        if rpm_advisory:
+            links_data.append((f"rpm: {rpm_advisory} ", util.get_advisory_link(rpm_advisory)))
+
+        for mr in shipment_mrs:
+            links_data.append((mr, mr))
+        
+        self.update_cell_with_hyperlinks(LABEL_SHIPMENT, links_data)
 
     def get_shipment_info(self):
         """
@@ -595,3 +604,51 @@ class TestReport:
 
     def _to_hyperlink(self, link, label):
         return f'=HYPERLINK("{link}","{label}")'
+
+    def update_cell_with_hyperlinks(self, cell_label, links_data):
+        """
+        Update a cell with multiple hyperlinks, each on a new line
+        
+        Args:
+            cell_label (str): The cell label to update (e.g. "A1")
+            links_data (list): List of tuples containing (display_text, link)
+        """
+        try:
+            # Try advanced formatting first
+            text = "\n".join([text for text, link in links_data])
+            text_format_runs = []
+            for txt, link in links_data:
+                text_format_runs.append({
+                    "startIndex": text.find(txt),
+                    "format": {"link": {"uri": link}}
+                })
+
+            # Convert cell label to row and column indices
+            row, col = gspread.utils.a1_to_rowcol(cell_label)
+            
+            requests = [{
+                "updateCells": {
+                    "rows": [{
+                        "values": [{
+                            "userEnteredValue": {"stringValue": text},
+                            "textFormatRuns": text_format_runs
+                        }]
+                    }],
+                    "range": {
+                        "sheetId": self._ws.id,
+                        "startRowIndex": row - 1,
+                        "endRowIndex": row,
+                        "startColumnIndex": col - 1,
+                        "endColumnIndex": col
+                    },
+                    "fields": "userEnteredValue,textFormatRuns"
+                }
+            }]
+            self._ws.spreadsheet.batch_update({"requests": requests})
+        except Exception as e:
+            logger.warning(f"Advanced hyperlink formatting failed, falling back to simple HYPERLINK: {e}")
+            # Fall back to simple HYPERLINK formulas
+            hyperlinks = []
+            for text, link in links_data:
+                hyperlinks.append(self._to_hyperlink(link, text))
+            self._ws.update_acell(cell_label, "\n".join(hyperlinks))

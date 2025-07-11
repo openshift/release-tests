@@ -36,15 +36,12 @@ class AdvisoryManager:
         """
         ads = []
         for k, v in self._cs.get_advisories().items():
-            if k == AD_IMPETUS_MICROSHIFT:
-                continue
-            ad = Advisory(
-                errata_id=v,
-                impetus=k,
-            )
-            if ad.errata_state != AD_STATUS_DROPPED_NO_SHIP:
-                ads.append(ad)
-
+            # in new release flow, we only need to handle rpm advisory
+            # because rpm build is not supported by konflux
+            if k == AD_IMPETUS_RPM:
+                ad = Advisory(errata_id=v, impetus=k)
+                if ad.errata_state != AD_STATUS_DROPPED_NO_SHIP:
+                    ads.append(ad)
         return ads
 
     def get_jira_issues(self):

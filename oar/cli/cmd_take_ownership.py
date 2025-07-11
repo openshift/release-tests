@@ -5,7 +5,7 @@ import click
 from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
-from oar.core.shipment import ShipmentData
+from oar.core.operators import ReleaseOwnershipOperator
 from oar.core.util import is_valid_email
 from oar.core.worksheet import WorksheetManager
 
@@ -41,12 +41,20 @@ def take_ownership(ctx, email):
         report = wm.get_test_report()
         # update task status to in progress
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_INPROGRESS)
-        # add QE release lead comment to shipment merge requests
-        shipment = ShipmentData(cs)
-        shipment.add_qe_release_lead_comment(email)
+        # update ownership across advisories and shipments
+        operator = ReleaseOwnershipOperator(cs)
+        updated_ads, abnormal_ads = operator.update_owners(email)
+        # update assignee of QE subtasks
+        updated_subtasks = JiraManager(cs).change_assignee_of_qe_subtasks()
         # send notification about ownership change and shipment MRs
         nm = NotificationManager(cs)
-        nm.share_shipment_mrs(cs.get_shipment_mrs(), email)
+        nm.share_shipment_mrs_and_ad_info(
+            cs.get_shipment_mrs(),
+            updated_ads,
+            abnormal_ads,
+            updated_subtasks,
+            email
+        )
         # update task status to pass
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_PASS)
     except Exception as e:
