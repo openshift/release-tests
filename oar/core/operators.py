@@ -1,6 +1,7 @@
 from oar.core.advisory import AdvisoryManager
 from oar.core.shipment import ShipmentData
 from oar.core.jira import JiraManager
+from oar.core.configstore import ConfigStore
 import logging
 
 logger = logging.getLogger(__name__)
@@ -8,12 +9,16 @@ logger = logging.getLogger(__name__)
 class ReleaseOwnershipOperator:
     """Handles composite ownership operations across advisories and shipments"""
     
-    def __init__(self, cs):
+    def __init__(self, cs: ConfigStore):
         self._am = AdvisoryManager(cs)
         self._sd = ShipmentData(cs)
 
     def update_owners(self, email: str) -> tuple[list, list]:
-        """Update ownership across advisories and shipments"""
+        """Update ownership across advisories and shipments
+        
+        Returns:
+            tuple[list, list]: (list of updated advisories, list of advisories with abnormal states)
+        """
         try:
             updated_ads, abnormal_ads = self._am.change_ad_owners()
             self._sd.add_qe_release_lead_comment(email)
@@ -25,7 +30,7 @@ class ReleaseOwnershipOperator:
 class BugOperator:
     """Handles composite bug operations across advisories and shipments"""
     
-    def __init__(self, cs):
+    def __init__(self, cs: ConfigStore):
         self._am = AdvisoryManager(cs)
         self._sd = ShipmentData(cs)
         self._jm = JiraManager(cs)
@@ -41,7 +46,11 @@ class BugOperator:
             raise
 
     def drop_bugs(self) -> tuple[list, list]:
-        """Execute bug drop operation across both sources"""
+        """Execute bug drop operation across both sources
+        
+        Returns:
+            tuple[list, list]: (list of successfully dropped bugs, list of high severity bugs that couldn't be dropped)
+        """
         try:
             # Drop from advisories first
             dropped_from_ads, high_severity = self._am.drop_bugs()
