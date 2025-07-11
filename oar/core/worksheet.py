@@ -82,9 +82,11 @@ class WorksheetManager:
             logger.debug(f"build info:\n{build_cell_value}")
 
             # update shipment MRs
-            self._report.update_shipment_info()
+            shipment_mrs = self._cs.get_shipment_mrs()
+            self._report.update_shipment_info(shipment_mrs)
             logger.info("shipment info is updated")
-            logger.debug(f"shipment info:\n{'\n'.join(self._cs.get_shipment_mrs())}")
+            shipment_info = "\n".join(shipment_mrs)
+            logger.debug(f"shipment info:\n{shipment_info}")
 
             # update jira info
             self._report.update_jira_info(self._cs.get_jira_ticket())
@@ -163,12 +165,15 @@ class TestReport:
         """
         return self._ws.url
 
-    def update_shipment_info(self):
+    def update_shipment_info(self, shipment_mrs):
         """
         Update shipment info in test report
+
+        Args:
+            shipment_mrs (list): shipment merge requests of current release
         """
         shipment_cell_links = []
-        for mr_url in self._cs.get_shipment_mrs():
+        for mr_url in shipment_mrs:
             shipment_cell_links.append({"name": mr_url, "url": mr_url})
 
         text, text_format_runs = TestReport._prepare_hyperlink_text_format_runs(shipment_cell_links)
