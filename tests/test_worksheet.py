@@ -5,6 +5,7 @@ from oar.core.configstore import ConfigStore
 from oar.core.const import *
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
+from oar.core.worksheet import TestReport
 
 
 class TestWorksheetManager(TestCase):
@@ -116,3 +117,19 @@ class TestWorksheetManager(TestCase):
             "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness/main?view=4.15-qe-auto-release",
             tr._ws.get(LABEL_SIPPY_AUTO_RELEASE, value_render_option="FORMULA")[0][0],
         ) 
+
+    def test_update_cell_with_hyperlinks(self):
+
+        # test data
+        mr_url = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/31"
+        rpm_advisory = "149403"
+        
+        # hack the test report with specified worksheet
+        cs = ConfigStore("4.19.2")
+        ws = WorksheetManager(cs)._doc.worksheet("template-for-konflux")
+        tr = TestReport(ws, cs)
+        tr.update_shipment_info([mr_url], rpm_advisory)
+        # verify the cell content
+        info = tr.get_shipment_info()
+        self.assertIn(mr_url, info)
+        self.assertIn(f"rpm: {rpm_advisory}", info)

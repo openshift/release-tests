@@ -268,6 +268,37 @@ class NotificationManager:
             )
         except Exception as e:
             raise NotificationException("share shipment MRs failed") from e
+
+    def share_shipment_mrs_and_ad_info(self, mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner):
+        """
+        Share shipment merge requests and advisory info via Slack
+
+        Args:
+            mrs (list): List of shipment merge request URLs
+            updated_ads (list): Updated advisory list
+            abnormal_ads (list): Advisory list that state is not QE
+            updated_subtasks (list): Updated jira subtasks
+            new_owner (str): Email of new owner
+
+        Raises:
+            NotificationException: error when sharing info
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_shipment_mrs_and_ad_info(
+                mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner
+            )
+            self.sc.post_message(
+                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+            )
+            if len(abnormal_ads):
+                slack_msg = self.mh.get_slack_message_for_abnormal_advisory(
+                    abnormal_ads
+                )
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException("share shipment MRs and AD info failed") from e
         
     def share_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
@@ -803,6 +834,53 @@ class MessageHelper:
         message += "Shipment merge requests:\n"
         for mr in mrs:
             message += self._to_link(mr, mr) + "\n"
+
+        return message
+
+    def get_slack_message_for_shipment_mrs_and_ad_info(
+        self, mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner
+    ):
+        """
+        Get Slack message combining shipment merge requests and advisory info
+
+        Args:
+            mrs (list): List of shipment merge request URLs
+            updated_ads (list): Updated advisory list
+            abnormal_ads (list): Advisory list that state is not QE
+            updated_subtasks (list): Updated jira subtasks
+            new_owner (str): Email of new owner
+
+        Returns:
+            str: Slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+
+        message = f"[{self.cs.release}] Hello {gid}, owner of advisories and jira subtasks are changed to {new_owner}\n"
+        
+        if mrs:
+            message += "Shipment merge requests:\n"
+            for mr in mrs:
+                message += self._to_link(mr, mr) + "\n"
+            message += "\n"
+
+        message += "Updated advisories:\n"
+        for ad in updated_ads:
+            message += self._to_link(util.get_advisory_link(ad), ad) + " "
+        message += "\n"
+        
+        message += "Updated jira subtasks:\n"
+        for key in updated_subtasks:
+            message += self._to_link(util.get_jira_link(key), key) + " "
+
+        if len(abnormal_ads):
+            message += "\n"
+            message += "Found some abnormal advisories that state is not QE\n"
+            for ad in abnormal_ads:
+                message += self._to_link(util.get_advisory_link(ad), ad) + " "
 
         return message
 
