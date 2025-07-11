@@ -155,17 +155,17 @@ class TestReport:
         """
         return self._ws.url
 
-    def update_shipment_info(self, shipment_mrs, rpm_advisory_id):
+    def update_shipment_info(self, shipment_mrs, rpm_advisory):
         """
         Update shipment info in test report with shipment MRs and RPM advisory link
 
         Args:
             shipment_mrs (list): List of shipment MR URLs
-            rpm_advisory_link (str): RPM advisory link
+            rpm_advisory (str): RPM advisory ID (will be converted to full link)
         """
         links_data = []
-        if rpm_advisory_id:
-            links_data.append((f"rpm: {rpm_advisory_id} ", util.get_advisory_link(rpm_advisory_id)))
+        if rpm_advisory:
+            links_data.append((f"rpm: {rpm_advisory} ", util.get_advisory_link(rpm_advisory)))
 
         for mr in shipment_mrs:
             links_data.append((mr, mr))
