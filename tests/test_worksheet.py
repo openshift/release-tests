@@ -1,7 +1,6 @@
 from unittest import TestCase
 from gspread_formatting import get_text_format_runs
 import time
-import json
 
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
