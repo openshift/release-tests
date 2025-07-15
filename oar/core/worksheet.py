@@ -165,7 +165,7 @@ class TestReport:
         """
         links_data = []
         if rpm_advisory:
-            links_data.append((f"rpm: {rpm_advisory} ", util.get_advisory_link(rpm_advisory)))
+            links_data.append((f"rpm: {rpm_advisory}", util.get_advisory_link(rpm_advisory), rpm_advisory))
 
         for mr in shipment_mrs:
             links_data.append((mr, mr))
@@ -611,17 +611,97 @@ class TestReport:
         
         Args:
             cell_label (str): The cell label to update (e.g. "A1")
-            links_data (list): List of tuples containing (display_text, link)
+            links_data (list): List of tuples containing:
+                              - (display_text, link) OR
+                              - (display_text, link, linkable_text) OR 
+                              - (display_text, link, linkable_text, text_format_runs)
+                              where:
+                              - linkable_text: portion of display_text to hyperlink
+                              - text_format_runs: optional pre-defined format runs
+
+        Raises:
+            WorksheetException: If links_data is invalid (None, not a list, or empty)
+
+        Examples:
+            # Simple hyperlink
+            [("Click here", "https://example.com")]
+            
+            # Partial text hyperlink
+            [("Click here for details", "https://example.com", "here")]
+            
+            # Custom format runs
+            [
+                (
+                    "Important: Click here", 
+                    "https://example.com",
+                    "here",
+                    [
+                        {
+                            "startIndex": 0,
+                            "format": {"bold": True}
+                        },
+                        {
+                            "startIndex": 10,  # Start of "here"
+                            "format": {"link": {"uri": "https://example.com"}}
+                        }
+                    ]
+                )
+            ]
         """
+        # Validate input
+        if links_data is None:
+            raise WorksheetException("links_data cannot be None")
+        if not isinstance(links_data, list):
+            raise WorksheetException("links_data must be a list")
+        if len(links_data) == 0:
+            raise WorksheetException("links_data cannot be empty")
         try:
             # Try advanced formatting first
-            text = "\n".join([text for text, link in links_data])
+            text = "\n".join([text for text, link, *_ in links_data])
             text_format_runs = []
-            for txt, link in links_data:
-                text_format_runs.append({
-                    "startIndex": text.find(txt),
-                    "format": {"link": {"uri": link}}
-                })
+            for item in links_data:
+                display_text = item[0]
+                link = item[1]
+                
+                # If format runs are provided (4th element), use them directly
+                if len(item) > 3 and item[3]:
+                    text_format_runs.extend(item[3])
+                else:
+                    # Otherwise use linkable_text logic
+                    linkable_text = item[2] if len(item) > 2 else display_text
+                    
+                    # Validate linkable_text is part of display_text
+                    if linkable_text not in display_text:
+                        raise WorksheetException(
+                            f"linkable_text '{linkable_text}' must be part of display_text '{display_text}'"
+                        )
+                    
+                    # Find positions of each text portion
+                    link_start = text.find(display_text)
+                    linkable_start = text.find(linkable_text, link_start)
+                    linkable_end = linkable_start + len(linkable_text)
+                    
+                    # Add format run for text before linkable portion (if any)
+                    if linkable_start > link_start:
+                        text_format_runs.append({
+                            "startIndex": link_start,
+                            "format": {}
+                        })
+                    
+                    # Add format run for linkable portion
+                    text_format_runs.append({
+                        "startIndex": linkable_start,
+                        "format": {"link": {"uri": link}}
+                    })
+                    
+                    # Add format run for text after linkable portion (if any)
+                    remaining_text_start = linkable_end
+                    remaining_text_end = link_start + len(display_text)
+                    if remaining_text_start < remaining_text_end:
+                        text_format_runs.append({
+                            "startIndex": remaining_text_start,
+                            "format": {}
+                        })
 
             # Convert cell label to row and column indices
             row, col = gspread.utils.a1_to_rowcol(cell_label)
@@ -641,7 +721,7 @@ class TestReport:
                         "startColumnIndex": col - 1,
                         "endColumnIndex": col
                     },
-                    "fields": "userEnteredValue,textFormatRuns"
+                    "fields": "*"
                 }
             }]
             self._ws.spreadsheet.batch_update({"requests": requests})
@@ -649,6 +729,8 @@ class TestReport:
             logger.warning(f"Advanced hyperlink formatting failed, falling back to simple HYPERLINK: {e}")
             # Fall back to simple HYPERLINK formulas
             hyperlinks = []
-            for text, link in links_data:
-                hyperlinks.append(self._to_hyperlink(link, text))
+            for item in links_data:
+                display_text = item[0]
+                link = item[1]
+                hyperlinks.append(self._to_hyperlink(link, display_text))
             self._ws.update_acell(cell_label, "\n".join(hyperlinks))
