@@ -214,7 +214,7 @@ class AdvisoryManager:
                 drop_bug_list = jm.get_unverified_issues_except_cve(issues)
             else:
                 high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
-            all_high_severity_bugs.extend(high_severity_bugs)
+                all_high_severity_bugs.extend(high_severity_bugs)
 
             if drop_bug_list:
                 all_dropped_bugs.extend(drop_bug_list)
