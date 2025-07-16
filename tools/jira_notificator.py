@@ -1,4 +1,6 @@
+import click
 import logging
+import os
 
 from enum import Enum
 from typing import Optional
@@ -137,22 +139,25 @@ def get_latest_ert_notification_type_after_on_qa_transition(issue: Issue, on_qa_
 
 
 def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue) -> None:
-    on_qa_datetime = get_latest_on_qa_transition_datetime(issue)
-    if not on_qa_datetime:
-        return
+    try:
+        on_qa_datetime = get_latest_on_qa_transition_datetime(issue)
+        if not on_qa_datetime:
+            return
 
-    delta = datetime.now(timezone.utc) - on_qa_datetime
-    latest_notification_type = get_latest_ert_notification_type_after_on_qa_transition(issue, on_qa_datetime)
+        delta = datetime.now(timezone.utc) - on_qa_datetime
+        latest_notification_type = get_latest_ert_notification_type_after_on_qa_transition(issue, on_qa_datetime)
 
-    if delta > timedelta(hours=NotificationType.MANAGER.hours):
-        if latest_notification_type != NotificationType.MANAGER:
-            notify_manager(jira, issue)
-    elif delta > timedelta(hours=NotificationType.TEAM_LEAD.hours):
-        if latest_notification_type != NotificationType.TEAM_LEAD:
-            notify_team_lead(jira, issue)
-    elif delta > timedelta(hours=NotificationType.QA_CONTACT.hours):
-        if latest_notification_type != NotificationType.QA_CONTACT:
-            notify_qa_contact(jira, issue)
+        if delta > timedelta(hours=NotificationType.MANAGER.hours):
+            if latest_notification_type != NotificationType.MANAGER:
+                notify_manager(jira, issue)
+        elif delta > timedelta(hours=NotificationType.TEAM_LEAD.hours):
+            if latest_notification_type != NotificationType.TEAM_LEAD:
+                notify_team_lead(jira, issue)
+        elif delta > timedelta(hours=NotificationType.QA_CONTACT.hours):
+            if latest_notification_type != NotificationType.QA_CONTACT:
+                notify_qa_contact(jira, issue)
+    except Exception as e:
+        logger.error(f"An error occured while processing the Jira ticket {issue.key}: {e}")
 
 def get_on_qa_issues(jira: JIRA) -> list[Issue]:
     ON_QA_ISSUES_FILTER = "project = OCPBUGS AND issuetype in (Bug, Vulnerability) AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
@@ -175,3 +180,12 @@ def get_on_qa_issues(jira: JIRA) -> list[Issue]:
 def process_on_qa_issues(jira: JIRA) -> None:
     for issue in get_on_qa_issues(jira):
         check_issue_and_notify_responsible_people(jira, issue)
+
+@click.command()
+def main():
+    jira_token = os.environ.get("JIRA_TOKEN")
+    jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
+    process_on_qa_issues(jira)
+
+if __name__ == '__main__':
+    main()
