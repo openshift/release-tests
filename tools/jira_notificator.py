@@ -159,16 +159,16 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue) -> None:
     except Exception as e:
         logger.error(f"An error occured while processing the Jira ticket {issue.key}: {e}")
 
-def get_on_qa_issues(jira: JIRA) -> list[Issue]:
+def get_on_qa_issues(jira: JIRA, search_batch_size: int) -> list[Issue]:
     ON_QA_ISSUES_FILTER = "project = OCPBUGS AND issuetype in (Bug, Vulnerability) AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
 
     start_at = 0
-    batch_size = 100
     on_qa_issues = []
 
     while True:
+        # FIXME: OCPERT-135 Find a solution to access Jira tickets with limited permissions
         issues = jira.search_issues(
-            ON_QA_ISSUES_FILTER, startAt=start_at, maxResults=batch_size, expand="changelog"
+            ON_QA_ISSUES_FILTER, startAt=start_at, maxResults=search_batch_size, expand="changelog"
         )
         if not issues:
             break
@@ -177,15 +177,16 @@ def get_on_qa_issues(jira: JIRA) -> list[Issue]:
 
     return on_qa_issues
 
-def process_on_qa_issues(jira: JIRA) -> None:
-    for issue in get_on_qa_issues(jira):
+def process_on_qa_issues(jira: JIRA, search_batch_size: int) -> None:
+    for issue in get_on_qa_issues(jira, search_batch_size):
         check_issue_and_notify_responsible_people(jira, issue)
 
 @click.command()
-def main():
+@click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
+def main(search_batch_size: int):
     jira_token = os.environ.get("JIRA_TOKEN")
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
-    process_on_qa_issues(jira)
+    process_on_qa_issues(jira, search_batch_size)
 
 if __name__ == '__main__':
     main()

@@ -131,7 +131,7 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(get_latest_ert_notification_type_after_on_qa_transition(self.test_issues_without_qa, datetime(2024, 1, 1, 1, 1, 0, 0, timezone.utc)), None)
 
     def test_get_on_qa_issues(self):
-        issues = get_on_qa_issues(self.jira)
+        issues = get_on_qa_issues(self.jira, 100)
         self.assertNotEqual(len(issues), 0)
         for i in issues:
             self.assertTrue(i.key.startswith("OCPBUGS-"))
