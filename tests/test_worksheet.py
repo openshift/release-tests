@@ -247,7 +247,7 @@ class TestTestReport(TestCase):
             self.tr.update_cell_with_hyperlinks("D4", [])
 
     def test_hyperlink_fallback_solution(self):
-        """Test fallback to simple HYPERLINK when advanced formatting fails"""
+        """Test fallback to plain text when advanced formatting fails"""
         # Setup test data
         links_data = [
             ("Test link", "https://example.com"),
@@ -265,13 +265,15 @@ class TestTestReport(TestCase):
             self.tr.update_cell_with_hyperlinks("E5", links_data)
             
             # Verify warning was logged about fallback
-            self.assertIn("Advanced hyperlink formatting failed, falling back to simple HYPERLINK", cm.output[0])
+            self.assertIn("Advanced hyperlink formatting failed, falling back to plain text with URLs", cm.output[0])
         
         # Restore original method
         self.ws.spreadsheet.batch_update = original_batch_update
         
-        # Verify fallback worked - cell should contain simple HYPERLINK formulas
-        cell_value = self.ws.acell("E5", value_render_option="FORMULA").value
+        # Verify fallback worked - cell should contain plain text with URLs
+        cell_value = self.ws.acell("E5").value
         for text, link in links_data:
-            expected_hyperlink = f'=HYPERLINK("{link}","{text}")'
-            self.assertIn(expected_hyperlink, cell_value)
+            expected_text = f"{text} ({link})"
+            self.assertIn(expected_text, cell_value)
+            # Verify no HYPERLINK formulas are present
+            self.assertNotIn('=HYPERLINK(', cell_value)

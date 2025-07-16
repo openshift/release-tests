@@ -657,7 +657,7 @@ class TestReport:
             raise WorksheetException("links_data cannot be empty")
         try:
             # Try advanced formatting first
-            text = "\n".join([text for text, link, *_ in links_data])
+            text = "\n".join([item[0] for item in links_data])  # Extract just the display text
             text_format_runs = []
             for item in links_data:
                 display_text = item[0]
@@ -726,11 +726,11 @@ class TestReport:
             }]
             self._ws.spreadsheet.batch_update({"requests": requests})
         except Exception as e:
-            logger.warning(f"Advanced hyperlink formatting failed, falling back to simple HYPERLINK: {e}")
-            # Fall back to simple HYPERLINK formulas
-            hyperlinks = []
+            logger.warning(f"Advanced hyperlink formatting failed, falling back to plain text with URLs: {e}")
+            # Fall back to plain text with URLs
+            plain_text = []
             for item in links_data:
                 display_text = item[0]
                 link = item[1]
-                hyperlinks.append(self._to_hyperlink(link, display_text))
-            self._ws.update_acell(cell_label, "\n".join(hyperlinks))
+                plain_text.append(f"{display_text} ({link})")
+            self._ws.update_acell(cell_label, "\n".join(plain_text))
