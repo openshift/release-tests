@@ -40,7 +40,34 @@
           "jobStartTime": "2025-07-16T14:53:13Z",
           "jobID": "470f1fc5-1a4f-4dc4-815e-6018743f038e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1945497542200397824",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-16T17:47:48Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 120,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-07-16T14:53:18Z",
@@ -327,5 +354,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2025-07-15-083124",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2025-07-15-083124"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
