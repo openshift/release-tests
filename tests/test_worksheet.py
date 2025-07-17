@@ -7,7 +7,6 @@ from oar.core.const import *
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
 
-
 class TestWorksheetManager(TestCase):
     @classmethod
     def setUpClass(self):
@@ -118,7 +117,6 @@ class TestWorksheetManager(TestCase):
             tr._ws.get(LABEL_SIPPY_AUTO_RELEASE, value_render_option="FORMULA")[0][0],
         )
 
-
 class TestTestReport(TestCase):
     # testing_test_report spreadsheet ID
     SPREADSHEET_ID = "1DeGMra2o4dA56R_vGtYMcAVRrhXeHLJ9oGOQQTp4nS0"
@@ -130,11 +128,11 @@ class TestTestReport(TestCase):
             self.wm = WorksheetManager(cs)
 
         self.wm._create_release_sheet_from_template()
-
+    
     @classmethod
     def tearDownClass(self):
         self.wm.delete_test_report()
-
+    
     def test_update_advisory_info(self):
         self.wm._report.update_advisory_info()
 
@@ -149,3 +147,23 @@ class TestTestReport(TestCase):
 
         for advisory in expected_advisories:
             self.assertIn(advisory, advisory_info_from_test_report)
+
+    def test_blocking_sec_alerts(self):
+        """Test blocking sec-alerts functionality"""
+        # Set up the blocking sec-alerts section
+        tr = self.wm.get_test_report()
+        tr.setup_blocking_sec_alerts()
+
+        # Test that default value is set to "No"
+        default_status = tr.get_blocking_sec_alerts_status()
+        self.assertEqual(default_status, "No")
+
+        # Test updating to "Yes"
+        tr.update_blocking_sec_alerts_status("Yes")
+        status = tr.get_blocking_sec_alerts_status()
+        self.assertEqual(status, "Yes")
+
+        # Test updating back to "No"
+        tr.update_blocking_sec_alerts_status("No")
+        status = tr.get_blocking_sec_alerts_status()
+        self.assertEqual(status, "No")

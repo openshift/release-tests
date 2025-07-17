@@ -270,6 +270,27 @@ class NotificationManager:
             raise NotificationException(
                 "share unverified CVE issues to managers failed") from e
 
+    def share_blocking_security_alerts(self, blocking_advisories):
+        """
+        Send notification about blocking security alerts detection
+
+        Args:
+            blocking_advisories (list): List of advisories with blocking security alerts
+
+        Raises:
+            NotificationException: error when sending notification
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_blocking_security_alerts(
+                blocking_advisories)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share blocking security alerts failed") from e
+
 class MailClient:
     """
     Wrapper of email to send email easily
@@ -312,7 +333,6 @@ class MailClient:
             self.session.quit()
 
         logger.info(f"sent email to {to_addrs} with subject: <{subject}>")
-
 
 class SlackClient:
     def __init__(self, bot_token):
@@ -410,7 +430,6 @@ class SlackClient:
         else:
             return email
 
-
 class MessageHelper:
     """
     Provide message needed info
@@ -506,7 +525,7 @@ class MessageHelper:
         """
         message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
         return self.__get_slack_message_for_jira_issues(jira_issues, message)
-    
+
     def get_slack_message_for_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
         Get Slack message for unverified CVE issues to managers of QA contacts
@@ -519,7 +538,7 @@ class MessageHelper:
         """
 
         message = "The following issues must be verified in this release. As the managers of the assigned QA contacts who have not yet verified these Jiras, could you please prioritize their verification or reassign them to other available QA contacts?"
-        
+
         if len(unverified_cve_issues):
             slack_message = f"[{self.cs.release}] {message}\n"
             for issue in unverified_cve_issues:
@@ -758,6 +777,38 @@ class MessageHelper:
             )
         )
         message = f"[{self.cs.release}] Hello {gid}, there are Greenwave CVP failures in advisories. Please contact CVP team. Use the following jira for reference: {util.get_jira_link(jira_key)}."
+
+        return message
+
+    def get_slack_message_for_blocking_security_alerts(self, blocking_advisories):
+        """
+        Get Slack message for blocking security alerts detection
+
+        Args:
+            blocking_advisories (list): List of advisories with blocking security alerts
+
+        Returns:
+            str: Slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+
+        advisory_ids = [str(advisory['errata_id']) for advisory in blocking_advisories]
+        message = f"[{self.cs.release}] Hello {gid}, ⚠️ BLOCKING SECURITY ALERTS DETECTED!\n"
+        message += f"The following advisories have blocking security alerts that require immediate attention:\n\n"
+
+        for advisory in blocking_advisories:
+            errata_id = advisory['errata_id']
+            advisory_type = advisory.get('type', 'Unknown')
+            impetus = advisory.get('impetus', 'unknown')
+            message += f"🔴 Advisory {self._to_link(util.get_advisory_link(errata_id), errata_id)} ({advisory_type}/{impetus})\n"
+            message += f"    Security alerts page: https://errata.devel.redhat.com/advisory/security_alerts/{errata_id}\n"
+
+        message += f"\n📝 Worksheet has been automatically updated to show 'Yes' with red background.\n"
+        message += f"🚨 Please contact the Product Security team for resolution before proceeding with the release."
 
         return message
 

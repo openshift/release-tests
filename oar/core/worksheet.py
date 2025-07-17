@@ -18,7 +18,6 @@ from oar.core.jira import JiraManager
 
 logger = logging.getLogger(__name__)
 
-
 class WorksheetManager:
     """
     WorksheetManager is used to update test report with info provided by ConfigStore
@@ -96,6 +95,9 @@ class WorksheetManager:
             # add test results links
             self._report.create_test_results_links()
 
+            # setup blocking sec-alerts section
+            self._report.setup_blocking_sec_alerts()
+
         except Exception as ge:  # catch all the exceptions here
             raise WorksheetException("create test report failed") from ge
 
@@ -144,7 +146,6 @@ class WorksheetManager:
             new_sheet = self._doc.duplicate_sheet(self._template.id)
             new_sheet.update_title(self._cs.release)
             self._report = TestReport(new_sheet, self._cs)
-
 
 class TestReport:
     """
@@ -615,6 +616,389 @@ class TestReport:
                 f"{util.get_y_release(self._cs.release)}-qe-auto-release"
             )
         )
+
+    # ========================================================================
+    # BLOCKING SECURITY ALERTS FUNCTIONALITY
+    # ========================================================================
+
+    # Color constants for security alerts dropdown
+    _BLOCKING_ALERT_COLORS = {
+        "YES_BACKGROUND": {"red": 1.0, "green": 0.8, "blue": 0.8},  # Light red
+        "NO_BACKGROUND": {"red": 0.8, "green": 1.0, "blue": 0.8},   # Light green
+    }
+
+    # Security alert check result template
+    _SECURITY_ALERT_RESULT_TEMPLATE = {
+        "has_blocking": False,
+        "checked_advisories": [],
+        "blocking_advisories": [],
+        "errors": []
+    }
+
+    def setup_blocking_sec_alerts(self):
+        """
+        Set up the complete blocking security alerts section
+
+        This method:
+        1. Creates the text label in A29
+        2. Creates a color-coded dropdown in B29
+        3. Automatically checks all advisories and sets the appropriate value
+        4. Logs the setup completion
+        """
+        try:
+            logger.info("Setting up blocking security alerts section...")
+
+            # Set up the UI components
+            self._create_security_alerts_ui()
+
+            # Perform initial check and set status
+            self.refresh_blocking_sec_alerts_status()
+
+            logger.info("✅ Blocking sec-alerts section setup complete with automated checking")
+
+        except Exception as e:
+            logger.error(f"Failed to setup blocking security alerts section: {e}")
+            # Fallback setup - at least create the UI components
+            try:
+                self._create_security_alerts_ui()
+                self._ws.update_acell(LABEL_BLOCKING_SEC_ALERTS_DROPDOWN, "No")
+                logger.warning("⚠️ Setup completed with fallback to 'No' due to checking error")
+            except Exception as fallback_error:
+                logger.error(f"Even fallback setup failed: {fallback_error}")
+                raise WorksheetException("Failed to setup blocking security alerts section") from e
+
+    def _create_security_alerts_ui(self):
+        """Create the UI components for blocking security alerts"""
+        # Set the text label in A29
+        self._ws.update_acell(LABEL_BLOCKING_SEC_ALERTS, "Blocking sec-alerts")
+
+        # Create dropdown in B29 with Yes/No options and color coding
+        self._create_security_alerts_dropdown()
+
+    def _create_security_alerts_dropdown(self):
+        """Create the security alerts dropdown with proper color coding"""
+        options = ["Yes", "No"]
+        cell_label = LABEL_BLOCKING_SEC_ALERTS_DROPDOWN
+
+        # Get cell coordinates
+        row_index, col_index = self._parse_cell_coordinates(cell_label)
+
+        # Create the dropdown with validation and color formatting
+        requests = self._build_dropdown_requests(row_index, col_index, options)
+        requests.extend(self._build_color_formatting_requests(row_index, col_index))
+
+        # Execute the batch update
+        self._ws.spreadsheet.batch_update({"requests": requests})
+        logger.debug(f"Security alerts dropdown created in {cell_label}")
+
+    def check_for_blocking_sec_alerts(self):
+        """
+        Check all advisories for blocking security alerts
+
+        Returns:
+            tuple: (has_blocking_alerts: bool, details: dict)
+                - has_blocking_alerts: True if any RHSA advisory has blocking alerts
+                - details: Dictionary with comprehensive check results
+        """
+        try:
+            logger.info("Checking for blocking security alerts across all advisories...")
+
+            # Initialize result structure
+            result = self._SECURITY_ALERT_RESULT_TEMPLATE.copy()
+            result["checked_advisories"] = []
+            result["blocking_advisories"] = []
+            result["errors"] = []
+
+            # Get all advisories
+            advisories = self._get_advisories_for_security_check()
+
+            # Check each advisory
+            for advisory in advisories:
+                advisory_result = self._check_single_advisory(advisory)
+                result["checked_advisories"].append(advisory_result)
+
+                # Track blocking advisories
+                if advisory_result.get("has_blocking", False):
+                    result["has_blocking"] = True
+                    result["blocking_advisories"].append(advisory_result)
+
+                # Track errors
+                if advisory_result.get("error"):
+                    result["errors"].append(advisory_result)
+
+            # Log summary
+            self._log_security_check_summary(result)
+
+            return result["has_blocking"], result
+
+        except Exception as e:
+            error_msg = f"Failed to check for blocking security alerts: {e}"
+            logger.error(error_msg)
+            return False, {"error": str(e), "checked_advisories": [], "blocking_advisories": [], "errors": []}
+
+    def _get_advisories_for_security_check(self):
+        """Get advisories for security alert checking"""
+        from oar.core.advisory import AdvisoryManager
+        am = AdvisoryManager(self._cs)
+        return am.get_advisories()
+
+    def _check_single_advisory(self, advisory):
+        """
+        Check a single advisory for blocking security alerts
+
+        Args:
+            advisory: Advisory object to check
+
+        Returns:
+            dict: Advisory check result with status and metadata
+        """
+        advisory_info = {
+            "errata_id": advisory.errata_id,
+            "type": advisory.errata_type,
+            "impetus": getattr(advisory, 'impetus', 'unknown'),
+            "has_blocking": False,
+            "checked": False
+        }
+
+        try:
+            # Only check RHSA advisories (RHBA don't have security alerts)
+            if advisory.errata_type == "RHSA":
+                advisory_info["checked"] = True
+                has_blocking = advisory.has_blocking_secruity_alert()
+                advisory_info["has_blocking"] = has_blocking
+
+                if has_blocking:
+                    logger.warning(f"🔴 Advisory {advisory.errata_id} has blocking security alerts!")
+                else:
+                    logger.debug(f"✅ Advisory {advisory.errata_id} has no blocking security alerts")
+            else:
+                advisory_info["reason"] = "RHBA advisories don't have security alerts"
+                logger.debug(f"⏭️ Skipping {advisory.errata_type} advisory {advisory.errata_id} (no security alerts)")
+
+        except Exception as e:
+            advisory_info["error"] = str(e)
+            logger.error(f"❌ Error checking advisory {advisory.errata_id}: {e}")
+
+        return advisory_info
+
+    def _log_security_check_summary(self, result):
+        """Log a summary of the security alert check results"""
+        total_advisories = len(result["checked_advisories"])
+        rhsa_checked = len([a for a in result["checked_advisories"] if a.get("checked", False)])
+        blocking_count = len(result["blocking_advisories"])
+        error_count = len(result["errors"])
+
+        logger.info(f"🔍 Security alert check complete: {total_advisories} total, {rhsa_checked} RHSA checked, {blocking_count} blocking, {error_count} errors")
+
+        if blocking_count > 0:
+            blocking_ids = [str(a["errata_id"]) for a in result["blocking_advisories"]]
+            logger.warning(f"⚠️ Blocking alerts found in advisories: {', '.join(blocking_ids)}")
+
+    def refresh_blocking_sec_alerts_status(self):
+        """
+        Check for blocking security alerts and update the dropdown value automatically
+
+        This is the main method that coordinates checking and updating.
+
+        Returns:
+            tuple: (has_blocking_alerts: bool, details: dict)
+        """
+        try:
+            # Perform the security alert check
+            has_blocking, details = self.check_for_blocking_sec_alerts()
+
+            # Update the dropdown based on results
+            new_status = "Yes" if has_blocking else "No"
+            self.update_blocking_sec_alerts_status(new_status)
+
+            # Log the result
+            if has_blocking:
+                logger.info("🔴 Automated check: Found blocking security alerts - set to 'Yes'")
+            else:
+                logger.info("🟢 Automated check: No blocking security alerts - set to 'No'")
+
+            return has_blocking, details
+
+        except Exception as e:
+            logger.error(f"Failed to refresh blocking sec-alerts status: {e}")
+            # Fallback to "No" if check fails
+            self._fallback_to_safe_status()
+            return False, {"error": str(e)}
+
+    def _fallback_to_safe_status(self):
+        """Set a safe fallback status when automated checking fails"""
+        try:
+            self.update_blocking_sec_alerts_status("No")
+            logger.warning("⚠️ Automated check failed - defaulting to 'No' for safety")
+        except Exception as fallback_error:
+            logger.error(f"Even fallback status update failed: {fallback_error}")
+
+    def update_blocking_sec_alerts_status(self, status):
+        """
+        Update the blocking sec-alerts dropdown status
+
+        Args:
+            status (str): Either "Yes" or "No"
+
+        Raises:
+            WorksheetException: If status is not "Yes" or "No"
+        """
+        if status not in ["Yes", "No"]:
+            raise WorksheetException("Status must be either 'Yes' or 'No'")
+
+        self._ws.update_acell(LABEL_BLOCKING_SEC_ALERTS_DROPDOWN, status)
+        logger.debug(f"Blocking sec-alerts status updated to: {status}")
+
+    def get_blocking_sec_alerts_status(self):
+        """
+        Get the current blocking sec-alerts status
+
+        Returns:
+            str: The current status ("Yes", "No", or None if not set)
+        """
+        try:
+            return self._ws.acell(LABEL_BLOCKING_SEC_ALERTS_DROPDOWN).value
+        except Exception as e:
+            logger.warning(f"Failed to get blocking sec-alerts status: {e}")
+            return None
+
+    # ========================================================================
+    # DROPDOWN CREATION UTILITIES
+    # ========================================================================
+
+    def _create_dropdown(self, cell_label, options):
+        """
+        Create a dropdown with specified options in the given cell
+
+        This is a generic dropdown creator. For security alerts, use
+        _create_security_alerts_dropdown() which includes color coding.
+
+        Args:
+            cell_label (str): Cell address in A1 notation (e.g., 'B29')
+            options (list): List of dropdown options
+        """
+        # Get cell coordinates
+        row_index, col_index = self._parse_cell_coordinates(cell_label)
+
+        # Build and execute dropdown requests
+        requests = self._build_dropdown_requests(row_index, col_index, options)
+
+        # Add color formatting for Yes/No dropdowns
+        if set(options) == {"Yes", "No"}:
+            requests.extend(self._build_color_formatting_requests(row_index, col_index))
+
+        self._ws.spreadsheet.batch_update({"requests": requests})
+        logger.debug(f"Dropdown created in {cell_label} with options: {options}")
+
+    def _parse_cell_coordinates(self, cell_label):
+        """
+        Parse cell label to get row and column indices
+
+        Args:
+            cell_label (str): Cell address in A1 notation
+
+        Returns:
+            tuple: (row_index, col_index) as 0-based integers
+        """
+        import re
+        match = re.match(r'([A-Z]+)(\d+)', cell_label)
+        if not match:
+            raise WorksheetException(f"Invalid cell label: {cell_label}")
+
+        col_str, row_str = match.groups()
+        row_index = int(row_str) - 1  # Convert to 0-based
+
+        # Convert column letters to 0-based index
+        col_index = 0
+        for char in col_str:
+            col_index = col_index * 26 + (ord(char) - ord('A') + 1)
+        col_index -= 1  # Convert to 0-based
+
+        return row_index, col_index
+
+    def _build_dropdown_requests(self, row_index, col_index, options):
+        """Build the data validation requests for dropdown creation"""
+        return [
+            {
+                "setDataValidation": {
+                    "range": {
+                        "sheetId": self._ws.id,
+                        "startRowIndex": row_index,
+                        "endRowIndex": row_index + 1,
+                        "startColumnIndex": col_index,
+                        "endColumnIndex": col_index + 1,
+                    },
+                    "rule": {
+                        "condition": {
+                            "type": "ONE_OF_LIST",
+                            "values": [{"userEnteredValue": option} for option in options]
+                        },
+                        "showCustomUi": True,
+                        "strict": True
+                    }
+                }
+            }
+        ]
+
+    def _build_color_formatting_requests(self, row_index, col_index):
+        """Build conditional formatting requests for Yes/No color coding"""
+        requests = []
+
+        # Red background for "Yes" (indicating blocking)
+        requests.append({
+            "addConditionalFormatRule": {
+                "rule": {
+                    "ranges": [{
+                        "sheetId": self._ws.id,
+                        "startRowIndex": row_index,
+                        "endRowIndex": row_index + 1,
+                        "startColumnIndex": col_index,
+                        "endColumnIndex": col_index + 1,
+                    }],
+                    "booleanRule": {
+                        "condition": {
+                            "type": "TEXT_EQ",
+                            "values": [{"userEnteredValue": "Yes"}]
+                        },
+                        "format": {
+                            "backgroundColor": self._BLOCKING_ALERT_COLORS["YES_BACKGROUND"]
+                        }
+                    }
+                },
+                "index": 0
+            }
+        })
+
+        # Green background for "No" (indicating not blocking)
+        requests.append({
+            "addConditionalFormatRule": {
+                "rule": {
+                    "ranges": [{
+                        "sheetId": self._ws.id,
+                        "startRowIndex": row_index,
+                        "endRowIndex": row_index + 1,
+                        "startColumnIndex": col_index,
+                        "endColumnIndex": col_index + 1,
+                    }],
+                    "booleanRule": {
+                        "condition": {
+                            "type": "TEXT_EQ",
+                            "values": [{"userEnteredValue": "No"}]
+                        },
+                        "format": {
+                            "backgroundColor": self._BLOCKING_ALERT_COLORS["NO_BACKGROUND"]
+                        }
+                    }
+                },
+                "index": 1
+            }
+        })
+
+        return requests
+
+    # ========================================================================
+    # END BLOCKING SECURITY ALERTS FUNCTIONALITY
+    # ========================================================================
 
     def _get_issues_from_others_section(self):
         """
