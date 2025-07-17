@@ -13,37 +13,52 @@ class TestJiraNotificator(unittest.TestCase):
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
         self.test_issues_without_qa = self.jira.issue("OCPBUGS-8760", expand="changelog")
 
+        self.test_user = Mock()
+        self.test_user.name = "tdavid"
+        self.test_user.displayName = "Tomas David"
+        self.test_user.emailAddress = "tdavid@redhat.com"
+
     def test_create_notification_title(self):
         self.assertEqual(
             create_notification_title(NotificationType.QA_CONTACT),
             (
                 "Errata Reliability Team Notification - QA Contact Action Request\n"
-                "This issue has been in the ON_QA state for over 24 hours."
+                "This issue has been in the ON_QA state for over 24 hours.\n"
             )
         )
         self.assertEqual(
             create_notification_title(NotificationType.TEAM_LEAD),
             (
                 "Errata Reliability Team Notification - Team Lead Action Request\n"
-                "This issue has been in the ON_QA state for over 48 hours."
+                "This issue has been in the ON_QA state for over 48 hours.\n"
             )
         )
         self.assertEqual(
             create_notification_title(NotificationType.MANAGER),
             (
                 "Errata Reliability Team Notification - Manager Action Request\n"
-                "This issue has been in the ON_QA state for over 72 hours."
+                "This issue has been in the ON_QA state for over 72 hours.\n"
             )
-            
+        )
+        self.assertEqual(
+            create_notification_title(NotificationType.ASSIGNEE),
+            (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+            )
         )
 
     def test_get_notification_type(self):
         self.assertEqual(get_notification_type("QA Contact Action Request"), NotificationType.QA_CONTACT)
         self.assertEqual(get_notification_type("Team Lead Action Request"), NotificationType.TEAM_LEAD)
         self.assertEqual(get_notification_type("Manager Action Request"), NotificationType.MANAGER)
+        self.assertEqual(get_notification_type("Assignee Action Request"), NotificationType.ASSIGNEE)
         self.assertEqual(get_notification_type("Please verify the issues as soon as possible."), None)
         self.assertEqual(get_notification_type("QA Contact Manager Team Lead"), None)
         self.assertEqual(get_notification_type(""), None)
+
+    def test_create_jira_comment_mention(self):
+        self.assertEqual(create_jira_comment_mention(self.test_user), "[~tdavid] ")
 
     def test_find_user_by_email(self):
         self.assertEqual(find_user_by_email(self.jira, "tdavid@redhat.com").displayName, "Tomas David")
@@ -55,80 +70,129 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(qa_contact.name, "tdavid@redhat.com")
 
         self.assertEqual(get_qa_contact(self.test_issues_without_qa), None)
-
+    
     def test_get_manager(self):
-        qa_contact = Mock()
-        qa_contact.emailAddress = "tdavid@redhat.com"
-        manager = get_manager(self.jira, qa_contact)
+        manager = get_manager(self.jira, self.test_user)
         self.assertEqual(manager.displayName, "Gui Jospin")
         self.assertEqual(manager.name, "rhn-support-gjospin")
 
-        invalid_user = Mock()
-        invalid_user.emailAddress = "dtomas@redhat.com"
-        self.assertEqual(get_manager(self.jira, invalid_user), None)
+        nont_existing_user = Mock()
+        nont_existing_user.emailAddress = "dtomas@redhat.com"
+        self.assertEqual(get_manager(self.jira, nont_existing_user), None)
+
+    def test_get_assignee(self):
+        assignee = get_assignee(self.test_issue)
+        self.assertEqual(assignee.displayName, "Tomas David")
+        self.assertEqual(assignee.name, "tdavid@redhat.com")
+
+        empty_assignee = get_assignee(self.jira.issue("OCPBUGS-1542"))
+        self.assertEqual(empty_assignee, None)
+
+    def test_create_assignee_notification(self):
+        assignee_manager = Mock()
+        assignee_manager.name = "gjospin"
+
+        self.assertEqual(
+            create_assignee_notification(Contact.QA_CONTACT, [self.test_user, assignee_manager]),
+            "Errata Reliability Team Notification - Assignee Action Request\n"
+            "This issue has been in the ON_QA state for over 24 hours.\n"
+            "[~tdavid] [~gjospin] The QA contact is missing. Could you please help us identify someone who could review the issue?"
+        )
+        self.assertEqual(
+            create_assignee_notification(Contact.TEAM_LEAD, [self.test_user, assignee_manager]),
+            "Errata Reliability Team Notification - Assignee Action Request\n"
+            "This issue has been in the ON_QA state for over 24 hours.\n"
+            "[~tdavid] [~gjospin] There has been no response from the QA contact and the Team Lead is not listed in Jira. "
+            "Could you please help us identify someone who could review the issue?"
+        )
+        self.assertEqual(
+            create_assignee_notification(Contact.MANAGER, [self.test_user, assignee_manager]),
+            "Errata Reliability Team Notification - Assignee Action Request\n"
+            "This issue has been in the ON_QA state for over 24 hours.\n"
+            "[~tdavid] [~gjospin] There has been no response from the QA contact and the Manager is not listed in Jira. "
+            "Could you please help us identify someone who could review the issue?"
+        )
+
+    def test_has_assignee_notification(self):
+        self.assertTrue(has_assignee_notification(self.test_issue))
+        self.assertFalse(has_assignee_notification(self.test_issues_without_qa))
+    
+    @unittest.skip("Skipping because this would send notification to jira.")
+    def test_notify_assignees(self):
+        notify_assignees(self.jira, self.test_issue, Contact.MANAGER)
 
     def test_create_qa_notification_text(self):
         self.assertEqual(
-            create_qa_notification_text(self.test_issue),
+            create_qa_notification_text(self.test_user),
             (
                 "Errata Reliability Team Notification - QA Contact Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~tdavid@redhat.com] Please verify the Jira ticket as soon as possible."
+                "[~tdavid] Please verify the Issue as soon as possible."
             )
         )
-        self.assertEqual(
-            create_qa_notification_text(self.test_issues_without_qa),
-            (
-                "Errata Reliability Team Notification - QA Contact Action Request\n"
-                "This issue has been in the ON_QA state for over 24 hours.\n"
-                "Please verify the Jira ticket as soon as possible."
-            )
-        )
+
+    @unittest.skip("Skipping because this would send notification to jira.")
+    def test_notify_qa_contact(self):
+        notify_qa_contact(self.jira, self.test_issue)
 
     def test_create_team_lead_notification_text(self):
         self.assertEqual(
-            create_team_lead_notification_text(self.jira.issue("OCPBUGS-59288", expand="changelog")),
+            create_team_lead_notification_text(self.test_user),
             (
                 "Errata Reliability Team Notification - Team Lead Action Request\n"
                 "This issue has been in the ON_QA state for over 48 hours.\n"
-                "[~tdavid@redhat.com] Please verify the Jira ticket as soon as possible or arrange a reassignment with your team lead."
-            )
-        )
-        self.assertEqual(
-            create_team_lead_notification_text(self.jira.issue("OCPBUGS-8760", expand="changelog")),
-            (
-                "Errata Reliability Team Notification - Team Lead Action Request\n"
-                "This issue has been in the ON_QA state for over 48 hours.\n"
-                "Please verify the Jira ticket as soon as possible or arrange a reassignment with your team lead."
+                "[~tdavid] Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
             )
         )
 
+    
+    @unittest.skip("Skipping because this would send notification to jira.")
+    def test_notify_team_lead(self):
+        notify_team_lead(self.jira, self.test_issue)
+    
     def test_create_manager_notification_text(self):
         self.assertEqual(
-            create_manager_notification_text(self.jira, self.jira.issue("OCPBUGS-59288", expand="changelog")),
+            create_manager_notification_text(self.test_user),
             (
                 "Errata Reliability Team Notification - Manager Action Request\n"
                 "This issue has been in the ON_QA state for over 72 hours.\n"
-                "[~rhn-support-gjospin] Please prioritize the Jira ticket verification or consider reassigning it to another available QA Contact."
+                "[~tdavid] Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
             )
         )
-        self.assertEqual(
-            create_manager_notification_text(self.jira, self.jira.issue("OCPBUGS-8760", expand="changelog")),
-            (
-                "Errata Reliability Team Notification - Manager Action Request\n"
-                "This issue has been in the ON_QA state for over 72 hours.\n"
-                "Please prioritize the Jira ticket verification or consider reassigning it to another available QA Contact."
-            )
-        )
+
+    @unittest.skip("Skipping because this would send notification to jira.")
+    def test_notify_manager(self):
+        notify_manager(self.jira, self.test_issue)
 
     def test_get_latest_on_qa_transition_datetime(self):
-        self.assertEqual(get_latest_on_qa_transition_datetime(self.test_issue), datetime(2025, 7, 15, 14, 10, 20, 862000, timezone.utc))
-        self.assertEqual(get_latest_on_qa_transition_datetime(self.test_issues_without_qa), None)
+        self.assertEqual(
+            get_latest_on_qa_transition_datetime(self.test_issue),
+            datetime(2025, 7, 15, 14, 10, 20, 862000, timezone.utc)
+        )
+        self.assertEqual(get_latest_on_qa_transition_datetime(
+            self.test_issues_without_qa),
+            None
+        )
 
     def test_get_latest_ert_notification_type_after_on_qa_transition(self):
-        self.assertEqual(get_latest_ert_notification_type_after_on_qa_transition(self.test_issue, datetime(2025, 7, 15, 14, 50, 0, 0, timezone.utc)), NotificationType.TEAM_LEAD)
-        self.assertEqual(get_latest_ert_notification_type_after_on_qa_transition(self.test_issue, datetime(2025, 7, 15, 14, 52, 0, 0, timezone.utc)), None)
-        self.assertEqual(get_latest_ert_notification_type_after_on_qa_transition(self.test_issues_without_qa, datetime(2024, 1, 1, 1, 1, 0, 0, timezone.utc)), None)
+        self.assertEqual(
+            get_latest_ert_notification_type_after_on_qa_transition(
+                self.test_issue, datetime(2025, 7, 17, 11, 10, 0, 0, timezone.utc)
+            ), 
+            NotificationType.MANAGER
+        )
+        self.assertEqual(
+            get_latest_ert_notification_type_after_on_qa_transition(
+                self.test_issue, datetime(2025, 7, 17, 11, 12, 0, 0, timezone.utc)
+            ),
+            None
+        )
+        self.assertEqual(
+            get_latest_ert_notification_type_after_on_qa_transition(
+                self.test_issues_without_qa, datetime(2024, 1, 1, 1, 1, 0, 0, timezone.utc)
+            ),
+            None
+        )
 
     def test_get_on_qa_issues(self):
         issues = get_on_qa_issues(self.jira, 100)
