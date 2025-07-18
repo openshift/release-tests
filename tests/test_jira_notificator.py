@@ -208,8 +208,31 @@ class TestJiraNotificator(unittest.TestCase):
             None
         )
 
+    def test_get_on_qa_filter(self):
+        self.assertEqual(
+            get_on_qa_filter(None),
+            (
+                "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
+                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+            )
+        )
+        self.assertEqual(
+            get_on_qa_filter(datetime(2025, 7, 17)),
+            (
+                "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
+                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+                " AND status changed to ON_QA after 2025-07-17"
+            )
+        )
+
     def test_get_on_qa_issues(self):
-        issues = get_on_qa_issues(self.jira, 100)
+        issues = get_on_qa_issues(self.jira, 100, None)
         self.assertNotEqual(len(issues), 0)
         for i in issues:
             self.assertTrue(i.key.startswith("OCPBUGS-"))
+
+        issues_after_date = get_on_qa_issues(self.jira, 100, datetime(2025, 7, 17))
+        self.assertNotEqual(len(issues_after_date), 0)
+        self.assertGreater(len(issues), len(issues_after_date))
+        for iad in issues_after_date:
+            self.assertTrue(iad.key.startswith("OCPBUGS-"))

@@ -58,7 +58,7 @@ def create_jira_comment_mentions(users: List[User]) -> str:
     return jira_comment_mentions
 
 def process_notification(jira: JIRA, notification: Notification, dry_run: bool) -> None:
-    log_message = f"'{notification.type.label}' notification to Issue {notification.issue.key}: {notification.text}"
+    log_message = f"- {notification.type.label} - notification to Issue - {notification.issue.key}: {notification.text}"
     if not dry_run:
         logger.info(f"Sending {log_message}")
         jira.add_comment(notification.issue, notification.text)
@@ -260,16 +260,24 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run:
     except Exception as e:
         logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
 
-def get_on_qa_issues(jira: JIRA, search_batch_size: int) -> list[Issue]:
-    ON_QA_ISSUES_FILTER = "project = OCPBUGS AND issuetype in (Bug, Vulnerability) AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+def get_on_qa_filter(from_date: datetime = None) -> str:
+    base_filter = (
+        "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
+        "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+    )
 
+    date_suffix = f" AND status changed to ON_QA after {from_date.strftime('%Y-%m-%d')}" if from_date else ""
+
+    return base_filter + date_suffix
+
+def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: datetime) -> list[Issue]:
     start_at = 0
     on_qa_issues = []
 
     while True:
         # FIXME: OCPERT-135 Find a solution to access Jira tickets with limited permissions
         issues = jira.search_issues(
-            ON_QA_ISSUES_FILTER, startAt=start_at, maxResults=search_batch_size, expand="changelog"
+            get_on_qa_filter(from_date), startAt=start_at, maxResults=search_batch_size, expand="changelog"
         )
         if not issues:
             break
@@ -278,17 +286,19 @@ def get_on_qa_issues(jira: JIRA, search_batch_size: int) -> list[Issue]:
 
     return on_qa_issues
 
-def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool) -> None:
-    for issue in get_on_qa_issues(jira, search_batch_size):
+def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool, from_date: datetime) -> None:
+    for issue in get_on_qa_issues(jira, search_batch_size, from_date):
         check_issue_and_notify_responsible_people(jira, issue, dry_run)
 
 @click.command()
 @click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
-@click.option('--dry-run', is_flag=True, default=False, help='Run without sending Jira notifications.')
-def main(search_batch_size: int, dry_run: bool):
+@click.option("--dry-run", is_flag=True, default=False, help="Run without sending Jira notifications.")
+@click.option("--from-date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False, help="Filters issues that changed to ON_QA state after this date."
+)
+def main(search_batch_size: int, dry_run: bool, from_date: datetime):
     jira_token = os.environ.get("JIRA_TOKEN")
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
-    process_on_qa_issues(jira, search_batch_size, dry_run)
+    process_on_qa_issues(jira, search_batch_size, dry_run, from_date)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
