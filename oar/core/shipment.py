@@ -931,13 +931,19 @@ class ShipmentData:
                 
         return total_scanned, len(unhealthy_components), unhealthy_components
 
-    def generate_image_health_summary(self) -> str:
+    def generate_image_health_summary(self, health_data: tuple = None) -> str:
         """Generate formatted summary of container image health check
+        
+        Args:
+            health_data: Optional cached tuple from check_component_image_health()
+                         in format (total_scanned, unhealthy_count, components)
         
         Returns:
             Formatted summary string for MR comment
         """
-        total, unhealthy, components = self.check_component_image_health()
+        if health_data is None:
+            health_data = self.check_component_image_health()
+        total, unhealthy, components = health_data
         
         summary = f"Images scanned: {total}\n"
         summary += f"Unhealthy components detected: {unhealthy}\n"
@@ -949,14 +955,18 @@ class ShipmentData:
                 
         return summary
 
-    def add_image_health_summary_comment(self) -> None:
-        """Add container image health summary comment to all shipment MRs"""
-        summary = self.generate_image_health_summary()
+    def add_image_health_summary_comment(self, health_data: tuple = None) -> None:
+        """Add container image health summary comment to all shipment MRs
+        
+        Args:
+            health_data: Optional cached tuple from check_component_image_health()
+                         in format (total_scanned, unhealthy_count, components)
+        """
+        summary = self.generate_image_health_summary(health_data)
         for mr in self._mrs:
             try:
                 mr.add_comment(summary)
-                logger.info(f"Added freshness summary to MR {mr.merge_request_id}")
+                logger.info(f"Added image health summary to MR {mr.merge_request_id}")
             except Exception as e:
                 logger.error(f"Failed to add comment to MR {mr.merge_request_id}: {str(e)}")
                 continue
-
