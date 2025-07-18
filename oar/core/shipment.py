@@ -1,6 +1,8 @@
 import yaml
 import os
 import logging
+import requests
+from datetime import datetime, timezone
 from gitlab import Gitlab
 from gitlab.exceptions import (
     GitlabError,
@@ -782,3 +784,179 @@ class ShipmentData:
                 raise ShipmentDataException(f"Failed to drop bugs: {str(e)}")
         
         return all_high_severity_bugs, all_can_drop_issues
+
+    def _get_components_from_shipment(self, mr: GitLabMergeRequest) -> list[dict]:
+        """Get all components from shipment YAML files
+        
+        Args:
+            mr: GitLabMergeRequest instance to get files from
+            
+        Returns:
+            List of component objects from shipment.snapshot.spec.components
+            
+        Raises:
+            ShipmentDataException: If unable to process shipment files
+        """
+        components = []
+        try:
+            yaml_files = mr.get_all_files()
+            for file_path in yaml_files:
+                try:
+                    content = mr.get_file_content(file_path)
+                    data = yaml.safe_load(content)
+                    components.extend(glom(data, 'shipment.snapshot.spec.components', default=[]))
+                except Exception as e:
+                    logger.warning(f"Failed to process file {file_path}: {str(e)}")
+                    continue
+        except Exception as e:
+            raise ShipmentDataException(f"Failed to get components from shipment: {str(e)}")
+        return components
+
+    def _get_image_digest(self, pull_spec: str) -> str:
+        """Extract image digest from container image pull spec
+        
+        Args:
+            pull_spec: Container image pull spec string
+            
+        Returns:
+            Image digest (sha256:...)
+            
+        Raises:
+            ShipmentDataException: If pull spec is invalid or missing digest
+        """
+        if not pull_spec:
+            raise ShipmentDataException("Empty pull spec provided")
+            
+        if "@sha256:" not in pull_spec:
+            raise ShipmentDataException(f"Pull spec {pull_spec} does not contain digest")
+            
+        return pull_spec.split("@sha256:")[1]
+
+    def _query_pyxis_freshness(self, image_digest: str) -> list[dict]:
+        """Query Pyxis API for image freshness grades
+        
+        Args:
+            image_digest: Image digest to query (sha256:...)
+            
+        Returns:
+            List of freshness grade objects from Pyxis API
+            
+        Raises:
+            ShipmentDataException: If API request fails
+        """
+        
+        try:
+            url = f"https://catalog.stage.redhat.com/api/containers/v1/images?filter=image_id==sha256:{image_digest}&page_size=100&page=0"
+            proxies = {"https": "squid.corp.redhat.com:3128"}
+            
+            response = requests.get(url, proxies=proxies)
+            response.raise_for_status()
+            
+            data = response.json()
+            if not data.get("data"):
+                return []
+            return data["data"][0].get("freshness_grades", [])
+        except Exception as e:
+            raise ShipmentDataException(f"Failed to query Pyxis API: {str(e)}")
+
+    def _get_current_image_health_status(self, grades: list[dict]) -> str:
+        """Get current container image health status from Pyxis freshness grades
+        
+        Args:
+            grades: List of freshness grade objects from Pyxis API
+            
+        Returns:
+            Current health status (A, B, C, etc.) or "Unknown" if not found
+            
+        Note:
+            Filters grades to find the one with start_date before now
+            Uses Pyxis API's freshness attribute to determine health
+        """
+        
+        if not grades:
+            return "Unknown"
+            
+        now = datetime.now(timezone.utc)
+        # Get all grades that started before now and sort by start_date (newest first)
+        valid_grades = sorted(
+            [g for g in grades if datetime.fromisoformat(g["start_date"]) <= now],
+            key=lambda g: datetime.fromisoformat(g["start_date"]),
+            reverse=True
+        )
+        
+        if not valid_grades:
+            return "Unknown"
+            
+        # Return the most recent grade (first in the sorted list)
+        return valid_grades[0].get("grade", "Unknown")
+
+    def check_component_image_health(self) -> tuple[int, int, list[dict]]:
+        """Check container image health status for all components in shipment MRs
+        
+        Returns:
+            tuple: 
+                [0] total images scanned count,
+                [1] unhealthy components count,
+                [2] list of unhealthy components with grade info
+        """
+        unhealthy_components = []
+        total_scanned = 0
+        
+        for mr in self._mrs:
+            try:
+                components = self._get_components_from_shipment(mr)
+                for component in components:
+                    try:
+                        pull_spec = component.get("containerImage")
+                        if not pull_spec:
+                            continue
+                            
+                        digest = self._get_image_digest(pull_spec)
+                        grades = self._query_pyxis_freshness(digest)
+                        grade = self._get_current_image_health_status(grades)
+                        
+                        total_scanned += 1
+                        if grade and grade != "Unknown" and grade > "B":
+                            unhealthy_components.append({
+                                "name": component.get("name", "Unknown"),
+                                "grade": grade,
+                                "pull_spec": pull_spec
+                            })
+                    except Exception as e:
+                        logger.warning(f"Failed to check freshness for component: {str(e)}")
+                        continue
+            except Exception as e:
+                logger.error(f"Failed to process MR {mr.merge_request_id}: {str(e)}")
+                continue
+                
+        return total_scanned, len(unhealthy_components), unhealthy_components
+
+    def generate_image_health_summary(self) -> str:
+        """Generate formatted summary of container image health check
+        
+        Returns:
+            Formatted summary string for MR comment
+        """
+        total, unhealthy, components = self.check_component_image_health()
+        
+        summary = f"Images scanned: {total}\n"
+        summary += f"Unhealthy components detected: {unhealthy}\n"
+        
+        if unhealthy > 0:
+            summary += "Unhealthy components:\n"
+            for comp in components:
+                summary += f"{comp['name']} (grade {comp['grade']})\n"
+                
+        return summary
+
+    def add_image_health_summary_comment(self) -> None:
+        """Add container image health summary comment to all shipment MRs"""
+        summary = self.generate_image_health_summary()
+        for mr in self._mrs:
+            try:
+                mr.add_comment(summary)
+                logger.info(f"Added freshness summary to MR {mr.merge_request_id}")
+            except Exception as e:
+                logger.error(f"Failed to add comment to MR {mr.merge_request_id}: {str(e)}")
+                continue
+

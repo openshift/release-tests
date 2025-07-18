@@ -374,7 +374,8 @@ class TestShipmentData(unittest.TestCase):
         self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
         self.mock_config.get_shipment_mrs.return_value = [
             "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/15"]
-        self.mock_config.get_gitlab_token.return_value = None
+        # Don't mock the token - let it be retrieved from environment
+        self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
         self.shipment = ShipmentData(self.mock_config)
 
     def test_get_jira_issues_with_real_mr(self):
@@ -541,6 +542,85 @@ class TestShipmentData(unittest.TestCase):
             else:
                 self.fail(f"Failed to test Jira issue line numbers: {str(e)}")
 
+
+class TestShipmentImageHealth(unittest.TestCase):
+    """Tests for container image health checking functionality"""
+
+    @patch('oar.core.configstore.ConfigStore')
+    def setUp(self, mock_config):
+        self.mock_config = mock_config
+        self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
+        self.mock_config.get_shipment_mrs.return_value = [
+            "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/39"]
+        # Don't mock the token - let it be retrieved from environment
+        self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
+        self.shipment = ShipmentData(self.mock_config)
+
+    @patch('oar.core.shipment.ShipmentData._query_pyxis_freshness')
+    @patch('oar.core.shipment.ShipmentData._get_components_from_shipment')
+    def test_check_component_image_health(self, mock_components, mock_pyxis):
+        """Test checking container image health status"""
+        # Setup mock components and Pyxis response
+        mock_components.return_value = [
+            {"name": "test-component1", "containerImage": "test1@sha256:123"},
+            {"name": "test-component2", "containerImage": "test2@sha256:456"}
+        ]
+        mock_pyxis.side_effect = [
+            [{"start_date": "2025-01-01T00:00:00Z", "grade": "A"}, {"start_date": "2025-02-01T00:00:00Z", "grade": "C"}],
+            [{"start_date": "2025-02-01T00:00:00Z", "grade": "F"}]
+        ]
+
+        # Test the method
+        total, unhealthy, unhealthy_components = self.shipment.check_component_image_health()
+        
+        # Verify results
+        self.assertEqual(total, 2)
+        self.assertEqual(unhealthy, 2)
+        self.assertEqual(len(unhealthy_components), 2)
+        self.assertEqual(unhealthy_components[0]["name"], "test-component1")
+        self.assertEqual(unhealthy_components[0]["grade"], "C")
+        self.assertEqual(unhealthy_components[1]["name"], "test-component2")
+        self.assertEqual(unhealthy_components[1]["grade"], "F")
+
+    @patch('oar.core.shipment.ShipmentData.check_component_image_health')
+    def test_generate_image_health_summary(self, mock_check):
+        """Test summary generation from health check data"""
+        # Setup mock health check results
+        mock_check.return_value = (2, 1, [{"name": "test-component", "grade": "C", "pull_spec": "test@sha256:123"}])
+
+        # Test the method
+        summary = self.shipment.generate_image_health_summary()
+        
+        # Verify summary content
+        self.assertIn("Images scanned: 2", summary)
+        self.assertIn("Unhealthy components detected: 1", summary)
+        self.assertIn("test-component (grade C)", summary)
+        mock_check.assert_called_once()
+
+    def test_image_health_real_mr(self):
+        """Test image health check with real MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            # Use MR 15 which has container images
+            shipment = ShipmentData(self.mock_config)
+            
+            # Test the full flow
+            total, unhealthy, components = shipment.check_component_image_health()
+            summary = shipment.generate_image_health_summary()
+            
+            # Basic validation
+            self.assertIsInstance(total, int)
+            self.assertIsInstance(unhealthy, int)
+            self.assertIsInstance(components, list)
+            self.assertGreaterEqual(total, 0)
+            self.assertGreaterEqual(unhealthy, 0)
+            self.assertLessEqual(unhealthy, total)
+            
+            print(f"\nImage health summary:\n{summary}")
+        except Exception as e:
+            self.fail(f"Real MR test failed: {str(e)}")
 
 if __name__ == '__main__':
     unittest.main()
