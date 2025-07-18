@@ -21,6 +21,8 @@ from oar.core.exceptions import (
     GitLabServerException,
     ShipmentDataException
 )
+from dataclasses import dataclass
+from typing import List, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -502,6 +504,18 @@ class GitLabServer:
             raise GitLabServerException(f"GitLab API error: Failed to query users - {str(e)}") from e
 
 
+@dataclass
+class ImageHealthData:
+    """Container for image health check results"""
+    total_scanned: int
+    unhealthy_components: List[Dict]
+    unhealthy_count: int = 0
+
+    def __post_init__(self):
+        """Calculate unhealthy_count if not provided"""
+        if not self.unhealthy_count:
+            self.unhealthy_count = len(self.unhealthy_components)
+
 class ShipmentData:
     """Class for handling shipment merge request operations"""
     
@@ -890,14 +904,11 @@ class ShipmentData:
         # Return the most recent grade (first in the sorted list)
         return valid_grades[0].get("grade", "Unknown")
 
-    def check_component_image_health(self) -> tuple[int, int, list[dict]]:
+    def check_component_image_health(self) -> ImageHealthData:
         """Check container image health status for all components in shipment MRs
         
         Returns:
-            tuple: 
-                [0] total images scanned count,
-                [1] unhealthy components count,
-                [2] list of unhealthy components with grade info
+            ImageHealthData: Container with health check results
         """
         unhealthy_components = []
         total_scanned = 0
@@ -929,38 +940,39 @@ class ShipmentData:
                 logger.error(f"Failed to process MR {mr.merge_request_id}: {str(e)}")
                 continue
                 
-        return total_scanned, len(unhealthy_components), unhealthy_components
+        return ImageHealthData(
+            total_scanned=total_scanned,
+            unhealthy_components=unhealthy_components
+        )
 
-    def generate_image_health_summary(self, health_data: tuple = None) -> str:
+    def generate_image_health_summary(self, health_data: ImageHealthData = None) -> str:
         """Generate formatted summary of container image health check
         
         Args:
-            health_data: Optional cached tuple from check_component_image_health()
-                         in format (total_scanned, unhealthy_count, components)
+            health_data: Optional ImageHealthData from check_component_image_health()
         
         Returns:
             Formatted summary string for MR comment
         """
         if health_data is None:
             health_data = self.check_component_image_health()
-        total, unhealthy, components = health_data
+        unhealthy_count = health_data.unhealthy_count
         
-        summary = f"Images scanned: {total}\n"
-        summary += f"Unhealthy components detected: {unhealthy}\n"
+        summary = f"Images scanned: {health_data.total_scanned}\n"
+        summary += f"Unhealthy components detected: {unhealthy_count}\n"
         
-        if unhealthy > 0:
+        if unhealthy_count > 0:
             summary += "Unhealthy components:\n"
-            for comp in components:
-                summary += f"{comp['name']} (grade {comp['grade']})\n"
+            for comp in health_data.unhealthy_components:
+                summary += f"{comp['name']} (grade {comp['grade']}) - {comp['pull_spec']}\n"
                 
         return summary
 
-    def add_image_health_summary_comment(self, health_data: tuple = None) -> None:
+    def add_image_health_summary_comment(self, health_data: ImageHealthData = None) -> None:
         """Add container image health summary comment to all shipment MRs
         
         Args:
-            health_data: Optional cached tuple from check_component_image_health()
-                         in format (total_scanned, unhealthy_count, components)
+            health_data: Optional ImageHealthData from check_component_image_health()
         """
         summary = self.generate_image_health_summary(health_data)
         for mr in self._mrs:

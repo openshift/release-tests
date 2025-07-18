@@ -2,7 +2,7 @@ import unittest
 import gitlab
 import os
 from unittest.mock import MagicMock, patch
-from oar.core.shipment import GitLabMergeRequest, ShipmentData, GitLabServer
+from oar.core.shipment import GitLabMergeRequest, ShipmentData, GitLabServer, ImageHealthData
 from oar.core.exceptions import (
     GitLabServerException,
     ShipmentDataException,
@@ -571,22 +571,25 @@ class TestShipmentImageHealth(unittest.TestCase):
         ]
 
         # Test the method
-        total, unhealthy, unhealthy_components = self.shipment.check_component_image_health()
+        health_data = self.shipment.check_component_image_health()
         
         # Verify results
-        self.assertEqual(total, 2)
-        self.assertEqual(unhealthy, 2)
-        self.assertEqual(len(unhealthy_components), 2)
-        self.assertEqual(unhealthy_components[0]["name"], "test-component1")
-        self.assertEqual(unhealthy_components[0]["grade"], "C")
-        self.assertEqual(unhealthy_components[1]["name"], "test-component2")
-        self.assertEqual(unhealthy_components[1]["grade"], "F")
+        self.assertEqual(health_data.total_scanned, 2)
+        self.assertEqual(health_data.unhealthy_count, 2)
+        self.assertEqual(len(health_data.unhealthy_components), 2)
+        self.assertEqual(health_data.unhealthy_components[0]["name"], "test-component1")
+        self.assertEqual(health_data.unhealthy_components[0]["grade"], "C")
+        self.assertEqual(health_data.unhealthy_components[1]["name"], "test-component2")
+        self.assertEqual(health_data.unhealthy_components[1]["grade"], "F")
 
     @patch('oar.core.shipment.ShipmentData.check_component_image_health')
     def test_generate_image_health_summary(self, mock_check):
         """Test summary generation from health check data"""
         # Setup mock health check results
-        mock_check.return_value = (2, 1, [{"name": "test-component", "grade": "C", "pull_spec": "test@sha256:123"}])
+        mock_check.return_value = ImageHealthData(
+            total_scanned=2,
+            unhealthy_components=[{"name": "test-component", "grade": "C", "pull_spec": "test@sha256:123"}]
+        )
 
         # Test the method
         summary = self.shipment.generate_image_health_summary()
@@ -607,16 +610,16 @@ class TestShipmentImageHealth(unittest.TestCase):
             shipment = ShipmentData(self.mock_config)
             
             # Test the full flow
-            total, unhealthy, components = shipment.check_component_image_health()
+            health_data = shipment.check_component_image_health()
             summary = shipment.generate_image_health_summary()
             
             # Basic validation
-            self.assertIsInstance(total, int)
-            self.assertIsInstance(unhealthy, int)
-            self.assertIsInstance(components, list)
-            self.assertGreaterEqual(total, 0)
-            self.assertGreaterEqual(unhealthy, 0)
-            self.assertLessEqual(unhealthy, total)
+            self.assertIsInstance(health_data.total_scanned, int)
+            self.assertIsInstance(health_data.unhealthy_count, int)
+            self.assertIsInstance(health_data.unhealthy_components, list)
+            self.assertGreaterEqual(health_data.total_scanned, 0)
+            self.assertGreaterEqual(health_data.unhealthy_count, 0)
+            self.assertLessEqual(health_data.unhealthy_count, health_data.total_scanned)
             
             print(f"\nImage health summary:\n{summary}")
         except Exception as e:

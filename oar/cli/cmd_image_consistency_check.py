@@ -90,8 +90,7 @@ def image_consistency_check(ctx, build_number, for_nightly):
 
             if job_status == JENKINS_JOB_STATUS_SUCCESS:
                 health_data = sd.check_component_image_health()
-                unhealthy_count = health_data[1] # unhealthy_count is index 1
-                if unhealthy_count == 0:  
+                if health_data.unhealthy_count == 0:
                     report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
                 else:
                     sd.add_image_health_summary_comment(health_data)
