@@ -3,7 +3,7 @@ import logging
 import os
 
 from enum import Enum
-from typing import Optional
+from typing import List, Optional, Tuple
 from jira import JIRA, Issue
 from jira.resources import User
 from datetime import datetime, timedelta, timezone
@@ -29,6 +29,16 @@ class Contact(Enum):
     TEAM_LEAD = "Team Lead"
     MANAGER = "Manager"
 
+class Notification:
+    issue: Issue
+    type: NotificationType
+    text: str
+
+    def __init__(self, issue, type, text):
+        self.issue = issue
+        self.type = type
+        self.text = text
+
 def create_notification_title(notification_type: NotificationType) -> str:
     return (
         f"{ERT_NOTIFICATION_PREFIX} - {notification_type.label}\n"
@@ -41,8 +51,19 @@ def get_notification_type(notification_message: str) -> Optional[NotificationTyp
             return notification_type
     return None
 
-def create_jira_comment_mention(user: User) -> str:
-    return f"[~{user.name}] "
+def create_jira_comment_mentions(users: List[User]) -> str:
+    jira_comment_mentions = ""
+    for u in users:
+        jira_comment_mentions += f"[~{u.name}] "
+    return jira_comment_mentions
+
+def process_notification(jira: JIRA, notification: Notification, dry_run: bool) -> None:
+    log_message = f"'{notification.type.label}' notification to Issue {notification.issue.key}: {notification.text}"
+    if not dry_run:
+        logger.info(f"Sending {log_message}")
+        jira.add_comment(notification.issue, notification.text)
+    else:
+        logger.info(f"Skipping sending {log_message}")
 
 def find_user_by_email(jira: JIRA, email: str) -> Optional[User]:
     for user in jira.search_users(user=email):
@@ -80,7 +101,7 @@ def get_assignee(issue: Issue) -> User:
         logger.warning(f"Issue {issue.key} does not have an Assignee.")
         return None
 
-def create_assignee_notification(missing_contact: Contact, notified_assignees: list[User]) -> str:
+def create_assignee_notification_text(missing_contact: Contact, notified_assignees: list[User]) -> str:
     message = ""
     if missing_contact == Contact.QA_CONTACT:
         message = f"The QA contact is missing."
@@ -91,7 +112,7 @@ def create_assignee_notification(missing_contact: Contact, notified_assignees: l
     
     return (
         f"{create_notification_title(NotificationType.ASSIGNEE)}"
-        f"{''.join(create_jira_comment_mention(u) for u in notified_assignees)}"
+        f"{create_jira_comment_mentions(notified_assignees)}"
         f"{message} Could you please help us identify someone who could review the issue?"
     )
 
@@ -101,7 +122,7 @@ def has_assignee_notification(issue: Issue) -> bool:
             return True
     return False
 
-def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact) -> None:
+def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact, dry_run: bool) -> None:
     if not has_assignee_notification(issue):
         assignee = get_assignee(issue)
         if assignee:
@@ -109,7 +130,12 @@ def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact) -> None
             assignee_manager = get_manager(jira, assignee)
             if assignee_manager:
                 notified_assignees.append(assignee_manager)
-            jira.add_comment(issue, create_assignee_notification(missing_contact, notified_assignees))
+            assignee_notification = Notification(
+                issue, 
+                NotificationType.ASSIGNEE, 
+                create_assignee_notification_text(missing_contact, notified_assignees)
+            )
+            process_notification(jira, assignee_notification, dry_run)
         else:
             raise Exception(f"No contact is available. Issue {issue.key} does not have assignee.")
     else:
@@ -118,51 +144,66 @@ def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact) -> None
 def create_qa_notification_text(qa_contact: User) -> str:
     return (
         f"{create_notification_title(NotificationType.QA_CONTACT)}"
-        f"{create_jira_comment_mention(qa_contact)}Please verify the Issue as soon as possible."
+        f"{create_jira_comment_mentions([qa_contact])}Please verify the Issue as soon as possible."
     )
 
-def notify_qa_contact(jira: JIRA, issue: Issue) -> None:
+def notify_qa_contact(jira: JIRA, issue: Issue, dry_run: bool) -> None:
     qa_contact = get_qa_contact(issue)
     if qa_contact:
-        jira.add_comment(issue, create_qa_notification_text(qa_contact))
+        qa_notification = Notification(
+            issue,
+            NotificationType.QA_CONTACT,
+            create_qa_notification_text(qa_contact)
+        )
+        process_notification(jira, qa_notification, dry_run)
     else:
         logger.warning("QA contact is missing. Assignees will be notified.")
-        notify_assignees(jira, issue, Contact.QA_CONTACT)
+        notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def create_team_lead_notification_text(qa_contact: User) -> Optional[str]:
     return (
         f"{create_notification_title(NotificationType.TEAM_LEAD)}"
-        f"{create_jira_comment_mention(qa_contact)}Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
+        f"{create_jira_comment_mentions([qa_contact])}Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
     )
 
-def notify_team_lead(jira: JIRA, issue: Issue) -> None:
+def notify_team_lead(jira: JIRA, issue: Issue, dry_run: bool) -> None:
     logger.info("Notification to the team lead is not yet implemented. Notifying the QA contact again.")
 
     qa_contact = get_qa_contact(issue)
     if qa_contact:
-        jira.add_comment(issue, create_team_lead_notification_text(qa_contact))
+        team_lead_notification = Notification(
+            issue,
+            NotificationType.TEAM_LEAD,
+            create_team_lead_notification_text(qa_contact)
+        )
+        process_notification(jira, team_lead_notification, dry_run)
     else:
         logger.warning("QA contact is missing. Assignees will be notified.")
-        notify_assignees(jira, issue, Contact.QA_CONTACT)
+        notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def create_manager_notification_text(manager: User) -> str:
     return (
         f"{create_notification_title(NotificationType.MANAGER)}"
-        f"{create_jira_comment_mention(manager)}Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
+        f"{create_jira_comment_mentions([manager])}Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
     )
 
-def notify_manager(jira: JIRA, issue: Issue) -> None:
+def notify_manager(jira: JIRA, issue: Issue, dry_run: bool) -> None:
     qa_contact = get_qa_contact(issue)
     if qa_contact:
         manager = get_manager(jira, qa_contact)
         if manager:
-            jira.add_comment(issue, create_manager_notification_text(manager))
+            manager_notification = Notification(
+                issue,
+                NotificationType.MANAGER,
+                create_manager_notification_text(manager)
+            )
+            process_notification(jira, manager_notification, dry_run)
         else:
             logger.warning("Manager was not found. Assignees will be notified.")
-            notify_assignees(jira, issue, Contact.MANAGER)
+            notify_assignees(jira, issue, Contact.MANAGER, dry_run)
     else:
         logger.warning("QA contact is missing. Assignees will be notified.")
-        notify_assignees(jira, issue, Contact.QA_CONTACT)
+        notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def get_latest_on_qa_transition_datetime(issue: Issue) -> Optional[datetime]:
     latest_on_qa: datetime = None
@@ -198,7 +239,7 @@ def get_latest_ert_notification_type_after_on_qa_transition(issue: Issue, on_qa_
     return latest_notification_type
 
 
-def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue) -> None:
+def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run: bool) -> None:
     try:
         on_qa_datetime = get_latest_on_qa_transition_datetime(issue)
         if not on_qa_datetime:
@@ -209,13 +250,13 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue) -> None:
 
         if delta > timedelta(hours=NotificationType.MANAGER.hours):
             if latest_notification_type != NotificationType.MANAGER:
-                notify_manager(jira, issue)
+                notify_manager(jira, issue, dry_run)
         elif delta > timedelta(hours=NotificationType.TEAM_LEAD.hours):
             if latest_notification_type != NotificationType.TEAM_LEAD:
-                notify_team_lead(jira, issue)
+                notify_team_lead(jira, issue, dry_run)
         elif delta > timedelta(hours=NotificationType.QA_CONTACT.hours):
             if latest_notification_type != NotificationType.QA_CONTACT:
-                notify_qa_contact(jira, issue)
+                notify_qa_contact(jira, issue, dry_run)
     except Exception as e:
         logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
 
@@ -237,16 +278,17 @@ def get_on_qa_issues(jira: JIRA, search_batch_size: int) -> list[Issue]:
 
     return on_qa_issues
 
-def process_on_qa_issues(jira: JIRA, search_batch_size: int) -> None:
+def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool) -> None:
     for issue in get_on_qa_issues(jira, search_batch_size):
-        check_issue_and_notify_responsible_people(jira, issue)
+        check_issue_and_notify_responsible_people(jira, issue, dry_run)
 
 @click.command()
 @click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
-def main(search_batch_size: int):
+@click.option('--dry-run', is_flag=True, default=False, help='Run without sending Jira notifications.')
+def main(search_batch_size: int, dry_run: bool):
     jira_token = os.environ.get("JIRA_TOKEN")
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
-    process_on_qa_issues(jira, search_batch_size)
+    process_on_qa_issues(jira, search_batch_size, dry_run)
 
 if __name__ == '__main__':
     main()
