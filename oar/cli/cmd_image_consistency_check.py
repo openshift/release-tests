@@ -8,6 +8,7 @@ from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins import JenkinsHelper
 from oar.core.notification import NotificationManager
 from oar.core.worksheet import WorksheetManager
+from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ def image_consistency_check(ctx, build_number, for_nightly):
     jh = JenkinsHelper(cs)
     nm = NotificationManager(cs)
     report = WorksheetManager(cs).get_test_report()
+    sd = ShipmentData(cs)
     am = AdvisoryManager(cs)
 
     if not build_number:
@@ -87,14 +89,12 @@ def image_consistency_check(ctx, build_number, for_nightly):
                 "image-consistency-check", build_number)
 
             if job_status == JENKINS_JOB_STATUS_SUCCESS:
-                unhealthy_advisories = am.check_advisories_grades_health()
-                if not unhealthy_advisories:
-                    report.update_task_status(
-                        LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
+                health_data = sd.check_component_image_health()
+                if health_data.unhealthy_count == 0:
+                    report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_PASS)
                 else:
-                    nm.share_unhealthy_advisories(unhealthy_advisories)
-                    report.update_task_status(
-                        LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)
+                    sd.add_image_health_summary_comment(health_data)
+                    report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_FAIL)
             elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:
                 report.update_task_status(
                     LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS)
