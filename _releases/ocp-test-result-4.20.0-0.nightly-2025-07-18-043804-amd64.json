@@ -139,13 +139,63 @@
           "jobStartTime": "2025-07-18T21:24:02Z",
           "jobID": "07ede8f4-6eae-40a8-b439-5e413d33750a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1946320080992210944",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-19T00:39:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 120,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-07-18T21:24:07Z",
           "jobID": "b2c0d0ba-3cb9-489d-a9be-dfcc6bd704ec",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1946320102223777792",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-19T00:35:55Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 120,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -287,5 +337,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2025-07-18-043804",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2025-07-18-043804"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
