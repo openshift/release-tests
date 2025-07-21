@@ -3,7 +3,7 @@ import logging
 import os
 
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import List, Optional, Dict
 from jira import JIRA, Issue
 from jira.resources import User
 from datetime import datetime, timedelta, timezone
@@ -220,9 +220,8 @@ def get_latest_on_qa_transition_datetime(issue: Issue) -> Optional[datetime]:
 
     return latest_on_qa
 
-def get_latest_ert_notification_type_after_on_qa_transition(issue: Issue, on_qa_transition: datetime) -> Optional[NotificationType]:
-    latest_notification_type: NotificationType = None
-    latest_datetime: datetime = None
+def get_latest_notification_dates_after_on_qa_transition(issue: Issue, on_qa_transition: datetime) -> Dict[NotificationType, Optional[datetime]]:
+    notification_types_with_latest_date: Dict[NotificationType, Optional[datetime]] = {}
 
     for comment in issue.fields.comment.comments:
         if not comment.body.startswith(ERT_NOTIFICATION_PREFIX):
@@ -232,11 +231,13 @@ def get_latest_ert_notification_type_after_on_qa_transition(issue: Issue, on_qa_
         if created_datetime < on_qa_transition:
             continue
 
-        if not latest_datetime or created_datetime > latest_datetime:
-            latest_datetime = created_datetime
-            latest_notification_type = get_notification_type(comment.body)
+        notification_type = get_notification_type(comment.body)
+        notification_datetime = notification_types_with_latest_date.get(notification_type)
 
-    return latest_notification_type
+        if not notification_datetime or created_datetime > notification_datetime:
+            notification_types_with_latest_date[notification_type] = created_datetime
+
+    return notification_types_with_latest_date
 
 
 def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run: bool) -> None:
@@ -244,19 +245,26 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run:
         on_qa_datetime = get_latest_on_qa_transition_datetime(issue)
         if not on_qa_datetime:
             return
+        
+        now = datetime.now(timezone.utc)
 
-        delta = datetime.now(timezone.utc) - on_qa_datetime
-        latest_notification_type = get_latest_ert_notification_type_after_on_qa_transition(issue, on_qa_datetime)
+        notification_dates = get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
-        if delta > timedelta(hours=NotificationType.MANAGER.hours):
-            if latest_notification_type != NotificationType.MANAGER:
-                notify_manager(jira, issue, dry_run)
-        elif delta > timedelta(hours=NotificationType.TEAM_LEAD.hours):
-            if latest_notification_type != NotificationType.TEAM_LEAD:
-                notify_team_lead(jira, issue, dry_run)
-        elif delta > timedelta(hours=NotificationType.QA_CONTACT.hours):
-            if latest_notification_type != NotificationType.QA_CONTACT:
+        if not notification_dates.get(NotificationType.QA_CONTACT):
+            delta = now - on_qa_datetime
+            if delta > timedelta(hours=24):
                 notify_qa_contact(jira, issue, dry_run)
+        elif not notification_dates.get(NotificationType.TEAM_LEAD):
+            delta = now - notification_dates.get(NotificationType.QA_CONTACT)
+            if delta > timedelta(hours=24):
+                notify_team_lead(jira, issue, dry_run)
+        elif not notification_dates.get(NotificationType.MANAGER):
+            delta = now - notification_dates.get(NotificationType.TEAM_LEAD)
+            if delta > timedelta(hours=24):
+                notify_manager(jira, issue, dry_run)
+        else:
+            logger.warning("All contacts have been notified.")
+
     except Exception as e:
         logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
 
@@ -270,7 +278,7 @@ def get_on_qa_filter(from_date: datetime = None) -> str:
 
     return base_filter + date_suffix
 
-def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: datetime) -> list[Issue]:
+def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: datetime) -> List[Issue]:
     start_at = 0
     on_qa_issues = []
 

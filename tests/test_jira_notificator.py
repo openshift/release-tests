@@ -188,25 +188,21 @@ class TestJiraNotificator(unittest.TestCase):
             None
         )
 
-    def test_get_latest_ert_notification_type_after_on_qa_transition(self):
-        self.assertEqual(
-            get_latest_ert_notification_type_after_on_qa_transition(
-                self.test_issue, datetime(2025, 7, 17, 11, 10, 0, 0, timezone.utc)
-            ), 
-            NotificationType.MANAGER
-        )
-        self.assertEqual(
-            get_latest_ert_notification_type_after_on_qa_transition(
-                self.test_issue, datetime(2025, 7, 17, 11, 12, 0, 0, timezone.utc)
-            ),
-            None
-        )
-        self.assertEqual(
-            get_latest_ert_notification_type_after_on_qa_transition(
-                self.test_issues_without_qa, datetime(2024, 1, 1, 1, 1, 0, 0, timezone.utc)
-            ),
-            None
-        )
+    def test_get_latest_notification_dates_after_on_qa_transition(self):
+        all_notifications = get_latest_notification_dates_after_on_qa_transition(self.test_issue, datetime(2025, 7, 17, 9, 0, 0, 0, timezone.utc))
+        self.assertEqual(all_notifications.get(NotificationType.QA_CONTACT), datetime(2025, 7, 17, 11, 8, 46, 381000, timezone.utc))
+        self.assertEqual(all_notifications.get(NotificationType.TEAM_LEAD), datetime(2025, 7, 17, 11, 10, 25, 168000, timezone.utc))
+        self.assertEqual(all_notifications.get(NotificationType.MANAGER), datetime(2025, 7, 17, 11, 11, 54, 48000, timezone.utc))
+        self.assertEqual(all_notifications.get(NotificationType.ASSIGNEE), datetime(2025, 7, 17, 9, 53, 50, 10000, timezone.utc))
+
+        partial_notifications = get_latest_notification_dates_after_on_qa_transition(self.test_issue, datetime(2025, 7, 17, 11, 9, 0, 0, timezone.utc))
+        self.assertEqual(partial_notifications.get(NotificationType.QA_CONTACT), None)
+        self.assertEqual(partial_notifications.get(NotificationType.TEAM_LEAD), datetime(2025, 7, 17, 11, 10, 25, 168000, timezone.utc))
+        self.assertEqual(partial_notifications.get(NotificationType.MANAGER), datetime(2025, 7, 17, 11, 11, 54, 48000, timezone.utc))
+        self.assertEqual(partial_notifications.get(NotificationType.ASSIGNEE), None)
+
+        none_notifications = get_latest_notification_dates_after_on_qa_transition(self.test_issue, datetime(2025, 7, 17, 11, 12, 0, 0, timezone.utc))
+        self.assertEqual(len(none_notifications), 0)
 
     def test_get_on_qa_filter(self):
         self.assertEqual(
