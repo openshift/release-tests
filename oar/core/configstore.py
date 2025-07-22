@@ -320,6 +320,14 @@ class ConfigStore:
         else:  # Multiple shipments case
             return [s["url"] for s in shipments]
 
+    def is_konflux_flow(self) -> bool:
+        """Check if current release uses Konflux flow by verifying shipment MRs exist.
+        
+        Returns:
+            bool: True if shipment MRs exist (Konflux flow), False otherwise (Errata flow)
+        """
+        return len(self.get_shipment_mrs()) > 0
+
 
     def get_advisories(self):
         """

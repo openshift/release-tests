@@ -2,7 +2,7 @@ import logging
 
 import click
 
-from oar.core.advisory import AdvisoryManager
+from oar.core.operators import ApprovalOperator, BugOperator
 from oar.core.const import *
 from oar.core.exceptions import AdvisoryException
 from oar.core.jira import JiraManager
@@ -28,20 +28,21 @@ def change_advisory_status(ctx, status):
     try:
         # get existing report
         report = WorksheetManager(cs).get_test_report()
-        # init advisory manager
-        am = AdvisoryManager(cs)
+        # init approval operator
+        ao = ApprovalOperator(cs)
         # update task status to in progress
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_INPROGRESS)
-        # check all advisory issues are finished or dropped before moving the status
-        if not am.has_finished_all_advisories_jiras():
-            raise AdvisoryException(f"there are unfinished jiras in advisories, please check or drop them manually before moving the status")
+        # check all jira issues (advisory and shipment) are finished or dropped before moving the status
+        bo = BugOperator(cs)
+        if not bo.has_finished_all_jiras():
+            raise AdvisoryException(f"there are unfinished jiras, please check or drop them manually before moving the status")
         # check kernel tag before change advisories' status
-        ads = am.get_advisories()
+        ads = ao._am.get_advisories()
         for ad in ads:
             if ad.check_kernel_tag():
                 raise AdvisoryException("kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check.")
         # change all advisories' status
-        am.change_advisory_status(status)
+        ao.approve_release()
         # close jira tickets
         jm = JiraManager(cs)
         jm.close_qe_subtasks()
