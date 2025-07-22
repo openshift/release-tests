@@ -205,20 +205,20 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(len(none_notifications), 0)
 
     def test_is_more_than_24_weekday_hours(self):
-        start = datetime(2025, 7, 22, 10)
+        start = datetime(2025, 7, 22, 10, tzinfo=timezone.utc)
         self.assertFalse(is_more_than_24_weekday_hours(start, start + timedelta(hours=23)))
         self.assertFalse(is_more_than_24_weekday_hours(start,  start + timedelta(hours=24)))
         self.assertTrue(is_more_than_24_weekday_hours(start, start + timedelta(hours=24, minutes=1)))
         self.assertTrue(is_more_than_24_weekday_hours(start, start + timedelta(hours=25)))
 
-        friday_start = datetime(2025, 7, 18, 10)
-        self.assertFalse(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 9)))
-        self.assertFalse(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 10)))
-        self.assertTrue(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 10, 1)))
-        self.assertTrue(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 11)))
+        friday_start = datetime(2025, 7, 18, 10, tzinfo=timezone.utc)
+        self.assertFalse(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 9, tzinfo=timezone.utc)))
+        self.assertFalse(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 10, tzinfo=timezone.utc)))
+        self.assertTrue(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 10, 1, tzinfo=timezone.utc)))
+        self.assertTrue(is_more_than_24_weekday_hours(friday_start, datetime(2025, 7, 21, 11, tzinfo=timezone.utc)))
 
-        self.assertFalse(is_more_than_24_weekday_hours(datetime.now() - timedelta(hours=23)))
-        self.assertTrue(is_more_than_24_weekday_hours(datetime.now() - timedelta(hours=73)))
+        self.assertFalse(is_more_than_24_weekday_hours(datetime.now(timezone.utc) - timedelta(hours=23)))
+        self.assertTrue(is_more_than_24_weekday_hours(datetime.now(timezone.utc) - timedelta(hours=73)))
 
     def test_get_on_qa_filter(self):
         self.assertEqual(
@@ -229,7 +229,7 @@ class TestJiraNotificator(unittest.TestCase):
             )
         )
         self.assertEqual(
-            get_on_qa_filter(datetime(2025, 7, 17)),
+            get_on_qa_filter(datetime(2025, 7, 17, tzinfo=timezone.utc)),
             (
                 "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
                 "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
@@ -243,7 +243,7 @@ class TestJiraNotificator(unittest.TestCase):
         for i in issues:
             self.assertTrue(i.key.startswith("OCPBUGS-"))
 
-        issues_after_date = get_on_qa_issues(self.jira, 100, datetime(2025, 7, 17))
+        issues_after_date = get_on_qa_issues(self.jira, 100, datetime(2025, 7, 17, tzinfo=timezone.utc))
         self.assertNotEqual(len(issues_after_date), 0)
         self.assertGreater(len(issues), len(issues_after_date))
         for iad in issues_after_date:

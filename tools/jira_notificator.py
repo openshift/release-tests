@@ -241,7 +241,7 @@ def get_latest_notification_dates_after_on_qa_transition(issue: Issue, on_qa_tra
 
 def is_more_than_24_weekday_hours(from_date: datetime, now: Optional[datetime] = None) -> bool:
     if now is None:
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
 
     if from_date >= now:
         return False
