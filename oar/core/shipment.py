@@ -913,9 +913,13 @@ class ShipmentData:
         unhealthy_components = []
         total_scanned = 0
         
+        logger.info(f"Starting image health check for {len(self._mrs)} shipment MRs")
+        
         for mr in self._mrs:
             try:
+                logger.info(f"Processing MR {mr.merge_request_id}")
                 components = self._get_components_from_shipment(mr)
+                logger.info(f"Found {len(components)} components to check")
                 for component in components:
                     try:
                         pull_spec = component.get("containerImage")
@@ -923,10 +927,12 @@ class ShipmentData:
                             continue
                             
                         digest = self._get_image_digest(pull_spec)
+                        logger.debug(f"Checking image health for {component.get('name')} ({digest})")
                         grades = self._query_pyxis_freshness(digest)
                         grade = self._get_current_image_health_status(grades)
                         
                         total_scanned += 1
+                        logger.debug(f"Component {component.get('name')} health grade: {grade}")
                         if grade and grade != "Unknown" and grade > "B":
                             unhealthy_components.append({
                                 "name": component.get("name", "Unknown"),
@@ -940,6 +946,7 @@ class ShipmentData:
                 logger.error(f"Failed to process MR {mr.merge_request_id}: {str(e)}")
                 continue
                 
+        logger.info(f"Completed image health check. Scanned {total_scanned} components, found {len(unhealthy_components)} unhealthy")
         return ImageHealthData(
             total_scanned=total_scanned,
             unhealthy_components=unhealthy_components
