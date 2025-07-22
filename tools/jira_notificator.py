@@ -239,6 +239,26 @@ def get_latest_notification_dates_after_on_qa_transition(issue: Issue, on_qa_tra
 
     return notification_types_with_latest_date
 
+def is_more_than_24_weekday_hours(from_date: datetime, now: Optional[datetime] = None) -> bool:
+    if now is None:
+        now = datetime.now()
+
+    if from_date >= now:
+        return False
+
+    total_diff = now - from_date
+
+    if total_diff > timedelta(days=3):
+        return True
+
+    current = from_date
+    valid_hours = 0
+    while current < now:
+        if current.weekday() < 5:  # Monday to Friday
+            valid_hours += 1
+        current += timedelta(hours=1)
+
+    return valid_hours > 24
 
 def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run: bool) -> None:
     try:
@@ -246,21 +266,16 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run:
         if not on_qa_datetime:
             return
         
-        now = datetime.now(timezone.utc)
-
         notification_dates = get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
         if not notification_dates.get(NotificationType.QA_CONTACT):
-            delta = now - on_qa_datetime
-            if delta > timedelta(hours=24):
+            if is_more_than_24_weekday_hours(on_qa_datetime):
                 notify_qa_contact(jira, issue, dry_run)
-        elif not notification_dates.get(NotificationType.TEAM_LEAD):
-            delta = now - notification_dates.get(NotificationType.QA_CONTACT)
-            if delta > timedelta(hours=24):
+        elif not notification_dates.get(NotificationType.TEAM_LEAD): 
+            if is_more_than_24_weekday_hours(notification_dates.get(NotificationType.QA_CONTACT)):
                 notify_team_lead(jira, issue, dry_run)
         elif not notification_dates.get(NotificationType.MANAGER):
-            delta = now - notification_dates.get(NotificationType.TEAM_LEAD)
-            if delta > timedelta(hours=24):
+            if is_more_than_24_weekday_hours(notification_dates.get(NotificationType.TEAM_LEAD)):
                 notify_manager(jira, issue, dry_run)
         else:
             logger.warning("All contacts have been notified.")
@@ -268,7 +283,7 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run:
     except Exception as e:
         logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
 
-def get_on_qa_filter(from_date: datetime = None) -> str:
+def get_on_qa_filter(from_date: Optional[datetime] = None) -> str:
     base_filter = (
         "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
         "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
@@ -278,7 +293,7 @@ def get_on_qa_filter(from_date: datetime = None) -> str:
 
     return base_filter + date_suffix
 
-def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: datetime) -> List[Issue]:
+def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: Optional[datetime]) -> List[Issue]:
     start_at = 0
     on_qa_issues = []
 
@@ -294,16 +309,15 @@ def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: datetime) ->
 
     return on_qa_issues
 
-def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool, from_date: datetime) -> None:
+def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
     for issue in get_on_qa_issues(jira, search_batch_size, from_date):
         check_issue_and_notify_responsible_people(jira, issue, dry_run)
 
 @click.command()
 @click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
 @click.option("--dry-run", is_flag=True, default=False, help="Run without sending Jira notifications.")
-@click.option("--from-date", type=click.DateTime(formats=["%Y-%m-%d"]), required=False, help="Filters issues that changed to ON_QA state after this date."
-)
-def main(search_batch_size: int, dry_run: bool, from_date: datetime):
+@click.option("--from-date", default=None, type=click.DateTime(formats=["%Y-%m-%d"]), required=False, help="Filters issues that changed to ON_QA state after this date.")
+def main(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
     jira_token = os.environ.get("JIRA_TOKEN")
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
     process_on_qa_issues(jira, search_batch_size, dry_run, from_date)
