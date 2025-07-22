@@ -71,4 +71,4 @@ cli.add_command(stage_testing)
 cli.add_command(image_signed_check)
 cli.add_command(drop_bugs)
 cli.add_command(change_advisory_status)
-cli.add_command(add_qe_approval)
+

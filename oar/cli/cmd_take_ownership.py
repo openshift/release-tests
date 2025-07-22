@@ -4,8 +4,7 @@ import click
 
 from oar.core.const import *
 from oar.core.jira import JiraManager
-from oar.core.notification import NotificationManager
-from oar.core.operators import ReleaseOwnershipOperator
+from oar.core.operators import NotificationOperator, ReleaseOwnershipOperator
 from oar.core.util import is_valid_email
 from oar.core.worksheet import WorksheetManager
 
@@ -42,14 +41,13 @@ def take_ownership(ctx, email):
         # update task status to in progress
         report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_INPROGRESS)
         # update ownership across advisories and shipments
-        operator = ReleaseOwnershipOperator(cs)
-        updated_ads, abnormal_ads = operator.update_owners(email)
+        ro = ReleaseOwnershipOperator(cs)
+        updated_ads, abnormal_ads = ro.update_owners(email)
         # update assignee of QE subtasks
         updated_subtasks = JiraManager(cs).change_assignee_of_qe_subtasks()
         # send notification about ownership change and shipment MRs
-        nm = NotificationManager(cs)
-        nm.share_shipment_mrs_and_ad_info(
-            cs.get_shipment_mrs(),
+        no = NotificationOperator(cs)
+        no.share_ownership_change(
             updated_ads,
             abnormal_ads,
             updated_subtasks,
