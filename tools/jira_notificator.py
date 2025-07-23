@@ -122,7 +122,7 @@ def has_assignee_notification(issue: Issue) -> bool:
             return True
     return False
 
-def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact, dry_run: bool) -> None:
+def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact, dry_run: bool) -> Optional[Notification]:
     if not has_assignee_notification(issue):
         assignee = get_assignee(issue)
         if assignee:
@@ -136,10 +136,12 @@ def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact, dry_run
                 create_assignee_notification_text(missing_contact, notified_assignees)
             )
             process_notification(jira, assignee_notification, dry_run)
+            return assignee_notification
         else:
             raise Exception(f"No contact is available. Issue {issue.key} does not have assignee.")
     else:
         logger.warning(f"Assignees have already been notified about the missing {missing_contact.value} contact.")
+    return None
 
 def create_qa_notification_text(qa_contact: User) -> str:
     return (
@@ -147,7 +149,7 @@ def create_qa_notification_text(qa_contact: User) -> str:
         f"{create_jira_comment_mentions([qa_contact])}Please verify the Issue as soon as possible."
     )
 
-def notify_qa_contact(jira: JIRA, issue: Issue, dry_run: bool) -> None:
+def notify_qa_contact(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notification]:
     qa_contact = get_qa_contact(issue)
     if qa_contact:
         qa_notification = Notification(
@@ -156,9 +158,10 @@ def notify_qa_contact(jira: JIRA, issue: Issue, dry_run: bool) -> None:
             create_qa_notification_text(qa_contact)
         )
         process_notification(jira, qa_notification, dry_run)
+        return qa_notification
     else:
         logger.warning("QA contact is missing. Assignees will be notified.")
-        notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
+        return notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def create_team_lead_notification_text(qa_contact: User) -> Optional[str]:
     return (
@@ -166,7 +169,7 @@ def create_team_lead_notification_text(qa_contact: User) -> Optional[str]:
         f"{create_jira_comment_mentions([qa_contact])}Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
     )
 
-def notify_team_lead(jira: JIRA, issue: Issue, dry_run: bool) -> None:
+def notify_team_lead(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notification]:
     logger.info("Notification to the team lead is not yet implemented. Notifying the QA contact again.")
 
     qa_contact = get_qa_contact(issue)
@@ -177,9 +180,10 @@ def notify_team_lead(jira: JIRA, issue: Issue, dry_run: bool) -> None:
             create_team_lead_notification_text(qa_contact)
         )
         process_notification(jira, team_lead_notification, dry_run)
+        return team_lead_notification
     else:
         logger.warning("QA contact is missing. Assignees will be notified.")
-        notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
+        return notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def create_manager_notification_text(manager: User) -> str:
     return (
@@ -187,7 +191,7 @@ def create_manager_notification_text(manager: User) -> str:
         f"{create_jira_comment_mentions([manager])}Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
     )
 
-def notify_manager(jira: JIRA, issue: Issue, dry_run: bool) -> None:
+def notify_manager(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notification]:
     qa_contact = get_qa_contact(issue)
     if qa_contact:
         manager = get_manager(jira, qa_contact)
@@ -198,12 +202,13 @@ def notify_manager(jira: JIRA, issue: Issue, dry_run: bool) -> None:
                 create_manager_notification_text(manager)
             )
             process_notification(jira, manager_notification, dry_run)
+            return manager_notification
         else:
             logger.warning("Manager was not found. Assignees will be notified.")
-            notify_assignees(jira, issue, Contact.MANAGER, dry_run)
+            return notify_assignees(jira, issue, Contact.MANAGER, dry_run)
     else:
         logger.warning("QA contact is missing. Assignees will be notified.")
-        notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
+        return notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def get_latest_on_qa_transition_datetime(issue: Issue) -> Optional[datetime]:
     latest_on_qa: datetime = None

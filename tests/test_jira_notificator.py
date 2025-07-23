@@ -131,10 +131,48 @@ class TestJiraNotificator(unittest.TestCase):
     def test_has_assignee_notification(self):
         self.assertTrue(has_assignee_notification(self.test_issue))
         self.assertFalse(has_assignee_notification(self.test_issues_without_qa))
-    
-    @unittest.skip("Skipping because this would send notification to jira.")
+   
     def test_notify_assignees(self):
-        notify_assignees(self.jira, self.test_issue, Contact.MANAGER, True)
+        self.assertEqual(notify_assignees(self.jira, self.test_issue, Contact.QA_CONTACT, True), None)
+        self.assertEqual(notify_assignees(self.jira, self.test_issue, Contact.TEAM_LEAD, True), None)
+        self.assertEqual(notify_assignees(self.jira, self.test_issue, Contact.MANAGER, True), None)
+
+        q_notification = notify_assignees(self.jira,  self.test_issues_without_qa, Contact.QA_CONTACT, True)
+        self.assertEqual(q_notification.issue, self.test_issues_without_qa)
+        self.assertEqual(q_notification.type, NotificationType.ASSIGNEE)
+        self.assertEqual(q_notification.text, (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                "Could you please help us identify someone who could review the issue?"
+            )
+        )
+        t_notification = notify_assignees(self.jira,  self.test_issues_without_qa, Contact.TEAM_LEAD, True)
+        self.assertEqual(t_notification.issue, self.test_issues_without_qa)
+        self.assertEqual(t_notification.type, NotificationType.ASSIGNEE)
+        self.assertEqual(t_notification.text, (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] "
+                "There has been no response from the QA contact and the Team Lead is not listed in Jira. "
+                "Could you please help us identify someone who could review the issue?"
+            )
+        )
+        m_notification = notify_assignees(self.jira,  self.test_issues_without_qa, Contact.MANAGER, True)
+        self.assertEqual(m_notification.issue, self.test_issues_without_qa)
+        self.assertEqual(m_notification.type, NotificationType.ASSIGNEE)
+        self.assertEqual(m_notification.text, (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] "
+                "There has been no response from the QA contact and the Manager is not listed in Jira. Could you please help us identify someone who could review the issue?"
+            )
+        )
+
+        issue_without_assignee = self.jira.issue("OCPBUGS-1542", expand="changelog")
+        with self.assertRaises(Exception) as context:
+            notify_assignees(self.jira, issue_without_assignee, Contact.QA_CONTACT, True)
+        self.assertEqual(str(context.exception), f"No contact is available. Issue {issue_without_assignee.key} does not have assignee.")
 
     def test_create_qa_notification_text(self):
         self.assertEqual(
@@ -146,9 +184,27 @@ class TestJiraNotificator(unittest.TestCase):
             )
         )
 
-    @unittest.skip("Skipping because this would send notification to jira.")
     def test_notify_qa_contact(self):
-        notify_qa_contact(self.jira, self.test_issue, True)
+        notification = notify_qa_contact(self.jira, self.test_issue, True)
+        self.assertEqual(notification.issue, self.test_issue)
+        self.assertEqual(notification.type, NotificationType.QA_CONTACT)
+        self.assertEqual(notification.text, (
+                "Errata Reliability Team Notification - QA Contact Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~tdavid@redhat.com] Please verify the Issue as soon as possible."
+            )
+        )
+
+        no_qa_notification = notify_qa_contact(self.jira, self.test_issues_without_qa, True)
+        self.assertEqual(no_qa_notification.issue, self.test_issues_without_qa)
+        self.assertEqual(no_qa_notification.type, NotificationType.ASSIGNEE)
+        self.assertEqual(no_qa_notification.text, (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                "Could you please help us identify someone who could review the issue?"
+            )
+        )
 
     def test_create_team_lead_notification_text(self):
         self.assertEqual(
@@ -159,10 +215,28 @@ class TestJiraNotificator(unittest.TestCase):
                 "[~tdavid] Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
             )
         )
-    
-    @unittest.skip("Skipping because this would send notification to jira.")
+
     def test_notify_team_lead(self):
-        notify_team_lead(self.jira, self.test_issue, True)
+        notification = notify_team_lead(self.jira, self.test_issue, True)
+        self.assertEqual(notification.issue, self.test_issue)
+        self.assertEqual(notification.type, NotificationType.TEAM_LEAD)
+        self.assertEqual(notification.text, (
+                "Errata Reliability Team Notification - Team Lead Action Request\n"
+                "This issue has been in the ON_QA state for over 48 hours.\n"
+                "[~tdavid@redhat.com] Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
+            )
+        )
+
+        no_qa_notification = notify_team_lead(self.jira, self.test_issues_without_qa, True)
+        self.assertEqual(no_qa_notification.issue, self.test_issues_without_qa)
+        self.assertEqual(no_qa_notification.type, NotificationType.ASSIGNEE)
+        self.assertEqual(no_qa_notification.text, (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                "Could you please help us identify someone who could review the issue?"
+            )
+        )
     
     def test_create_manager_notification_text(self):
         self.assertEqual(
@@ -174,9 +248,27 @@ class TestJiraNotificator(unittest.TestCase):
             )
         )
 
-    @unittest.skip("Skipping because this would send notification to jira.")
     def test_notify_manager(self):
-        notify_manager(self.jira, self.test_issue, True)
+        notification = notify_manager(self.jira, self.test_issue, True)
+        self.assertEqual(notification.issue, self.test_issue)
+        self.assertEqual(notification.type, NotificationType.MANAGER)
+        self.assertEqual(notification.text, (
+                "Errata Reliability Team Notification - Manager Action Request\n"
+                "This issue has been in the ON_QA state for over 72 hours.\n"
+                "[~rhn-support-gjospin] Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
+            )
+        )
+
+        no_qa_notification = notify_manager(self.jira, self.test_issues_without_qa, True)
+        self.assertEqual(no_qa_notification.issue, self.test_issues_without_qa)
+        self.assertEqual(no_qa_notification.type, NotificationType.ASSIGNEE)
+        self.assertEqual(no_qa_notification.text, (
+                "Errata Reliability Team Notification - Assignee Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                "Could you please help us identify someone who could review the issue?"
+            )
+        )
 
     def test_get_latest_on_qa_transition_datetime(self):
         self.assertEqual(
