@@ -26,7 +26,7 @@ class NotificationException(BaseException):
     """Exception class to raise error in notificationManager"""
 
 
-class JenkinsHelperException(BaseException):
+class JenkinsException(BaseException):
     """Exception class to raise error in JenkinsHelper"""
 
 
