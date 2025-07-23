@@ -220,9 +220,6 @@ def get_latest_on_qa_transition_datetime(issue: Issue) -> Optional[datetime]:
                 if not latest_on_qa or transition_time > latest_on_qa:
                     latest_on_qa = transition_time
 
-    if not latest_on_qa:
-        logger.error(f"Issue {issue.key} does not have ON_QA transition date")
-
     return latest_on_qa
 
 def get_latest_notification_dates_after_on_qa_transition(issue: Issue, on_qa_transition: datetime) -> Dict[NotificationType, Optional[datetime]]:
@@ -269,19 +266,29 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run:
     try:
         on_qa_datetime = get_latest_on_qa_transition_datetime(issue)
         if not on_qa_datetime:
+            logger.error(f"Issue {issue.key} does not have ON_QA transition date")
             return
         
         notification_dates = get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
         if not notification_dates.get(NotificationType.QA_CONTACT):
             if is_more_than_24_weekday_hours(on_qa_datetime):
+                logger.info("Notifying QA Contact")
                 notify_qa_contact(jira, issue, dry_run)
+            else:
+                logger.info("Skipping notifying QA Contact - less than 24 hour from transition to ON_QA.")
         elif not notification_dates.get(NotificationType.TEAM_LEAD): 
             if is_more_than_24_weekday_hours(notification_dates.get(NotificationType.QA_CONTACT)):
+                logger.info("Notifying Team Lead")
                 notify_team_lead(jira, issue, dry_run)
+            else:
+                logger.info("Skipping notifying Team Lead - less than 24 hour from QA Contact notification.")
         elif not notification_dates.get(NotificationType.MANAGER):
             if is_more_than_24_weekday_hours(notification_dates.get(NotificationType.TEAM_LEAD)):
+                logger.info("Notifying Manager")
                 notify_manager(jira, issue, dry_run)
+            else:
+                logger.info("Skipping notifying Manager - less than 24 hour from Team Lead notification.")
         else:
             logger.warning("All contacts have been notified.")
 
@@ -316,6 +323,7 @@ def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: Optional[dat
 
 def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
     for issue in get_on_qa_issues(jira, search_batch_size, from_date):
+        logger.info(f"Processing {issue.key}")
         check_issue_and_notify_responsible_people(jira, issue, dry_run)
 
 @click.command()
