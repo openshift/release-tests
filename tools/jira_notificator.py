@@ -15,6 +15,10 @@ logger = logging.getLogger(__name__)
 ERT_NOTIFICATION_PREFIX = "Errata Reliability Team Notification"
 
 class NotificationType(Enum):
+    """
+    Enum representing different types of notifications with associated hours and labels.
+    """
+
     QA_CONTACT = (24, "QA Contact Action Request")
     TEAM_LEAD = (48, "Team Lead Action Request")
     MANAGER = (72, "Manager Action Request")
@@ -25,11 +29,24 @@ class NotificationType(Enum):
         self.label = label
 
 class Contact(Enum):
+    """
+    Enum representing different contact roles.
+    """
+
     QA_CONTACT = "QA Contact"
     TEAM_LEAD = "Team Lead"
     MANAGER = "Manager"
 
 class Notification:
+    """
+    Represents a notification related to a JIRA issue.
+
+    Attributes:
+        issue (Issue): The JIRA issue associated with the notification.
+        type (NotificationType): The type of notification.
+        text (str): The notification message text.
+    """
+
     issue: Issue
     type: NotificationType
     text: str
@@ -40,24 +57,63 @@ class Notification:
         self.text = text
 
 def create_notification_title(notification_type: NotificationType) -> str:
+    """
+    Returns a formatted notification title based on the given type.
+
+    Args:
+        notification_type (NotificationType): The type of notification.
+
+    Returns:
+        str: A string with the notification title and time information.
+    """
+
     return (
         f"{ERT_NOTIFICATION_PREFIX} - {notification_type.label}\n"
         f"This issue has been in the ON_QA state for over {notification_type.hours} hours.\n"
     )
 
 def get_notification_type(notification_message: str) -> Optional[NotificationType]:
+    """
+    Extracts the notification type from a message string.
+
+    Args:
+        notification_message (str): The message to search.
+
+    Returns:
+        Optional[NotificationType]: The matching notification type, or None if not found.
+    """
+     
     for notification_type in NotificationType:
         if notification_type.label in notification_message:
             return notification_type
     return None
 
 def create_jira_comment_mentions(users: List[User]) -> str:
+    """
+    Creates a Jira-formatted mention string for a list of users.
+
+    Args:
+        users (List[User]): List of users to mention.
+
+    Returns:
+        str: A string with Jira mentions (e.g., "[~user1] [~user2]").
+    """
+
     jira_comment_mentions = ""
     for u in users:
         jira_comment_mentions += f"[~{u.name}] "
     return jira_comment_mentions
 
 def process_notification(jira: JIRA, notification: Notification, dry_run: bool) -> None:
+    """
+    Sends or logs a notification as a JIRA comment.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        notification (Notification): The notification to process.
+        dry_run (bool): If True, logs the action without sending.
+    """
+
     log_message = f"- {notification.type.label} - notification to Issue - {notification.issue.key}: {notification.text}"
     if not dry_run:
         logger.info(f"Sending {log_message}")
@@ -66,6 +122,17 @@ def process_notification(jira: JIRA, notification: Notification, dry_run: bool) 
         logger.info(f"Skipping sending {log_message}")
 
 def find_user_by_email(jira: JIRA, email: str) -> Optional[User]:
+    """
+    Searches for a JIRA user by email address.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        email (str): Email address to search for.
+
+    Returns:
+        Optional[User]: The matched user if found, otherwise None.
+    """
+
     for user in jira.search_users(user=email):
         if user.emailAddress == email:
             return user
@@ -73,6 +140,16 @@ def find_user_by_email(jira: JIRA, email: str) -> Optional[User]:
     return None
 
 def get_qa_contact(issue: Issue) -> Optional[User]:
+    """
+    Retrieves the QA contact user from an issue.
+
+    Args:
+        issue (Issue): The JIRA issue to inspect.
+
+    Returns:
+        Optional[User]: The QA contact user if set, otherwise None.
+    """
+
     qa_contact = issue.fields.customfield_12315948
     if qa_contact:
         return qa_contact
@@ -81,6 +158,17 @@ def get_qa_contact(issue: Issue) -> Optional[User]:
         return None
 
 def get_manager(jira: JIRA, user: User) -> Optional[User]:
+    """
+    Retrieves the manager of a given user via LDAP and matches them in JIRA.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        user (User): The user whose manager is to be found.
+
+    Returns:
+        Optional[User]: The manager user if found, otherwise None.
+    """
+
     ldap = LdapHelper()
     manager_email = ldap.get_manager_email(user.emailAddress)
     if manager_email:
@@ -93,7 +181,17 @@ def get_manager(jira: JIRA, user: User) -> Optional[User]:
         logger.warning(f"Manager of {user.emailAddress} was not found in LDAP.")
     return None
 
-def get_assignee(issue: Issue) -> User:
+def get_assignee(issue: Issue) -> Optional[User]:
+    """
+    Retrieves the assignee user from an issue.
+
+    Args:
+        issue (Issue): The JIRA issue to inspect.
+
+    Returns:
+        Optional[User]: The assignee user if set, otherwise None.
+    """
+
     assignee = issue.fields.assignee
     if assignee:
         return assignee
@@ -102,6 +200,17 @@ def get_assignee(issue: Issue) -> User:
         return None
 
 def create_assignee_notification_text(missing_contact: Contact, notified_assignees: list[User]) -> str:
+    """
+    Creates a notification text for assignees when a contact is missing.
+
+    Args:
+        missing_contact (Contact): The type of missing contact.
+        notified_assignees (list[User]): List of users to be notified.
+
+    Returns:
+        str: The complete notification message text.
+    """
+
     message = ""
     if missing_contact == Contact.QA_CONTACT:
         message = f"The QA contact is missing."
@@ -117,12 +226,38 @@ def create_assignee_notification_text(missing_contact: Contact, notified_assigne
     )
 
 def has_assignee_notification(issue: Issue) -> bool:
+    """
+    Checks if the issue already contains an assignee notification comment.
+
+    Args:
+        issue (Issue): The JIRA issue to inspect.
+
+    Returns:
+        bool: True if an assignee notification comment is found, False otherwise.
+    """
+
     for comment in issue.fields.comment.comments:
         if comment.body.startswith(create_notification_title(NotificationType.ASSIGNEE)):
             return True
     return False
 
 def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact, dry_run: bool) -> Optional[Notification]:
+    """
+    Notifies assignees about a missing contact on an issue, if not already notified.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        issue (Issue): The issue related to the notification.
+        missing_contact (Contact): The type of missing contact triggering the notification.
+        dry_run (bool): If True, simulate the notification without sending.
+
+    Returns:
+        Optional[Notification]: The created notification if sent, otherwise None.
+
+    Raises:
+        Exception: If no assignee is available on the issue.
+    """
+
     if not has_assignee_notification(issue):
         assignee = get_assignee(issue)
         if assignee:
@@ -144,12 +279,34 @@ def notify_assignees(jira: JIRA, issue: Issue, missing_contact: Contact, dry_run
     return None
 
 def create_qa_notification_text(qa_contact: User) -> str:
+    """
+    Creates a notification text for the QA contact to verify the issue.
+
+    Args:
+        qa_contact (User): The QA contact user.
+
+    Returns:
+        str: The complete notification message text.
+    """
+
     return (
         f"{create_notification_title(NotificationType.QA_CONTACT)}"
         f"{create_jira_comment_mentions([qa_contact])}Please verify the Issue as soon as possible."
     )
 
 def notify_qa_contact(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notification]:
+    """
+    Notifies the QA contact of the issue, or notifies assignees if QA contact is missing.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        issue (Issue): The issue to notify about.
+        dry_run (bool): If True, simulate notification without sending.
+
+    Returns:
+        Optional[Notification]: The created notification if sent, otherwise None.
+    """
+
     qa_contact = get_qa_contact(issue)
     if qa_contact:
         qa_notification = Notification(
@@ -163,13 +320,36 @@ def notify_qa_contact(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notif
         logger.warning("QA contact is missing. Assignees will be notified.")
         return notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
+# FIXME OCPERT-139 Improve Jira notificator by notifying team leads instead QA contacts
 def create_team_lead_notification_text(qa_contact: User) -> Optional[str]:
+    """
+    Creates a notification text for the QA contact to verify the issue or arrange a reassignment with their team lead.
+
+    Args:
+        qa_contact (User): The QA contact user.
+
+    Returns:
+        str: The complete notification message text.
+    """
+
     return (
         f"{create_notification_title(NotificationType.TEAM_LEAD)}"
         f"{create_jira_comment_mentions([qa_contact])}Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
     )
 
 def notify_team_lead(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notification]:
+    """
+    Notifies the team lead via the QA contact, or notifies assignees if QA contact is missing.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        issue (Issue): The issue to notify about.
+        dry_run (bool): If True, simulate notification without sending.
+
+    Returns:
+        Optional[Notification]: The created notification if sent, otherwise None.
+    """
+
     logger.info("Notification to the team lead is not yet implemented. Notifying the QA contact again.")
 
     qa_contact = get_qa_contact(issue)
@@ -186,12 +366,34 @@ def notify_team_lead(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notifi
         return notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def create_manager_notification_text(manager: User) -> str:
+    """
+    Creates a notification text for the manager to prioritize or reassign the issue.
+
+    Args:
+        manager (User): The manager user to notify.
+
+    Returns:
+        str: The complete notification message text.
+    """
+
     return (
         f"{create_notification_title(NotificationType.MANAGER)}"
         f"{create_jira_comment_mentions([manager])}Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
     )
 
 def notify_manager(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notification]:
+    """
+    Notifies the manager, or notifies assignees if needed.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        issue (Issue): The issue to notify about.
+        dry_run (bool): If True, simulate notification without sending.
+
+    Returns:
+        Optional[Notification]: The created notification if sent, otherwise None.
+    """
+
     qa_contact = get_qa_contact(issue)
     if qa_contact:
         manager = get_manager(jira, qa_contact)
@@ -211,6 +413,16 @@ def notify_manager(jira: JIRA, issue: Issue, dry_run: bool) -> Optional[Notifica
         return notify_assignees(jira, issue, Contact.QA_CONTACT, dry_run)
 
 def get_latest_on_qa_transition_datetime(issue: Issue) -> Optional[datetime]:
+    """
+    Returns the most recent datetime when the issue transitioned to ON_QA status.
+
+    Args:
+        issue (Issue): The JIRA issue to inspect.
+
+    Returns:
+        Optional[datetime]: The latest ON_QA transition timestamp, or None if not found.
+    """
+
     latest_on_qa: datetime = None
 
     for history in issue.changelog.histories:
@@ -223,6 +435,18 @@ def get_latest_on_qa_transition_datetime(issue: Issue) -> Optional[datetime]:
     return latest_on_qa
 
 def get_latest_notification_dates_after_on_qa_transition(issue: Issue, on_qa_transition: datetime) -> Dict[NotificationType, Optional[datetime]]:
+    """
+    Returns the latest notification dates for each type after the ON_QA transition.
+
+    Args:
+        issue (Issue): The JIRA issue to inspect.
+        on_qa_transition (datetime): The datetime when the issue transitioned to ON_QA.
+
+    Returns:
+        Dict[NotificationType, Optional[datetime]]: A mapping of notification types to
+        their latest comment creation datetimes after the ON_QA transition.
+    """
+
     notification_types_with_latest_date: Dict[NotificationType, Optional[datetime]] = {}
 
     for comment in issue.fields.comment.comments:
@@ -242,6 +466,17 @@ def get_latest_notification_dates_after_on_qa_transition(issue: Issue, on_qa_tra
     return notification_types_with_latest_date
 
 def is_more_than_24_weekday_hours(from_date: datetime, now: Optional[datetime] = None) -> bool:
+    """
+    Checks if more than 24 weekday hours have passed since the given datetime.
+
+    Args:
+        from_date (datetime): The starting datetime.
+        now (Optional[datetime]): Current datetime used for comparison (for testing; defaults to current UTC time).
+
+    Returns:
+        bool: True if more than 24 weekday hours have passed, otherwise False.
+    """
+
     if now is None:
         now = datetime.now(timezone.utc)
 
@@ -263,6 +498,15 @@ def is_more_than_24_weekday_hours(from_date: datetime, now: Optional[datetime] =
     return valid_hours > 24
 
 def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run: bool) -> None:
+    """
+    Checks the ON_QA transition and sends notifications based on elapsed time and notification history.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        issue (Issue): The issue to evaluate and notify about.
+        dry_run (bool): If True, simulate notifications without sending them.
+    """
+
     try:
         on_qa_datetime = get_latest_on_qa_transition_datetime(issue)
         if not on_qa_datetime:
@@ -296,6 +540,16 @@ def check_issue_and_notify_responsible_people(jira: JIRA, issue: Issue, dry_run:
         logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
 
 def get_on_qa_filter(from_date: Optional[datetime] = None) -> str:
+    """
+    Constructs a JIRA JQL filter string for ON_QA issues optionally filtered by a date.
+
+    Args:
+        from_date (Optional[datetime]): If provided, filters issues that transitioned to ON_QA after this date.
+
+    Returns:
+        str: The JQL filter string.
+    """
+
     base_filter = (
         "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
         "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
@@ -306,6 +560,18 @@ def get_on_qa_filter(from_date: Optional[datetime] = None) -> str:
     return base_filter + date_suffix
 
 def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: Optional[datetime]) -> List[Issue]:
+    """
+    Retrieves ON_QA issues from JIRA in batches, optionally filtered by a date.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        search_batch_size (int): Number of issues to fetch per batch.
+        from_date (Optional[datetime]): If provided, fetches issues transitioned to ON_QA after this date.
+
+    Returns:
+        List[Issue]: A list of JIRA issues matching the ON_QA criteria.
+    """
+
     start_at = 0
     on_qa_issues = []
 
@@ -322,6 +588,16 @@ def get_on_qa_issues(jira: JIRA, search_batch_size: int, from_date: Optional[dat
     return on_qa_issues
 
 def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
+    """
+    Processes ON_QA issues by checking and notifying responsible people.
+
+    Args:
+        jira (JIRA): JIRA API client instance.
+        search_batch_size (int): Number of issues to fetch per batch.
+        dry_run (bool): If True, simulate notifications without sending.
+        from_date (Optional[datetime]): If provided, process issues transitioned to ON_QA after this date.
+    """
+
     for issue in get_on_qa_issues(jira, search_batch_size, from_date):
         logger.info(f"Processing {issue.key}")
         check_issue_and_notify_responsible_people(jira, issue, dry_run)
@@ -331,6 +607,18 @@ def process_on_qa_issues(jira: JIRA, search_batch_size: int, dry_run: bool, from
 @click.option("--dry-run", is_flag=True, default=False, help="Run without sending Jira notifications.")
 @click.option("--from-date", default=None, type=click.DateTime(formats=["%Y-%m-%d"]), required=False, help="Filters issues that changed to ON_QA state after this date.")
 def main(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
+    """
+    CLI entry point to process ON_QA issues and notify responsible people.
+
+    Args:
+        search_batch_size (int): Number of issues to fetch per batch.
+        dry_run (bool): If True, simulate notifications without sending.
+        from_date (Optional[datetime]): Filter issues transitioned to ON_QA after this date.
+
+    Returns:
+        None
+    """
+
     jira_token = os.environ.get("JIRA_TOKEN")
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
     process_on_qa_issues(jira, search_batch_size, dry_run, from_date)
