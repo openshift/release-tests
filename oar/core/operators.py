@@ -1,10 +1,10 @@
-from oar.core.advisory import AdvisoryManager
-from oar.core.shipment import ShipmentData
-from oar.core.jira import JiraManager
-from oar.core.configstore import ConfigStore
-from oar.core.notification import NotificationManager
-from oar.core.const import JENKINS_JOB_IMAGE_CONSISTENCY_CHECK
 import logging
+
+from oar.core.advisory import AdvisoryManager
+from oar.core.configstore import ConfigStore
+from oar.core.jira import JiraManager
+from oar.core.notification import NotificationManager
+from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +16,12 @@ class ReleaseOwnershipOperator:
         self._sd = ShipmentData(cs)
 
     def update_owners(self, email: str) -> tuple[list, list]:
-        """Update ownership across advisories and shipments
+        """
+        Update ownership across advisories and shipments
         
+        Args:
+            email (str): Email of the new owner
+            
         Returns:
             tuple[list, list]: (list of updated advisories, list of advisories with abnormal states)
         """
@@ -27,7 +31,7 @@ class ReleaseOwnershipOperator:
                 self._sd.add_qe_release_lead_comment(email)
             return updated_ads, abnormal_ads
         except Exception as e:
-            logger.error(f"Ownership operation failed: {str(e)}")
+            logger.error(f"Failed to update owners: {str(e)}")
             raise
 
 class BugOperator:
@@ -39,7 +43,12 @@ class BugOperator:
         self._jm = JiraManager(cs)
 
     def get_jira_issues(self) -> list:
-        """Get jira issues from both advisory and shipment sources"""
+        """
+        Get jira issues from both advisory and shipment sources
+        
+        Returns:
+            list: Combined list of jira issues from all sources
+        """
         try:
             advisory_issues = self._am.get_jira_issues()
             shipment_issues = self._sd.get_jira_issues() if self._sd._cs.is_konflux_flow() else []
@@ -72,9 +81,11 @@ class BugOperator:
             raise
 
     def has_finished_all_jiras(self) -> bool:
-        """Check all jira issues from both advisory and shipment sources are finished 
-        (Closed, Verified or Release Pending) or they are dropped from advisories.
-
+        """
+        Check if all jira issues are in finished state
+        
+        Finished states include: Closed, Verified or Release Pending
+        
         Returns:
             bool: True if all jira issues are finished, False otherwise
         """
@@ -109,10 +120,13 @@ class ApprovalOperator:
         self._sd = ShipmentData(cs)
 
     def approve_release(self) -> None:
-        """Execute approval operations based on release flow type
+        """
+        Execute approval operations based on release flow type
+        
+        Handles both errata and konflux flow types
         
         Raises:
-            Exception: If any approval operation fails
+            Exception: If approval operations fail
         """
         try:
             # Advisory status change is successful if no exception raised
@@ -122,7 +136,7 @@ class ApprovalOperator:
             if self._sd._cs.is_konflux_flow():
                 self._sd.add_qe_approval()
         except Exception as e:
-            logger.error(f"Approval operations failed: {str(e)}")
+            logger.error(f"Failed to approve release: {str(e)}")
             raise
 
 
@@ -159,6 +173,3 @@ class NotificationOperator:
         except Exception as e:
             logger.error(f"Ownership change notification failed: {str(e)}")
             raise
-
-
-
