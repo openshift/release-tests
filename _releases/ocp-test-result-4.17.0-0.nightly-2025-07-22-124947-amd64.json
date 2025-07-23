@@ -34,13 +34,58 @@
           "jobStartTime": "2025-07-23T01:35:08Z",
           "jobID": "64cd381e-d2bc-46b8-af10-f5a24cb5d1b5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1947832823830286336",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-23T04:49:08Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-07-23T01:35:13Z",
           "jobID": "0a257165-6355-4d29-ad73-7dc56bcb7c49",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1947832845363843072",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-23T04:37:24Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 20
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -181,13 +226,15 @@
           "jobStartTime": "2025-07-23T01:35:25Z",
           "jobID": "28e33689-5eda-430a-bc3b-11055d8246d7",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999/1947832893325709312",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-23T04:57:01Z"
         },
         {
           "jobStartTime": "2025-07-23T01:35:30Z",
           "jobID": "d84a0ff9-9d46-4d6d-a5de-2c2c79854eae",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999/1947832916348243968",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-23T05:09:06Z"
         }
       ]
     }
@@ -197,5 +244,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-07-22-124947",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-07-22-124947"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
