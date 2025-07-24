@@ -313,6 +313,7 @@ class MailClient:
 
         logger.info(f"sent email to {to_addrs} with subject: <{subject}>")
 
+
 class SlackClient:
     def __init__(self, bot_token):
         if not bot_token:
@@ -409,6 +410,7 @@ class SlackClient:
         else:
             return email
 
+
 class MessageHelper:
     """
     Provide message needed info
@@ -504,7 +506,7 @@ class MessageHelper:
         """
         message = "Please pay attention to following ON_QA bugs, let's verify them ASAP, thanks for your cooperation"
         return self.__get_slack_message_for_jira_issues(jira_issues, message)
-
+    
     def get_slack_message_for_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
         Get Slack message for unverified CVE issues to managers of QA contacts
@@ -517,7 +519,7 @@ class MessageHelper:
         """
 
         message = "The following issues must be verified in this release. As the managers of the assigned QA contacts who have not yet verified these Jiras, could you please prioritize their verification or reassign them to other available QA contacts?"
-
+        
         if len(unverified_cve_issues):
             slack_message = f"[{self.cs.release}] {message}\n"
             for issue in unverified_cve_issues:

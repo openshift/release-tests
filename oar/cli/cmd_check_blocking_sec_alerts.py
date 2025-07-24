@@ -67,22 +67,22 @@ def check_blocking_sec_alerts(ctx, check_only):
 
             details["checked_advisories"].append(advisory_info)
 
-        # Simplified output - show only RHSA advisories with blocking security alerts
+        # Log results - show only RHSA advisories with blocking security alerts
         if has_blocking:
-            click.echo("BLOCKING SECURITY ALERTS FOUND:")
+            logger.warning("BLOCKING SECURITY ALERTS FOUND:")
             for advisory in details['blocking_advisories']:
-                click.echo(f"  RHSA {advisory['errata_id']}")
+                logger.warning(f"  RHSA {advisory['errata_id']}")
         else:
-            click.echo("No blocking security alerts found")
+            logger.info("No blocking security alerts found")
 
         # Update worksheet if not in check-only mode
         if not check_only:
             others_added = report.add_security_alert_status_to_others_section(has_blocking, details["blocking_advisories"])
             if others_added:
-                click.echo("Worksheet updated")
+                logger.info("Worksheet updated")
             else:
-                click.echo("Failed to update worksheet")
+                logger.error("Failed to update worksheet")
 
 
     except Exception as e:
-        click.echo(f"Error: {e}")
+        logger.error(f"Error: {e}")

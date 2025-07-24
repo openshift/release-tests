@@ -671,61 +671,37 @@ class TestReport:
                     adjusted_format_runs.append(adjusted_run)
 
                 # Use batch update API for multiple hyperlinks
-                max_retries = 3
-                delay = 2
-                for attempt in range(1, max_retries + 1):
-                    try:
-                        requests = [
-                            {
-                                "updateCells": {
-                                    "rows": [
+                requests = [
+                    {
+                        "updateCells": {
+                            "rows": [
+                                {
+                                    "values": [
                                         {
-                                            "values": [
-                                                {
-                                                    "userEnteredValue": {"stringValue": summary_text},
-                                                    "textFormatRuns": adjusted_format_runs
-                                                }
-                                            ]
+                                            "userEnteredValue": {"stringValue": summary_text},
+                                            "textFormatRuns": adjusted_format_runs
                                         }
-                                    ],
-                                    "range": {
-                                        "sheetId": self._ws.id,
-                                        "startRowIndex": row_idx - 1,  # 0-based index
-                                        "endRowIndex": row_idx,
-                                        "startColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A'),  # Convert H to 7
-                                        "endColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A') + 1
-                                    },
-                                    "fields": "userEnteredValue,textFormatRuns"
+                                    ]
                                 }
-                            }
-                        ]
-                        self._ws.spreadsheet.batch_update({"requests": requests})
-                        logger.info(f"Added blocking sec-alerts with hyperlinks to Others column at row {row_idx}: {summary_text}")
-                        break
-                    except Exception as e:
-                        logger.warning(f"Adding hyperlinked security alert status to Others section failed on attempt: {attempt}")
-                        if attempt < max_retries:
-                            time.sleep(delay)
-                        else:
-                            logger.error(f"Adding hyperlinked security alert status to Others section failed after all retries: {e}")
-                            raise
+                            ],
+                            "range": {
+                                "sheetId": self._ws.id,
+                                "startRowIndex": row_idx - 1,  # 0-based index
+                                "endRowIndex": row_idx,
+                                "startColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A'),  # Convert H to 7
+                                "endColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A') + 1
+                            },
+                            "fields": "userEnteredValue,textFormatRuns"
+                        }
+                    }
+                ]
+                self._ws.spreadsheet.batch_update({"requests": requests})
+                logger.info(f"Added blocking sec-alerts with hyperlinks to Others column at row {row_idx}: {summary_text}")
             else:
                 # Simple text for "all clear" case
                 summary_text = "OK: No Blocking Sec-Alerts"
-                max_retries = 3
-                delay = 2
-                for attempt in range(1, max_retries + 1):
-                    try:
-                        self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", summary_text)
-                        logger.info(f"Added blocking sec-alerts status to Others column at row {row_idx}: {summary_text}")
-                        break
-                    except Exception as e:
-                        logger.warning(f"Adding security alert status to Others section failed on attempt: {attempt}")
-                        if attempt < max_retries:
-                            time.sleep(delay)
-                        else:
-                            logger.error(f"Adding security alert status to Others section failed after all retries: {e}")
-                            raise
+                self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", summary_text)
+                logger.info(f"Added blocking sec-alerts status to Others column at row {row_idx}: {summary_text}")
             return True
 
         except Exception as e:
