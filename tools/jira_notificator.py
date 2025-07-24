@@ -68,6 +68,7 @@ class NotificationService:
     def __init__(self, jira, dry_run=False):
         self.jira = jira
         self.dry_run = dry_run
+        self.ldap = LdapHelper()
 
     def create_notification_title(self, notification_type: NotificationType) -> str:
         """
@@ -178,8 +179,7 @@ class NotificationService:
             Optional[User]: The manager user if found, otherwise None.
         """
 
-        ldap = LdapHelper()
-        manager_email = ldap.get_manager_email(user.emailAddress)
+        manager_email = self.ldap.get_manager_email(user.emailAddress)
         if manager_email:
             manager = self.find_user_by_email(manager_email)
             if manager:
