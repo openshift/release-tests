@@ -107,10 +107,8 @@ $ oar -r $release-version drop-bugs
 ```
 $ oar -r $release-version change-advisory-status
 ```
-12. This command checks for blocking security alerts across all RHSA advisories for the release. It automatically updates the worksheet dropdown (cell B29) and sends notifications to the QE release team if blocking alerts are detected. The command supports different output formats and notification options
+12. This command checks for blocking security alerts across all RHSA advisories for the release. It automatically updates the Others column in the worksheet with security alert status. The command provides human-readable text output and supports check-only mode for verification without worksheet updates
 ```
 $ oar -r $release-version check-blocking-sec-alerts
 $ oar -r $release-version check-blocking-sec-alerts --check-only
-$ oar -r $release-version check-blocking-sec-alerts --output json
-$ oar -r $release-version check-blocking-sec-alerts --no-notify
 ```
