@@ -128,11 +128,11 @@ class TestTestReport(TestCase):
             self.wm = WorksheetManager(cs)
 
         self.wm._create_release_sheet_from_template()
-    '''
+
     @classmethod
     def tearDownClass(self):
         self.wm.delete_test_report()
-    '''
+
     def test_update_advisory_info(self):
         self.wm._report.update_advisory_info()
 

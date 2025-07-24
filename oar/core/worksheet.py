@@ -95,8 +95,6 @@ class WorksheetManager:
             # add test results links
             self._report.create_test_results_links()
 
-
-
         except Exception as ge:  # catch all the exceptions here
             raise WorksheetException("create test report failed") from ge
 
