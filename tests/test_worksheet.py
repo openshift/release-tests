@@ -149,36 +149,23 @@ class TestTestReport(TestCase):
             self.assertIn(advisory, advisory_info_from_test_report)
 
     def test_blocking_sec_alerts(self):
-        """Test blocking sec-alerts functionality"""
+        """Test blocking sec-alerts functionality in Others column"""
         # Test the essential worksheet methods used by CLI command
         tr = self.wm.get_test_report()
 
-        # Test setting up the label
-        tr.setup_blocking_sec_alerts_label()
-
-        # Test updating status
-        tr.update_blocking_sec_alerts_status("Yes")
-        status = tr.get_blocking_sec_alerts_status()
-        self.assertEqual(status, "Yes")
-
-        # Test updating back to "No"
-        tr.update_blocking_sec_alerts_status("No")
-        status = tr.get_blocking_sec_alerts_status()
-        self.assertEqual(status, "No")
-
-        # Test adding to Others section with hyperlinked advisory (single)
+        # Test adding single hyperlinked advisory to Others section
         test_blocking_advisories = [{"errata_id": 12345, "type": "RHSA", "impetus": "image"}]
-        result = tr.add_blocking_sec_alerts_to_others_section(True, test_blocking_advisories)
+        result = tr.add_security_alert_status_to_others_section(True, test_blocking_advisories)
         self.assertTrue(result)
 
-        # Test adding multiple hyperlinked advisories
+        # Test adding multiple hyperlinked advisories to Others section
         test_multiple_advisories = [
             {"errata_id": 12345, "type": "RHSA", "impetus": "image"},
             {"errata_id": 12346, "type": "RHSA", "impetus": "rpm"}
         ]
-        result = tr.add_blocking_sec_alerts_to_others_section(True, test_multiple_advisories)
+        result = tr.add_security_alert_status_to_others_section(True, test_multiple_advisories)
         self.assertTrue(result)
 
-        # Test not adding when no blocking alerts
-        result = tr.add_blocking_sec_alerts_to_others_section(False, [])
-        self.assertFalse(result)
+        # Test adding "all clear" status when no blocking alerts
+        result = tr.add_security_alert_status_to_others_section(False, [])
+        self.assertTrue(result)

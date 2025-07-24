@@ -95,8 +95,7 @@ class WorksheetManager:
             # add test results links
             self._report.create_test_results_links()
 
-            # setup blocking sec-alerts label
-            self._report.setup_blocking_sec_alerts_label()
+
 
         except Exception as ge:  # catch all the exceptions here
             raise WorksheetException("create test report failed") from ge
@@ -621,45 +620,9 @@ class TestReport:
     # BLOCKING SECURITY ALERTS FUNCTIONALITY
     # ========================================================================
 
-    def setup_blocking_sec_alerts_label(self):
+    def add_security_alert_status_to_others_section(self, has_blocking, blocking_advisories):
         """
-        Set up the blocking sec-alerts text label in cell A29
-        """
-        self._ws.update_acell(LABEL_BLOCKING_SEC_ALERTS, "Blocking sec-alerts")
-        logger.debug("Blocking sec-alerts label created in A29")
-
-    def update_blocking_sec_alerts_status(self, status):
-        """
-        Update the blocking sec-alerts dropdown status
-
-        Args:
-            status (str): Either "Yes" or "No"
-
-        Raises:
-            WorksheetException: If status is not "Yes" or "No"
-        """
-        if status not in ["Yes", "No"]:
-            raise WorksheetException("Status must be either 'Yes' or 'No'")
-
-        self._ws.update_acell(LABEL_BLOCKING_SEC_ALERTS_DROPDOWN, status)
-        logger.debug(f"Blocking sec-alerts status updated to: {status}")
-
-    def get_blocking_sec_alerts_status(self):
-        """
-        Get the current blocking sec-alerts status
-
-        Returns:
-            str: The current status ("Yes", "No", or None if not set)
-        """
-        try:
-            return self._ws.acell(LABEL_BLOCKING_SEC_ALERTS_DROPDOWN).value
-        except Exception as e:
-            logger.warning(f"Failed to get blocking sec-alerts status: {e}")
-            return None
-
-    def add_blocking_sec_alerts_to_others_section(self, has_blocking, blocking_advisories):
-        """
-        Add blocking security alerts status to Others column with hyperlinked advisory numbers
+        Add security alert status to Others column - either blocking alerts with hyperlinks or "all clear" status
 
         Args:
             has_blocking (bool): Whether blocking alerts were found
@@ -669,67 +632,109 @@ class TestReport:
             bool: True if entry was added successfully
         """
         try:
-            if has_blocking:
-                # Create hyperlinked summary message for Others column
-                if len(blocking_advisories) == 1:
-                    # Single advisory - format as: "🔴 Blocking Sec-Alert: [12345]"
-                    advisory = blocking_advisories[0]
-                    advisory_id = str(advisory["errata_id"])
-                    hyperlink = self._to_hyperlink(util.get_advisory_link(advisory_id), advisory_id)
-                    summary_text = f"🔴 Blocking Sec-Alert: {hyperlink}"
-                else:
-                    # Multiple advisories - format as: "🔴 Blocking Sec-Alerts: [12345], [12346], [12347]"
-                    hyperlinked_ids = []
-                    for advisory in blocking_advisories:
-                        advisory_id = str(advisory["errata_id"])
-                        hyperlink = self._to_hyperlink(util.get_advisory_link(advisory_id), advisory_id)
-                        hyperlinked_ids.append(hyperlink)
-                    summary_text = f"🔴 Blocking Sec-Alerts: {', '.join(hyperlinked_ids)}"
-            else:
-                # Only add if there are advisories to report
-                return False
+            # Use same CVP protection logic as add_jira_to_others_section
+            issue_keys = self._get_issues_from_others_section()
 
-            # Use existing method to safely add to Others column
-            self.add_text_to_others_section(summary_text)
-            logger.info(f"Added hyperlinked blocking sec-alerts status to Others column")
+            row_idx = LABEL_ISSUES_OTHERS_ROW
+            # Find first empty cell (CVP protection)
+            if "" in issue_keys:
+                row_idx += issue_keys.index("")
+            else:
+                row_idx += len(issue_keys)
+
+            if has_blocking:
+                # Create hyperlinked summary with multiple advisories using batch update API
+                # Build advisory info structure for _prepare_hyperlink_text_format_runs
+                advisory_info = []
+                for advisory in blocking_advisories:
+                    advisory_id = str(advisory["errata_id"])
+                    advisory_info.append({
+                        "name": advisory_id,
+                        "url": util.get_advisory_link(advisory_id)
+                    })
+
+                # Create formatted text with hyperlinks
+                hyperlinked_text, text_format_runs = TestReport._prepare_hyperlink_text_format_runs(advisory_info, False)
+
+                # Add prefix based on number of advisories
+                if len(blocking_advisories) == 1:
+                    summary_text = f"ALERT: Blocking Sec-Alert: {hyperlinked_text}"
+                else:
+                    # For multiple advisories, replace newlines with commas
+                    hyperlinked_text = hyperlinked_text.replace('\n', ', ')
+                    summary_text = f"ALERT: Blocking Sec-Alerts: {hyperlinked_text}"
+
+                # Adjust text format runs to account for the prefix
+                prefix_length = len(summary_text) - len(hyperlinked_text)
+                adjusted_format_runs = []
+                for run in text_format_runs:
+                    adjusted_run = run.copy()
+                    adjusted_run["startIndex"] += prefix_length
+                    adjusted_format_runs.append(adjusted_run)
+
+                # Use batch update API for multiple hyperlinks
+                max_retries = 3
+                delay = 2
+                for attempt in range(1, max_retries + 1):
+                    try:
+                        requests = [
+                            {
+                                "updateCells": {
+                                    "rows": [
+                                        {
+                                            "values": [
+                                                {
+                                                    "userEnteredValue": {"stringValue": summary_text},
+                                                    "textFormatRuns": adjusted_format_runs
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "range": {
+                                        "sheetId": self._ws.id,
+                                        "startRowIndex": row_idx - 1,  # 0-based index
+                                        "endRowIndex": row_idx,
+                                        "startColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A'),  # Convert H to 7
+                                        "endColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A') + 1
+                                    },
+                                    "fields": "userEnteredValue,textFormatRuns"
+                                }
+                            }
+                        ]
+                        self._ws.spreadsheet.batch_update({"requests": requests})
+                        logger.info(f"Added blocking sec-alerts with hyperlinks to Others column at row {row_idx}: {summary_text}")
+                        break
+                    except Exception as e:
+                        logger.warning(f"Adding hyperlinked security alert status to Others section failed on attempt: {attempt}")
+                        if attempt < max_retries:
+                            time.sleep(delay)
+                        else:
+                            logger.error(f"Adding hyperlinked security alert status to Others section failed after all retries: {e}")
+                            raise
+            else:
+                # Simple text for "all clear" case
+                summary_text = "OK: No Blocking Sec-Alerts"
+                max_retries = 3
+                delay = 2
+                for attempt in range(1, max_retries + 1):
+                    try:
+                        self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", summary_text)
+                        logger.info(f"Added blocking sec-alerts status to Others column at row {row_idx}: {summary_text}")
+                        break
+                    except Exception as e:
+                        logger.warning(f"Adding security alert status to Others section failed on attempt: {attempt}")
+                        if attempt < max_retries:
+                            time.sleep(delay)
+                        else:
+                            logger.error(f"Adding security alert status to Others section failed after all retries: {e}")
+                            raise
             return True
 
         except Exception as e:
             logger.error(f"Failed to add blocking sec-alerts to Others column: {e}")
             return False
 
-    def add_text_to_others_section(self, text, max_retries=3, delay=2):
-        """
-        Add text to "others" section without overwriting existing data
 
-        Find the first available cell in section, and add text to it.
-
-        Args:
-             text(str): text to be added
-             max_retries: optional maximum number of attempts, default value is 3
-             delay: optional delay between worksheet calls, default value is 2
-        """
-        issue_keys = self._get_issues_from_others_section()
-
-        row_idx = LABEL_ISSUES_OTHERS_ROW
-        # Find first empty cell
-        if "" in issue_keys:
-            row_idx += issue_keys.index("")
-        else:
-            row_idx += len(issue_keys)
-
-        for attempt in range(1, max_retries + 1):
-            try:
-                self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", text)
-                logger.info(f"Text '{text}' was added to Others section at row {row_idx}")
-                break
-            except Exception as e:
-                logger.warning(f"Adding text to Others section failed on attempt: {attempt}")
-                if attempt < max_retries:
-                    time.sleep(delay)
-                else:
-                    logger.error(f"Adding text to Others section failed after all retries: {e}")
-                    raise
 
     # ========================================================================
     # END BLOCKING SECURITY ALERTS FUNCTIONALITY
