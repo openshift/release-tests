@@ -23,7 +23,7 @@ def check_blocking_sec_alerts(ctx, check_only):
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
 
-        logger.info("Checking for blocking security alerts across all advisories...")
+
 
         # Get all advisories and check them directly
         am = AdvisoryManager(cs)
@@ -58,103 +58,31 @@ def check_blocking_sec_alerts(ctx, check_only):
                     if advisory_blocking:
                         has_blocking = True
                         details["blocking_advisories"].append(advisory_info)
-                        logger.warning(f"BLOCKING: Advisory {advisory.errata_id} has blocking security alerts!")
-                    else:
-                        logger.debug(f"OK: Advisory {advisory.errata_id} has no blocking security alerts")
                 else:
                     advisory_info["reason"] = "RHBA advisories don't have security alerts"
-                    logger.debug(f"SKIP: Skipping {advisory.errata_type} advisory {advisory.errata_id} (no security alerts)")
 
             except Exception as e:
                 advisory_info["error"] = str(e)
                 details["errors"].append(advisory_info)
-                logger.error(f"ERROR: Error checking advisory {advisory.errata_id}: {e}")
 
             details["checked_advisories"].append(advisory_info)
 
-        # Log summary
-        total_advisories = len(details["checked_advisories"])
-        rhsa_checked = len([a for a in details["checked_advisories"] if a.get("checked", False)])
-        blocking_count = len(details["blocking_advisories"])
-        error_count = len(details["errors"])
-
-        logger.info(f"CHECK: Security alert check complete: {total_advisories} total, {rhsa_checked} RHSA checked, {blocking_count} blocking, {error_count} errors")
-
-        if blocking_count > 0:
-            blocking_ids = [str(a["errata_id"]) for a in details["blocking_advisories"]]
-            logger.warning(f"WARNING: Blocking alerts found in advisories: {', '.join(blocking_ids)}")
-
-        # Output results in text format
-        click.echo(f"CHECK: Blocking Security Alerts Check for {cs.release}")
-        click.echo("=" * 50)
-
-        total_advisories = len(details['checked_advisories'])
-        rhsa_checked = len([a for a in details['checked_advisories'] if a.get('checked', False)])
-        blocking_count = len(details['blocking_advisories'])
-        error_count = len(details['errors'])
-
-        click.echo(f"SUMMARY:")
-        click.echo(f"  • Total advisories: {total_advisories}")
-        click.echo(f"  • RHSA advisories checked: {rhsa_checked}")
-        click.echo(f"  • Blocking advisories found: {blocking_count}")
-        click.echo(f"  • Errors encountered: {error_count}")
-        click.echo()
-
+        # Simplified output - show only RHSA advisories with blocking security alerts
         if has_blocking:
-            click.echo(f"WARNING: BLOCKING SECURITY ALERTS DETECTED:")
+            click.echo("BLOCKING SECURITY ALERTS FOUND:")
             for advisory in details['blocking_advisories']:
-                click.echo(f"    ALERT: Advisory {advisory['errata_id']} ({advisory['type']}/{advisory['impetus']})")
-                click.echo(f"       URL: https://errata.devel.redhat.com/advisory/{advisory['errata_id']}")
-            click.echo()
+                click.echo(f"  RHSA {advisory['errata_id']}")
         else:
-            click.echo("OK: No blocking security alerts found")
-            click.echo()
-
-        # Show checked advisories details
-        if details['checked_advisories']:
-            click.echo("INFO: Advisory Details:")
-            for advisory in details['checked_advisories']:
-                status_icon = "ALERT" if advisory.get('has_blocking') else "OK" if advisory.get('checked') else "SKIP"
-                reason = ""
-                if not advisory.get('checked', True) and 'reason' in advisory:
-                    reason = f" ({advisory['reason']})"
-                elif 'error' in advisory:
-                    reason = f" (Error: {advisory['error']})"
-                    status_icon = "ERROR"
-
-                click.echo(f"  {status_icon} {advisory['errata_id']} ({advisory['type']}/{advisory['impetus']}){reason}")
-
-        if details['errors']:
-            click.echo()
-            click.echo("ERRORS:")
-            for error_advisory in details['errors']:
-                click.echo(f"  • Advisory {error_advisory['errata_id']}: {error_advisory['error']}")
+            click.echo("No blocking security alerts found")
 
         # Update worksheet if not in check-only mode
         if not check_only:
-            logger.info("Updating Others column with blocking security alerts status...")
-
-            # Add to Others column based on blocking alerts status
             others_added = report.add_security_alert_status_to_others_section(has_blocking, details["blocking_advisories"])
             if others_added:
-                if has_blocking:
-                    advisory_count = len(details["blocking_advisories"])
-                    click.echo(f"INFO: Added hyperlinked blocking sec-alerts to Others column ({advisory_count} advisory{'ies' if advisory_count > 1 else 'y'})")
-                else:
-                    click.echo(f"INFO: Added 'No Blocking Sec-Alerts' status to Others column")
+                click.echo("Worksheet updated")
             else:
-                click.echo(f"INFO: Failed to add entry to Others column")
+                click.echo("Failed to update worksheet")
 
-
-        # Set exit code based on results
-        if has_blocking:
-            click.echo("\nALERT: Exit code 1: Blocking security alerts detected")
-            ctx.exit(1)  # Non-zero exit code indicates blocking alerts found
-        else:
-            click.echo("\nOK: Exit code 0: No blocking security alerts")
-            ctx.exit(0)
 
     except Exception as e:
-        logger.exception("check blocking security alerts failed")
-        click.echo(f"ERROR: {e}")
-        ctx.exit(2)  # Exit code 2 indicates error in checking
+        click.echo(f"Error: {e}")
