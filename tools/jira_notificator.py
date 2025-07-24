@@ -222,7 +222,7 @@ def create_assignee_notification_text(missing_contact: Contact, notified_assigne
     return (
         f"{create_notification_title(NotificationType.ASSIGNEE)}"
         f"{create_jira_comment_mentions(notified_assignees)}"
-        f"{message} Could you please help us identify someone who could review the issue?"
+        f"{message} Could you please help us identify someone who could verify the issue?"
     )
 
 def has_assignee_notification(issue: Issue) -> bool:
