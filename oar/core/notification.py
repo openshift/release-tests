@@ -270,8 +270,6 @@ class NotificationManager:
             raise NotificationException(
                 "share unverified CVE issues to managers failed") from e
 
-
-
 class MailClient:
     """
     Wrapper of email to send email easily
@@ -760,8 +758,6 @@ class MessageHelper:
         message = f"[{self.cs.release}] Hello {gid}, there are Greenwave CVP failures in advisories. Please contact CVP team. Use the following jira for reference: {util.get_jira_link(jira_key)}."
 
         return message
-
-
 
     def _to_link(self, link, text):
         """
