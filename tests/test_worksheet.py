@@ -128,11 +128,11 @@ class TestTestReport(TestCase):
             self.wm = WorksheetManager(cs)
 
         self.wm._create_release_sheet_from_template()
-    
+    '''
     @classmethod
     def tearDownClass(self):
         self.wm.delete_test_report()
-    
+    '''
     def test_update_advisory_info(self):
         self.wm._report.update_advisory_info()
 
@@ -150,15 +150,13 @@ class TestTestReport(TestCase):
 
     def test_blocking_sec_alerts(self):
         """Test blocking sec-alerts functionality"""
-        # Set up the blocking sec-alerts section
+        # Test the essential worksheet methods used by CLI command
         tr = self.wm.get_test_report()
-        tr.setup_blocking_sec_alerts()
 
-        # Test that default value is set to "No"
-        default_status = tr.get_blocking_sec_alerts_status()
-        self.assertEqual(default_status, "No")
+        # Test setting up the label
+        tr.setup_blocking_sec_alerts_label()
 
-        # Test updating to "Yes"
+        # Test updating status
         tr.update_blocking_sec_alerts_status("Yes")
         status = tr.get_blocking_sec_alerts_status()
         self.assertEqual(status, "Yes")
@@ -167,3 +165,20 @@ class TestTestReport(TestCase):
         tr.update_blocking_sec_alerts_status("No")
         status = tr.get_blocking_sec_alerts_status()
         self.assertEqual(status, "No")
+
+        # Test adding to Others section with hyperlinked advisory (single)
+        test_blocking_advisories = [{"errata_id": 12345, "type": "RHSA", "impetus": "image"}]
+        result = tr.add_blocking_sec_alerts_to_others_section(True, test_blocking_advisories)
+        self.assertTrue(result)
+
+        # Test adding multiple hyperlinked advisories
+        test_multiple_advisories = [
+            {"errata_id": 12345, "type": "RHSA", "impetus": "image"},
+            {"errata_id": 12346, "type": "RHSA", "impetus": "rpm"}
+        ]
+        result = tr.add_blocking_sec_alerts_to_others_section(True, test_multiple_advisories)
+        self.assertTrue(result)
+
+        # Test not adding when no blocking alerts
+        result = tr.add_blocking_sec_alerts_to_others_section(False, [])
+        self.assertFalse(result)

@@ -270,26 +270,7 @@ class NotificationManager:
             raise NotificationException(
                 "share unverified CVE issues to managers failed") from e
 
-    def share_blocking_security_alerts(self, blocking_advisories):
-        """
-        Send notification about blocking security alerts detection
 
-        Args:
-            blocking_advisories (list): List of advisories with blocking security alerts
-
-        Raises:
-            NotificationException: error when sending notification
-        """
-        try:
-            slack_msg = self.mh.get_slack_message_for_blocking_security_alerts(
-                blocking_advisories)
-            if len(slack_msg):
-                self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
-                )
-        except Exception as e:
-            raise NotificationException(
-                "share blocking security alerts failed") from e
 
 class MailClient:
     """
@@ -780,37 +761,7 @@ class MessageHelper:
 
         return message
 
-    def get_slack_message_for_blocking_security_alerts(self, blocking_advisories):
-        """
-        Get Slack message for blocking security alerts detection
 
-        Args:
-            blocking_advisories (list): List of advisories with blocking security alerts
-
-        Returns:
-            str: Slack message
-        """
-        gid = self.sc.get_group_id_by_name(
-            self.cs.get_slack_user_group_from_contact(
-                "qe-release", util.get_y_release(self.cs.release)
-            )
-        )
-
-        advisory_ids = [str(advisory['errata_id']) for advisory in blocking_advisories]
-        message = f"[{self.cs.release}] Hello {gid}, ⚠️ BLOCKING SECURITY ALERTS DETECTED!\n"
-        message += f"The following advisories have blocking security alerts that require immediate attention:\n\n"
-
-        for advisory in blocking_advisories:
-            errata_id = advisory['errata_id']
-            advisory_type = advisory.get('type', 'Unknown')
-            impetus = advisory.get('impetus', 'unknown')
-            message += f"🔴 Advisory {self._to_link(util.get_advisory_link(errata_id), errata_id)} ({advisory_type}/{impetus})\n"
-            message += f"    Security alerts page: https://errata.devel.redhat.com/advisory/security_alerts/{errata_id}\n"
-
-        message += f"\n📝 Worksheet has been automatically updated to show 'Yes' with red background.\n"
-        message += f"🚨 Please contact the Product Security team for resolution before proceeding with the release."
-
-        return message
 
     def _to_link(self, link, text):
         """
