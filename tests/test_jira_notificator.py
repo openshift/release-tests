@@ -18,6 +18,7 @@ class TestJiraNotificator(unittest.TestCase):
         self.test_issue = jira.issue("OCPBUGS-59288", expand="changelog")
         self.test_issue_without_qa = jira.issue("OCPBUGS-8760", expand="changelog")
         self.test_issue_without_assignee = jira.issue("OCPBUGS-1542", expand="changelog")
+        self.test_issue_on_qa = jira.issue("OCPBUGS-46472", expand="changelog")
 
         self.test_user = Mock()
         self.test_user.name = "tdavid"
@@ -347,3 +348,27 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertGreater(len(issues), len(issues_after_date))
         for iad in issues_after_date:
             self.assertTrue(iad.key.startswith("OCPBUGS-"))
+
+    def test_check_issue_and_notify_responsible_people(self):
+        self.assertEqual(self.ns.check_issue_and_notify_responsible_people(self.test_issue), None)
+
+        notification = self.ns.check_issue_and_notify_responsible_people(self.test_issue_on_qa)
+        self.assertEqual(notification.type, NotificationType.QA_CONTACT)
+        self.assertEqual(notification.issue, self.test_issue_on_qa)
+        self.assertEqual(notification.text,
+            (
+                "Errata Reliability Team Notification - QA Contact Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                "[~rhn-support-txue] Please verify the Issue as soon as possible."
+            )
+        )
+
+    def test_process_on_qa_issues(self):
+        day_ago = datetime.now() - timedelta(hours=24)
+        self.assertEqual(len(self.ns.process_on_qa_issues(100, day_ago)), 0)
+
+        week_ago = datetime.now() - timedelta(weeks=1)
+        self.assertLess(
+            len(self.ns.process_on_qa_issues(100, week_ago)), 
+            len(self.ns.process_on_qa_issues(100, None))
+        )

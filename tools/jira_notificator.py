@@ -498,38 +498,41 @@ class NotificationService:
 
         return valid_hours > 24
 
-    def check_issue_and_notify_responsible_people(self, issue: Issue) -> None:
+    def check_issue_and_notify_responsible_people(self, issue: Issue) -> Optional[Notification]:
         """
         Checks the ON_QA transition and sends notifications based on elapsed time and notification history.
 
         Args:
             issue (Issue): The issue to evaluate and notify about.
+
+        Returns:
+            Optional[Notification]: The created notification if sent, otherwise None.
         """
 
         try:
             on_qa_datetime = self.get_latest_on_qa_transition_datetime(issue)
             if not on_qa_datetime:
                 logger.error(f"Issue {issue.key} does not have ON_QA transition date")
-                return
+                return None
             
             notification_dates = self.get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
             if not notification_dates.get(NotificationType.QA_CONTACT):
                 if self.is_more_than_24_weekday_hours(on_qa_datetime):
                     logger.info("Notifying QA Contact")
-                    self.notify_qa_contact(issue)
+                    return self.notify_qa_contact(issue)
                 else:
                     logger.info("Skipping notifying QA Contact - less than 24 hour from transition to ON_QA.")
             elif not notification_dates.get(NotificationType.TEAM_LEAD): 
                 if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.QA_CONTACT)):
                     logger.info("Notifying Team Lead")
-                    self.notify_team_lead(issue)
+                    return self.notify_team_lead(issue)
                 else:
                     logger.info("Skipping notifying Team Lead - less than 24 hour from QA Contact notification.")
             elif not notification_dates.get(NotificationType.MANAGER):
                 if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.TEAM_LEAD)):
                     logger.info("Notifying Manager")
-                    self.notify_manager(issue)
+                    return self.notify_manager(issue)
                 else:
                     logger.info("Skipping notifying Manager - less than 24 hour from Team Lead notification.")
             else:
@@ -537,6 +540,8 @@ class NotificationService:
 
         except Exception as e:
             logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
+
+        return None
 
     def get_on_qa_filter(self, from_date: Optional[datetime] = None) -> str:
         """
@@ -585,18 +590,26 @@ class NotificationService:
 
         return on_qa_issues
 
-    def process_on_qa_issues(self, search_batch_size: int, from_date: Optional[datetime]) -> None:
+    def process_on_qa_issues(self, search_batch_size: int, from_date: Optional[datetime]) -> List[Notification]:
         """
         Processes ON_QA issues by checking and notifying responsible people.
 
         Args:
             search_batch_size (int): Number of issues to fetch per batch.
             from_date (Optional[datetime]): If provided, process issues transitioned to ON_QA after this date.
+        
+        Returns:
+            List[Notification]: List of successfully sent notifications.
         """
+        sent_notifications: list[Notification] = []
 
         for issue in self.get_on_qa_issues(search_batch_size, from_date):
-            logger.info(f"Processing {issue.key}")
-            self.check_issue_and_notify_responsible_people(issue)
+            logger.info(f"Processing issue: {issue.key}")
+            notification = self.check_issue_and_notify_responsible_people(issue)
+            if notification:
+                sent_notifications.append(notification)
+
+        return sent_notifications
 
 @click.command()
 @click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
