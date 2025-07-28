@@ -634,11 +634,24 @@ class TestReport:
             issue_keys = self._get_issues_from_others_section()
 
             row_idx = LABEL_ISSUES_OTHERS_ROW
-            # Find first empty cell (CVP protection)
-            if "" in issue_keys:
-                row_idx += issue_keys.index("")
+
+            # Check for existing sec-alert entry to ensure only one exists
+            existing_secalert_index = None
+            for i, entry in enumerate(issue_keys):
+                if entry and ("Sec-Alert" in entry):
+                    existing_secalert_index = i
+                    break
+
+            if existing_secalert_index is not None:
+                # Update existing sec-alert entry
+                row_idx += existing_secalert_index
+                logger.info(f"Updating existing sec-alert entry at row {row_idx}")
             else:
-                row_idx += len(issue_keys)
+                # Find first empty cell (CVP protection) for new entry
+                if "" in issue_keys:
+                    row_idx += issue_keys.index("")
+                else:
+                    row_idx += len(issue_keys)
 
             if has_blocking:
                 # Create hyperlinked summary with multiple advisories using batch update API
