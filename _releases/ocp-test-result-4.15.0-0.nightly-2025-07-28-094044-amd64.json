@@ -37,13 +37,58 @@
           "jobStartTime": "2025-07-28T23:29:33Z",
           "jobID": "497640b5-1e12-4341-af66-ac30645a2691",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/1949975543709437952",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-07-29T02:29:42Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 22
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-07-28T23:29:38Z",
           "jobID": "420d95dd-de45-4796-bf2a-92518f816347",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/1949975564970364928",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-29T02:56:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 87,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -156,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-07-28-094044",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-07-28-094044"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
