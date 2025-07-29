@@ -39,7 +39,33 @@
           "jobStartTime": "2025-07-29T02:32:03Z",
           "jobID": "b2a97b83-3ad4-4ae9-b8c2-06ba4c4a874c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1950021471489232896",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-29T06:01:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 120,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24523-[LSO] [block volume] LocalVolume CR related pv could be used by Pod",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24525-[LSO] [Filesystem ext4] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-07-29T02:32:08Z",
