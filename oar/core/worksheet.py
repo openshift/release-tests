@@ -658,10 +658,9 @@ class TestReport:
                 # Build advisory info structure for _prepare_hyperlink_text_format_runs
                 advisory_info = []
                 for advisory in blocking_advisories:
-                    advisory_id = str(advisory["errata_id"])
                     advisory_info.append({
                         "name": advisory_id,
-                        "url": util.get_advisory_link(advisory_id)
+                        "url": util.get_advisory_link(str(advisory.errata_id))
                     })
 
                 # Create formatted text with hyperlinks
