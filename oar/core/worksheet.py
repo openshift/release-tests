@@ -18,7 +18,6 @@ from oar.core.jira import JiraManager
 
 logger = logging.getLogger(__name__)
 
-
 class WorksheetManager:
     """
     WorksheetManager is used to update test report with info provided by ConfigStore
@@ -144,7 +143,6 @@ class WorksheetManager:
             new_sheet = self._doc.duplicate_sheet(self._template.id)
             new_sheet.update_title(self._cs.release)
             self._report = TestReport(new_sheet, self._cs)
-
 
 class TestReport:
     """
@@ -615,6 +613,118 @@ class TestReport:
                 f"{util.get_y_release(self._cs.release)}-qe-auto-release"
             )
         )
+
+    # ========================================================================
+    # BLOCKING SECURITY ALERTS FUNCTIONALITY
+    # ========================================================================
+
+    def add_security_alert_status_to_others_section(self, has_blocking, blocking_advisories):
+        """
+        Add security alert status to Others column - either blocking alerts with hyperlinks or "all clear" status
+
+        Args:
+            has_blocking (bool): Whether blocking alerts were found
+            blocking_advisories (list): List of advisories with blocking alerts
+
+        Returns:
+            bool: True if entry was added successfully
+        """
+        try:
+            # Use same CVP protection logic as add_jira_to_others_section
+            issue_keys = self._get_issues_from_others_section()
+
+            row_idx = LABEL_ISSUES_OTHERS_ROW
+
+            # Check for existing sec-alert entry to ensure only one exists
+            existing_secalert_index = None
+            for i, entry in enumerate(issue_keys):
+                if entry and ("Sec-Alert" in entry):
+                    existing_secalert_index = i
+                    break
+
+            if existing_secalert_index is not None:
+                # Update existing sec-alert entry
+                row_idx += existing_secalert_index
+                logger.info(f"Updating existing sec-alert entry at row {row_idx}")
+            else:
+                # Find first empty cell (CVP protection) for new entry
+                if "" in issue_keys:
+                    row_idx += issue_keys.index("")
+                else:
+                    row_idx += len(issue_keys)
+
+            if has_blocking:
+                # Create hyperlinked summary with multiple advisories using batch update API
+                # Build advisory info structure for _prepare_hyperlink_text_format_runs
+                advisory_info = []
+                for advisory in blocking_advisories:
+                    advisory_info.append({
+                        "name": advisory_id,
+                        "url": util.get_advisory_link(str(advisory.errata_id))
+                    })
+
+                # Create formatted text with hyperlinks
+                hyperlinked_text, text_format_runs = TestReport._prepare_hyperlink_text_format_runs(advisory_info, False)
+
+                # Add prefix based on number of advisories
+                if len(blocking_advisories) == 1:
+                    summary_text = f"ALERT: Blocking Sec-Alert: {hyperlinked_text}"
+                else:
+                    # For multiple advisories, replace newlines with commas
+                    hyperlinked_text = hyperlinked_text.replace('\n', ', ')
+                    summary_text = f"ALERT: Blocking Sec-Alerts: {hyperlinked_text}"
+
+                # Adjust text format runs to account for the prefix
+                prefix_length = len(summary_text) - len(hyperlinked_text)
+                adjusted_format_runs = []
+                for run in text_format_runs:
+                    adjusted_run = run.copy()
+                    adjusted_run["startIndex"] += prefix_length
+                    adjusted_format_runs.append(adjusted_run)
+
+                # Use batch update API for multiple hyperlinks
+                requests = [
+                    {
+                        "updateCells": {
+                            "rows": [
+                                {
+                                    "values": [
+                                        {
+                                            "userEnteredValue": {"stringValue": summary_text},
+                                            "textFormatRuns": adjusted_format_runs
+                                        }
+                                    ]
+                                }
+                            ],
+                            "range": {
+                                "sheetId": self._ws.id,
+                                "startRowIndex": row_idx - 1,  # 0-based index
+                                "endRowIndex": row_idx,
+                                "startColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A'),  # Convert H to 7
+                                "endColumnIndex": ord(LABEL_ISSUES_OTHERS_COLUMN) - ord('A') + 1
+                            },
+                            "fields": "userEnteredValue,textFormatRuns"
+                        }
+                    }
+                ]
+                self._ws.spreadsheet.batch_update({"requests": requests})
+                logger.info(f"Added blocking sec-alerts with hyperlinks to Others column at row {row_idx}: {summary_text}")
+            else:
+                # Simple text for "all clear" case
+                summary_text = "OK: No Blocking Sec-Alerts"
+                self._ws.update_acell(f"{LABEL_ISSUES_OTHERS_COLUMN}{row_idx}", summary_text)
+                logger.info(f"Added blocking sec-alerts status to Others column at row {row_idx}: {summary_text}")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to add blocking sec-alerts to Others column: {e}")
+            return False
+
+
+
+    # ========================================================================
+    # END BLOCKING SECURITY ALERTS FUNCTIONALITY
+    # ========================================================================
 
     def _get_issues_from_others_section(self):
         """
