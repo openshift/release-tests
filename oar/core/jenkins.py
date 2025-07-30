@@ -24,7 +24,9 @@ class JenkinsHelper:
             [str(i) for i in [val for val in self._cs.get_advisories().values()]]
         )
         # get shipment MR id
-        self.mr_id = ShipmentData(cs).get_mrs()[0].get_id()
+        mrs = ShipmentData(cs).get_mrs()
+        self.mr_id = mrs[0].get_id() if mrs else None
+        # construct image pull spec
         self.pull_spec = (
             "quay.io/openshift-release-dev/ocp-release:" + self._cs.release + "-x86_64"
         )
@@ -141,9 +143,14 @@ class JenkinsHelper:
             if (job_name == JENKINS_JOB_IMAGE_CONSISTENCY_CHECK):
                 parameters_value = {
                     "VERSION": "v" + self.version,
-                    "SHIPMENT_MR_ID": self.mr_id,
                     "PAYLOAD_URL": pull_spec,
                 }
+                # Add SHIPMENT_MR_ID if shipment MR is available
+                if self.mr_id:
+                    parameters_value["SHIPMENT_MR_ID"] = self.mr_id
+                # Add ERRATA_NUMBERS if metadata_ad is not empty
+                if self.metadata_ad:
+                    parameters_value["ERRATA_NUMBERS"] = self.errata_numbers
             elif (job_name == JENKINS_JOB_STAGE_PIPELINE):
                 parameters_value = {
                     "VERSION": self.version,
