@@ -149,8 +149,7 @@ class JenkinsHelper:
                 # Add SHIPMENT_MR_ID if shipment MR is available
                 if self.mr_id:
                     parameters_value["SHIPMENT_MR_ID"] = self.mr_id
-                # Add ERRATA_NUMBERS if errata_numbers is not empty
-                if self.errata_numbers:
+                else:
                     parameters_value["ERRATA_NUMBERS"] = self.errata_numbers
             elif (job_name == JENKINS_JOB_STAGE_PIPELINE):
                 parameters_value = {
