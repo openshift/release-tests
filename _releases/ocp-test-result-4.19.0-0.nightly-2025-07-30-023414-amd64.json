@@ -255,7 +255,31 @@
           "jobStartTime": "2025-07-30T13:28:09Z",
           "jobID": "5dc7c2b0-a15b-4376-aa66-2bd2f1a6a7d7",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/1950548973081071616",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-07-30T16:39:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 111,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 28
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -306,5 +330,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-07-30-023414",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-07-30-023414"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
