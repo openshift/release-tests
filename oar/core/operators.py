@@ -155,7 +155,7 @@ class ImageHealthOperator:
         - Errata: Checks advisory data and sends notifications for unhealthy containers
         
         Returns:
-            bool: True if all image containers are healthy (grade A), False otherwise
+            bool: True if all image containers are healthy (grade A or B), False otherwise
             
         Raises:
             Exception: If health check operations fail
