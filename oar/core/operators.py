@@ -140,6 +140,47 @@ class ApprovalOperator:
             raise
 
 
+class ImageHealthOperator:
+    """Handles image health check operations for both advisory and shipment data"""
+    
+    def __init__(self, cs: ConfigStore):
+        self._am = AdvisoryManager(cs)
+        self._sd = ShipmentData(cs)
+        self._nm = NotificationManager(cs)
+
+    def check_image_health(self) -> bool:
+        """
+        Check image container health (grade info) handling different release flows:
+        - Konflux: Checks shipment data and adds comment to MR
+        - Errata: Checks advisory data and sends notifications for unhealthy containers
+        
+        Returns:
+            bool: True if all image containers are healthy (grade A or B), False otherwise
+            
+        Raises:
+            Exception: If health check operations fail
+        """
+        healthy = True
+        try:
+            if self._sd._cs.is_konflux_flow():
+                # Konflux flow - check shipment data and add MR comment
+                health_data = self._sd.check_component_image_health()
+                self._sd.add_image_health_summary_comment(health_data)
+                healthy = health_data.unhealthy_count == 0
+            else:
+                # Errata flow - check advisory data and notify if unhealthy
+                unhealthy_ads = self._am.check_advisories_grades_health()
+                if unhealthy_ads:
+                    self._nm.share_unhealthy_advisories(unhealthy_ads)
+                    healthy = False
+                
+        except Exception as e:
+            logger.error(f"Image health check failed: {str(e)}")
+            raise
+
+        return healthy
+
+
 class NotificationOperator:
     """Handles notification operations based on release flow type (errata or konflux)"""
     
