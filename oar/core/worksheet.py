@@ -91,12 +91,16 @@ class WorksheetManager:
             logger.info("build info is updated")
             logger.debug(f"build info:\n{build_cell_value}")
 
-            # update shipment MRs and RPM advisory link
-            shipment_mrs = self._cs.get_shipment_mrs()
-            rpm_advisory = self._cs.get_rpm_advisory()
-            self._report.update_shipment_info(shipment_mrs, rpm_advisory)
-            logger.info("shipment info is updated")
-            logger.debug(f"shipment info:\n MR: {shipment_mrs}\nRPM advisory id: {rpm_advisory}")
+            # handle cell update for (B2) separately
+            if self._cs.is_konflux_flow():
+                # update shipment MRs and RPM advisory link
+                self._report.update_shipment_info()
+                logger.info("shipment info is updated")
+            else:
+                # update advisory info
+                self._report.update_advisory_info()
+                logger.info("advisory info is updated")
+            logger.debug(f"Shipment or advisory info: {self._report.get_advisory_or_shipment_info()}")
 
             # update jira info
             self._report.update_jira_info(self._cs.get_jira_ticket())
@@ -155,28 +159,54 @@ class TestReport:
         """
         return self._ws.url
 
-    def update_shipment_info(self, shipment_mrs, rpm_advisory):
+    def update_shipment_info(self):
         """
-        Update shipment info in test report with shipment MRs and RPM advisory link
+        Update shipment information in test report with shipment MRs and RPM advisory link
 
-        Args:
-            shipment_mrs (list): List of shipment MR URLs
-            rpm_advisory (str): RPM advisory ID (will be converted to full link)
+        Retrieves shipment information from the config store and formats each shipment MR
+        with a hyperlink. Also formats the RPM advisory with a hyperlink to the advisory page.
+        Updates the specified cell with all shipment links and RPM advisory, each on a new line.
+
+        The format for RPM advisory is: "rpm:advisory_url (link)"
+        The format for each shipment MR is the MR URL itself as a hyperlink
+
+        Raises:
+            WorksheetException: If links_data is invalid (None, not a list, or empty)
         """
         links_data = []
+        shipment_mrs = self._cs.get_shipment_mrs()
+        rpm_advisory = self._cs.get_rpm_advisory()
         if rpm_advisory:
-            links_data.append((f"rpm: {rpm_advisory}", util.get_advisory_link(rpm_advisory), rpm_advisory))
+            url = util.get_advisory_link(rpm_advisory)
+            links_data.append((f"rpm: {rpm_advisory}", url, url))
 
         for mr in shipment_mrs:
             links_data.append((mr, mr))
         
-        self.update_cell_with_hyperlinks(LABEL_SHIPMENT, links_data)
+        self.update_cell_with_hyperlinks(LABEL_AD_OR_SHIPMENT, links_data)
 
-    def get_shipment_info(self):
+    def update_advisory_info(self):
+        """
+        Update advisory information in test report with advisory links from config store
+
+        Retrieves advisory information from the config store and formats each advisory
+        with a hyperlink to the advisory page. Updates the specified cell with all
+        advisory links, each on a new line.
+
+        The format for each advisory is: "impetus:advisory_url (link)"
+        """
+        links_data = []
+        for k, v in self._cs.get_advisories().items():
+            url = util.get_advisory_link(v)
+            links_data.append((f"{k}: {url}", url, url))
+        
+        self.update_cell_with_hyperlinks(LABEL_AD_OR_SHIPMENT, links_data)
+
+    def get_advisory_or_shipment_info(self):
         """
         Get shipment info from test report
         """
-        return self._ws.acell(LABEL_SHIPMENT).value
+        return self._ws.acell(LABEL_AD_OR_SHIPMENT).value
 
     def update_build_info(self, build):
         """
