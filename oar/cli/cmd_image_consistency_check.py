@@ -5,8 +5,8 @@ from oar.core.const import *
 from oar.core.exceptions import JenkinsException
 from oar.core.jenkins import JenkinsHelper
 from oar.core.notification import NotificationManager
-from oar.core.shipment import ShipmentData
 from oar.core.worksheet import WorksheetManager
+from oar.core.operators import ImageHealthOperator
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class ImageConsistencyChecker:
         self.jh = JenkinsHelper(cs)
         self.nm = NotificationManager(cs)
         self.report = WorksheetManager(cs).get_test_report()
-        self.sd = ShipmentData(cs)
+        self.io = ImageHealthOperator(cs)
 
     def trigger_job(self, for_nightly):
         """
@@ -59,9 +59,9 @@ class ImageConsistencyChecker:
 
         job_status = self.jh.get_build_status("image-consistency-check", build_number)
         if job_status == JENKINS_JOB_STATUS_SUCCESS:
-            health_data = self.sd.check_component_image_health()
-            self.sd.add_image_health_summary_comment(health_data)
-            task_status = TASK_STATUS_PASS if health_data.unhealthy_count == 0 else TASK_STATUS_FAIL
+            # call ImageHealthOperator to check container health, it can handle errata or konflux flow automatically
+            healthy = self.io.check_image_health()
+            task_status = TASK_STATUS_PASS if healthy else TASK_STATUS_FAIL
         elif job_status == JENKINS_JOB_STATUS_IN_PROGRESS:
             task_status = TASK_STATUS_INPROGRESS
         else:
