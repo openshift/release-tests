@@ -34,7 +34,8 @@ class JenkinsHelper:
 
     def call_stage_job(self):
         try:
-            if not self.metadata_ad:
+            # only check metadata ad for errata flow
+            if not self._cs.is_konflux_flow() and not self.metadata_ad:
                 raise JenkinsException("metadata advisory not found")
 
             build_url = self.call_build_job(
@@ -148,15 +149,17 @@ class JenkinsHelper:
                 # Add SHIPMENT_MR_ID if shipment MR is available
                 if self.mr_id:
                     parameters_value["SHIPMENT_MR_ID"] = self.mr_id
-                # Add ERRATA_NUMBERS if metadata_ad is not empty
-                if self.metadata_ad:
+                else:
                     parameters_value["ERRATA_NUMBERS"] = self.errata_numbers
             elif (job_name == JENKINS_JOB_STAGE_PIPELINE):
                 parameters_value = {
                     "VERSION": self.version,
-                    "METADATA_AD": self.metadata_ad,
                     "PULL_SPEC": pull_spec,
                 }
+                # only add metadata ad to job request for errata release flow
+                # if param metadata_ad is not provided, stage 'Verify Metadata' will be skipped.
+                if self.metadata_ad:
+                    parameters_value["METADATA_AD"] = self.metadata_ad
             else:
                 logger.info(f"{job_name} is not supported")
 
