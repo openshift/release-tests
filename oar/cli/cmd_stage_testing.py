@@ -44,7 +44,7 @@ class StageTesting:
                 logger.info(f"stage testing {status_msg}, no need to trigger again")
                 return
                 
-            if not self.sd.is_stage_release_success():
+            if self.sd._cs.is_konflux_flow() and not self.sd.is_stage_release_success():
                 logger.info("stage release pipeline is not success, will not trigger stage test")
                 return
                 
