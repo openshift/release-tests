@@ -134,13 +134,58 @@
           "jobStartTime": "2025-08-06T12:29:13Z",
           "jobID": "bcb7e172-aa8e-49e9-b85e-41b8afffd465",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1953070884784705536",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-08-06T15:10:37Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-08-06T12:29:18Z",
           "jobID": "ce2e3eb2-4b6e-4c97-a65d-c8b49f1b5834",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1953070911636639744",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-06T15:24:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-cli] Workloads client test ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-High-67387-oc new-app propagate containerPort information to the deployment if import-mode is default"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -191,5 +236,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-08-06-004617",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-08-06-004617"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
