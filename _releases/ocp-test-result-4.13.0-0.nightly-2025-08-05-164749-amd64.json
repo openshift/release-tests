@@ -117,7 +117,25 @@
           "jobStartTime": "2025-08-06T00:38:36Z",
           "jobID": "a9b6181a-127e-4d72-af4f-7583482aa5c0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/1952892027662241792",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-06T03:44:17Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19717:UserInterface Check configmap on console"
+              ]
+            }
+          }
         }
       ]
     },
@@ -164,5 +182,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2025-08-05-164749",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2025-08-05-164749"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
