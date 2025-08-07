@@ -510,7 +510,7 @@ class ProwJobResult():
         return bool(self.job_completion_time)
 
     def is_failed(self):
-        return self.job_state == "failure" or self.job_state == "aborted"
+        return self.job_state == "failure" or self.job_state == "aborted" or self.job_state == "error"
 
     def is_success(self):
         return self.job_state == "success"
