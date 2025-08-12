@@ -370,11 +370,33 @@ class GitLabMergeRequest:
             logger.error(f"Job details: {stage_info['job'].pformat()}")
             return False
         except Exception as e:
-            logger.error(f"Failed to check stage release status: {str(e)}")
             raise GitLabMergeRequestException(f"Failed to check stage release status: {str(e)}") from e
 
-    def get_stage_release_info(self) -> dict:
-        """Get detailed info about the 'stage-release-triggers' stage from latest pipeline
+    def is_prod_release_success(self) -> bool:
+        """Check if the prod-release-triggers stage has succeeded
+        
+        Returns:
+            bool: True if stage status is 'success', False otherwise
+            
+        Raises:
+            GitLabMergeRequestException: If unable to get stage status
+        """
+        try:
+            stage_info = self.get_prod_release_info()
+            if stage_info['status'] == 'success':
+                return True
+                
+            logger.error(f"Prod release failed with status {stage_info['status']}")
+            logger.error(f"Job details: {stage_info['job'].pformat()}")
+            return False
+        except Exception as e:
+            raise GitLabMergeRequestException(f"Failed to check prod release status: {str(e)}") from e
+
+    def get_release_info(self, stage_name: str) -> dict:
+        """Get detailed info about a release stage from latest pipeline
+        
+        Args:
+            stage_name: Name of the stage to check
         
         Returns:
             dict: {
@@ -385,10 +407,8 @@ class GitLabMergeRequest:
         Raises:
             GitLabMergeRequestException: If stage not found or pipeline error
         """
-        stage_name = "stage-release-triggers"
         try:
             pipeline = self._get_latest_pipeline()
-            
             
             try:
                 stage_status = self._get_stage_info_from_pipeline(stage_name, pipeline)
@@ -407,6 +427,22 @@ class GitLabMergeRequest:
         except Exception as e:
             logger.error(f"Failed to get status for '{stage_name}': Unexpected error", exc_info=False)
             raise GitLabMergeRequestException(f"Failed to get status: {str(e)}") from e
+
+    def get_stage_release_info(self) -> dict:
+        """Get detailed info about the 'stage-release-triggers' stage from latest pipeline
+        
+        Returns:
+            dict: See get_release_info()
+        """
+        return self.get_release_info("stage-release-triggers")
+
+    def get_prod_release_info(self) -> dict:
+        """Get detailed info about the 'prod-release-triggers' stage from latest pipeline
+        
+        Returns:
+            dict: See get_release_info()
+        """
+        return self.get_release_info("prod-release-triggers")
 
     def is_opened(self) -> bool:
         """Check if the merge request is in 'opened' state
@@ -693,6 +729,32 @@ class ShipmentData:
                 
         if not all_success:
             logger.error(f"Stage release failed for MRs: {', '.join(str(mr_id) for mr_id in failed_mrs)}")
+            
+        return all_success
+
+    def is_prod_release_success(self) -> bool:
+        """Check if prod-release-triggers stage has succeeded for all shipment MRs
+        
+        Returns:
+            bool: True if all MRs have successful prod releases, False otherwise
+            
+        Raises:
+            ShipmentDataException: If unable to check stage status for any MR
+        """
+        all_success = True
+        failed_mrs = []
+        
+        for mr in self._mrs:
+            try:
+                if not mr.is_prod_release_success():
+                    failed_mrs.append(mr.merge_request_id)
+                    all_success = False
+            except Exception as e:
+                logger.error(f"Failed to check prod release status for MR {mr.merge_request_id}: {str(e)}")
+                raise ShipmentDataException(f"Failed to check prod release status: {str(e)}") from e
+                
+        if not all_success:
+            logger.error(f"Prod release failed for MRs: {', '.join(str(mr_id) for mr_id in failed_mrs)}")
             
         return all_success
 
