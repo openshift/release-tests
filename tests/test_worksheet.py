@@ -7,7 +7,6 @@ from oar.core.const import *
 from oar.core.exceptions import WorksheetException
 from oar.core.worksheet import WorksheetManager
 
-
 class TestWorksheetManager(TestCase):
     @classmethod
     def setUpClass(self):
@@ -118,7 +117,6 @@ class TestWorksheetManager(TestCase):
             tr._ws.get(LABEL_SIPPY_AUTO_RELEASE, value_render_option="FORMULA")[0][0],
         )
 
-
 class TestTestReport(TestCase):
     # testing_test_report spreadsheet ID
     SPREADSHEET_ID = "1DeGMra2o4dA56R_vGtYMcAVRrhXeHLJ9oGOQQTp4nS0"
@@ -149,3 +147,25 @@ class TestTestReport(TestCase):
 
         for advisory in expected_advisories:
             self.assertIn(advisory, advisory_info_from_test_report)
+
+    def test_blocking_sec_alerts(self):
+        """Test blocking sec-alerts functionality in Others column"""
+        # Test the essential worksheet methods used by CLI command
+        tr = self.wm.get_test_report()
+
+        # Test adding single hyperlinked advisory to Others section
+        test_blocking_advisories = [{"errata_id": 12345, "type": "RHSA", "impetus": "image"}]
+        result = tr.add_security_alert_status_to_others_section(True, test_blocking_advisories)
+        self.assertTrue(result)
+
+        # Test adding multiple hyperlinked advisories to Others section
+        test_multiple_advisories = [
+            {"errata_id": 12345, "type": "RHSA", "impetus": "image"},
+            {"errata_id": 12346, "type": "RHSA", "impetus": "rpm"}
+        ]
+        result = tr.add_security_alert_status_to_others_section(True, test_multiple_advisories)
+        self.assertTrue(result)
+
+        # Test adding "all clear" status when no blocking alerts
+        result = tr.add_security_alert_status_to_others_section(False, [])
+        self.assertTrue(result)

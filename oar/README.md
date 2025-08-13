@@ -50,6 +50,7 @@ Commands:
   stage-testing              Trigger stage pipeline test
   image-signed-check         Check payload image is well signed
   drop-bugs                  Drop bugs from advisories
+  check-blocking-sec-alerts  Check for blocking security alerts across...
   change-advisory-status     Change advisory status e.g.
 ```
 ### Sub command help
@@ -105,4 +106,9 @@ $ oar -r $release-version drop-bugs
 11. This command changes advisory status to, e.g. REL_PREP, and close QE related JIRA subtasks. It also checks blocking secalerts for RHSA advisory. In case of failure, it throws appropriate error message
 ```
 $ oar -r $release-version change-advisory-status
+```
+12. This command checks for blocking security alerts across all RHSA advisories for the release. It automatically updates the Others column in the worksheet with security alert status. The command provides human-readable text output and supports check-only mode for verification without worksheet updates
+```
+$ oar -r $release-version check-blocking-sec-alerts
+$ oar -r $release-version check-blocking-sec-alerts --check-only
 ```
