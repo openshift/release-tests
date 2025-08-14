@@ -6,9 +6,47 @@
         "jobStartTime": "2025-08-14T12:21:37Z",
         "jobID": "ef1f1f17-419b-4c88-b1fc-3ae2e5f467d6",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1955968049681010688",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-08-14T15:04:43Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 104,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 20,
+            "failingScenarios": [
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-WRS-Critical-60351-Critical-60352-V-ACS.02-Install Run Once Duration Override operator via a deployment and verify that it works fine"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-08-14T15:28:06Z",
+          "jobID": "7bd52457-6086-4bb3-b0db-5f7d31d9c2f8",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1956014978611810304",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-08-14T15:28:11Z",
+          "jobID": "eb0ecc3e-452b-4d86-b90b-78f8f62fa416",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1956014999809822720",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999",
@@ -16,9 +54,44 @@
         "jobStartTime": "2025-08-14T12:21:42Z",
         "jobID": "057d35aa-67af-4586-8e59-268ee672a465",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1955968070908383232",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-08-14T15:24:52Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 104,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 27
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-19717:UserInterface Check configmap on console"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-08-14T15:28:22Z",
+          "jobID": "4272105d-039d-44cf-8f47-ae73e8efa4be",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-08-14T15:28:27Z",
+          "jobID": "11f7f128-dc4a-49f0-8d47-3ec276094dbc",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
@@ -26,7 +99,28 @@
         "jobStartTime": "2025-08-14T12:21:47Z",
         "jobID": "74490460-8a33-4b21-9fce-4448d310848b",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1955968092139950080",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-08-14T14:56:31Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 104,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 26
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -55,7 +149,8 @@
         "jobStartTime": "2025-08-14T12:21:57Z",
         "jobID": "07bad077-18fb-4f09-988b-00c4bdae96b9",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.15-gcp-ipi-f999/1955968134380785664",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-08-14T15:05:49Z"
       },
       "retriedJobs": []
     },
@@ -65,7 +160,8 @@
         "jobStartTime": "2025-08-14T12:22:03Z",
         "jobID": "7bd1815f-e2db-4fc9-b581-55ad1b06ba89",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.16-aws-ipi-f999/1955968164277784576",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-08-14T14:52:44Z"
       },
       "retriedJobs": []
     }
