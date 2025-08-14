@@ -11,6 +11,7 @@ from dateutil import parser
 from oar.core.ldap import LdapHelper
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 ERT_NOTIFICATION_PREFIX = "Errata Reliability Team Notification"
 
@@ -629,6 +630,10 @@ def main(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -
     """
 
     jira_token = os.environ.get("JIRA_TOKEN")
+
+    if not jira_token:
+        raise RuntimeError("JIRA token is missing or empty. Please set the JIRA_TOKEN environment variable.")
+
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
 
     ns = NotificationService(jira, dry_run)
