@@ -7,7 +7,7 @@ import oar.core.util as util
 from oar import version
 from oar.controller.detector import start_release_detector
 from oar.core.const import CONTEXT_SETTINGS
-from tools.jira_notificator import jira_notificator
+from oar.notificator.jira_notificator import jira_notificator
 
 logger = logging.getLogger(__name__)
 
