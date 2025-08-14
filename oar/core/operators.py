@@ -1,4 +1,5 @@
 import logging
+import oar.core.util as util
 
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
@@ -121,20 +122,33 @@ class ApprovalOperator:
 
     def approve_release(self) -> None:
         """
-        Execute approval operations based on release flow type
+        Execute approval operations based on release flow type (errata or konflux)
         
-        Handles both errata and konflux flow types
+        For konflux flow:
+        - Adds QE approval to shipment
+        - Changes RPM advisory status to REL_PREP only if payload metadata URL is accessible
+          for the Y-stream release (e.g. 4.19)
+        
+        For errata flow:
+        - Changes all advisory statuses to REL_PREP
+        
+        Note: The payload metadata URL check ensures we don't prematurely move advisories
+        before the url is accessible.
         
         Raises:
-            Exception: If approval operations fail
+            Exception: If approval operations fail for either flow type
         """
         try:
-            # Advisory status change is successful if no exception raised
-            self._am.change_advisory_status()
-            
             # Only handle shipment approval for konflux flow
             if self._sd._cs.is_konflux_flow():
                 self._sd.add_qe_approval()
+                # only move rpm advisory status when payload metadata url is accessible
+                if util.is_payload_metadata_url_accessible(util.get_y_release(self._am._cs.release)):
+                    # when the release is Konflux based, only rpm advisory is available in AdvisoryManager
+                    self._am.change_advisory_status()
+            else:
+                # Move all the advisories to REL_PREP
+                self._am.change_advisory_status()
         except Exception as e:
             logger.error(f"Failed to approve release: {str(e)}")
             raise

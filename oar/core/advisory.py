@@ -2,18 +2,16 @@ import json
 import logging
 import re
 import subprocess
-from datetime import datetime, timezone
-
 import koji
 import urllib3
-from dateutil import parser
-from errata_tool import Erratum, ErrataException, security
-
 import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
 from oar.core.exceptions import AdvisoryException
 from oar.core.jira import JiraManager
+from datetime import datetime, timezone
+from dateutil import parser
+from errata_tool import Erratum, ErrataException, security
 
 logger = logging.getLogger(__name__)
 
