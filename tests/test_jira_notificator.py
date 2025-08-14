@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 from jira import JIRA
 
-from tools.jira_notificator import Contact, Notification, NotificationService, NotificationType
+from oar.notificator.jira_notificator import Contact, Notification, NotificationService, NotificationType
 
 class TestJiraNotificator(unittest.TestCase):
 

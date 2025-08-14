@@ -615,7 +615,7 @@ class NotificationService:
 @click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
 @click.option("--dry-run", is_flag=True, default=False, help="Run without sending Jira notifications.")
 @click.option("--from-date", default=None, type=click.DateTime(formats=["%Y-%m-%d"]), required=False, help="Filters issues that changed to ON_QA state after this date.")
-def main(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
+def jira_notificator(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
     """
     CLI entry point to process ON_QA issues and notify responsible people.
 
@@ -629,10 +629,14 @@ def main(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -
     """
 
     jira_token = os.environ.get("JIRA_TOKEN")
+
+    if not jira_token:
+        raise RuntimeError("JIRA token is missing or empty. Please set the JIRA_TOKEN environment variable.")
+
     jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
 
     ns = NotificationService(jira, dry_run)
     ns.process_on_qa_issues(search_batch_size, from_date)
 
 if __name__ == "__main__":
-    main()
+    jira_notificator()
