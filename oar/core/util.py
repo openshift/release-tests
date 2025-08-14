@@ -1,8 +1,15 @@
 import logging
-from urllib.parse import urlparse
+import requests
 import warnings
 import re
+import subprocess
+import json
 from semver.version import Version
+from urllib.parse import urlparse
+from subprocess import CalledProcessError
+from requests.exceptions import RequestException
+
+logger = logging.getLogger(__name__)
 
 def is_valid_z_release(version):
     strs = version.split(".")
@@ -156,3 +163,60 @@ def get_qe_sippy_url() -> str:
         str: QE Sippy url
     """
     return "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness"
+
+def is_payload_metadata_url_accessible(release: str) -> bool:
+    """Check if the metadata URL for a given OCP release payload is accessible.
+    
+    This function verifies accessibility by:
+    1. Getting the image pullspec from release stream API
+    2. Checking if oc client is available
+    3. Extracting metadata URL from release payload
+    4. Verifying the metadata URL returns HTTP 200
+    
+    Args:
+        release: The OCP Y-stream release version to check (e.g. "4.19")
+        
+    Returns:
+        bool: True if metadata URL is accessible, False otherwise
+        
+    Raises:
+        requests.exceptions.RequestException: If any HTTP request fails
+        subprocess.CalledProcessError: If oc command execution fails
+    """
+    # get image pullspec from release stream 4-stable
+    pullspec = None
+    url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/latest?prefix={release}"
+    resp = requests.get(url)
+    if resp.ok:
+        pullspec = resp.json()['pullSpec']
+    else:
+        logger.error(f"Can not get payload pullspec from release stream 4-stable, http error {resp.status_code}")
+        return False
+    
+    # get metadata url from release payload
+    # this logic replies on oc client, so need to check oc installation first.
+    try:
+        cmd = ['oc', 'version', '--client']
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except (CalledProcessError, FileNotFoundError):
+        logger.error("Cannot find oc client from localhost, please make sure it is installed")
+        return False
+    
+    metadata_url = None
+    try:
+        cmd = ['oc', 'adm', 'release', 'info', pullspec, '-o', 'json']
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        metadata_url = json.loads(result.stdout).get('metadata').get('metadata').get('url')
+    except CalledProcessError as cpe:
+        logger.error(f"Execute oc command failed: {str(cpe)}")
+        return False
+    
+    # check if the metadata url is accessible, expected is 200 ok
+    logger.info(f"Checking accessiblity of metadata url {metadata_url}")
+    try:
+        accessible = requests.get(metadata_url, timeout=10).ok
+        logger.info(f"The metadata url is {'accessible' if accessible else 'not accessible'}")
+        return accessible
+    except RequestException as e:
+        logger.error(f"Failed to check metadata URL accessibility: {str(e)}")
+        return False
