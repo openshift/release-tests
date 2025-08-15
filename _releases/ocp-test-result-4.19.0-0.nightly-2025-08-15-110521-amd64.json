@@ -14,13 +14,58 @@
           "jobStartTime": "2025-08-15T19:28:05Z",
           "jobID": "6f5db04f-1bbb-4125-84a7-5badcb376c6f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1956437761837764608",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-15T22:15:43Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 111,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-08-15T19:28:10Z",
           "jobID": "c61c2979-b78d-44dc-ba73-ae6d92c57dec",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1956437783211937792",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-08-15T21:59:16Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 111,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 22
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -133,5 +178,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-08-15-110521",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-08-15-110521"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
