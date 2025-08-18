@@ -872,9 +872,10 @@ class MessageHelper:
             message += self._to_link(util.get_advisory_link(ad), ad) + " "
         message += "\n"
         
-        message += "Updated jira subtasks:\n"
-        for key in updated_subtasks:
-            message += self._to_link(util.get_jira_link(key), key) + " "
+        if updated_subtasks:
+            message += "Updated jira subtasks:\n"
+            for key in updated_subtasks:
+                message += self._to_link(util.get_jira_link(key), key) + " "
 
         if len(abnormal_ads):
             message += "\n"

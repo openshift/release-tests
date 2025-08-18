@@ -161,24 +161,32 @@ class TestReport:
 
     def update_shipment_info(self):
         """
-        Update shipment information in test report with shipment MRs and RPM advisory link
+        Update shipment information in test report with shipment MRs and advisories
 
-        Retrieves shipment information from the config store and formats each shipment MR
-        with a hyperlink. Also formats the RPM advisory with a hyperlink to the advisory page.
-        Updates the specified cell with all shipment links and RPM advisory, each on a new line.
+        Retrieves shipment MRs and advisories from the config store. For each advisory:
+        - Formats it as "key: advisory_id" with a hyperlink to the advisory page
+        - Adds the advisory URL and string representation of the advisory ID
+        
+        For each shipment MR:
+        - Adds the MR URL as both display text and hyperlink
 
-        The format for RPM advisory is: "rpm:advisory_url (link)"
-        The format for each shipment MR is the MR URL itself as a hyperlink
+        Combines all links into links_data list and updates the specified cell using
+        update_cell_with_hyperlinks().
+
+        The format for advisories is: "key: advisory_id (link)"
+        The format for shipment MRs is: "MR_URL (link)"
 
         Raises:
             WorksheetException: If links_data is invalid (None, not a list, or empty)
+            WorksheetException: If get_advisory_link() fails for any advisory
         """
         links_data = []
         shipment_mrs = self._cs.get_shipment_mrs()
-        rpm_advisory = self._cs.get_rpm_advisory()
-        if rpm_advisory:
-            url = util.get_advisory_link(rpm_advisory)
-            links_data.append((f"rpm: {rpm_advisory}", url, url))
+        advisories = self._cs.get_advisories()
+        if advisories:
+            for k,v in advisories.items():
+                url = util.get_advisory_link(v)
+                links_data.append((f"{k}: {v}", url, str(v)))
 
         for mr in shipment_mrs:
             links_data.append((mr, mr))
@@ -270,6 +278,7 @@ class TestReport:
             label (str): cell label, A1/B2
             status (str): Pass/Fail/In Progress
         """
+        label = self.transform_cell_labels(label)
         self._ws.update_acell(label, status)
         task_name = self._ws.acell("A" + label[1:]).value
         logger.info(f"task [{task_name}] status is changed to [{status}]")
@@ -289,6 +298,32 @@ class TestReport:
                         "there is no failed task and overall status is Red, will update overall status to Green"
                     )
                     self.update_overall_status_to_green()
+
+    def transform_cell_labels(self, label) -> str:
+        """
+        Transform cell labels to their konflux equivalents when in konflux flow
+        
+        Args:
+            label (str): The original cell label
+            
+        Returns:
+            str: The konflux version of the label if available and in konflux flow,
+                 otherwise returns the original label
+        """
+        if not self._cs.is_konflux_flow():
+            return label
+            
+        # Map of standard labels to their konflux equivalents
+        konflux_labels = {
+            LABEL_TASK_CHANGE_AD_STATUS: LABEL_TASK_CHANGE_AD_STATUS_KONFLUX,
+            LABEL_TASK_CHECK_CVE_TRACKERS: LABEL_TASK_CHECK_CVE_TRACKERS_KONFLUX,
+            LABEL_TASK_PUSH_TO_CDN: LABEL_TASK_PUSH_TO_CDN_KONFLUX,
+            LABEL_TASK_STAGE_TEST: LABEL_TASK_STAGE_TEST_KONFLUX,
+            LABEL_TASK_PAYLOAD_IMAGE_VERIFY: LABEL_TASK_PAYLOAD_IMAGE_VERIFY_KONFLUX,
+            LABEL_TASK_DROP_BUGS: LABEL_TASK_DROP_BUGS_KONFLUX
+        }
+        
+        return konflux_labels.get(label, label)
 
     def get_task_status(self, label):
         """

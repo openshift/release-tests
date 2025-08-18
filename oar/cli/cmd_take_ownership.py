@@ -10,11 +10,11 @@ from oar.core.worksheet import WorksheetManager
 
 logger = logging.getLogger(__name__)
 
-def validate_email_for_cli(email):
+def validate_email_for_cli(ctx, param, value):
     """Validate email address using util.validate_email and raise click exception if invalid"""
-    if not is_valid_email(email):
-        raise click.BadParameter(f"{email} is not a valid email")
-    return email
+    if not is_valid_email(value):
+        raise click.BadParameter(f"{value} is not a valid email")
+    return value
 
 
 @click.command()

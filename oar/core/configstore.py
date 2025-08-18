@@ -80,16 +80,6 @@ class ConfigStore:
 
         return self._get_assembly_attr("group/advisories")
 
-    def get_rpm_advisory(self):
-        """
-        Get RPM advisory ID from build data if exists
-        
-        Returns:
-            str: RPM advisory ID or None if not found
-        """
-        advisories = self.get_advisories()
-        return advisories.get(AD_IMPETUS_RPM) if advisories else None
-
     def get_candidate_builds(self):
         """
         Get candidate nightly builds from build data e.g.

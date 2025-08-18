@@ -546,11 +546,17 @@ class ImageHealthData:
     total_scanned: int
     unhealthy_components: List[Dict]
     unhealthy_count: int = 0
+    unknown_count: int = 0
 
     def __post_init__(self):
-        """Calculate unhealthy_count if not provided"""
+        """Calculate counts if not provided"""
         if not self.unhealthy_count:
             self.unhealthy_count = len(self.unhealthy_components)
+        if not self.unknown_count:
+            self.unknown_count = len([
+                c for c in self.unhealthy_components 
+                if c.get("grade") == "Unknown"
+            ])
 
 class ShipmentData:
     """Class for handling shipment merge request operations"""
@@ -861,32 +867,47 @@ class ShipmentData:
         
         return all_high_severity_bugs, all_can_drop_issues
 
-    def _get_components_from_shipment(self, mr: GitLabMergeRequest) -> list[dict]:
-        """Get all components from shipment YAML files
+    def _get_images_from_shipment(self, mr: GitLabMergeRequest) -> list:
+        """Get all images from advisories in shipment YAML files
         
         Args:
             mr: GitLabMergeRequest instance to get files from
             
         Returns:
-            List of component objects from shipment.snapshot.spec.components
+            List of all images from advisories (spec.content.images)
             
         Raises:
             ShipmentDataException: If unable to process shipment files
         """
-        components = []
+        images = []
         try:
             yaml_files = mr.get_all_files()
             for file_path in yaml_files:
+                # Skip files containing ".fbc." in their path
+                if ".fbc." in file_path.lower():
+                    continue
+                    
                 try:
                     content = mr.get_file_content(file_path)
                     data = yaml.safe_load(content)
-                    components.extend(glom(data, 'shipment.snapshot.spec.components', default=[]))
+                    
+                    # Get advisory URL and images
+                    advisory_url = glom(data, 'shipment.environments.stage.advisory.internal_url', default=None)
+                    if advisory_url:
+                        try:
+                            # Fetch advisory content and extract images
+                            advisory_content = yaml.safe_load(requests.get(advisory_url).text)
+                            images.extend(glom(advisory_content, 'spec.content.images', default=[]))
+                        except Exception as e:
+                            logger.warning(f"Failed to process advisory {advisory_url}: {str(e)}")
+                            continue
+                            
                 except Exception as e:
                     logger.warning(f"Failed to process file {file_path}: {str(e)}")
                     continue
         except Exception as e:
-            raise ShipmentDataException(f"Failed to get components from shipment: {str(e)}")
-        return components
+            raise ShipmentDataException(f"Failed to get images from shipment: {str(e)}")
+        return images
 
     def _get_image_digest(self, pull_spec: str) -> str:
         """Extract image digest from container image pull spec
@@ -976,39 +997,47 @@ class ShipmentData:
         total_scanned = 0
         
         logger.info(f"Starting image health check for {len(self._mrs)} shipment MRs")
+
+        # add this checkpoint, make sure stage release is completed successfully
+        # then advisory url is available in shipment yaml
+        if not self.is_stage_release_success():
+            raise ShipmentDataException("Stage release pipeline is not completed yet")
         
         for mr in self._mrs:
             try:
                 logger.info(f"Processing MR {mr.merge_request_id}")
-                components = self._get_components_from_shipment(mr)
-                logger.info(f"Found {len(components)} components to check")
-                for component in components:
+                images = self._get_images_from_shipment(mr)
+                logger.info(f"Found {len(images)} images to check")
+                for image in images:
                     try:
-                        pull_spec = component.get("containerImage")
+                        pull_spec = image.get("containerImage")
                         if not pull_spec:
                             continue
                             
                         digest = self._get_image_digest(pull_spec)
-                        logger.debug(f"Checking image health for {component.get('name')} ({digest})")
+                        component = image.get("component")
+                        architecture = image.get("architecture")
+                        logger.debug(f"Checking image health for {component} ({digest}) architecture={architecture}")
                         grades = self._query_pyxis_freshness(digest)
                         grade = self._get_current_image_health_status(grades)
                         
                         total_scanned += 1
-                        logger.debug(f"Component {component.get('name')} health grade: {grade}")
-                        if grade and grade != "Unknown" and grade > "B":
+                        logger.debug(f"Component {component} health grade: {grade}")
+                        if grade and (grade == "Unknown" or grade > "B"):
                             unhealthy_components.append({
-                                "name": component.get("name", "Unknown"),
+                                "name": component,
                                 "grade": grade,
-                                "pull_spec": pull_spec
+                                "pull_spec": pull_spec,
+                                "architecture": architecture
                             })
                     except Exception as e:
-                        logger.warning(f"Failed to check freshness for component: {str(e)}")
+                        logger.warning(f"Failed to check freshness for image: {str(e)}")
                         continue
             except Exception as e:
                 logger.error(f"Failed to process MR {mr.merge_request_id}: {str(e)}")
                 continue
                 
-        logger.info(f"Completed image health check. Scanned {total_scanned} components, found {len(unhealthy_components)} unhealthy")
+        logger.info(f"Completed image health check. Scanned {total_scanned} images, found {len(unhealthy_components)} unhealthy")
         return ImageHealthData(
             total_scanned=total_scanned,
             unhealthy_components=unhealthy_components
@@ -1027,13 +1056,14 @@ class ShipmentData:
             health_data = self.check_component_image_health()
         unhealthy_count = health_data.unhealthy_count
         
-        summary = f"Images scanned: {health_data.total_scanned}\n"
-        summary += f"Unhealthy components detected: {unhealthy_count}\n"
+        summary = f"Images scanned: {health_data.total_scanned}. \n"
+        summary += f"Unhealthy components detected: {health_data.unhealthy_count}. \n"
+        summary += f"Health info missed: {health_data.unknown_count}. \n"
         
         if unhealthy_count > 0:
             summary += "Unhealthy components:\n"
             for comp in health_data.unhealthy_components:
-                summary += f"{comp['name']} (grade {comp['grade']}) - {comp['pull_spec']}\n"
+                summary += f"{comp['name']} (grade {comp['grade']}, arch {comp['architecture']}) - {comp['pull_spec']}  \n"
                 
         return summary
 
