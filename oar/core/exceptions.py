@@ -40,3 +40,6 @@ class GitLabServerException(BaseException):
 
 class ShipmentDataException(BaseException):
     """Exception class to raise error in ShipmentData"""
+
+class GitException(BaseException):
+    """Exception class to raise error in GitHelper"""

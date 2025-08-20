@@ -259,6 +259,27 @@ class JiraManager:
                 unverified_cve_issues.append(issue)
         return unverified_cve_issues
 
+    def get_onqa_issues(self, jira_issue_keys: list[str]):
+        """
+        Get list of issues in ON_QA state, excluding CVE tracker bugs
+
+        Args:
+            jira_issue_keys (list[str]): List of jira issue keys to filter
+
+        Returns:
+            list[str]: List of issue keys in ON_QA state that are not CVE trackers
+        """
+        onqa_issues = list()
+        for key in jira_issue_keys:
+            try:
+                issue = self.get_issue(key)
+            except JiraUnauthorizedException as e:
+                logger.error(f"Jira token does not have permission to access issue {key}, ignore and continue: {e}")
+                continue
+            if issue.is_on_qa() and not issue.is_cve_tracker():
+                onqa_issues.append(issue.get_key())
+        return onqa_issues
+
     def create_cvp_issue(self, abnormal_tests):
         """
         Create CVP issue with abnormal test details

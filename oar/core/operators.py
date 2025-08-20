@@ -66,17 +66,14 @@ class BugOperator:
         """
         try:
             # Drop from advisories first
-            dropped_from_ads, high_severity = self._am.drop_bugs()
+            dropped_from_ads = self._am.drop_bugs()
             
             # Then drop from shipments if konflux flow
             if self._sd._cs.is_konflux_flow():
-                high_from_shipments, dropped_from_shipments = self._sd.drop_bugs()
-                return (
-                    dropped_from_ads + dropped_from_shipments,
-                    high_severity + high_from_shipments
-                )
+                dropped_from_shipments = self._sd.drop_bugs()
+                return (dropped_from_ads + dropped_from_shipments)
             
-            return (dropped_from_ads, high_severity)
+            return dropped_from_ads
         except Exception as e:
             logger.error(f"Bug drop failed: {str(e)}")
             raise
@@ -120,7 +117,7 @@ class ApprovalOperator:
         self._am = AdvisoryManager(cs)
         self._sd = ShipmentData(cs)
 
-    def approve_release(self) -> None:
+    def approve_release(self) -> bool:
         """
         Execute approval operations based on release flow type (errata or konflux)
         
@@ -135,6 +132,9 @@ class ApprovalOperator:
         Note: The payload metadata URL check ensures we don't prematurely move advisories
         before the url is accessible.
         
+        Returns:
+            bool: True if all approvals succeeded, False if payload metadata URL not accessible (konflux only)
+            
         Raises:
             Exception: If approval operations fail for either flow type
         """
@@ -146,9 +146,12 @@ class ApprovalOperator:
                 if util.is_payload_metadata_url_accessible(util.get_y_release(self._am._cs.release)):
                     # when the release is Konflux based, only rpm advisory is available in AdvisoryManager
                     self._am.change_advisory_status()
+                    return True
+                return False
             else:
                 # Move all the advisories to REL_PREP
                 self._am.change_advisory_status()
+                return True
         except Exception as e:
             logger.error(f"Failed to approve release: {str(e)}")
             raise
@@ -217,9 +220,9 @@ class NotificationOperator:
         """
         try:
             if self._sd._cs.is_konflux_flow():
-                mrs = self._sd._cs.get_shipment_mrs()
+                mr = self._sd._cs.get_shipment_mr()
                 self._nm.share_shipment_mrs_and_ad_info(
-                    mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner
+                    mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
                 )
             else:
                 self._nm.share_ownership_change_result(

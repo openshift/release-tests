@@ -295,28 +295,25 @@ class ConfigStore:
         """
         return self._local_conf["signature_url"]
 
-    def get_shipment_mrs(self):
-        """Get shipment MR URLs from assembly config, handling both single and multiple shipments.
+    def get_shipment_mr(self):
+        """Get shipment MR URL from assembly config.
 
         Returns:
-            list: List of MR URLs from assembly config (empty list if none found)
+            str: MR URL from assembly config (empty string if none found)
         """
-        shipments = self._get_assembly_attr("group/shipment")
-        if not shipments:
-            return []
+        shipment = self._get_assembly_attr("group/shipment")
+        if not shipment:
+            return ""
 
-        if isinstance(shipments, dict):  # Single shipment case
-            return [shipments["url"]]
-        else:  # Multiple shipments case
-            return [s["url"] for s in shipments]
+        return shipment["url"]
 
     def is_konflux_flow(self) -> bool:
-        """Check if current release uses Konflux flow by verifying shipment MRs exist.
+        """Check if current release uses Konflux flow by verifying shipment MR exists.
         
         Returns:
-            bool: True if shipment MRs exist (Konflux flow), False otherwise (Errata flow)
+            bool: True if shipment MR exists (Konflux flow), False otherwise (Errata flow)
         """
-        return len(self.get_shipment_mrs()) > 0
+        return bool(self.get_shipment_mr())
 
 
     def get_advisories(self):

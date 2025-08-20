@@ -31,17 +31,15 @@ def drop_bugs(ctx):
         # check doc and product security approval advisories
         # TODO: need to confirm how to collabrate with doc and prodsec team
         approved_doc_ads, approved_prodsec_ads = operator._am.get_doc_prodsec_approved_ads()
-        dropped_bugs, high_severity_bugs = operator.drop_bugs()
+        dropped_bugs = operator.drop_bugs()
         # check if all bugs are verified
         nm = NotificationManager(cs)
         requested_doc_ads = []
         requested_prodsec_ads = []
-        if len(dropped_bugs) or len(high_severity_bugs):
+        if len(dropped_bugs):
             logger.info("updating test report")
-            report.update_bug_list(operator._am.get_jira_issues())
-            nm.share_dropped_and_high_severity_bugs(
-                dropped_bugs, high_severity_bugs
-            )
+            report.update_bug_list(operator.get_jira_issues(), dropped_bugs)
+            nm.share_dropped_bugs(dropped_bugs)
             if len(approved_doc_ads):
                 for ad in approved_doc_ads:
                     ad.refresh()

@@ -93,7 +93,7 @@ class WorksheetManager:
 
             # handle cell update for (B2) separately
             if self._cs.is_konflux_flow():
-                # update shipment MRs and RPM advisory link
+                # update shipment MR and RPM advisory link
                 self._report.update_shipment_info()
                 logger.info("shipment info is updated")
             else:
@@ -161,35 +161,34 @@ class TestReport:
 
     def update_shipment_info(self):
         """
-        Update shipment information in test report with shipment MRs and advisories
+        Update shipment information in test report with shipment MR and advisories
 
-        Retrieves shipment MRs and advisories from the config store. For each advisory:
+        Retrieves shipment MR and advisories from the config store. For each advisory:
         - Formats it as "key: advisory_id" with a hyperlink to the advisory page
         - Adds the advisory URL and string representation of the advisory ID
         
-        For each shipment MR:
+        For the shipment MR:
         - Adds the MR URL as both display text and hyperlink
 
         Combines all links into links_data list and updates the specified cell using
         update_cell_with_hyperlinks().
 
         The format for advisories is: "key: advisory_id (link)"
-        The format for shipment MRs is: "MR_URL (link)"
+        The format for shipment MR is: "MR_URL (link)"
 
         Raises:
             WorksheetException: If links_data is invalid (None, not a list, or empty)
             WorksheetException: If get_advisory_link() fails for any advisory
         """
         links_data = []
-        shipment_mrs = self._cs.get_shipment_mrs()
+        shipment_mr = self._cs.get_shipment_mr()
         advisories = self._cs.get_advisories()
         if advisories:
             for k,v in advisories.items():
                 url = util.get_advisory_link(v)
                 links_data.append((f"{k}: {v}", url, str(v)))
 
-        for mr in shipment_mrs:
-            links_data.append((mr, mr))
+        links_data.append((shipment_mr, shipment_mr))
         
         self.update_cell_with_hyperlinks(LABEL_AD_OR_SHIPMENT, links_data)
 
@@ -431,14 +430,17 @@ class TestReport:
 
         logger.info("bugs to be verified are updated")
 
-    def update_bug_list(self, jira_issues: list):
+    def update_bug_list(self, jira_issues: list, dropped_issues: list = None):
         """
         Update existing bug status in report
         Append new ON_QA bugs
 
         Args:
             jira_issues (list): updated jira issues
+            dropped_issues (list): list of dropped issue keys (optional)
         """
+        if dropped_issues is None:
+            dropped_issues = []
         jm = JiraManager(self._cs)
         # iterate cell value from C8 in colum C, update existing bug status
         existing_bugs = []
@@ -467,7 +469,7 @@ class TestReport:
                     logger.info(
                         f"status of bug {issue.get_key()} is updated to {issue.get_status()}"
                     )
-                elif bug_key not in jira_issues:
+                elif bug_key not in jira_issues or bug_key in dropped_issues:
                     self._ws.update_acell(
                         "E" + str(row_idx), JIRA_STATUS_DROPPED)
                     logger.info(f"bug {bug_key} is dropped")
