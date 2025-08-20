@@ -274,24 +274,24 @@ class NotificationManager:
             raise NotificationException(
                 "share greenwave cvp failures failed") from e
 
-    def share_shipment_mrs(self, mrs, new_owner):
+    def share_shipment_mr(self, mr, new_owner):
         """
         Share shipment merge requests info via Slack
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             new_owner (str): Email of new owner
 
         Raises:
-            NotificationException: error when sharing shipment MRs
+            NotificationException: error when sharing shipment MR
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_shipment_mrs(mrs, new_owner)
+            slack_msg = self.mh.get_slack_message_for_shipment_mr(mr, new_owner)
             self.sc.post_message(
                 self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
             )
         except Exception as e:
-            raise NotificationException("share shipment MRs failed") from e
+            raise NotificationException("share shipment MR failed") from e
 
     def share_shipment_mr_and_ad_info(self, mr, updated_ads, abnormal_ads, updated_subtasks, new_owner):
         """
@@ -308,7 +308,7 @@ class NotificationManager:
             NotificationException: error when sharing info
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_shipment_mrs_and_ad_info(
+            slack_msg = self.mh.get_slack_message_for_shipment_mr_and_ad_info(
                 mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
             self.sc.post_message(
@@ -322,7 +322,7 @@ class NotificationManager:
                     self.cs.get_slack_channel_from_contact("art"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException("share shipment MRs and AD info failed") from e
+            raise NotificationException("share shipment MR and AD info failed") from e
         
     def share_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
@@ -880,12 +880,12 @@ class MessageHelper:
 
         return message
 
-    def get_slack_message_for_shipment_mrs(self, mrs, new_owner):
+    def get_slack_message_for_shipment_mr(self, mr, new_owner):
         """
-        Get Slack message for shipment merge requests
+        Get Slack message for shipment merge request
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             new_owner (str): Email of new owner
 
         Returns:
@@ -899,19 +899,18 @@ class MessageHelper:
 
         message = f"[{self.cs.release}] Hello {gid}, QE release lead has been transferred to {new_owner}\n"
         message += "Shipment merge requests:\n"
-        for mr in mrs:
-            message += self._to_link(mr, mr) + "\n"
+        message += self._to_link(mr, mr) + "\n"
 
         return message
 
-    def get_slack_message_for_shipment_mrs_and_ad_info(
+    def get_slack_message_for_shipment_mr_and_ad_info(
         self, mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
     ):
         """
         Get Slack message combining shipment merge requests and advisory info
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             updated_ads (list): Updated advisory list
             abnormal_ads (list): Advisory list that state is not QE
             updated_subtasks (list): Updated jira subtasks

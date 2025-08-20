@@ -94,7 +94,7 @@ class TestNotificationManager(unittest.TestCase):
             return_value="<!subteam^TEST>"
         )
         
-        message = self.nm.mh.get_slack_message_for_shipment_mrs(test_mrs, test_owner)
+        message = self.nm.mh.get_slack_message_for_shipment_mr(test_mrs, test_owner)
         logging.debug("Generated Slack message: %s", message)
         
         # Verify message components
@@ -113,7 +113,7 @@ class TestNotificationManager(unittest.TestCase):
         self.cs.get_shipment_mr_urls = unittest.mock.Mock(return_value=test_mrs)
         self.nm.sc.post_message = unittest.mock.Mock()
         
-        self.nm.share_shipment_mrs(test_mrs, test_owner)
+        self.nm.share_shipment_mr(test_mrs, test_owner)
         
         # Verify Slack client called with formatted message
         self.nm.sc.post_message.assert_called_once_with(
@@ -132,7 +132,7 @@ class TestNotificationManager(unittest.TestCase):
         )
         
         with self.assertRaises(Exception):
-            self.nm.share_shipment_mrs(test_mrs, test_owner)
+            self.nm.share_shipment_mr(test_mrs, test_owner)
 
     def test_get_slack_message_for_unverified_cve_issues_to_managers(self):
         empty_unverified_cve_msg = (
