@@ -23,19 +23,15 @@ class TestGitHelper(unittest.TestCase):
 
     def setUp(self):
         self.test_repo_url = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data.git"
-        self.test_branch = "prepare-shipment-4.19.9-20250814082103"
+        self.test_branch = "prepare-shipment-4.19.8-20250804193041"
         self.test_dir = None
 
-    def tearDown(self):
-        if self.test_dir and os.path.exists(self.test_dir):
-            self.gh.cleanup()
-
     def test_checkout_repo_success(self):
-        self.logger.info("Testing checkout_repo with valid URL and branch")
+        logger.info("Testing checkout_repo with valid URL and branch")
         repo_path = self.gh.checkout_repo(self.test_repo_url, self.test_branch)
         
     def test_checkout_repo_custom_temp_dir(self):
-        self.logger.info("Testing checkout_repo with custom temp directory")
+        logger.info("Testing checkout_repo with custom temp directory")
         custom_temp_dir = "/tmp/custom"
         os.makedirs(custom_temp_dir, exist_ok=True)
         repo_path = self.gh.checkout_repo(self.test_repo_url, self.test_branch, temp_parent_dir=custom_temp_dir)
