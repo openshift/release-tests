@@ -24,7 +24,7 @@ class JenkinsHelper:
             [str(i) for i in [val for val in self._cs.get_advisories().values()]]
         )
         # get shipment MR id
-        mrs = ShipmentData(cs).get_mrs()
+        mrs = ShipmentData(cs).get_mr()
         self.mr_id = mrs[0].get_id() if mrs else None
         # construct image pull spec
         self.pull_spec = (

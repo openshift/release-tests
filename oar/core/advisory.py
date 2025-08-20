@@ -185,23 +185,23 @@ class AdvisoryManager:
 
     def drop_bugs(self):
         """
-        Go through all attached bugs. Drop the not verified bugs if they're not critical/blocker/customer_case/CVE
+        Drop unverified bugs from all advisories that are not cve tracker bugs.
+
+        This method iterates through all advisories and identifies bugs in ON_QA status that
+        have not been verified. These bugs are removed from the advisories unless they are
+        CVE tracker bugs, which must be verified and cannot be dropped
 
         Raises:
             AdvisoryException: error when dropping bugs from advisory
 
         Returns:
-            tuple[list[str], list[str]]: list of jira keys that were dropped, list of high severity jira keys that are still to be verified
+            list[str]: list of jira keys that were successfully dropped from advisories
         """
         jm = JiraManager(self._cs)
         ads = self.get_advisories()
         all_dropped_bugs = []
-        all_high_severity_bugs = []
         for ad in ads:
-            issues = ad.jira_issues
-            high_severity_bugs, drop_bug_list = jm.get_high_severity_and_can_drop_issues(issues)
-            all_high_severity_bugs.extend(high_severity_bugs)
-
+            drop_bug_list = jm.get_onqa_issues_excluding_cve(ad.jira_issues)
             if drop_bug_list:
                 all_dropped_bugs.extend(drop_bug_list)
                 for key in drop_bug_list:
@@ -212,14 +212,14 @@ class AdvisoryManager:
                 )
                 ad.remove_bugs(drop_bug_list)
                 logger.info(
-                    f"not verified and non-critical bugs are dropped from advisory {ad.errata_id}"
+                    f"not verified and non cve track bugs are dropped from advisory {ad.errata_id}"
                 )
             else:
                 logger.info(
                     f"there is no bug in advisory {ad.errata_id} that can be dropped"
                 )
 
-        return all_dropped_bugs, all_high_severity_bugs
+        return all_dropped_bugs
 
     def check_cve_tracker_bug(self):
         """

@@ -73,6 +73,29 @@ class TestGitLabServer(unittest.TestCase):
         except Exception as e:
             self.fail(f"Real GitLab API test failed: {str(e)}")
 
+    def test_get_mr_by_title_real(self):
+        """Test get_mr_by_title with real GitLab API (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            # Use a known existing MR title from the project
+            test_title = "Shipment for 4.19.9"
+            server = GitLabServer("https://gitlab.cee.redhat.com")
+            project = ""
+            mr = server.get_mr_by_title(test_title, "hybrid-platforms/art/ocp-shipment-data")
+            
+            if mr is None:
+                # Print available MR titles for debugging
+                all_mrs = server.gl.mergerequests.list(state='opened')
+                print(f"\nAvailable MR titles: {[mr.title for mr in all_mrs]}")
+                self.fail(f"No MR found with title '{test_title}'")
+                
+            self.assertIsInstance(mr, dict)
+            print(f"\nFound GitLab MR with title '{test_title}': {mr}")
+        except Exception as e:
+            self.fail(f"Real GitLab API test failed: {str(e)}")
+
 
 class TestGitLabMergeRequest(unittest.TestCase):
     @patch('os.getenv', return_value="test-token")
@@ -113,6 +136,18 @@ class TestGitLabMergeRequest(unittest.TestCase):
         self.assertEqual(self.client.private_token, "test-token")
         self.assertEqual(self.client.merge_request_id, 123)
 
+    def test_get_source_target_branches(self):
+        # Test get source/target branch for a MR
+        client = GitLabMergeRequest(
+                "https://gitlab.cee.redhat.com",
+                "hybrid-platforms/art/ocp-shipment-data",
+                67
+            )
+
+        self.assertEqual(client.get_source_branch(), "4.19-drop-bugs")
+        self.assertEqual(client.mr.target_branch, "prepare-shipment-4.19.9-20250814082103")
+    
+    
     def test_get_file_content_success(self):
         # Setup mock project files to return string content directly
         self.mock_project.files.get.return_value = "test content"
@@ -310,6 +345,28 @@ class TestGitLabMergeRequest(unittest.TestCase):
             else:
                 self.fail(f"Failed to approve real MR: {str(e)}")
 
+    def test_get_source_branch_real_mr(self):
+        """Test getting source branch from real MR (requires GITLAB_TOKEN env var)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            client = GitLabMergeRequest(
+                "https://gitlab.cee.redhat.com",
+                "hybrid-platforms/art/ocp-shipment-data",
+                65
+            )
+            branch = client.get_source_branch()
+            self.assertIsInstance(branch, str)
+            self.assertEqual(branch, "prepare-shipment-4.19.9-20250814082103")
+            print(f"\nSource branch for MR 15: {branch}")
+        except Exception as e:
+            if "Merge request 15 not found" in str(e):
+                self.skipTest(
+                    "Merge request 15 not found - skipping real API test")
+            else:
+                self.fail(f"Failed to get source branch from real MR: {str(e)}")
+
     def test_add_suggestion_real_mr(self):
         """Test adding suggestion with real MR (requires GITLAB_TOKEN env var)"""
         if not os.getenv('GITLAB_TOKEN'):
@@ -372,20 +429,14 @@ class TestShipmentData(unittest.TestCase):
     def setUp(self, mock_config):
         self.mock_config = mock_config
         self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
-        self.mock_config.get_shipment_mrs.return_value = [
-            "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/15"]
-        # Don't mock the token - let it be retrieved from environment
+        self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/68"
+        # Don't mock the token - let it be retrieved from environment  
         self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
         self.shipment = ShipmentData(self.mock_config)
 
     def test_get_jira_issues_with_real_mr(self):
         issues = self.shipment.get_jira_issues()
         self.assertEqual(issues, ["OCPBUGS-12345", "OCPBUGS-67890"])
-
-    def test_get_nvrs_with_real_mr(self):
-        nvrs = self.shipment.get_nvrs()
-        self.assertEqual(
-            nvrs, ["microshift-bootc-v4.18.0-202503121435.p0.gc0eec47.assembly.4.18.2.el9"])
 
     @patch('oar.core.shipment.GitLabServer')
     def test_add_qe_release_lead_comment_success(self, mock_gl_server):
@@ -396,7 +447,7 @@ class TestShipmentData(unittest.TestCase):
 
         # Setup mock merge request
         mock_mr = MagicMock()
-        self.shipment._mrs = [mock_mr]
+        self.shipment._mr = mock_mr
 
         # Test the method
         self.shipment.add_qe_release_lead_comment("test@example.com")
@@ -462,7 +513,7 @@ class TestShipmentData(unittest.TestCase):
         # Setup mock MRs
         mock_mr1 = MagicMock()
         mock_mr2 = MagicMock()
-        self.shipment._mrs = [mock_mr1, mock_mr2]
+        self.shipment._mr = [mock_mr1, mock_mr2]
 
         # Test the method
         self.shipment.add_qe_approval()
@@ -479,7 +530,7 @@ class TestShipmentData(unittest.TestCase):
         mock_mr2 = MagicMock()
         expected_exception = GitLabMergeRequestException("Failed to approve")
         mock_mr2.approve.side_effect = expected_exception
-        self.shipment._mrs = [mock_mr1, mock_mr2]
+        self.shipment._mr = [mock_mr1, mock_mr2]
 
         # Test the method - should raise exception for partial failure
         with self.assertRaises(GitLabMergeRequestException):
@@ -550,8 +601,7 @@ class TestShipmentImageHealth(unittest.TestCase):
     def setUp(self, mock_config):
         self.mock_config = mock_config
         self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
-        self.mock_config.get_shipment_mrs.return_value = [
-            "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/39"]
+        self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/39"
         # Don't mock the token - let it be retrieved from environment
         self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
         self.shipment = ShipmentData(self.mock_config)

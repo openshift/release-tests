@@ -179,6 +179,30 @@ class NotificationManager:
             raise NotificationException(
                 "share unhealthy advisories failed") from e
 
+    def share_dropped_bugs(self, dropped_bugs):
+        """
+        Send Slack message for dropped bugs notification
+
+        Args:
+            dropped_bugs (list[str]): list of dropped bug IDs
+
+        Raises:
+            NotificationException: error when sending dropped bugs notification
+        """
+
+        try:
+            slack_msg = self.mh.get_slack_message_for_dropped_bugs(dropped_bugs)
+            if len(slack_msg):
+                self.sc.post_message(
+                    self.cs.get_slack_channel_from_contact(
+                        "qe-release"), slack_msg
+                )
+        except Exception as e:
+            raise NotificationException(
+                "share dropped bugs failed"
+            ) from e
+    
+    
     def share_dropped_and_high_severity_bugs(self, dropped_bugs, high_severity_bugs):
         """
         Send Slack message to QE release lead with dropped and high severity bugs
@@ -250,31 +274,31 @@ class NotificationManager:
             raise NotificationException(
                 "share greenwave cvp failures failed") from e
 
-    def share_shipment_mrs(self, mrs, new_owner):
+    def share_shipment_mr(self, mr, new_owner):
         """
         Share shipment merge requests info via Slack
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             new_owner (str): Email of new owner
 
         Raises:
-            NotificationException: error when sharing shipment MRs
+            NotificationException: error when sharing shipment MR
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_shipment_mrs(mrs, new_owner)
+            slack_msg = self.mh.get_slack_message_for_shipment_mr(mr, new_owner)
             self.sc.post_message(
                 self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
             )
         except Exception as e:
-            raise NotificationException("share shipment MRs failed") from e
+            raise NotificationException("share shipment MR failed") from e
 
-    def share_shipment_mrs_and_ad_info(self, mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner):
+    def share_shipment_mr_and_ad_info(self, mr, updated_ads, abnormal_ads, updated_subtasks, new_owner):
         """
-        Share shipment merge requests and advisory info via Slack
+        Share shipment merge request and advisory info via Slack
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             updated_ads (list): Updated advisory list
             abnormal_ads (list): Advisory list that state is not QE
             updated_subtasks (list): Updated jira subtasks
@@ -284,8 +308,8 @@ class NotificationManager:
             NotificationException: error when sharing info
         """
         try:
-            slack_msg = self.mh.get_slack_message_for_shipment_mrs_and_ad_info(
-                mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner
+            slack_msg = self.mh.get_slack_message_for_shipment_mr_and_ad_info(
+                mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
             self.sc.post_message(
                 self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
@@ -298,7 +322,7 @@ class NotificationManager:
                     self.cs.get_slack_channel_from_contact("art"), slack_msg
                 )
         except Exception as e:
-            raise NotificationException("share shipment MRs and AD info failed") from e
+            raise NotificationException("share shipment MR and AD info failed") from e
         
     def share_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
@@ -706,6 +730,45 @@ class MessageHelper:
 
         return message
 
+    
+    def get_slack_message_for_dropped_bugs(self, dropped_bugs):
+        """
+        Generate a Slack notification message for bugs that have been dropped from advisories and shipment data.
+
+        This method creates a formatted message that notifies the QE release lead and documentation team
+        about bugs that have been removed from the current release. The message includes Jira links to
+        each dropped bug for easy reference.
+
+        Args:
+            dropped_bugs (list[str]): List of Jira issue keys that have been dropped from the release
+
+        Returns:
+            str: Formatted Slack message with links to all dropped bugs, or empty string if no bugs were dropped
+
+        Note:
+            The message is only generated if there are dropped bugs to report. If the dropped_bugs list
+            is empty, an empty string is returned.
+        """
+
+        release_lead_gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+
+        docs_team_gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact("approver", "doc_id")
+        )
+
+        message = ""
+        if len(dropped_bugs):
+            message = f"[{self.cs.release}] Hello {release_lead_gid} {docs_team_gid}, following bugs are dropped from advisories and shipment data\n"
+            for bug in dropped_bugs:
+                message += self._to_link(util.get_jira_link(bug), bug) + "\n"
+        
+        return message
+
+    
     def get_slack_message_for_dropped_and_high_severity_bugs(
         self, dropped_bugs, high_severity_bugs
     ):
@@ -719,21 +782,25 @@ class MessageHelper:
         Returns:
             str: Slack message
         """
-        gid = self.sc.get_group_id_by_name(
+        release_lead_gid = self.sc.get_group_id_by_name(
             self.cs.get_slack_user_group_from_contact(
                 "qe-release", util.get_y_release(self.cs.release)
             )
         )
 
+        docs_team_gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact("approver", "doc_id")
+        )
+
         message = ""
         if len(dropped_bugs):
-            message = f"[{self.cs.release}] Hello {gid}, following bugs are dropped from advisories\n"
+            message = f"[{self.cs.release}] Hello {release_lead_gid} {docs_team_gid}, following bugs are dropped from advisories and shipment data\n"
             for bug in dropped_bugs:
                 message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
         if len(high_severity_bugs):
             message += "\n" if len(message) else ""
-            message += f"[{self.cs.release}] Hello {gid}, following bugs are Critical/Blocker/Customer Case/CVE Tracker, if any of them can be dropped, do it manually. CVE can not be dropped. Thanks\n"
+            message += f"[{self.cs.release}] Hello {release_lead_gid}, following bugs are Critical/Blocker/Customer Case/CVE Tracker, if any of them can be dropped, do it manually. CVE can not be dropped. Thanks\n"
             for bug in high_severity_bugs:
                 message += self._to_link(util.get_jira_link(bug), bug) + "\n"
 
@@ -813,12 +880,12 @@ class MessageHelper:
 
         return message
 
-    def get_slack_message_for_shipment_mrs(self, mrs, new_owner):
+    def get_slack_message_for_shipment_mr(self, mr, new_owner):
         """
-        Get Slack message for shipment merge requests
+        Get Slack message for shipment merge request
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             new_owner (str): Email of new owner
 
         Returns:
@@ -832,19 +899,18 @@ class MessageHelper:
 
         message = f"[{self.cs.release}] Hello {gid}, QE release lead has been transferred to {new_owner}\n"
         message += "Shipment merge requests:\n"
-        for mr in mrs:
-            message += self._to_link(mr, mr) + "\n"
+        message += self._to_link(mr, mr) + "\n"
 
         return message
 
-    def get_slack_message_for_shipment_mrs_and_ad_info(
-        self, mrs, updated_ads, abnormal_ads, updated_subtasks, new_owner
+    def get_slack_message_for_shipment_mr_and_ad_info(
+        self, mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
     ):
         """
         Get Slack message combining shipment merge requests and advisory info
 
         Args:
-            mrs (list): List of shipment merge request URLs
+            mr (str): Shipment merge request URL
             updated_ads (list): Updated advisory list
             abnormal_ads (list): Advisory list that state is not QE
             updated_subtasks (list): Updated jira subtasks
@@ -861,11 +927,8 @@ class MessageHelper:
 
         message = f"[{self.cs.release}] Hello {gid}, owner of advisories and jira subtasks are changed to {new_owner}\n"
         
-        if mrs:
-            message += "Shipment merge requests:\n"
-            for mr in mrs:
-                message += self._to_link(mr, mr) + "\n"
-            message += "\n"
+        if mr:
+            message += f"Shipment merge request: {self._to_link(mr, mr)}\n"
 
         message += "Updated advisories:\n"
         for ad in updated_ads:

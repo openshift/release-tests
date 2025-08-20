@@ -42,14 +42,18 @@ def change_advisory_status(ctx, status):
             if ad.check_kernel_tag():
                 raise AdvisoryException("kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check.")
         # change all advisories' status
-        ao.approve_release()
+        success = ao.approve_release()
         # close jira tickets
         jm = JiraManager(cs)
         jm.close_qe_subtasks()
-        # if no exception occurred, update task status to pass
-        report.update_task_status(LABEL_TASK_NIGHTLY_BUILD_TEST, TASK_STATUS_PASS)
-        report.update_task_status(LABEL_TASK_SIGNED_BUILD_TEST, TASK_STATUS_PASS)   
-        report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
+        # only update task status to pass if approvals fully completed
+        if success:
+            report.update_task_status(LABEL_TASK_NIGHTLY_BUILD_TEST, TASK_STATUS_PASS)
+            report.update_task_status(LABEL_TASK_SIGNED_BUILD_TEST, TASK_STATUS_PASS)   
+            report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
+        # otherwise task remains INPROGRESS for next attempt
+        else:
+            logger.info("Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later")
     except Exception as e:
         logger.exception(f"change advisory status to {status} failed")
         report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_FAIL)
