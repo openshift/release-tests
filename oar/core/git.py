@@ -208,5 +208,10 @@ class GitHelper:
             try:
                 shutil.rmtree(self._temp_dir)
                 logger.info(f"Cleaned up temp directory: {self._temp_dir}")
+                self._temp_dir = None  # Prevent double cleanup
             except Exception as e:
                 logger.warning(f"Failed to clean up temp directory: {str(e)}")
+
+    def __del__(self) -> None:
+        """Destructor - automatically clean up when object is garbage collected"""
+        self.cleanup()
