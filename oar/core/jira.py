@@ -259,7 +259,7 @@ class JiraManager:
                 unverified_cve_issues.append(issue)
         return unverified_cve_issues
 
-    def get_onqa_issues(self, jira_issue_keys: list[str]):
+    def get_onqa_issues_excluding_cve(self, jira_issue_keys: list[str]):
         """
         Get list of issues in ON_QA state, excluding CVE tracker bugs
 

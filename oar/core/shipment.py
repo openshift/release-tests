@@ -919,7 +919,7 @@ class ShipmentData:
         jira_manager = JiraManager(self._cs)
         jira_issues = self._mr.get_jira_issues()
         # get all onqa issues except cve trackers
-        onqa_issues = jira_manager.get_onqa_issues(jira_issues)
+        onqa_issues = jira_manager.get_onqa_issues_excluding_cve(jira_issues)
 
         # Check if there are any onqa issues to drop
         if not onqa_issues:

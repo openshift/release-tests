@@ -221,7 +221,7 @@ class NotificationOperator:
         try:
             if self._sd._cs.is_konflux_flow():
                 mr = self._sd._cs.get_shipment_mr()
-                self._nm.share_shipment_mrs_and_ad_info(
+                self._nm.share_shipment_mr_and_ad_info(
                     mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
                 )
             else:

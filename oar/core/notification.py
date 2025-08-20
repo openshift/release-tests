@@ -293,9 +293,9 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share shipment MRs failed") from e
 
-    def share_shipment_mrs_and_ad_info(self, mr, updated_ads, abnormal_ads, updated_subtasks, new_owner):
+    def share_shipment_mr_and_ad_info(self, mr, updated_ads, abnormal_ads, updated_subtasks, new_owner):
         """
-        Share shipment merge requests and advisory info via Slack
+        Share shipment merge request and advisory info via Slack
 
         Args:
             mr (str): Shipment merge request URL
@@ -929,7 +929,7 @@ class MessageHelper:
         message = f"[{self.cs.release}] Hello {gid}, owner of advisories and jira subtasks are changed to {new_owner}\n"
         
         if mr:
-            message += f"Shipment merge requests: {self._to_link(mr, mr)}\n"
+            message += f"Shipment merge request: {self._to_link(mr, mr)}\n"
 
         message += "Updated advisories:\n"
         for ad in updated_ads:
