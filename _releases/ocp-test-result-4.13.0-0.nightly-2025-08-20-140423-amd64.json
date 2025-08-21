@@ -75,7 +75,25 @@
           "jobStartTime": "2025-08-20T23:25:44Z",
           "jobID": "62b3f580-2e43-4d88-b151-584bfe8089a1",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1958309505867452416",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-21T02:33:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-08-20T23:25:49Z",
@@ -117,13 +135,50 @@
           "jobStartTime": "2025-08-21T00:34:41Z",
           "jobID": "c47c74bc-e876-436a-a5bc-3a2c9b6df4a7",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/1958326859963830272",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-21T03:34:40Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-08-21T00:34:47Z",
           "jobID": "71e4648d-3983-4540-8977-6c22311621bd",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/1958326881459638272",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-21T03:32:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 73,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod",
+                "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -170,5 +225,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2025-08-20-140423",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2025-08-20-140423"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
