@@ -133,13 +133,62 @@
           "jobStartTime": "2025-08-22T12:41:22Z",
           "jobID": "6fa44a02-0a07-4d36-952c-1d75dc5017a0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1958872121241243648",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-22T15:43:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-08-22T12:41:27Z",
           "jobID": "cec8d8c9-853c-471a-bbd2-8f7399a97609",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1958872142313426944",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-22T15:52:41Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod",
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -180,7 +229,31 @@
           "jobStartTime": "2025-08-22T12:41:38Z",
           "jobID": "a087751f-dad0-4f64-9b05-49f6c13c0a92",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1958872187674824704",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-08-22T15:34:38Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Security_Profiles_Operator The Security_Profiles_Operator Author:xiyuan-LEVEL0-ROSA-ARO-OSD_CCS-ConnectedOnly-StagerunBoth-High-56704-Create a SelinuxProfile and apply it to pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-08-22T12:41:43Z",
@@ -276,5 +349,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-08-22-024437",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-08-22-024437"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
