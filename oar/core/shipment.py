@@ -1219,14 +1219,14 @@ class ShipmentData:
             health_data = self.check_component_image_health()
         unhealthy_count = health_data.unhealthy_count
         
-        summary = f"Images scanned: {health_data.total_scanned}. \n"
-        summary += f"Unhealthy components detected: {health_data.unhealthy_count}. \n"
-        summary += f"Health info missed: {health_data.unknown_count}. \n"
+        summary = f"Images scanned: {health_data.total_scanned}.  \n"
+        summary += f"Unhealthy components detected: {health_data.unhealthy_count}.  \n"
+        summary += f"Health info missed: {health_data.unknown_count}.  \n"
         
         if unhealthy_count > 0:
-            summary += "Unhealthy components:\n"
+            summary += "Unhealthy components:  \n"
             for comp in health_data.unhealthy_components:
-                summary += f"{comp['name']} (grade {comp['grade']}, arch {comp['architecture']}) - {comp['pull_spec']}  \n"
+                summary += f"{comp['name']} (grade {comp['grade']}, arch {comp['architecture']}) - {comp['pull_spec']}.  \n"
                 
         return summary
 
