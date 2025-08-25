@@ -24,8 +24,8 @@ class JenkinsHelper:
             [str(i) for i in [val for val in self._cs.get_advisories().values()]]
         )
         # get shipment MR id
-        mrs = ShipmentData(cs).get_mr()
-        self.mr_id = mrs[0].get_id() if mrs else None
+        mr = ShipmentData(cs).get_mr()
+        self.mr_id = mr.get_id() if mr else None
         # construct image pull spec
         self.pull_spec = (
             "quay.io/openshift-release-dev/ocp-release:" + self._cs.release + "-x86_64"
