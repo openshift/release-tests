@@ -1156,7 +1156,7 @@ class ShipmentData:
         unhealthy_components = []
         total_scanned = 0
         
-        logger.info(f"Starting image health check for {len(self._mr)} shipment MRs")
+        logger.info(f"Starting image health check for shipment MR {self._mr.get_id()}")
 
         # add this checkpoint, make sure stage release is completed successfully
         # then advisory url is available in shipment yaml
