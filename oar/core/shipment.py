@@ -1193,7 +1193,7 @@ class ShipmentData:
                     logger.warning(f"Failed to check freshness for image: {str(e)}")
                     continue
         except Exception as e:
-            logger.error(f"Failed to process MR {mr.merge_request_id}: {str(e)}")
+            logger.error(f"Failed to process MR {self._mr.get_id()}: {str(e)}")
                 
         logger.info(f"Completed image health check. Scanned {total_scanned} images, found {len(unhealthy_components)} unhealthy")
         return ImageHealthData(
