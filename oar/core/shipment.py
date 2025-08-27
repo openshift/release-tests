@@ -919,10 +919,10 @@ class ShipmentData:
         jira_manager = JiraManager(self._cs)
         jira_issues = self._mr.get_jira_issues()
         # get all onqa issues except cve trackers
-        onqa_issues = jira_manager.get_onqa_issues_excluding_cve(jira_issues)
+        unverified_issues = jira_manager.get_unverified_issues_excluding_cve(jira_issues)
 
         # Check if there are any onqa issues to drop
-        if not onqa_issues:
+        if not unverified_issues:
             logger.info("No ONQA issues found to drop, returning early")
             return []
 
@@ -967,7 +967,7 @@ class ShipmentData:
                     original_content = file.read()
                 
                 # Use string-based approach to remove bug items while preserving formatting
-                modified_content = self._remove_bugs_from_yaml_string(original_content, onqa_issues)
+                modified_content = self._remove_bugs_from_yaml_string(original_content, unverified_issues)
                 
                 # Only write back if content actually changed
                 if modified_content != original_content:
@@ -1002,7 +1002,7 @@ class ShipmentData:
             new_mr = gl.create_merge_request("rioliu/ocp-shipment-data", branch, self._mr.get_source_branch(), mr_title, target_project="hybrid-platforms/art/ocp-shipment-data")
             self._mr.add_comment(f"Drop bug in MR: {new_mr.get_web_url()}")
 
-        return onqa_issues
+        return unverified_issues
 
     def _remove_bugs_from_yaml_string(self, yaml_content: str, bugs_to_remove: list[str]) -> str:
         """Remove specific bug items from YAML content by identifying and removing lines.
