@@ -61,9 +61,50 @@
         "jobStartTime": "2025-08-27T18:33:30Z",
         "jobID": "da2cbcc1-075d-4151-bc3a-84363e837cee",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1960772677656383488",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-08-27T21:33:16Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 109,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-08-27T22:24:15Z",
+          "jobID": "a6731066-07b3-4843-af05-71d4d2e45404",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1960830747170312192",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-08-27T22:24:20Z",
+          "jobID": "6bf249b3-3625-4c78-a313-fa5ceec19ed3",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1960830768586428416",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999",
