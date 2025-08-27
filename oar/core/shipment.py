@@ -901,8 +901,8 @@ class ShipmentData:
         2. Checks if a drop bugs merge request already exists
         3. If MR exists: checks out the existing branch and updates it
         4. If no MR exists: creates a new branch and merge request
-        5. Processes all shipment YAML files to remove droppable issues
-        6. Commits changes and pushes to the appropriate repository
+        5. Processes all shipment YAML files to remove droppable issues using string manipulation
+        6. Commits only modified files and pushes to the appropriate repository
         7. Returns the list of dropped Jira issue keys
         
         The method handles both scenarios:
@@ -953,45 +953,44 @@ class ShipmentData:
             gh.configure_remotes("origin", f"https://group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7:{self._cs.get_gitlab_token()}@gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data.git")
             gh.create_branch(branch)
 
+        # Track modified files for selective committing
+        modified_files = []
+        
         # get all the effective files from shipment MR
-        # get local files based on file path from MR
         files = self._mr.get_all_files()
         for path in files:
             abs_path = f"{repo_dir}/{path}"
-            # load yaml object to find jira issues
+            
+            # Process file using string manipulation to preserve YAML formatting
             try:
                 with open(abs_path, 'r') as file:
-                    yaml_content = yaml.safe_load(file)
+                    original_content = file.read()
                 
-                # Check if this file contains shipment data with fixed issues
-                fixed_issues = glom(yaml_content, 'shipment.data.releaseNotes.issues.fixed', default=[])
+                # Use string-based approach to remove bug items while preserving formatting
+                modified_content = self._remove_bugs_from_yaml_string(original_content, onqa_issues)
                 
-                # Filter out issues that are not in onqa_issues
-                filtered_issues = [
-                    issue for issue in fixed_issues 
-                    if (isinstance(issue, dict) and issue.get('id') not in onqa_issues)
-                ]
-                
-                # Only proceed if we actually removed any issues
-                if len(filtered_issues) < len(fixed_issues):
-                    # Update the YAML content with filtered issues
-                    glom.assign(yaml_content, 'shipment.data.releaseNotes.issues.fixed', filtered_issues)
-                    
-                    # save the change and replace the file content
+                # Only write back if content actually changed
+                if modified_content != original_content:
                     with open(abs_path, 'w') as file:
-                        yaml.dump(yaml_content, file, default_flow_style=False, sort_keys=False)
-                    
+                        file.write(modified_content)
+                    modified_files.append(path)
                     logger.info(f"Removed onqa issues from {path}")
                     
-            except (yaml.YAMLError, FileNotFoundError, glom.PathAccessError) as e:
+            except (FileNotFoundError, UnicodeDecodeError) as e:
                 logger.warning(f"Failed to process file {path}: {str(e)}")
                 continue
             except Exception as e:
                 logger.error(f"Unexpected error processing file {path}: {str(e)}")
                 continue
         
-        # local changes are done, stage and commit the changes.
-        gh.commit_changes("drop bugs from shipment yaml files")
+        # Only commit if files were actually modified
+        if modified_files:
+            # Stage and commit only the modified files
+            gh.commit_changes("drop bugs from shipment yaml files", files=modified_files)
+        else:
+            logger.info("No files were modified - no changes to commit")
+            # If no files were modified, return empty list instead of onqa_issues
+            return []
         
         
         if mr:
@@ -1004,7 +1003,47 @@ class ShipmentData:
             self._mr.add_comment(f"Drop bug in MR: {new_mr.get_web_url()}")
 
         return onqa_issues
+
+    def _remove_bugs_from_yaml_string(self, yaml_content: str, bugs_to_remove: list[str]) -> str:
+        """Remove specific bug items from YAML content by identifying and removing lines.
         
+        This method preserves the original YAML formatting while removing only
+        the specified bug items from the fixed issues list.
+        
+        Args:
+            yaml_content: The original YAML content as a string
+            bugs_to_remove: List of bug IDs to remove (e.g. ["OCPBUGS-123", "OCPBUGS-456"])
+            
+        Returns:
+            str: Modified YAML content with specified bugs removed, preserving all formatting
+        """
+        if not bugs_to_remove:
+            return yaml_content
+            
+        # Preserve original line endings by splitting on newlines and keeping them
+        lines = yaml_content.split('\n')
+        lines_to_remove = set()
+        
+        # Identify lines to remove
+        for i, line in enumerate(lines):
+            for bug_id in bugs_to_remove:
+                # Check if this line contains the bug ID we want to remove
+                if f'id: {bug_id}' in line and line.strip().startswith('-'):
+                    # Mark this line and the next line (which should contain source) for removal
+                    lines_to_remove.add(i)
+                    if i + 1 < len(lines) and 'source: issues.redhat.com' in lines[i + 1]:
+                        lines_to_remove.add(i + 1)
+        
+        # Build new content without the removed lines
+        modified_lines = []
+        for i, line in enumerate(lines):
+            if i not in lines_to_remove:
+                modified_lines.append(line)
+        
+        # Join lines back together with original line endings
+        modified_content = '\n'.join(modified_lines)
+        
+        return modified_content
 
     def _get_images_from_shipment(self, mr: GitLabMergeRequest) -> list:
         """Extract container images from advisories referenced in shipment YAML files.
