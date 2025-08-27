@@ -3,6 +3,7 @@ import os
 import shutil
 import tempfile
 from typing import Optional
+from urllib.parse import urlparse, urlunparse
 
 import git
 from git import Repo
@@ -29,6 +30,38 @@ class GitHelper:
         self._temp_dir = None
         self._repo = None
         self._check_git_config()
+
+    def _sanitize_url(self, url: str) -> str:
+        """
+        Sanitize URL by removing authentication credentials to prevent logging sensitive information
+        
+        Args:
+            url: URL that may contain authentication credentials
+            
+        Returns:
+            str: Sanitized URL without authentication credentials
+        """
+        try:
+            parsed = urlparse(url)
+            if parsed.username or parsed.password:
+                # Remove username and password from netloc
+                netloc = parsed.hostname
+                if parsed.port:
+                    netloc = f"{netloc}:{parsed.port}"
+                # Reconstruct URL without credentials
+                sanitized = urlunparse((
+                    parsed.scheme,
+                    netloc,
+                    parsed.path,
+                    parsed.params,
+                    parsed.query,
+                    parsed.fragment
+                ))
+                return sanitized
+            return url
+        except Exception:
+            # If URL parsing fails, return original URL to avoid breaking functionality
+            return url
 
     def _check_git_config(self):
         """Check if required git config (user.name and user.email) exists"""
@@ -58,14 +91,15 @@ class GitHelper:
             existing_remotes = [remote.name for remote in self._repo.remotes]
             
             # Only add if remote doesn't already exist
+            sanitized_url = self._sanitize_url(remote_url)
             if remote_name not in existing_remotes:
                 self._repo.create_remote(remote_name, remote_url)
-                logger.info(f"Added remote {remote_name}: {remote_url}")
+                logger.info(f"Added remote {remote_name}: {sanitized_url}")
             else:
                 # Update URL if remote already exists
                 remote = self._repo.remote(remote_name)
                 remote.set_url(remote_url)
-                logger.info(f"Updated remote {remote_name} URL to: {remote_url}")
+                logger.info(f"Updated remote {remote_name} URL to: {sanitized_url}")
         except Exception as e:
             logger.warning(f"Failed to configure additional remotes: {str(e)}")
             raise GitException(f"Remote configuration failed: {str(e)}") from e
@@ -215,3 +249,4 @@ class GitHelper:
     def __del__(self) -> None:
         """Destructor - automatically clean up when object is garbage collected"""
         self.cleanup()
+
