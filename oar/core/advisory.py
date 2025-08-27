@@ -201,7 +201,7 @@ class AdvisoryManager:
         ads = self.get_advisories()
         all_dropped_bugs = []
         for ad in ads:
-            drop_bug_list = jm.get_onqa_issues_excluding_cve(ad.jira_issues)
+            drop_bug_list = jm.get_unverified_issues_excluding_cve(ad.jira_issues)
             if drop_bug_list:
                 all_dropped_bugs.extend(drop_bug_list)
                 for key in drop_bug_list:
