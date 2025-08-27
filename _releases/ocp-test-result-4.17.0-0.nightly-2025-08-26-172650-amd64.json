@@ -68,9 +68,50 @@
         "jobStartTime": "2025-08-27T18:32:44Z",
         "jobID": "b7c7faae-094b-4d11-b2e8-064d24e5eeff",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1960772484298969088",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-08-27T22:41:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 101,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51139-[CSI-Driver] [Dynamic PV] [Filesystem xfs] volumes resize on-line",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14698:Workloads pod with pod affinity will not be scheduled if not all matchExpressions are satisfied"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-08-27T23:23:38Z",
+          "jobID": "e005bb3a-d367-4a84-8436-27b65aee76fc",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1960845690905038848",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-08-27T23:23:43Z",
+          "jobID": "9fe6f6e5-ed27-4ada-993a-88274ddbadb4",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1960845712346320896",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-disruptive-f999",
