@@ -91,15 +91,14 @@ class GitHelper:
             existing_remotes = [remote.name for remote in self._repo.remotes]
             
             # Only add if remote doesn't already exist
+            sanitized_url = self._sanitize_url(remote_url)
             if remote_name not in existing_remotes:
                 self._repo.create_remote(remote_name, remote_url)
-                sanitized_url = self._sanitize_url(remote_url)
                 logger.info(f"Added remote {remote_name}: {sanitized_url}")
             else:
                 # Update URL if remote already exists
                 remote = self._repo.remote(remote_name)
                 remote.set_url(remote_url)
-                sanitized_url = self._sanitize_url(remote_url)
                 logger.info(f"Updated remote {remote_name} URL to: {sanitized_url}")
         except Exception as e:
             logger.warning(f"Failed to configure additional remotes: {str(e)}")
