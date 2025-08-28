@@ -20,8 +20,7 @@ from oar.core.jira import JiraManager
 from oar.core.exceptions import (
     GitLabMergeRequestException,
     GitLabServerException,
-    ShipmentDataException,
-    GitException
+    ShipmentDataException
 )
 from oar.core.git import GitHelper
 from dataclasses import dataclass
