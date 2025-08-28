@@ -2,6 +2,7 @@ import yaml
 import os
 import logging
 import requests
+import time
 from datetime import datetime, timezone
 from gitlab import Gitlab
 from gitlab.exceptions import (
@@ -19,8 +20,7 @@ from oar.core.jira import JiraManager
 from oar.core.exceptions import (
     GitLabMergeRequestException,
     GitLabServerException,
-    ShipmentDataException,
-    GitException
+    ShipmentDataException
 )
 from oar.core.git import GitHelper
 from dataclasses import dataclass
@@ -650,21 +650,22 @@ class GitLabServer:
             logger.error("Failed to query GitLab merge requests: Unexpected error", exc_info=False)
             raise GitLabServerException(f"GitLab API error: Failed to query MRs - {str(e)}") from e
 
-    def create_merge_request(self, project_name: str, source_branch: str, target_branch: str, 
+    def create_merge_request(self, source_project_name: str, source_branch: str, target_branch: str, 
                            title: str, description: str = "", labels: List[str] = None,
-                           target_project: str = None) -> GitLabMergeRequest:
+                           target_project_name: str = None, auto_merge: bool = False) -> GitLabMergeRequest:
         """Create a new merge request in the specified project.
         
         Args:
-            project_name: Project name in 'namespace/project' format (target project)
+            source_project_name: Project name in 'namespace/project' format (source project)
             source_branch: Branch to merge from
             target_branch: Branch to merge into 
             title: Title of the merge request
             description: Optional description for the MR
             labels: Optional list of labels to apply
-            target_project: Optional source project name in 'namespace/project' format.
-                          If provided, indicates the source branch is from a forked repository.
-                          If None, source branch is assumed to be in the same project as target.
+            target_project_name: Optional target project name in 'namespace/project' format.
+                          If provided, indicates the target branch is in a different repository.
+                          If None, target branch is assumed to be in the same project as source.
+            auto_merge: If True, enables auto-merge for this MR when pipeline succeeds
             
         Returns:
             GitLabMergeRequest: Initialized merge request object
@@ -692,11 +693,22 @@ class GitLabServer:
             ...     "Implement new feature from fork",
             ...     "Detailed description here",
             ...     ["enhancement"],
-            ...     target_project="namespace/project"
+            ...     target_project_name="namespace/project"
+            ... )
+            >>> # Auto-merge enabled MR
+            >>> mr = server.create_merge_request(
+            ...     "mygroup/myproject",
+            ...     "feature-branch",
+            ...     "main",
+            ...     "Implement new feature",
+            ...     "Detailed description here",
+            ...     ["enhancement"],
+            ...     None,
+            ...     True
             ... )
         """
-        if not project_name or not isinstance(project_name, str):
-            raise ValueError("Project name must be a non-empty string")
+        if not source_project_name or not isinstance(source_project_name, str):
+            raise ValueError("Source project name must be a non-empty string")
         if not source_branch or not isinstance(source_branch, str):
             raise ValueError("Source branch must be a non-empty string")
         if not target_branch or not isinstance(target_branch, str):
@@ -705,7 +717,7 @@ class GitLabServer:
             raise ValueError("Title must be a non-empty string")
             
         try:
-            project = self.gl.projects.get(project_name)
+            source_project = self.gl.projects.get(source_project_name)
             mr_data = {
                 'source_branch': source_branch,
                 'target_branch': target_branch,
@@ -714,28 +726,58 @@ class GitLabServer:
             }
             
             # Handle forked repository scenario
-            if target_project:
-                sp = self.gl.projects.get(target_project)
-                mr_data['target_project_id'] = sp.id
-                logger.info(f"Creating MR from forked repository: {project_name}:{source_branch} -> {target_project}:{target_branch}")
+            target_project = None
+            if target_project_name:
+                target_project = self.gl.projects.get(target_project_name)
+                mr_data['target_project_id'] = target_project.id
+                logger.info(f"Creating MR from forked repository: {source_project_name}:{source_branch} -> {target_project_name}:{target_branch}")
                 
             if labels:
                 mr_data['labels'] = labels
                 
-            mr = project.mergerequests.create(mr_data)
-            logger.info(f"Created MR {mr.iid} in project {project_name}")
+            mr = source_project.mergerequests.create(mr_data)
+            logger.info(f"Created MR {mr.iid} in project {source_project_name}")
+
+            # Enable auto-merge if requested
+            if auto_merge:
+                # Wait for MR to be fully available before enabling auto-merge
+                # This avoids 404 errors when MR is still being created
+                logger.info("Waiting for MR to be fully available before setting auto-merge...")
+                # A robust poller checks the merge_status property
+                timeout_seconds = 300  # 5 minutes
+                start_time = time.time()
+                
+                while time.time() - start_time < timeout_seconds:
+                    # Re-fetch the MR object to get its current state
+                    updated_mr = target_project.mergerequests.get(mr.iid) if target_project else source_project.mergerequests.get(mr.iid)
+                    
+                    # Check if the MR is ready to be merged (e.g., all checks passed)
+                    if updated_mr.merge_status == 'can_be_merged':
+                        logger.info("MR is ready. Proceeding with auto-merge.")
+                        mr = updated_mr
+                        break
+                    
+                    logger.info(f"MR merge status: {updated_mr.merge_status}. Waiting...")
+                    time.sleep(10) # Wait 10 seconds before polling again
+                else:
+                    # This code runs if the loop times out
+                    raise TimeoutError("Timeout: MR was not ready for auto-merge within the time limit.")
+                
+                # Enable auto-merge when pipeline succeeds
+                mr.merge(merge_when_pipeline_succeeds=True)
+                logger.info(f"Auto-merge enabled for MR {mr.iid}")
             
             return GitLabMergeRequest(
                 gitlab_url=self.gitlab_url,
-                project_name=target_project,
+                project_name=target_project_name,
                 merge_request_id=mr.iid,
                 private_token=self.private_token
             )
         except GitlabCreateError as e:
-            logger.error(f"Failed to create MR in project {project_name}: GitLab API error")
+            logger.error(f"Failed to create MR in project {source_project_name}: GitLab API error")
             raise GitLabServerException("Failed to create merge request") from e
         except Exception as e:
-            logger.error(f"Failed to create MR in project {project_name}: Unexpected error", exc_info=False)
+            logger.error(f"Failed to create MR in project {source_project_name}: Unexpected error", exc_info=False)
             raise GitLabServerException(f"Failed to create merge request: {str(e)}") from e
 
 
@@ -999,7 +1041,7 @@ class ShipmentData:
             # push the local change to forked repo
             gh.push_changes("ert-release-bot")
             # create new MR on gitlab server
-            new_mr = gl.create_merge_request("rioliu/ocp-shipment-data", branch, self._mr.get_source_branch(), mr_title, target_project="hybrid-platforms/art/ocp-shipment-data")
+            new_mr = gl.create_merge_request("rioliu/ocp-shipment-data", branch, self._mr.get_source_branch(), mr_title, target_project_name="hybrid-platforms/art/ocp-shipment-data", auto_merge=True)
             self._mr.add_comment(f"Drop bug in MR: {new_mr.get_web_url()}")
 
         return unverified_issues

@@ -91,7 +91,7 @@ class TestGitHelper(unittest.TestCase):
 
     def test_create_merge_request_success(self):
         logger.info("Testing create_merge_request with mock Gitlab")
-        repo_dir = self.gh.checkout_repo(branch="prepare-shipment-4.19.9-20250814082103")
+        repo_dir = self.gh.checkout_repo(branch="prepare-shipment-4.17.38-20250819062254")
         self.gh.configure_remotes("ert-release-bot", f"https://group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7:{self.cs.get_gitlab_token()}@gitlab.cee.redhat.com/rioliu/ocp-shipment-data.git")
         self.gh.configure_remotes("origin", f"https://group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7:{self.cs.get_gitlab_token()}@gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data.git")
         test_branch = f"test-branch-{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}"
@@ -103,7 +103,7 @@ class TestGitHelper(unittest.TestCase):
         self.gh.commit_changes("add test file")
         logger.info(self.gh.show_status())
         self.gh.push_changes("ert-release-bot")
-        new_mr = self.gl.create_merge_request("rioliu/ocp-shipment-data", test_branch, "prepare-shipment-4.19.9-20250814082103", "Add test file", target_project="hybrid-platforms/art/ocp-shipment-data")
+        new_mr = self.gl.create_merge_request("rioliu/ocp-shipment-data", test_branch, "prepare-shipment-4.17.38-20250819062254", "Add test file", target_project_name="hybrid-platforms/art/ocp-shipment-data", auto_merge=True)
         logger.info(new_mr.get_web_url())
 
     def test_commit_changes_with_existing_mr(self):
