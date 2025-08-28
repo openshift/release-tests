@@ -1041,7 +1041,7 @@ class ShipmentData:
             # push the local change to forked repo
             gh.push_changes("ert-release-bot")
             # create new MR on gitlab server
-            new_mr = gl.create_merge_request("rioliu/ocp-shipment-data", branch, self._mr.get_source_branch(), mr_title, target_project_name="hybrid-platforms/art/ocp-shipment-data")
+            new_mr = gl.create_merge_request("rioliu/ocp-shipment-data", branch, self._mr.get_source_branch(), mr_title, target_project_name="hybrid-platforms/art/ocp-shipment-data", auto_merge=True)
             self._mr.add_comment(f"Drop bug in MR: {new_mr.get_web_url()}")
 
         return unverified_issues
