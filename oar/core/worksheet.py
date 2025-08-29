@@ -331,6 +331,7 @@ class TestReport:
         Args:
             label (str): cell label of different tasks
         """
+        label = self.transform_cell_labels(label)
         return self._ws.acell(label).value
 
     def is_task_in_progress(self, label):
