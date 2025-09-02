@@ -3,6 +3,8 @@ import os
 import logging
 import requests
 import time
+import json
+import subprocess
 from datetime import datetime, timezone
 from gitlab import Gitlab
 from gitlab.exceptions import (
@@ -12,7 +14,7 @@ from gitlab.exceptions import (
     GitlabCreateError,
     GitlabListError
 )
-from oar.core.util import is_valid_email, parse_mr_url
+from oar.core.util import is_valid_email, parse_mr_url, get_y_release, get_release_key
 from typing import List, Optional, Set
 from glom import glom
 from oar.core.configstore import ConfigStore
@@ -1327,3 +1329,56 @@ class ShipmentData:
             logger.info(f"Added image health summary to MR {self._mr.merge_request_id}")
         except Exception as e:
             logger.error(f"Failed to add comment to MR {self._mr.merge_request_id}: {str(e)}")
+
+    def check_cve_tracker_bug(self):
+        """
+        Call elliott cmd to check if any new CVE tracker bug found for shipment
+        
+        Raises:
+            ShipmentDataException: error when invoke elliott cmd
+
+        Returns:
+            list: CVE tracker bugs not found in shipment yamls
+        """
+        cmd = [
+            "elliott",
+            "--data-path",
+            "https://github.com/openshift-eng/ocp-build-data.git",
+            "--group",
+            f"openshift-{get_y_release(self._cs.release)}",
+            "--assembly",
+            get_release_key(self._cs.release),
+            "--build-system",
+            "konflux",
+            "find-bugs",
+            "--cve-only",
+            "-o",
+            "json"
+        ]
+
+        logger.debug(f"elliott cmd {cmd}")
+
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        if p.returncode != 0:
+            raise ShipmentDataException(f"elliott cmd error:\n {stderr}")
+
+        cve_tracker_bugs = []
+        result = stdout.decode("utf-8")
+        if result:
+            logger.debug(result)
+            json_obj = json.loads(result)
+            
+            # Get all jira issues from shipment yamls
+            shipment_jira_issues = self.get_jira_issues()
+            
+            # Iterate through all values in the JSON output (each value is a list of bugs)
+            for trackers in json_obj.values():
+                if isinstance(trackers, list):
+                    for tracker in trackers:
+                        # add it to missed bug list if it is not found in shipment yamls
+                        if tracker not in shipment_jira_issues:
+                            logger.info(f"Missed CVE tracker bug {tracker} is not found in shipment data")
+                            cve_tracker_bugs.append(id)
+
+        return cve_tracker_bugs

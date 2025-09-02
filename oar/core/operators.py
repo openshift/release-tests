@@ -198,6 +198,60 @@ class ImageHealthOperator:
         return healthy
 
 
+class CVETrackerOperator:
+    """Handles CVE tracker bug checking operations for both advisory and shipment data"""
+    
+    def __init__(self, cs: ConfigStore):
+        self._am = AdvisoryManager(cs)
+        self._sd = ShipmentData(cs)
+        self._nm = NotificationManager(cs)
+        self._cs = cs
+
+    def check_cve_tracker_bugs(self) -> tuple[list, list]:
+        """
+        Check for missed CVE tracker bugs across both advisory and shipment sources
+        
+        Returns:
+            tuple[list, list]: (list of missed CVE tracker bugs from advisories, 
+                              list of missed CVE tracker bugs from shipments)
+            
+        Raises:
+            Exception: If CVE tracker bug checking operations fail
+        """
+        try:
+            advisory_cve_bugs = []
+            shipment_cve_bugs = []
+            
+            # Check for missed CVE tracker bugs in advisories
+            advisory_cve_bugs = self._am.check_cve_tracker_bug()
+            
+            # Check for missed CVE tracker bugs in shipments if konflux flow
+            if self._sd._cs.is_konflux_flow():
+                shipment_cve_bugs = self._sd.check_cve_tracker_bug()
+            
+            return advisory_cve_bugs, shipment_cve_bugs
+        except Exception as e:
+            logger.error(f"CVE tracker bug check failed: {str(e)}")
+            raise
+
+    def share_new_cve_tracker_bugs(self, cve_tracker_bugs: list) -> None:
+        """
+        Share notification about new CVE tracker bugs found
+        
+        Args:
+            cve_tracker_bugs (list): Combined list of missed CVE tracker bugs from both advisories and shipments
+            
+        Raises:
+            Exception: If notification fails
+        """
+        try:
+            if cve_tracker_bugs:
+                self._nm.share_new_cve_tracker_bugs(cve_tracker_bugs)
+        except Exception as e:
+            logger.error(f"Failed to share CVE tracker bug notification: {str(e)}")
+            raise
+
+
 class NotificationOperator:
     """Handles notification operations based on release flow type (errata or konflux)"""
     
