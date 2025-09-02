@@ -245,6 +245,7 @@ class AdvisoryManager:
             "--cve-only",
             "--output",
             "json",
+            "--permissive"
         ]
 
         logger.debug(f"elliott cmd {cmd}")
