@@ -239,17 +239,17 @@ class AdvisoryManager:
             f"openshift-{util.get_y_release(self._cs.release)}",
             "--assembly",
             util.get_release_key(self._cs.release),
-            "find-bugs:sweep",
+            "--build-system",
+            "brew",
+            "find-bugs",
             "--cve-only",
-            "--report",
             "--output",
             "json",
         ]
 
         logger.debug(f"elliott cmd {cmd}")
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise AdvisoryException(f"elliott cmd error:\n {stderr}")
@@ -257,7 +257,6 @@ class AdvisoryManager:
         cve_tracker_bugs = []
         result = stdout.decode("utf-8")
         if result:
-            logger.info("found new CVE tracker bug by elliott")
             logger.debug(result)
             json_obj = json.loads(result)
             # OCPERT-66 double check if the bug is already attached on advisory
@@ -266,14 +265,13 @@ class AdvisoryManager:
             rhsa_jira_issues = []
             for ad in rhsa_ads:
                 rhsa_jira_issues += ad.jira_issues
-            for tracker in json_obj:
-                id = tracker["id"]
-                summary = tracker["summary"]
-                logger.info(f"{id}: {summary}")
-                # add it to missed bug list if it is not attached on advisories
-                if id not in rhsa_jira_issues:
-                    logger.info(f"bug {id} is not found in RHSA advisories")
-                    cve_tracker_bugs.append(id)
+            for trackers in json_obj.values():
+                if isinstance(trackers, list):
+                    for tracker in trackers:
+                        # add it to missed bug list if it is not attached on advisories
+                        if id not in rhsa_jira_issues:
+                            logger.info(f"CVE tracker bug {tracker} is not found in RHSA advisories")
+                            cve_tracker_bugs.append(id)
 
         return cve_tracker_bugs
 

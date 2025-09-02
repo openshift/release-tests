@@ -8,6 +8,7 @@ from oar.core.exceptions import (
     ShipmentDataException,
     GitLabMergeRequestException
 )
+from oar.core.configstore import ConfigStore
 
 
 class TestGitLabServer(unittest.TestCase):
@@ -429,7 +430,7 @@ class TestShipmentData(unittest.TestCase):
     def setUp(self, mock_config):
         self.mock_config = mock_config
         self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
-        self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/68"
+        self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/91"
         # Don't mock the token - let it be retrieved from environment  
         self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
         self.shipment = ShipmentData(self.mock_config)
@@ -592,6 +593,12 @@ class TestShipmentData(unittest.TestCase):
                     "Merge request 15 not found - skipping real API test")
             else:
                 self.fail(f"Failed to test Jira issue line numbers: {str(e)}")
+
+    def test_check_cve_tracker_bug(self):
+        cs = ConfigStore("4.18.23")
+        sd = ShipmentData(cs)
+        missed_trackers = sd.check_cve_tracker_bug()
+        self.assertTrue(len(missed_trackers) == 0)
 
 
 class TestShipmentImageHealth(unittest.TestCase):
