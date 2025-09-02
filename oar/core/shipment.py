@@ -665,7 +665,7 @@ class GitLabServer:
             target_project_name: Optional target project name in 'namespace/project' format.
                           If provided, indicates the target branch is in a different repository.
                           If None, target branch is assumed to be in the same project as source.
-            auto_merge: If True, enables auto-merge for this MR when pipeline succeeds
+            auto_merge: If True, enables auto-merge for this MR when pipeline succeeds and sets squash to true
             
         Returns:
             GitLabMergeRequest: Initialized merge request object
@@ -724,6 +724,11 @@ class GitLabServer:
                 'title': title,
                 'description': description
             }
+            
+            # Set squash to true when auto-merge is enabled
+            if auto_merge:
+                mr_data['squash'] = True
+                logger.info("Auto-merge enabled, setting squash to true")
             
             # Handle forked repository scenario
             target_project = None
