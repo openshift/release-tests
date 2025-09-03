@@ -248,12 +248,6 @@ class ApprovalOperator:
                         # Run pending jobs
                         schedule.run_pending()
                     
-                    # Log scheduler completion status
-                    if accessible:
-                        logger.info("Scheduler completed successfully - payload metadata URL is accessible")
-                    else:
-                        logger.info("Scheduler completed - timeout reached without URL becoming accessible")
-                    
                     if accessible:
                         self._am.change_advisory_status()
                         return True
