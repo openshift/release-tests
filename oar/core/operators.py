@@ -160,20 +160,26 @@ class ApprovalOperator:
                 
                 # Create a shared variable to track success
                 accessible = False
+                check_count = 0
                 
                 # Define a wrapper function that can set the accessible flag
                 def check_metadata_accessibility():
-                    nonlocal accessible
+                    nonlocal accessible, check_count
+                    check_count += 1
+                    logger.info(f"Scheduler check #{check_count}: Checking payload metadata URL accessibility for release {minor_release}")
                     if util.is_payload_metadata_url_accessible(minor_release):
                         accessible = True
-                        logger.info("Payload metadata URL is now accessible")
                 
                 # Schedule the check to run every 30 minutes
                 schedule.every(30).minutes.do(check_metadata_accessibility)
+                logger.info("Scheduler started: Checking payload metadata URL every 30 minutes")
                 
                 # Calculate the time when the process should exit.
                 start_time = datetime.datetime.now()
                 end_time = start_time + datetime.timedelta(days=TIMEOUT_DAYS)
+                
+                # Log initial timing information
+                logger.info(f"Scheduler will run until {end_time.strftime('%Y-%m-%d %H:%M:%S')} or until URL becomes accessible")
                 
                 # This loop runs until the job is successful or the timeout is reached.
                 while datetime.datetime.now() < end_time and not accessible:
@@ -181,11 +187,13 @@ class ApprovalOperator:
                     next_run = schedule.idle_seconds()
                     if next_run is None:
                         # No more jobs scheduled, break out
+                        logger.info("No more scheduled jobs, breaking out of scheduler loop")
                         break
                     if next_run > 0:
                         # Sleep until next scheduled run or timeout, whichever comes first
                         sleep_time = min(next_run, (end_time - datetime.datetime.now()).total_seconds())
                         if sleep_time > 0:
+                            logger.info(f"Scheduler sleeping for {sleep_time:.0f} seconds")
                             time.sleep(sleep_time)
                     # Run pending jobs
                     schedule.run_pending()
