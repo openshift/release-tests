@@ -107,6 +107,7 @@ AD_IMPETUS_IMAGE = "image"
 AD_IMPETUS_METADATA = "metadata"
 AD_IMPETUS_MICROSHIFT = "microshift"
 AD_IMPETUS_RPM = "rpm"
+AD_IMPETUS_RHCOS = "rhcos"
 
 # jenkins related properties
 JENKINS_JOB_IMAGE_CONSISTENCY_CHECK = "image-consistency-check"
