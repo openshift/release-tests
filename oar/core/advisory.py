@@ -764,8 +764,8 @@ class Advisory(Erratum):
         Returns:
             bool: True if kernel build is tagged with early-kernel-stop-ship.
         """
-        #Check if impetus is image or not, if it's not image then skip this function.
-        if self.impetus != AD_IMPETUS_IMAGE:
+        #Check if impetus is image/rhcos or not, if it's not then skip this function.
+        if self.impetus not in [AD_IMPETUS_IMAGE, AD_IMPETUS_RHCOS]:
             logger.info(f"{self.impetus} advisory does not have RHCOS build, skip checking kernel tag")
             return False
         #Get rhcos nvr from image advisory build
