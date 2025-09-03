@@ -482,7 +482,7 @@ class JiraIssue:
         sfdc_case_counter = self.get_sfdc_case_counter()
         sfdc_case_links = self.get_sfdc_case_links()
 
-        return float(sfdc_case_counter) > 0 or sfdc_case_links
+        return float(sfdc_case_counter) > 0 or bool(sfdc_case_links)
 
     def is_cve_tracker(self):
         """
