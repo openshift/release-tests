@@ -1,4 +1,7 @@
 import logging
+import schedule
+import datetime
+import time
 import oar.core.util as util
 
 from oar.core.advisory import AdvisoryManager
@@ -138,16 +141,61 @@ class ApprovalOperator:
         Raises:
             Exception: If approval operations fail for either flow type
         """
+        TIMEOUT_DAYS = 2
         try:
             # Only handle shipment approval for konflux flow
             if self._sd._cs.is_konflux_flow():
                 self._sd.add_qe_approval()
                 # only move rpm advisory status when payload metadata url is accessible
-                if util.is_payload_metadata_url_accessible(util.get_y_release(self._am._cs.release)):
+                minor_release = util.get_y_release(self._am._cs.release)
+                
+                # Check if metadata URL is accessible immediately
+                if util.is_payload_metadata_url_accessible(minor_release):
                     # when the release is Konflux based, only rpm advisory is available in AdvisoryManager
                     self._am.change_advisory_status()
                     return True
-                return False
+                
+                # If not accessible immediately, wait for it to become accessible with timeout
+                logger.info(f"Payload metadata URL not accessible immediately, waiting up to {TIMEOUT_DAYS} days...")
+                
+                # Create a shared variable to track success
+                accessible = False
+                
+                # Define a wrapper function that can set the accessible flag
+                def check_metadata_accessibility():
+                    nonlocal accessible
+                    if util.is_payload_metadata_url_accessible(minor_release):
+                        accessible = True
+                        logger.info("Payload metadata URL is now accessible")
+                
+                # Schedule the check to run every 30 minutes
+                schedule.every(30).minutes.do(check_metadata_accessibility)
+                
+                # Calculate the time when the process should exit.
+                start_time = datetime.datetime.now()
+                end_time = start_time + datetime.timedelta(days=TIMEOUT_DAYS)
+                
+                # This loop runs until the job is successful or the timeout is reached.
+                while datetime.datetime.now() < end_time and not accessible:
+                    # Calculate time until next scheduled run
+                    next_run = schedule.idle_seconds()
+                    if next_run is None:
+                        # No more jobs scheduled, break out
+                        break
+                    if next_run > 0:
+                        # Sleep until next scheduled run or timeout, whichever comes first
+                        sleep_time = min(next_run, (end_time - datetime.datetime.now()).total_seconds())
+                        if sleep_time > 0:
+                            time.sleep(sleep_time)
+                    # Run pending jobs
+                    schedule.run_pending()
+                
+                if accessible:
+                    self._am.change_advisory_status()
+                    return True
+                else:
+                    logger.warning(f"Timeout reached after {TIMEOUT_DAYS} days, payload metadata URL still not accessible")
+                    return False
             else:
                 # Move all the advisories to REL_PREP
                 self._am.change_advisory_status()
