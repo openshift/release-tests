@@ -4,8 +4,10 @@ import datetime
 import time
 import tempfile
 import os
+import multiprocessing
 import oar.core.util as util
 
+from typing import Union
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.jira import JiraManager
@@ -153,7 +155,151 @@ class ApprovalOperator:
         except (IOError, OSError):
             logger.warning(f"Failed to remove scheduler lock file: {lock_file}")
 
-    def approve_release(self) -> bool:
+    def _background_metadata_checker(self, minor_release: str) -> None:
+        """
+        Background process that checks metadata URL accessibility and sends notifications
+        
+        This runs in a separate process and handles the periodic checking of metadata URL
+        accessibility with proper timeout and notification handling.
+        """
+        TIMEOUT_DAYS = 2
+        # Capture all log messages during execution
+        log_messages = []
+        
+        # Create a custom logger to capture messages
+        class LogCaptureHandler(logging.Handler):
+            def __init__(self, log_messages):
+                super().__init__()
+                self.log_messages = log_messages
+                
+            def emit(self, record):
+                log_entry = self.format(record)
+                self.log_messages.append(log_entry)
+        
+        # Add the capture handler to the logger
+        capture_handler = LogCaptureHandler(log_messages)
+        capture_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        logger.addHandler(capture_handler)
+        
+        try:
+            # Check if scheduler is already running using file lock
+            if self._is_scheduler_running(minor_release):
+                logger.warning(f"Scheduler is already running for release {minor_release} (lock file exists), skipping additional instance")
+                return
+            
+            # Acquire scheduler lock
+            if not self._acquire_scheduler_lock(minor_release):
+                logger.warning("Failed to acquire scheduler lock, skipping additional instance")
+                return
+            
+            logger.info("Scheduler lock acquired")
+            
+            try:
+                # Create a shared variable to track success
+                accessible = False
+                check_count = 0
+                
+                # Define a wrapper function that can set the accessible flag
+                def check_metadata_accessibility():
+                    nonlocal accessible, check_count
+                    check_count += 1
+                    logger.info(f"Scheduler check #{check_count}: Checking payload metadata URL accessibility for release {minor_release}")
+                    if util.is_payload_metadata_url_accessible(minor_release):
+                        accessible = True
+                        logger.info("Payload metadata URL is now accessible")
+                    else:
+                        logger.info(f"Scheduler check #{check_count}: Payload metadata URL still not accessible")
+                
+                # Schedule the check to run every 30 minutes
+                schedule.every(30).minutes.do(check_metadata_accessibility)
+                logger.info("Scheduler started: Checking payload metadata URL every 30 minutes")
+                
+                # Calculate the time when the process should exit.
+                start_time = datetime.datetime.now()
+                end_time = start_time + datetime.timedelta(days=TIMEOUT_DAYS)
+                
+                # Log initial timing information
+                logger.info(f"Scheduler will run until {end_time.strftime('%Y-%m-%d %H:%M:%S')} or until URL becomes accessible")
+                
+                # This loop runs until the job is successful or the timeout is reached.
+                while datetime.datetime.now() < end_time and not accessible:
+                    # Calculate time until next scheduled run
+                    next_run = schedule.idle_seconds()
+                    if next_run is None:
+                        # No more jobs scheduled, break out
+                        logger.info("No more scheduled jobs, breaking out of scheduler loop")
+                        break
+                    if next_run > 0:
+                        # Sleep until next scheduled run or timeout, whichever comes first
+                        sleep_time = min(next_run, (end_time - datetime.datetime.now()).total_seconds())
+                        if sleep_time > 0:
+                            remaining_time = end_time - datetime.datetime.now()
+                            logger.info(f"Scheduler sleeping for {sleep_time:.0f} seconds (timeout in {remaining_time})")
+                            time.sleep(sleep_time)
+                    # Run pending jobs
+                    schedule.run_pending()
+                
+                if accessible:
+                    # Move advisories to REL_PREP
+                    self._am.change_advisory_status()
+                    
+                    # Add success summary to logs
+                    success_message = f"Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP."
+                    log_messages.append(success_message)
+                    
+                    # Send completion notification with full logs including summary
+                    self._send_completion_notification(minor_release, success=True, log_messages=log_messages)
+                else:
+                    logger.warning(f"Timeout reached after {TIMEOUT_DAYS} days, payload metadata URL still not accessible")
+                    
+                    # Add timeout summary to logs
+                    timeout_message = f"Release approval timeout. Payload metadata URL still not accessible after {TIMEOUT_DAYS} days."
+                    log_messages.append(timeout_message)
+                    
+                    # Send timeout notification with full logs including summary
+                    self._send_completion_notification(minor_release, success=False, log_messages=log_messages)
+            finally:
+                # Always release scheduler lock when done
+                self._release_scheduler_lock(minor_release)
+                # Clear all scheduled jobs
+                schedule.clear()
+                logger.info("All scheduled jobs cleared")
+        except Exception as e:
+            logger.error(f"Background metadata checker failed: {str(e)}")
+            
+            # Add error summary to logs
+            error_message = f"Release approval failed with error: {str(e)}"
+            log_messages.append(error_message)
+            
+            # Send error notification with full logs including summary
+            self._send_completion_notification(minor_release, success=False, error=str(e), log_messages=log_messages)
+        finally:
+            # Remove the capture handler
+            logger.removeHandler(capture_handler)
+
+    def _send_completion_notification(self, minor_release: str, success: bool, error: str = None, log_messages: list = None) -> None:
+        """
+        Send completion notification based on environment variables
+        
+        If Slack context is available in environment variables, send full logs to specific thread.
+        Otherwise, send summary only to default QE release channel.
+        """
+        try:
+            # Use the new NotificationManager method
+            nm = NotificationManager(self._am._cs)
+            release = self._am._cs.release
+            
+            nm.share_release_approval_completion(
+                release=release,
+                success=success,
+                error=error,
+                log_messages=log_messages
+            )
+                
+        except Exception as e:
+            logger.error(f"Failed to send completion notification: {str(e)}")
+
+    def approve_release(self) -> Union[bool, str]:
         """
         Execute approval operations based on release flow type (errata or konflux)
         
@@ -169,12 +315,12 @@ class ApprovalOperator:
         before the url is accessible.
         
         Returns:
-            bool: True if all approvals succeeded, False if payload metadata URL not accessible (konflux only)
+            bool: True if all approvals succeeded, False if payload metadata URL not accessible and scheduler already running
+            str: "SCHEDULED" if background job started
             
         Raises:
             Exception: If approval operations fail for either flow type
         """
-        TIMEOUT_DAYS = 2
         try:
             # Only handle shipment approval for konflux flow
             if self._sd._cs.is_konflux_flow():
@@ -188,78 +334,23 @@ class ApprovalOperator:
                     self._am.change_advisory_status()
                     return True
                 
-                # If not accessible immediately, wait for it to become accessible with timeout
-                logger.info(f"Payload metadata URL not accessible immediately, waiting up to {TIMEOUT_DAYS} days...")
+                # If not accessible immediately, launch background process
+                logger.info(f"Payload metadata URL not accessible immediately, scheduling background check...")
                 
                 # Check if scheduler is already running using file lock
                 if self._is_scheduler_running(minor_release):
                     logger.warning(f"Scheduler is already running for release {minor_release} (lock file exists), skipping additional instance")
                     return False
                 
-                # Acquire scheduler lock, avoid same cmd running in multiple os processes.
-                if not self._acquire_scheduler_lock(minor_release):
-                    logger.warning("Failed to acquire scheduler lock, skipping additional instance")
-                    return False
+                # Launch background process for metadata checking
+                process = multiprocessing.Process(
+                    target=self._background_metadata_checker,
+                    args=(minor_release,)
+                )
+                process.start()
                 
-                logger.info("Scheduler lock acquired")
-                
-                try:
-                    # Create a shared variable to track success
-                    accessible = False
-                    check_count = 0
-                    
-                    # Define a wrapper function that can set the accessible flag
-                    def check_metadata_accessibility():
-                        nonlocal accessible, check_count
-                        check_count += 1
-                        logger.info(f"Scheduler check #{check_count}: Checking payload metadata URL accessibility for release {minor_release}")
-                        if util.is_payload_metadata_url_accessible(minor_release):
-                            accessible = True
-                            logger.info("Payload metadata URL is now accessible")
-                        else:
-                            logger.info(f"Scheduler check #{check_count}: Payload metadata URL still not accessible")
-                    
-                    # Schedule the check to run every 30 minutes
-                    schedule.every(30).minutes.do(check_metadata_accessibility)
-                    logger.info("Scheduler started: Checking payload metadata URL every 30 minutes")
-                    
-                    # Calculate the time when the process should exit.
-                    start_time = datetime.datetime.now()
-                    end_time = start_time + datetime.timedelta(days=TIMEOUT_DAYS)
-                    
-                    # Log initial timing information
-                    logger.info(f"Scheduler will run until {end_time.strftime('%Y-%m-%d %H:%M:%S')} or until URL becomes accessible")
-                    
-                    # This loop runs until the job is successful or the timeout is reached.
-                    while datetime.datetime.now() < end_time and not accessible:
-                        # Calculate time until next scheduled run
-                        next_run = schedule.idle_seconds()
-                        if next_run is None:
-                            # No more jobs scheduled, break out
-                            logger.info("No more scheduled jobs, breaking out of scheduler loop")
-                            break
-                        if next_run > 0:
-                            # Sleep until next scheduled run or timeout, whichever comes first
-                            sleep_time = min(next_run, (end_time - datetime.datetime.now()).total_seconds())
-                            if sleep_time > 0:
-                                remaining_time = end_time - datetime.datetime.now()
-                                logger.info(f"Scheduler sleeping for {sleep_time:.0f} seconds (timeout in {remaining_time})")
-                                time.sleep(sleep_time)
-                        # Run pending jobs
-                        schedule.run_pending()
-                    
-                    if accessible:
-                        self._am.change_advisory_status()
-                        return True
-                    else:
-                        logger.warning(f"Timeout reached after {TIMEOUT_DAYS} days, payload metadata URL still not accessible")
-                        return False
-                finally:
-                    # Always release scheduler lock when done
-                    self._release_scheduler_lock(minor_release)
-                    # Clear all scheduled jobs
-                    schedule.clear()
-                    logger.info("All scheduled jobs cleared")
+                logger.info(f"Background metadata checker process started (PID: {process.pid})")
+                return "SCHEDULED"
             else:
                 # Move all the advisories to REL_PREP
                 self._am.change_advisory_status()
