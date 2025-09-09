@@ -39,12 +39,14 @@
         {
           "jobStartTime": "2025-09-09T14:39:58Z",
           "jobID": "e190b6d2-6a5f-42d9-821c-0671d691cf41",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1965433194161377280",
+          "jobState": "pending"
         },
         {
           "jobStartTime": "2025-09-09T14:40:03Z",
           "jobID": "75204a26-ec1a-4f67-899a-cb385b4f3d25",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1965434018405027840",
+          "jobState": "pending"
         }
       ]
     },
@@ -54,9 +56,46 @@
         "jobStartTime": "2025-09-09T11:20:59Z",
         "jobID": "4cd66a82-e9f9-4dae-8745-eb8f0c4dbc00",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1965374872339091456",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-09-09T14:41:23Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 120,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 34,
+            "failingScenarios": [
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install",
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-09-09T15:41:43Z",
+          "jobID": "c5c40d8b-e5f0-4bae-94fd-655125aff4c4",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-09-09T15:41:48Z",
+          "jobID": "3fba8b7b-58c0-45c4-a267-5c102a110626",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999",
