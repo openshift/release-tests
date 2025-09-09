@@ -6,9 +6,47 @@
         "jobStartTime": "2025-09-09T11:20:54Z",
         "jobID": "d0aa1bf1-ecfe-4341-b5f2-7a1e5ead5e64",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1965374851203993600",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-09-09T14:27:12Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 120,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install",
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-Author:pewang-LEVEL0-High-56080-[Local-ephemeral-storage] [emptyDir] with sizeLimit should work on Pod level"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-09-09T14:39:58Z",
+          "jobID": "e190b6d2-6a5f-42d9-821c-0671d691cf41",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-09-09T14:40:03Z",
+          "jobID": "75204a26-ec1a-4f67-899a-cb385b4f3d25",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999",
@@ -33,12 +71,14 @@
         {
           "jobStartTime": "2025-09-09T13:26:07Z",
           "jobID": "72487be5-1d0a-428c-9f9e-703fbbbb546a",
-          "jobState": "scheduling"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/1965406932529319936",
+          "jobState": "pending"
         },
         {
           "jobStartTime": "2025-09-09T13:26:13Z",
           "jobID": "021fd17f-1f9f-4461-a3d5-de751f47ea18",
-          "jobState": "scheduling"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/1965407060329762816",
+          "jobState": "pending"
         }
       ]
     },
@@ -67,7 +107,8 @@
         "jobStartTime": "2025-09-09T11:21:14Z",
         "jobID": "788ec188-aa11-49c5-8c88-984f0684f3fb",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.19-gcp-ipi-f999/1965374935824076800",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-09-09T14:13:17Z"
       },
       "retriedJobs": []
     },
@@ -77,7 +118,8 @@
         "jobStartTime": "2025-09-09T11:21:19Z",
         "jobID": "67715b18-3a1e-43ed-992a-21dff2db9d09",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-aws-ipi-f999/1965375007043358720",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-09-09T14:04:35Z"
       },
       "retriedJobs": []
     }
