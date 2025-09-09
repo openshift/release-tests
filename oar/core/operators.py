@@ -375,6 +375,7 @@ class ApprovalOperator:
                     target=self._background_metadata_checker,
                     args=(minor_release,)
                 )
+                process.daemon = False  # Allow process to complete cleanup and timeout handling (non-daemon processes continue after parent exit on Unix/Linux)
                 process.start()
                 
                 logger.info(f"Background metadata checker process started (PID: {process.pid})")

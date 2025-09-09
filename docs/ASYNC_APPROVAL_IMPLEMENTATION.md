@@ -17,7 +17,7 @@ This document describes the new async implementation for the `approve_release` f
 
 **Return Values**:
 - `True`: Metadata URL accessible immediately, advisories moved to REL_PREP
-- `"SCHEDULED"`: Background process started for periodic checking
+- `"SCHEDULED"`: Background process started for periodic checking (process continues after parent exit on Unix/Linux)
 - `False`: Scheduler already running (lock file exists)
 
 ### 2. Added Background Worker Function
