@@ -42,15 +42,18 @@ def change_advisory_status(ctx, status):
             if ad.check_kernel_tag():
                 raise AdvisoryException("kernel tag early-kernel-stop-ship is found, stop moving advisory status, please check.")
         # change all advisories' status
-        success = ao.approve_release()
+        result = ao.approve_release()
         # close jira tickets
         jm = JiraManager(cs)
         jm.close_qe_subtasks()
         # only update task status to pass if approvals fully completed
-        if success:
+        if result is True:
             report.update_task_status(LABEL_TASK_NIGHTLY_BUILD_TEST, TASK_STATUS_PASS)
             report.update_task_status(LABEL_TASK_SIGNED_BUILD_TEST, TASK_STATUS_PASS)   
             report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
+        elif result == "SCHEDULED":
+            logger.info("Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.")
+            # Task remains INPROGRESS - background process will handle completion
         # otherwise task remains INPROGRESS for next attempt
         else:
             logger.info("Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later")

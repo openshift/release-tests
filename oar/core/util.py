@@ -164,6 +164,30 @@ def get_qe_sippy_url() -> str:
     """
     return "https://qe-component-readiness.dptools.openshift.org/sippy-ng/component_readiness"
 
+def split_large_message(message: str, max_size: int = 4000, chunk_size: int = 2500) -> list:
+    """
+    Split a large message into smaller chunks for platforms with message size limits.
+    
+    This is useful for Slack messages which have a 4000 character limit per message.
+    
+    Args:
+        message: The message content to split
+        max_size: Maximum allowed message size (default: 4000 for Slack)
+        chunk_size: Size of each chunk (default: 2500 to allow for code formatting)
+        
+    Returns:
+        list: List of message chunks
+    """
+    if len(message) <= max_size:
+        return [message]
+    
+    chunks = []
+    for i in range(0, len(message), chunk_size):
+        chunk = message[i:i + chunk_size]
+        chunks.append(chunk)
+    
+    return chunks
+
 def is_payload_metadata_url_accessible(release: str) -> bool:
     """Check if the metadata URL for a given OCP release payload is accessible.
     

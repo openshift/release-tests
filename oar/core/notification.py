@@ -1,6 +1,7 @@
 import logging
 import re
 import smtplib
+import os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -345,6 +346,67 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException(
                 "share unverified CVE issues to managers failed") from e
+
+    def share_release_approval_completion(self, release: str, success: bool, error: str = None, log_messages: list = None):
+        """
+        Share release approval completion notification
+        
+        Always sends notification to default QE release channel. If Slack context is available 
+        in environment variables, also sends full logs to specific thread.
+        
+        Args:
+            release (str): The release version (e.g., "4.19.0")
+            success (bool): Whether the approval was successful
+            error (str): Error message if any
+            log_messages (list): List of log messages to send (when Slack context available)
+            
+        Raises:
+            NotificationException: error when sending notification
+        """
+        try:
+            # Get Slack context from environment variables
+            slack_channel = os.environ.get('OAR_SLACK_CHANNEL')
+            slack_thread = os.environ.get('OAR_SLACK_THREAD')
+            
+            # Get release lead user group
+            y_release = util.get_y_release(release)
+            gid = self.sc.get_group_id_by_name(
+                self.cs.get_slack_user_group_from_contact("qe-release", y_release)
+            )
+            
+            # Create summary message for default channel
+            if success:
+                summary_message = f"Hello {gid}, Release approval completed for {release}. Payload metadata URL is now accessible and advisories have been moved to REL_PREP."
+            elif error:
+                summary_message = f"Hello {gid}, Release approval failed for {release}. Error: {error}"
+            else:
+                summary_message = f"Hello {gid}, Release approval timeout for {release}. Payload metadata URL still not accessible"
+            
+            # Always send to default channel
+            default_channel = self.cs.get_slack_channel_from_contact("qe-release")
+            self.sc.post_message(
+                channel=default_channel,
+                text=summary_message
+            )
+            logger.info(f"Sent completion notification to default channel {default_channel}")
+            
+            # If Slack context is available, also send full logs to specific thread
+            if slack_channel and slack_thread and log_messages:
+                # Send full log messages (which include the summary)
+                log_content = "\n".join(log_messages)
+                # Use utility function to split large messages
+                message_chunks = util.split_large_message(log_content)
+                for chunk in message_chunks:
+                    self.sc.client.chat_postMessage(
+                        channel=slack_channel,
+                        thread_ts=slack_thread,
+                        text=f"```{chunk}```"
+                    )
+                
+                logger.info(f"Also sent full logs to thread {slack_thread} in channel {slack_channel}")
+                
+        except Exception as e:
+            raise NotificationException("share release approval completion failed") from e
 
 class MailClient:
     """

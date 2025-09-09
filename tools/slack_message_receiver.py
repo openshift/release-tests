@@ -3,6 +3,7 @@ import os
 import re
 import shlex
 import subprocess
+import oar.core.util as util
 from threading import Event
 
 from langchain_community.llms.vllm import VLLMOpenAI
@@ -107,22 +108,22 @@ def process(client: SocketModeClient, req: SocketModeRequest):
             if is_oar_related_message(message):
                 logger.info(f"received cmd from user <{username}>: {message}")
                 cmd = message[message.index("oar"):]
+                
+                # Set environment variables for Slack context to enable background notifications
+                env = os.environ.copy()
+                env['OAR_SLACK_CHANNEL'] = channel_id
+                env['OAR_SLACK_THREAD'] = thread_ts
+                
                 result = subprocess.run(shlex.split(
-                    cmd), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                    cmd), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
                 output = result.stdout
-                # if the message size > 4000, we need to split the message due to api limit
-                if len(output) > 4000:
-                    chunks, chunk_size = len(output), 2500
-                    for msg in [output[i:i+chunk_size] for i in range(0, chunks, chunk_size)]:
-                        client.web_client.chat_postMessage(
-                            channel=channel_id,
-                            thread_ts=thread_ts,
-                            text=f"```{msg}```")
-                else:
+                # Use utility function to split large messages
+                message_chunks = util.split_large_message(output)
+                for chunk in message_chunks:
                     client.web_client.chat_postMessage(
                         channel=channel_id,
                         thread_ts=thread_ts,
-                        text=f"```{result.stdout}```")
+                        text=f"```{chunk}```")
             else:
                 # forward message as prompt to LLM, this feature is optional
                 # if required system environment variables are not defined
