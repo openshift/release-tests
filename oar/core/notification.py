@@ -368,13 +368,19 @@ class NotificationManager:
             slack_channel = os.environ.get('OAR_SLACK_CHANNEL')
             slack_thread = os.environ.get('OAR_SLACK_THREAD')
             
+            # Get release lead user group
+            y_release = util.get_y_release(release)
+            gid = self.sc.get_group_id_by_name(
+                self.cs.get_slack_user_group_from_contact("qe-release", y_release)
+            )
+            
             # Create summary message for default channel
             if success:
-                summary_message = f"Release approval completed for {release}. Payload metadata URL is now accessible and advisories have been moved to REL_PREP."
+                summary_message = f"Hello {gid}, Release approval completed for {release}. Payload metadata URL is now accessible and advisories have been moved to REL_PREP."
             elif error:
-                summary_message = f"Release approval failed for {release}. Error: {error}"
+                summary_message = f"Hello {gid}, Release approval failed for {release}. Error: {error}"
             else:
-                summary_message = f"Release approval timeout for {release}. Payload metadata URL still not accessible"
+                summary_message = f"Hello {gid}, Release approval timeout for {release}. Payload metadata URL still not accessible"
             
             # Always send to default channel
             default_channel = self.cs.get_slack_channel_from_contact("qe-release")
