@@ -12,12 +12,12 @@ This document describes the new async implementation for the `approve_release` f
 
 **Changes**:
 - Returns `"SCHEDULED"` instead of blocking when metadata URL is not immediately accessible
-- Launches background process using `multiprocessing.Process`
+- Launches background process using `subprocess.Popen` with `start_new_session=True` for true process independence
 - Maintains existing file-based locking mechanism to prevent duplicate processes
 
 **Return Values**:
 - `True`: Metadata URL accessible immediately, advisories moved to REL_PREP
-- `"SCHEDULED"`: Background process started for periodic checking (process continues after parent exit on Unix/Linux)
+- `"SCHEDULED"`: Background process started for periodic checking (process continues independently after parent exit)
 - `False`: Scheduler already running (lock file exists)
 
 ### 2. Added Background Worker Function

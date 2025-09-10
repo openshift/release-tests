@@ -4,7 +4,8 @@ import datetime
 import time
 import tempfile
 import os
-import multiprocessing
+import subprocess
+import sys
 import oar.core.util as util
 
 from typing import Union
@@ -370,15 +371,23 @@ class ApprovalOperator:
                     logger.warning(f"Scheduler is already running for release {minor_release} (lock file exists), skipping additional instance")
                     return False
                 
-                # Launch background process for metadata checking
-                process = multiprocessing.Process(
-                    target=self._background_metadata_checker,
-                    args=(minor_release,)
-                )
-                process.daemon = False  # Allow process to complete cleanup and timeout handling (non-daemon processes continue after parent exit on Unix/Linux)
-                process.start()
+                # Launch background process for metadata checking using subprocess for true independence
+                # Create a command to run the background checker as a separate process
+                cmd = [
+                    sys.executable, 
+                    "-c", 
+                    f"import sys; sys.path.insert(0, '{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}'); from oar.core.operators import ApprovalOperator; from oar.core.configstore import ConfigStore; cs = ConfigStore('{self._am._cs.release}'); op = ApprovalOperator(cs); op._background_metadata_checker('{minor_release}')"
+                ]
                 
-                logger.info(f"Background metadata checker process started (PID: {process.pid})")
+                # Create environment with current environment - OAR_SLACK_* variables will be automatically
+                # inherited since they are declared by tools/slack_message_receiver.py when commands are executed
+                # through the Slack bot interface
+                env = os.environ.copy()
+                
+                # Start the process with start_new_session=True for true independence
+                process = subprocess.Popen(cmd, start_new_session=True, env=env)
+                
+                logger.info(f"Background metadata checker process started (PID: {process.pid}) - running independently after parent exit")
                 return "SCHEDULED"
             else:
                 # Move all the advisories to REL_PREP
