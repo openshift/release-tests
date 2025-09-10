@@ -384,10 +384,7 @@ class NotificationManager:
             
             # Always send to default channel
             default_channel = self.cs.get_slack_channel_from_contact("qe-release")
-            self.sc.post_message(
-                channel=default_channel,
-                text=summary_message
-            )
+            self.sc.post_message(default_channel, summary_message)
             logger.info(f"Sent completion notification to default channel {default_channel}")
             
             # If Slack context is available, also send full logs to specific thread
