@@ -385,8 +385,19 @@ class ApprovalOperator:
                 env = os.environ.copy()
                 
                 # Start the process with start_new_session=True for true independence
-                process = subprocess.Popen(cmd, start_new_session=True, env=env)
+                # This creates a completely detached process that won't become a zombie
+                # We don't redirect stdout/stderr to allow the parent process to capture output
+                process = subprocess.Popen(
+                    cmd, 
+                    start_new_session=True, 
+                    env=env,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                    stdin=subprocess.DEVNULL
+                )
                 
+                # The process is now completely detached and won't become a zombie
+                # We don't need to wait for it or terminate it
                 logger.info(f"Background metadata checker process started (PID: {process.pid}) - running independently after parent exit")
                 return "SCHEDULED"
             else:
