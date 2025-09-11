@@ -166,22 +166,25 @@ class ApprovalOperator:
         accessibility with proper timeout and notification handling.
         """
         TIMEOUT_DAYS = 2
-        # Capture all log messages during execution
-        log_messages = []
         
         # Create a custom logger to capture messages
         class LogCaptureHandler(logging.Handler):
-            def __init__(self, log_messages):
+            def __init__(self):
                 super().__init__()
-                self.log_messages = log_messages
+                self.log_messages = []
                 
             def emit(self, record):
                 log_entry = self.format(record)
                 self.log_messages.append(log_entry)
+                
+            def get_log_messages(self):
+                """Get all captured log messages"""
+                return self.log_messages
         
         # Add the capture handler to the logger
-        capture_handler = LogCaptureHandler(log_messages)
+        capture_handler = LogCaptureHandler()
         capture_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        capture_handler.setLevel(logging.DEBUG)  # Capture all log levels
         logger.addHandler(capture_handler)
         
         # Get test report for current release
@@ -258,12 +261,11 @@ class ApprovalOperator:
                     except Exception as e:
                         logger.error(f"Failed to update test report status: {str(e)}")
                     
-                    # Add success summary to logs
-                    success_message = f"Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP."
-                    log_messages.append(success_message)
+                    # Log success summary (will be captured by LogCaptureHandler)
+                    logger.info("Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.")
                     
                     # Send completion notification with full logs including summary
-                    self._send_completion_notification(minor_release, success=True, log_messages=log_messages)
+                    self._send_completion_notification(minor_release, success=True, log_messages=capture_handler.get_log_messages())
                 else:
                     logger.warning(f"Timeout reached after {TIMEOUT_DAYS} days, payload metadata URL still not accessible")
                     
@@ -274,12 +276,11 @@ class ApprovalOperator:
                     except Exception as e:
                         logger.error(f"Failed to update test report status: {str(e)}")
                     
-                    # Add timeout summary to logs
-                    timeout_message = f"Release approval timeout. Payload metadata URL still not accessible after {TIMEOUT_DAYS} days."
-                    log_messages.append(timeout_message)
+                    # Log timeout summary (will be captured by LogCaptureHandler)
+                    logger.warning(f"Release approval timeout. Payload metadata URL still not accessible after {TIMEOUT_DAYS} days.")
                     
                     # Send timeout notification with full logs including summary
-                    self._send_completion_notification(minor_release, success=False, log_messages=log_messages)
+                    self._send_completion_notification(minor_release, success=False, log_messages=capture_handler.get_log_messages())
             finally:
                 # Always release scheduler lock when done
                 self._release_scheduler_lock(minor_release)
@@ -296,12 +297,11 @@ class ApprovalOperator:
             except Exception as update_error:
                 logger.error(f"Failed to update test report status: {str(update_error)}")
             
-            # Add error summary to logs
-            error_message = f"Release approval failed with error: {str(e)}"
-            log_messages.append(error_message)
+            # Log error summary (will be captured by LogCaptureHandler)
+            logger.error(f"Release approval failed with error: {str(e)}")
             
             # Send error notification with full logs including summary
-            self._send_completion_notification(minor_release, success=False, error=str(e), log_messages=log_messages)
+            self._send_completion_notification(minor_release, success=False, error=str(e), log_messages=capture_handler.get_log_messages())
         finally:
             # Remove the capture handler
             logger.removeHandler(capture_handler)
