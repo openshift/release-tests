@@ -6,9 +6,65 @@
         "jobStartTime": "2025-09-15T16:36:31Z",
         "jobID": "4e98159e-5cf8-45ac-98d4-6cba8881114d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1967628721741369344",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-09-15T19:53:14Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 111,
+            "failures": 18,
+            "errors": 0,
+            "skipped": 21,
+            "failingScenarios": [
+              "[sig-apps] Workloads test kubescheduler operator works well NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:knarra-LEVEL0-High-67822-Update staticpod file permissions to conform with CIS benchmarks",
+              "[sig-cli] Workloads ocmirror v1 works well NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Medium-46770-Low-46520-Local backend support for oc-mirror",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-StagerunBoth-High-52383-Keda Install",
+              "[sig-operators] OLM should Author:jiazha-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-LEVEL0-Critical-72192-is not correctly refreshing operator catalogs due to IfNotPresent imagePullPolicy",
+              "[sig-operators] OLM v1 oprun should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-69196-olmv1 Supports Version Ranges during clusterextension upgrade",
+              "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod",
+              "[sig-storage] STORAGE Author:rdeore-LEVEL0-High-66321-[LVMS] [Filesystem] [ext4] provision a PVC with fsType:'ext4'",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-43971-CSI Driver [Dynamic PV] [FileShare] provisioning with VolumeBindingModes WaitForFirstConsumer, Immediate and volumes should store data and allow exec of files",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 5,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+              "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler",
+              "OCP-14697:Workloads pod will be scheduled on the node which meets pod affinity specified namespace",
+              "OCP-19717:UserInterface Check configmap on console",
+              "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-Longduration-NonPreRelease-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-09-15T20:28:52Z",
+          "jobID": "44db303a-97c8-4eba-830b-3f0f0b1a954e",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1967687081895399424",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-09-15T20:28:57Z",
+          "jobID": "d377ac86-1a35-48d4-9c8d-35d3892fecfd",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1967687103173103616",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999",
@@ -16,7 +72,28 @@
         "jobStartTime": "2025-09-15T16:36:36Z",
         "jobID": "03e0d889-b52e-4ffb-9d96-ec85a384bff0",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1967628739143536640",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-09-15T19:36:00Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 111,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 31
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -26,7 +103,28 @@
         "jobStartTime": "2025-09-15T16:36:41Z",
         "jobID": "d7cbbc84-3d77-40f2-95f4-123ace90104d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/1967628739797848064",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-09-15T19:31:17Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 111,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 30
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -55,7 +153,8 @@
         "jobStartTime": "2025-09-15T16:36:51Z",
         "jobID": "50328901-166b-4d91-b9b5-32b37eff2c2a",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-stable-4.19-upgrade-from-stable-4.18-gcp-ipi-f999/1967628743946014720",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-09-15T19:41:22Z"
       },
       "retriedJobs": []
     },
