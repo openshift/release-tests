@@ -45,7 +45,8 @@
         {
           "jobStartTime": "2025-09-15T08:27:54Z",
           "jobID": "373a5c48-3401-4700-bba8-1a1e571ca0ed",
-          "jobState": "scheduling"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1967505665081479168",
+          "jobState": "pending"
         }
       ]
     },
@@ -55,9 +56,54 @@
         "jobStartTime": "2025-09-15T05:21:54Z",
         "jobID": "710ff500-d517-4304-95dc-7e25a32c7dc7",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1967458836872695808",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-09-15T08:43:39Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 120,
+            "failures": 9,
+            "errors": 0,
+            "skipped": 34,
+            "failingScenarios": [
+              "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges",
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-networking] SDN multihoming Author:weliang-LEVEL0-NonHyperShiftHOST-Medium-60507-Multihoming Verify the dualstack connectivity between multihoming pods",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install",
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]",
+              "[sig-storage] STORAGE ARO-Author:wduan-LEVEL0-High-50918-[Azure-File-CSI-Driver] support nfs file share protocol",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-52743-[Storageclass] OCP Cluster should have no more than one default storageclass defined, PVC without specifying storagclass should succeed while only one default storageclass present"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-09-15T09:30:55Z",
+          "jobID": "691ae9d9-69b1-41ee-abbf-0fe1f3335136",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1967521503796793344",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-09-15T09:31:00Z",
+          "jobID": "be955079-23b0-429f-9fb4-79a9358c13ee",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1967521525032554496",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999",
@@ -144,7 +190,8 @@
         "jobStartTime": "2025-09-15T05:22:15Z",
         "jobID": "77ae3464-93f5-4c1b-9bde-fb5f571742df",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-aws-ipi-f999/1967458923707371520",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-09-15T09:15:58Z"
       },
       "retriedJobs": []
     }
