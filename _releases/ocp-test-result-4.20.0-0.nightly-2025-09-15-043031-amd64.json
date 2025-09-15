@@ -146,13 +146,65 @@
           "jobStartTime": "2025-09-15T16:42:18Z",
           "jobID": "e51594c5-a089-44d7-ae54-5e404e59900b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1967630061339152384",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-09-15T19:55:43Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 120,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install",
+                "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-09-15T16:42:23Z",
           "jobID": "85f4b3d7-ffec-4c15-9da7-b16d3030cdfa",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1967630082587496448",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-09-15T19:53:17Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 120,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install",
+                "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -305,5 +357,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2025-09-15-043031",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2025-09-15-043031"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
