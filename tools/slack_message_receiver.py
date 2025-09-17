@@ -13,7 +13,7 @@ from slack_sdk.socket_mode.response import SocketModeResponse
 from slack_sdk.web import WebClient
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger("QEReleaseBot")
+logger = logging.getLogger("ERTReleaseBot")
 
 
 # Initialize SocketModeClient with an app-level token + WebClient
@@ -92,7 +92,7 @@ def process(client: SocketModeClient, req: SocketModeRequest):
         thread_ts = event["ts"]
         username = get_username(event["user"])
 
-        if username == "qe-release-bot":
+        if username == "ert-release-bot":
             return
 
         if event_type in ["message", "app_mention"]:
@@ -100,7 +100,7 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                 client.web_client.chat_postMessage(
                     channel=channel_id,
                     thread_ts=thread_ts,
-                    text="I'm qe release bot",
+                    text="I'm ERT release bot",
                 )
 
             # slack will transform the email address in message with mailto format e.g. <mailto:xx@foo.com|xx@foo.com>

@@ -386,19 +386,32 @@ class ApprovalOperator:
                 
                 # Start the process with start_new_session=True for true independence
                 # This creates a completely detached process that won't become a zombie
-                # We don't redirect stdout/stderr to allow the parent process to capture output
+                # Redirect stdout/stderr to log files for debugging
+                log_dir = os.path.join(tempfile.gettempdir(), "oar_logs")
+                os.makedirs(log_dir, exist_ok=True)
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                log_file = os.path.join(log_dir, f"metadata_checker_{minor_release}_{timestamp}.log")
+                
+                with open(log_file, 'w') as f:
+                    f.write(f"Background metadata checker process started at {datetime.datetime.now()}\n")
+                    f.write(f"Command: {' '.join(cmd)}\n")
+                    f.write(f"Release: {minor_release}\n")
+                    f.write("-" * 80 + "\n")
+                
                 process = subprocess.Popen(
                     cmd, 
                     start_new_session=True, 
                     env=env,
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL,
+                    stdout=open(log_file, 'a'),
+                    stderr=subprocess.STDOUT,  # Combine stderr with stdout
                     stdin=subprocess.DEVNULL
                 )
                 
+                logger.info(f"Background metadata checker process started (PID: {process.pid}) - running independently after parent exit")
+                logger.info(f"Process output redirected to: {log_file}")
+                
                 # The process is now completely detached and won't become a zombie
                 # We don't need to wait for it or terminate it
-                logger.info(f"Background metadata checker process started (PID: {process.pid}) - running independently after parent exit")
                 return "SCHEDULED"
             else:
                 # Move all the advisories to REL_PREP
