@@ -34,9 +34,9 @@ def check_cve_tracker_bug(ctx, notify):
         if len(all_cve_bugs):
             # Log the source of the missed bugs for debugging
             if advisory_cve_bugs:
-                logger.info(f"Found {len(advisory_cve_bugs)} missed CVE tracker bugs in advisories: {advisory_cve_bugs}")
+                logger.info(f"Found {len(advisory_cve_bugs)} missed CVE tracker bugs in advisories: {[str(bug) for bug in advisory_cve_bugs]}")
             if shipment_cve_bugs:
-                logger.info(f"Found {len(shipment_cve_bugs)} missed CVE tracker bugs in shipments: {shipment_cve_bugs}")
+                logger.info(f"Found {len(shipment_cve_bugs)} missed CVE tracker bugs in shipments: {[str(bug) for bug in shipment_cve_bugs]}")
             
             appended = report.append_missed_cve_tracker_bugs(all_cve_bugs)
             if notify and appended:
