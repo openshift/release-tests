@@ -379,10 +379,21 @@ class ApprovalOperator:
                     f"import sys; sys.path.insert(0, '{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}'); from oar.core.operators import ApprovalOperator; from oar.core.configstore import ConfigStore; cs = ConfigStore('{self._am._cs.release}'); op = ApprovalOperator(cs); op._background_metadata_checker('{minor_release}')"
                 ]
                 
-                # Create environment with current environment - OAR_SLACK_* variables will be automatically
-                # inherited since they are declared by tools/slack_message_receiver.py when commands are executed
-                # through the Slack bot interface
+                # Create environment with current environment - explicitly include OAR_SLACK_* variables
+                # if they are available to ensure background process can send notifications to the correct thread
                 env = os.environ.copy()
+                
+                # Explicitly pass Slack context environment variables if they exist
+                # This ensures the background process can send notifications to the correct thread
+                slack_channel = os.environ.get('OAR_SLACK_CHANNEL')
+                slack_thread = os.environ.get('OAR_SLACK_THREAD')
+                
+                if slack_channel:
+                    env['OAR_SLACK_CHANNEL'] = slack_channel
+                if slack_thread:
+                    env['OAR_SLACK_THREAD'] = slack_thread
+                    
+                logger.info(f"Environment for background process - OAR_SLACK_CHANNEL: {slack_channel}, OAR_SLACK_THREAD: {slack_thread}")
                 
                 # Start the process with start_new_session=True for true independence
                 # This creates a completely detached process that won't become a zombie
