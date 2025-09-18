@@ -1384,6 +1384,6 @@ class ShipmentData:
                         # add it to missed bug list if it is not found in shipment yamls
                         if tracker not in shipment_jira_issues:
                             logger.info(f"Missed CVE tracker bug {tracker} is not found in shipment data")
-                            cve_tracker_bugs.append(id)
+                            cve_tracker_bugs.append(tracker)
 
         return cve_tracker_bugs

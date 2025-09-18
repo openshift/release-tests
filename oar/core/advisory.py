@@ -270,9 +270,9 @@ class AdvisoryManager:
                 if isinstance(trackers, list):
                     for tracker in trackers:
                         # add it to missed bug list if it is not attached on advisories
-                        if id not in rhsa_jira_issues:
+                        if tracker not in rhsa_jira_issues:
                             logger.info(f"CVE tracker bug {tracker} is not found in RHSA advisories")
-                            cve_tracker_bugs.append(id)
+                            cve_tracker_bugs.append(tracker)
 
         return cve_tracker_bugs
 
