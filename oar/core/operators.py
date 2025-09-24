@@ -19,6 +19,21 @@ from oar.core.const import *
 
 logger = logging.getLogger(__name__)
 
+class LogCaptureHandler(logging.Handler):
+    """Custom logging handler to capture log messages for background processes"""
+    
+    def __init__(self):
+        super().__init__()
+        self.log_messages = []
+        
+    def emit(self, record):
+        log_entry = self.format(record)
+        self.log_messages.append(log_entry)
+        
+    def get_log_messages(self):
+        """Get all captured log messages"""
+        return self.log_messages
+
 class ReleaseOwnershipOperator:
     """Handles composite ownership operations across advisories and shipments"""
     
@@ -166,20 +181,6 @@ class ApprovalOperator:
         accessibility with proper timeout and notification handling.
         """
         TIMEOUT_DAYS = 2
-        
-        # Create a custom logger to capture messages
-        class LogCaptureHandler(logging.Handler):
-            def __init__(self):
-                super().__init__()
-                self.log_messages = []
-                
-            def emit(self, record):
-                log_entry = self.format(record)
-                self.log_messages.append(log_entry)
-                
-            def get_log_messages(self):
-                """Get all captured log messages"""
-                return self.log_messages
         
         # Add the capture handler to the logger
         capture_handler = LogCaptureHandler()
