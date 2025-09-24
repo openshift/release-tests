@@ -509,37 +509,33 @@ class NotificationService:
             Optional[Notification]: The created notification if sent, otherwise None.
         """
 
-        try:
-            on_qa_datetime = self.get_latest_on_qa_transition_datetime(issue)
-            if not on_qa_datetime:
-                logger.error(f"Issue {issue.key} does not have ON_QA transition date")
-                return None
-            
-            notification_dates = self.get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
+        on_qa_datetime = self.get_latest_on_qa_transition_datetime(issue)
+        if not on_qa_datetime:
+            logger.error(f"Issue {issue.key} does not have ON_QA transition date")
+            return None
+        
+        notification_dates = self.get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
-            if not notification_dates.get(NotificationType.QA_CONTACT):
-                if self.is_more_than_24_weekday_hours(on_qa_datetime):
-                    logger.info("Notifying QA Contact")
-                    return self.notify_qa_contact(issue)
-                else:
-                    logger.info("Skipping notifying QA Contact - less than 24 hour from transition to ON_QA.")
-            elif not notification_dates.get(NotificationType.TEAM_LEAD): 
-                if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.QA_CONTACT)):
-                    logger.info("Notifying Team Lead")
-                    return self.notify_team_lead(issue)
-                else:
-                    logger.info("Skipping notifying Team Lead - less than 24 hour from QA Contact notification.")
-            elif not notification_dates.get(NotificationType.MANAGER):
-                if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.TEAM_LEAD)):
-                    logger.info("Notifying Manager")
-                    return self.notify_manager(issue)
-                else:
-                    logger.info("Skipping notifying Manager - less than 24 hour from Team Lead notification.")
+        if not notification_dates.get(NotificationType.QA_CONTACT):
+            if self.is_more_than_24_weekday_hours(on_qa_datetime):
+                logger.info("Notifying QA Contact")
+                return self.notify_qa_contact(issue)
             else:
-                logger.warning("All contacts have been notified.")
-
-        except Exception as e:
-            logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
+                logger.info("Skipping notifying QA Contact - less than 24 hour from transition to ON_QA.")
+        elif not notification_dates.get(NotificationType.TEAM_LEAD): 
+            if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.QA_CONTACT)):
+                logger.info("Notifying Team Lead")
+                return self.notify_team_lead(issue)
+            else:
+                logger.info("Skipping notifying Team Lead - less than 24 hour from QA Contact notification.")
+        elif not notification_dates.get(NotificationType.MANAGER):
+            if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.TEAM_LEAD)):
+                logger.info("Notifying Manager")
+                return self.notify_manager(issue)
+            else:
+                logger.info("Skipping notifying Manager - less than 24 hour from Team Lead notification.")
+        else:
+            logger.warning("All contacts have been notified.")
 
         return None
 
@@ -602,12 +598,20 @@ class NotificationService:
             List[Notification]: List of successfully sent notifications.
         """
         sent_notifications: list[Notification] = []
+        error_occurred = False
 
         for issue in self.get_on_qa_issues(search_batch_size, from_date):
             logger.info(f"Processing issue: {issue.key}")
-            notification = self.check_issue_and_notify_responsible_people(issue)
+            try:
+                notification = self.check_issue_and_notify_responsible_people(issue)
+            except Exception as e:
+                logger.error(f"An error occured while processing the Issue {issue.key}: {e}")
+                error_occurred = True
             if notification:
                 sent_notifications.append(notification)
+
+        if error_occurred:
+            raise RuntimeError("An error occured while processing the issues. See the logs for details.")
 
         return sent_notifications
 
