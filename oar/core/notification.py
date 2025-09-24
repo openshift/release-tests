@@ -387,20 +387,29 @@ class NotificationManager:
             self.sc.post_message(default_channel, summary_message)
             logger.info(f"Sent completion notification to default channel {default_channel}")
             
-            # If Slack context is available, also send full logs to specific thread
-            if slack_channel and slack_thread and log_messages:
-                # Send full log messages (which include the summary)
-                log_content = "\n".join(log_messages)
-                # Use utility function to split large messages
-                message_chunks = util.split_large_message(log_content)
-                for chunk in message_chunks:
+            # If Slack context is available, also send notification to specific thread
+            if slack_channel and slack_thread:
+                if log_messages:
+                    # Send full log messages (which include the summary)
+                    log_content = "\n".join(log_messages)
+                    # Use utility function to split large messages
+                    message_chunks = util.split_large_message(log_content)
+                    for chunk in message_chunks:
+                        self.sc.client.chat_postMessage(
+                            channel=slack_channel,
+                            thread_ts=slack_thread,
+                            text=f"```{chunk}```"
+                        )
+                    
+                    logger.info(f"Also sent full logs to thread {slack_thread} in channel {slack_channel}")
+                else:
+                    # Send summary message to thread when logs are not available
                     self.sc.client.chat_postMessage(
                         channel=slack_channel,
                         thread_ts=slack_thread,
-                        text=f"```{chunk}```"
+                        text=summary_message
                     )
-                
-                logger.info(f"Also sent full logs to thread {slack_thread} in channel {slack_channel}")
+                    logger.info(f"Sent summary to thread {slack_thread} in channel {slack_channel} (no logs available)")
                 
         except Exception as e:
             raise NotificationException("share release approval completion failed") from e
