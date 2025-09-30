@@ -83,7 +83,15 @@ class TestJiraNotificator(unittest.TestCase):
         ns_live = NotificationService(jira_mock, False)
         ns_live.process_notification(notification)
         jira_mock.add_comment.assert_called_once_with(notification.issue, notification.text)
-    
+
+    def test_add_ert_all_notified_onqa_pending_label(self):
+        self.ns.add_ert_all_notified_onqa_pending_label(self.test_issue)
+        self.assertEqual(self.test_issue.fields.labels, ["ert-all-notified-onqa-pending"])
+
+    def test_remove_ert_all_notified_onqa_pending_label(self):
+        self.ns.remove_ert_all_notified_onqa_pending_label(self.test_issue)
+        self.assertEqual(self.test_issue.fields.labels, [])
+
     def test_find_user_by_email(self):
         self.assertEqual(self.ns.find_user_by_email("tdavid@redhat.com").displayName, "Tomas David")
         self.assertEqual(self.ns.find_user_by_email("dtomas@redhat.com"), None)

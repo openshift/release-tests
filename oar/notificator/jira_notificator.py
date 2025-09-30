@@ -13,6 +13,7 @@ from oar.core.ldap import LdapHelper
 logger = logging.getLogger(__name__)
 
 ERT_NOTIFICATION_PREFIX = "Errata Reliability Team Notification"
+ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL = "ert-all-notified-onqa-pending"
 
 class NotificationType(Enum):
     """
@@ -132,7 +133,39 @@ class NotificationService:
             self.jira.add_comment(notification.issue, notification.text)
         else:
             logger.info(f"Skipping sending {log_message}")
+            
+    def add_ert_all_notified_onqa_pending_label(self, issue: Issue) -> None:
+        """
+        Adds the ON_QA pending label to the issue.
 
+        Args:
+            issue (Issue): The JIRA issue to add the label to.
+        """
+
+        current_labels = issue.fields.labels
+        if ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL not in current_labels:
+            current_labels.append(ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL)
+            issue.update(fields={"labels": current_labels})
+            logger.info(f"ON_QA pending label added to the issue {issue.key}.")
+        else:
+            logger.info(f"ON_QA pending label already exists on the issue {issue.key}.")
+
+    def remove_ert_all_notified_onqa_pending_label(self, issue: Issue) -> None:
+        """
+        Removes the ON_QA pending label from the issue.
+
+        Args:
+            issue (Issue): The JIRA issue to remove the label from.
+        """
+
+        current_labels = issue.fields.labels
+        if ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL in current_labels:
+            current_labels.remove(ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL)
+            issue.update(fields={"labels": current_labels})
+            logger.info(f"ON_QA pending label removed from the issue {issue.key}.")
+        else:
+            logger.info(f"ON_QA pending label does not exist on the issue {issue.key}.")
+            
     def find_user_by_email(self, email: str) -> Optional[User]:
         """
         Searches for a JIRA user by email address.
@@ -517,6 +550,9 @@ class NotificationService:
         notification_dates = self.get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
         if not notification_dates.get(NotificationType.QA_CONTACT):
+            logger.info("Removing ON_QA pending label.")
+            self.remove_ert_all_notified_onqa_pending_label(issue)  # Issue can be again in ON_QA state.
+            
             if self.is_more_than_24_weekday_hours(on_qa_datetime):
                 logger.info("Notifying QA Contact")
                 return self.notify_qa_contact(issue)
@@ -535,7 +571,12 @@ class NotificationService:
             else:
                 logger.info("Skipping notifying Manager - less than 24 hour from Team Lead notification.")
         else:
-            logger.warning("All contacts have been notified.")
+            logger.info("All contacts have been notified.")
+            if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.MANAGER)):
+                logger.info("Adding ON_QA pending label to the issue.")
+                self.add_ert_all_notified_onqa_pending_label(issue)
+            else:
+                logger.info("Skipping adding ON_QA pending label - less than 24 hour from Manager notification.")
 
         return None
 
