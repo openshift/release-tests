@@ -13,7 +13,7 @@ from oar.core.ldap import LdapHelper
 logger = logging.getLogger(__name__)
 
 ERT_NOTIFICATION_PREFIX = "Errata Reliability Team Notification"
-ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL = "ert-all-notified-onqa-pending"
+ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL = "ert:pending-onqa-over-96hrs"
 
 class NotificationType(Enum):
     """

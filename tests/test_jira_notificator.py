@@ -6,7 +6,7 @@ from unittest.mock import Mock
 
 from jira import JIRA
 
-from oar.notificator.jira_notificator import Contact, Notification, NotificationService, NotificationType
+from oar.notificator.jira_notificator import Contact, Notification, NotificationService, NotificationType, ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL
 
 class TestJiraNotificator(unittest.TestCase):
 
@@ -86,7 +86,7 @@ class TestJiraNotificator(unittest.TestCase):
 
     def test_add_ert_all_notified_onqa_pending_label(self):
         self.ns.add_ert_all_notified_onqa_pending_label(self.test_issue)
-        self.assertEqual(self.test_issue.fields.labels, ["ert-all-notified-onqa-pending"])
+        self.assertEqual(self.test_issue.fields.labels, [ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL])
 
     def test_remove_ert_all_notified_onqa_pending_label(self):
         self.ns.remove_ert_all_notified_onqa_pending_label(self.test_issue)
