@@ -5,23 +5,25 @@ This is copy of [Jira Notificator](https://spaces.redhat.com/spaces/OCPERT/pages
 This Jira Notificator Python script is a command-line tool designed to monitor OCPBUGS jira issues in the ON_QA status and send escalating notifications if they remain in that state for extended periods. It automatically notifies the QA Contact, Team Lead, and Manager in sequence to ensure timely verification of issues.
 
 ## Process flow
-1. The Jira Notificator searches for all ON QA issues based on the specified filter and, for each issue:
+The Jira Notificator searches for all ON QA issues based on the specified filter and, for each issue:
 
-2. Checks whether a QA Contact notification has already been sent.
+1. Checks whether a QA Contact notification has already been sent.
 
-3. If not, and 24 weekday hours have passed since the issue transitioned to the ON QA state, the QA contact is notified.
+2. If not, and 24 weekday hours have passed since the issue transitioned to the ON QA state, the QA contact is notified.
 
-4. If no QA contact is assigned, the assignees and their manager are notified instead.
+    - If no QA contact is assigned, the assignees and their manager are notified instead.
 
-5. Checks whether a Team Lead notification has already been sent.
+3. Checks whether a Team Lead notification has already been sent.
 
-6. If not, and 24 weekday hours have passed since the QA Contact notification, the QA contact is notified again (instead of the Team Lead, as Team Lead notifications are not yet implemented).
+4. If not, and 24 weekday hours have passed since the QA Contact notification, the QA contact is notified again (instead of the Team Lead, as Team Lead notifications are not yet implemented).
 
-7. Checks whether a Manager notification has already been sent.
+5. Checks whether a Manager notification has already been sent.
 
-8. If not, and 24 weekday hours have passed since the Team Lead (second QA Contact) notification, the manager is notified.
+6. If not, and 24 weekday hours have passed since the Team Lead (second QA Contact) notification, the manager is notified.
 
-9. If no manager is found, the assignees and their manager are notified instead.
+    - If no manager is found, the assignees and their manager are notified instead.
+
+10. If yes, and 24 weekday hours have passed since the Manager notification, ON QA pending label (`ert:pending-onqa-over-96hrs`) is added to the issue.
 
 ## ON QA issues Jira filter
 The Jira filter searches **ON QA** issues from project **OCPBUGS** where the issue type is **Bug** or **Vulnerability** and the target version is **4.12.z**, **4.13.z**, **4.14.z**, **4.15.z**, **4.16.z**, **4.17.z**, **4.18.z** or **4.19.z**.

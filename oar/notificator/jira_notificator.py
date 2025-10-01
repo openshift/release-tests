@@ -546,7 +546,8 @@ class NotificationService:
         if not on_qa_datetime:
             logger.error(f"Issue {issue.key} does not have ON_QA transition date")
             return None
-        
+        logger.info(f"Issue {issue.key} has ON_QA transition date: {on_qa_datetime}")
+
         notification_dates = self.get_latest_notification_dates_after_on_qa_transition(issue, on_qa_datetime)
 
         if not notification_dates.get(NotificationType.QA_CONTACT):
@@ -559,18 +560,21 @@ class NotificationService:
             else:
                 logger.info("Skipping notifying QA Contact - less than 24 hour from transition to ON_QA.")
         elif not notification_dates.get(NotificationType.TEAM_LEAD): 
+            logger.info(f"Issue {issue.key} has QA Contact notification date: {notification_dates.get(NotificationType.QA_CONTACT)}")
             if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.QA_CONTACT)):
                 logger.info("Notifying Team Lead")
                 return self.notify_team_lead(issue)
             else:
                 logger.info("Skipping notifying Team Lead - less than 24 hour from QA Contact notification.")
         elif not notification_dates.get(NotificationType.MANAGER):
+            logger.info(f"Issue {issue.key} has Team Lead notification date: {notification_dates.get(NotificationType.TEAM_LEAD)}")
             if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.TEAM_LEAD)):
                 logger.info("Notifying Manager")
                 return self.notify_manager(issue)
             else:
                 logger.info("Skipping notifying Manager - less than 24 hour from Team Lead notification.")
         else:
+            logger.info(f"Issue {issue.key} has Manager notification date: {notification_dates.get(NotificationType.MANAGER)}")
             logger.info("All contacts have been notified.")
             if self.is_more_than_24_weekday_hours(notification_dates.get(NotificationType.MANAGER)):
                 logger.info("Adding ON_QA pending label to the issue.")
