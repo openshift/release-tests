@@ -454,6 +454,18 @@ class JiraIssue:
         """
         return self._issue.fields.customfield_12313441
 
+    def get_need_info_from(self):
+        """
+        Get issue field `Need Info From`
+        """
+        return self._issue.fields.customfield_12311840
+
+    def set_need_info_from(self, users: list[dict]):
+        """
+        Set issue field `Need Info From`
+        """
+        self._issue.update({"customfield_12311840": users})
+
     def is_critical_issue(self):
         """
         Check whether the issue is critical

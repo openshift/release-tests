@@ -8,6 +8,7 @@ from jira import JIRA, Issue
 from jira.resources import User
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
+from oar.core.jira import JiraIssue
 from oar.core.ldap import LdapHelper
 
 logger = logging.getLogger(__name__)
@@ -241,6 +242,24 @@ class NotificationService:
             logger.warning(f"Issue {issue.key} does not have an Assignee.")
             return None
 
+    def add_user_to_need_info_from(self, issue: Issue, user: User) -> None:
+        """
+        Adds a user to the need info from field.
+
+        Args:
+            issue (Issue): The JIRA issue to add the user to.
+            user (User): The user to add to the need info from field.
+        """
+        if self.dry_run:
+            logger.info(f"Skipping adding {user.emailAddress} to need info from field. Issue {issue.key}.")
+        else:
+            logger.info(f"Adding {user.emailAddress} to need info from field. Issue {issue.key}.")
+            jira_issue = JiraIssue(issue)
+            need_info_from = jira_issue.get_need_info_from() or []
+            updated_users = [u.raw for u in need_info_from]
+            updated_users.append(user.raw)
+            jira_issue.set_need_info_from(updated_users)
+
     def create_assignee_notification_text(self, missing_contact: Contact, notified_assignees: list[User]) -> str:
         """
         Creates a notification text for assignees when a contact is missing.
@@ -303,8 +322,10 @@ class NotificationService:
             if assignee:
                 notified_assignees = [assignee]
                 assignee_manager = self.get_manager(assignee)
+                self.add_user_to_need_info_from(issue, assignee)
                 if assignee_manager:
                     notified_assignees.append(assignee_manager)
+                    self.add_user_to_need_info_from(issue, assignee_manager)
                 assignee_notification = Notification(
                     issue, 
                     NotificationType.ASSIGNEE, 
@@ -353,6 +374,7 @@ class NotificationService:
                 self.create_qa_notification_text(qa_contact)
             )
             self.process_notification(qa_notification)
+            self.add_user_to_need_info_from(issue, qa_contact)
             return qa_notification
         else:
             logger.warning("QA contact is missing. Assignees will be notified.")
@@ -396,6 +418,7 @@ class NotificationService:
                 self.create_team_lead_notification_text(qa_contact)
             )
             self.process_notification(team_lead_notification)
+            self.add_user_to_need_info_from(issue, qa_contact)
             return team_lead_notification
         else:
             logger.warning("QA contact is missing. Assignees will be notified.")
@@ -438,6 +461,7 @@ class NotificationService:
                     self.create_manager_notification_text(manager)
                 )
                 self.process_notification(manager_notification)
+                self.add_user_to_need_info_from(issue, manager)
                 return manager_notification
             else:
                 logger.warning("Manager was not found. Assignees will be notified.")
