@@ -6,6 +6,7 @@ from unittest.mock import Mock
 
 from jira import JIRA
 
+from oar.core.jira import JiraIssue
 from oar.notificator.jira_notificator import Contact, Notification, NotificationService, NotificationType, ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL
 
 class TestJiraNotificator(unittest.TestCase):
@@ -119,6 +120,11 @@ class TestJiraNotificator(unittest.TestCase):
 
         empty_assignee = self.ns.get_assignee(self.test_issue_without_assignee)
         self.assertEqual(empty_assignee, None)
+        
+    def test_add_user_to_need_info_from(self):
+        qa_contact = self.ns.get_qa_contact(self.test_issue)
+        self.ns.add_user_to_need_info_from(self.test_issue, qa_contact)
+        self.assertEqual(JiraIssue(self.test_issue).get_need_info_from(), [qa_contact])
 
     def test_create_assignee_notification_text(self):
         assignee_manager = Mock()
