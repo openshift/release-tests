@@ -31,8 +31,30 @@ class NotificationManager:
         # self.mc = MailClient(
         #     self.cs.get_email_contact("trt"), self.cs.get_google_app_passwd()
         # )
-        self.sc = SlackClient(self.cs.get_slack_bot_token())
-        self.mh = MessageHelper(self.cs)
+        # Lazy init Slack client and helpers to avoid unnecessary external setup on hot paths
+        self._sc = None
+        self._mh = None
+        # Cache resolved slack channels to avoid repeated config lookups and API calls
+        self._channel_cache = {}
+
+    @property
+    def sc(self):
+        if self._sc is None:
+            self._sc = SlackClient(self.cs.get_slack_bot_token())
+        return self._sc
+
+    @property
+    def mh(self):
+        if self._mh is None:
+            self._mh = MessageHelper(self.cs)
+        return self._mh
+
+    def _get_channel(self, contact_key: str) -> str:
+        if contact_key in self._channel_cache:
+            return self._channel_cache[contact_key]
+        ch = self.cs.get_slack_channel_from_contact(contact_key)
+        self._channel_cache[contact_key] = ch
+        return ch
 
     def share_new_report(self, report: TestReport):
         """
@@ -45,16 +67,9 @@ class NotificationManager:
             NotificationException: error when share this info
         """
         try:
-            # Send email
-            # mail_subject = self.cs.release + " z-stream errata test status"
-            # mail_content = self.mh.get_mail_content_for_new_report(report)
-            # self.mc.send_email(
-            #     self.cs.get_email_contact("qe"), mail_subject, mail_content
-            # )
-            # Send slack message
             slack_msg = self.mh.get_slack_message_for_new_report(report)
             self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                self._get_channel("qe-release"), slack_msg
             )
         except Exception as e:
             raise NotificationException("share new report failed") from e
@@ -76,19 +91,18 @@ class NotificationManager:
         """
 
         try:
-            # Send slack message only
             slack_msg = self.mh.get_slack_message_for_ownership_change(
                 updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
             self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                self._get_channel("qe-release"), slack_msg
             )
             if len(abnormal_ads):
                 slack_msg = self.mh.get_slack_message_for_abnormal_advisory(
                     abnormal_ads
                 )
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                    self._get_channel("art"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
@@ -109,7 +123,7 @@ class NotificationManager:
                 jira_issues)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-forum"), slack_msg
                 )
         except Exception as e:
@@ -131,7 +145,7 @@ class NotificationManager:
                 jira_issues)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-forum"), slack_msg
                 )
         except Exception as e:
@@ -153,7 +167,7 @@ class NotificationManager:
                 cve_tracker_bugs)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                    self._get_channel("art"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
@@ -174,7 +188,7 @@ class NotificationManager:
                 unhealthy_advisories)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                    self._get_channel("qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
@@ -195,13 +209,12 @@ class NotificationManager:
             slack_msg = self.mh.get_slack_message_for_dropped_bugs(dropped_bugs)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
-                "share dropped bugs failed"
-            ) from e
+                "share dropped bugs failed") from e
     
     
     def share_dropped_and_high_severity_bugs(self, dropped_bugs, high_severity_bugs):
@@ -221,13 +234,12 @@ class NotificationManager:
             )
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
-                "share dropped and high severity bugs failed"
-            ) from e
+                "share dropped and high severity bugs failed") from e
 
     def share_doc_prodsec_approval_result(self, doc_appr, prodsec_appr):
         """
@@ -239,7 +251,7 @@ class NotificationManager:
             )
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "approver"), slack_msg
                 )
         except Exception as e:
@@ -254,7 +266,7 @@ class NotificationManager:
             slack_msg = self.mh.get_slack_message_for_jenkins_build(
                 job_name, build_url)
             if len(slack_msg):
-                self.sc.post_message(self.cs.get_slack_channel_from_contact(
+                self.sc.post_message(self._get_channel(
                     "qe-release"), slack_msg)
         except Exception as e:
             raise NotificationException(
@@ -269,7 +281,7 @@ class NotificationManager:
         """
         try:
             slack_msg = self.mh.get_slack_message_for_failed_cvp(jira_key)
-            self.sc.post_message(self.cs.get_slack_channel_from_contact(
+            self.sc.post_message(self._get_channel(
                 "qe-release"), slack_msg)
         except Exception as e:
             raise NotificationException(
@@ -289,7 +301,7 @@ class NotificationManager:
         try:
             slack_msg = self.mh.get_slack_message_for_shipment_mr(mr, new_owner)
             self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                self._get_channel("qe-release"), slack_msg
             )
         except Exception as e:
             raise NotificationException("share shipment MR failed") from e
@@ -313,18 +325,38 @@ class NotificationManager:
                 mr, updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
             self.sc.post_message(
-                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+                self._get_channel("qe-release"), slack_msg
             )
             if len(abnormal_ads):
                 slack_msg = self.mh.get_slack_message_for_abnormal_advisory(
                     abnormal_ads
                 )
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                    self._get_channel("art"), slack_msg
                 )
         except Exception as e:
             raise NotificationException("share shipment MR and AD info failed") from e
         
+    def share_drop_bugs_mr_for_approval(self, mr_url: str, dropped_count: int = 0):
+        """
+        Notify ART forum channel to approve the drop-bugs merge request
+
+        Args:
+            mr_url (str): URL of the drop-bugs merge request
+            dropped_count (int): Number of bugs dropped in this MR (optional)
+
+        Raises:
+            NotificationException: error when posting message
+        """
+        try:
+            count_text = f" (dropped {dropped_count} bugs)" if dropped_count else ""
+            slack_msg = f"ART team, please review and approve the drop-bugs MR: {mr_url}{count_text}"
+            # Use forum channel mapping from config
+            channel = self._get_channel("qe-forum")
+            self.sc.post_message(channel, slack_msg)
+        except Exception as e:
+            raise NotificationException("share drop-bugs MR for approval failed") from e
+
     def share_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
         Share unverified CVE issues to managers of QA contacts
@@ -340,7 +372,7 @@ class NotificationManager:
                 unverified_cve_issues)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-forum"), slack_msg
                 )
         except Exception as e:
@@ -383,7 +415,7 @@ class NotificationManager:
                 summary_message = f"Hello {gid}, Release approval timeout for {release}. Payload metadata URL still not accessible"
             
             # Always send to default channel
-            default_channel = self.cs.get_slack_channel_from_contact("qe-release")
+            default_channel = self._get_channel("qe-release")
             self.sc.post_message(default_channel, summary_message)
             logger.info(f"Sent completion notification to default channel {default_channel}")
             
