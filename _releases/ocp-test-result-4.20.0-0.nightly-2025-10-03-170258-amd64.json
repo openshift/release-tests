@@ -54,9 +54,48 @@
         "jobStartTime": "2025-10-03T23:22:09Z",
         "jobID": "5274e902-90dd-4db4-876b-af139ef7670f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1974253671629721600",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-04T02:46:28Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 117,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 34,
+            "failingScenarios": [
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install",
+              "[sig-operators] OLM v1 oprun should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-79770-metrics are collected by default"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-04T03:40:31Z",
+          "jobID": "20bae6ce-72b2-40fb-b648-d3ef9f2f7122",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1974318691520614400",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-04T03:40:36Z",
+          "jobID": "a6feeb91-ebcc-491f-9721-d8ed5e297583",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1974318712852844544",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999",
