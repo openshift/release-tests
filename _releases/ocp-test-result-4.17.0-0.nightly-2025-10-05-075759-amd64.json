@@ -161,7 +161,31 @@
           "jobStartTime": "2025-10-05T16:26:16Z",
           "jobID": "773914dc-0584-4a41-9f11-4c2a350afd4d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1974873785861410816",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-05T19:29:50Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-cli] Workloads ocmirror v1 works well NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Low-51093-oc-mirror init"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -202,7 +226,28 @@
           "jobStartTime": "2025-10-05T16:26:26Z",
           "jobID": "15e2b556-14e6-4543-99bd-a6051914985d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1974873828391653376",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-05T19:51:58Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-10-05T16:26:31Z",
@@ -280,5 +325,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-10-05-075759",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-10-05-075759"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
