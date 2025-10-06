@@ -57,6 +57,8 @@ class TestJiraManager(unittest.TestCase):
         self.assertEqual(issue.get_need_info_from(), None)
         issue.set_need_info_from([qa_contact.raw])
         self.assertEqual(issue.get_need_info_from(), [qa_contact])
+        issue.set_need_info_from([])
+        self.assertEqual(issue.get_need_info_from(), None)
 
     @unittest.skip("don't run this case by default")
     def test_create_issue(self):
