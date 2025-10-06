@@ -6,19 +6,20 @@ from unittest.mock import Mock
 
 from jira import JIRA
 
+from oar.core.jira import JiraIssue
 from oar.notificator.jira_notificator import Contact, Notification, NotificationService, NotificationType, ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL
 
 class TestJiraNotificator(unittest.TestCase):
 
     def setUp(self):
         jira_token = os.environ.get("JIRA_TOKEN")
-        jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
-        self.ns = NotificationService(jira, True)
+        self.jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
+        self.ns = NotificationService(self.jira, True)
 
-        self.test_issue = jira.issue("OCPBUGS-59288", expand="changelog")
-        self.test_issue_without_qa = jira.issue("OCPBUGS-8760", expand="changelog")
-        self.test_issue_without_assignee = jira.issue("OCPBUGS-1542", expand="changelog")
-        self.test_issue_on_qa = jira.issue("OCPBUGS-46472", expand="changelog")
+        self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
+        self.test_issue_without_qa = self.jira.issue("OCPBUGS-8760", expand="changelog")
+        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-1542", expand="changelog")
+        self.test_issue_on_qa = self.jira.issue("OCPBUGS-46472", expand="changelog")
 
         self.test_user = Mock()
         self.test_user.name = "tdavid"
@@ -119,6 +120,15 @@ class TestJiraNotificator(unittest.TestCase):
 
         empty_assignee = self.ns.get_assignee(self.test_issue_without_assignee)
         self.assertEqual(empty_assignee, None)
+        
+    def test_add_user_to_need_info_from(self):
+        test_ns = NotificationService(self.jira, False)
+        qa_contact = test_ns.get_qa_contact(self.test_issue)
+        test_ns.add_user_to_need_info_from(self.test_issue, qa_contact)
+        jira_issue = JiraIssue(self.test_issue)
+        self.assertEqual(jira_issue.get_need_info_from(), [qa_contact])
+        jira_issue.set_need_info_from([])
+        self.assertEqual(jira_issue.get_need_info_from(), None)
 
     def test_create_assignee_notification_text(self):
         assignee_manager = Mock()

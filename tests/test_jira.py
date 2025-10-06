@@ -46,6 +46,19 @@ class TestJiraManager(unittest.TestCase):
         self.assertTrue(issue.is_critical_issue())
         self.assertTrue(issue.is_customer_case())
         self.assertFalse(issue.is_cve_tracker())
+        self.assertEqual(issue.get_need_info_from(), None)
+
+    @unittest.skipIf(
+        token_not_found or token_is_dummy, "token is not found, skip this case"
+    )
+    def test_set_issue_fields(self):
+        issue = self.jm.get_issue("OCPBUGS-59288")
+        qa_contact = issue._issue.fields.customfield_12315948
+        self.assertEqual(issue.get_need_info_from(), None)
+        issue.set_need_info_from([qa_contact.raw])
+        self.assertEqual(issue.get_need_info_from(), [qa_contact])
+        issue.set_need_info_from([])
+        self.assertEqual(issue.get_need_info_from(), None)
 
     @unittest.skip("don't run this case by default")
     def test_create_issue(self):
