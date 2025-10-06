@@ -40,6 +40,17 @@ def drop_bugs(ctx):
             logger.info("updating test report")
             report.update_bug_list(operator.get_jira_issues(), dropped_bugs)
             nm.share_dropped_bugs(dropped_bugs)
+            # Notify ART using MR url directly from ShipmentData cache (no extra GitLab lookup)
+            try:
+                from oar.core.shipment import ShipmentData
+                sd = ShipmentData(cs)
+                mr_url = sd.get_last_drop_bugs_mr_url()
+                if mr_url:
+                    nm.share_drop_bugs_mr_for_approval(mr_url, dropped_count=len(dropped_bugs))
+                else:
+                    logger.warning("drop-bugs MR url is not cached; skipping ART notification")
+            except Exception:
+                logger.warning("Failed to obtain MR url for drop-bugs; skipping ART notification")
             if len(approved_doc_ads):
                 for ad in approved_doc_ads:
                     ad.refresh()

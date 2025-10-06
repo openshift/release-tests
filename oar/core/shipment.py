@@ -817,6 +817,8 @@ class ShipmentData:
         """
         self._cs = config_store
         self._mr = self._initialize_mr()
+        # cache the last created/used drop-bugs MR url for downstream notifications
+        self._last_drop_bugs_mr_url: str | None = None
         
     def _initialize_mr(self) -> GitLabMergeRequest:
         """Initialize GitLabMergeRequest objects from shipment MRs
@@ -857,6 +859,10 @@ class ShipmentData:
             GitLabMergeRequest: The initialized merge request instance
         """
         return self._mr
+
+    def get_last_drop_bugs_mr_url(self) -> str | None:
+        """Return the last drop-bugs MR URL detected/created during drop_bugs()."""
+        return self._last_drop_bugs_mr_url
 
     def get_jira_issues(self) -> List[str]:
         """Get Jira issue IDs from shipment YAML files where source is issues.redhat.com
@@ -993,6 +999,11 @@ class ShipmentData:
             repo_dir = gh.checkout_repo(source_project.http_url_to_repo, mr.get_source_branch())
             # configure credential for remote origin, just need to update this branch
             gh.configure_remotes("origin", f"https://group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7:{self._cs.get_gitlab_token()}@gitlab.cee.redhat.com/rioliu/ocp-shipment-data.git")
+            # cache existing MR url for notification
+            try:
+                self._last_drop_bugs_mr_url = mr.get_web_url()
+            except Exception:
+                self._last_drop_bugs_mr_url = None
         else:
             # if mr does not exist, check out release branch and create new branch based on it
             repo_dir = gh.checkout_repo(branch=self._mr.get_source_branch())
@@ -1049,6 +1060,11 @@ class ShipmentData:
             gh.push_changes("ert-release-bot")
             # create new MR on gitlab server
             new_mr = gl.create_merge_request("rioliu/ocp-shipment-data", branch, self._mr.get_source_branch(), mr_title, target_project_name="hybrid-platforms/art/ocp-shipment-data", auto_merge=True)
+            # cache new MR url for notification
+            try:
+                self._last_drop_bugs_mr_url = new_mr.get_web_url()
+            except Exception:
+                self._last_drop_bugs_mr_url = None
             self._mr.add_comment(f"Drop bug in MR: {new_mr.get_web_url()}")
 
         return unverified_issues
