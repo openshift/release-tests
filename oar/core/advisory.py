@@ -784,7 +784,7 @@ class Advisory(Erratum):
             return False
         #Download the commit metadata based on info in nvr.
         rhcos_nvr_url = re.sub(r"-([\d.]+)-(\d+)$", r"/\1/\2", rhcos_nvr)
-        rhcos_nvr_url_full = "https://download.eng.bos.redhat.com/brewroot/packages/"+rhcos_nvr_url+"/metadata.json"
+        rhcos_nvr_url_full = "https://download.engineering.redhat.com/brewroot/packages/"+rhcos_nvr_url+"/metadata.json"
         rhos_meta_data_full = self._get(rhcos_nvr_url_full)
         kernel_build = [
             f"{comp['name']}-{comp['version']}-{comp['release']}"
