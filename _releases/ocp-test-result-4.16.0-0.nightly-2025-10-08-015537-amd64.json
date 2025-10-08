@@ -6,7 +6,28 @@
         "jobStartTime": "2025-10-08T13:23:46Z",
         "jobID": "ff0d7d4b-e234-441e-b941-23d2e44a4955",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1975915020222992384",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-10-08T16:46:06Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 103,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 21
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -16,9 +37,44 @@
         "jobStartTime": "2025-10-08T13:23:51Z",
         "jobID": "c519f1ee-6795-4b6e-b3fd-e0b8bbc6fe0f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1975915041475530752",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-08T16:25:16Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 103,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation "
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-08T17:30:33Z",
+          "jobID": "81583632-83ff-4b61-abc9-f868d70dd8b8",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-10-08T17:30:38Z",
+          "jobID": "13e37788-1dc9-45b8-894a-569cc1cf3654",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
@@ -26,9 +82,44 @@
         "jobStartTime": "2025-10-08T13:23:56Z",
         "jobID": "688136bd-6e41-491c-98cc-100cd3f9cbf6",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/1975915062656765952",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-08T16:24:17Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 103,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47930-[CSI-Driver] [Snapshot] [Filesystem ext4] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-08T17:30:49Z",
+          "jobID": "6f1550b5-e8db-46ae-b1fa-f82de5aaeb68",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-10-08T17:30:54Z",
+          "jobID": "8adf32a1-2ecf-4cd2-9950-8eab9f32b65f",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-disruptive-f999",
