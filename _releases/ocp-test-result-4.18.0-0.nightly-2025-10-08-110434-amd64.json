@@ -36,12 +36,14 @@
         {
           "jobStartTime": "2025-10-08T18:39:30Z",
           "jobID": "581f36a0-339f-443e-8c32-1541484e818a",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1975995027721031680",
+          "jobState": "pending"
         },
         {
           "jobStartTime": "2025-10-08T18:39:35Z",
           "jobID": "5fc02f70-8605-486e-9b53-e33d81ae1298",
-          "jobState": "triggered"
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1975995345892544512",
+          "jobState": "pending"
         }
       ]
     },
@@ -51,9 +53,46 @@
         "jobStartTime": "2025-10-08T15:40:51Z",
         "jobID": "f76181d4-1d44-4c7b-8d10-b48735baaf49",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1975949522022436864",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-08T18:55:08Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 106,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 29,
+            "failingScenarios": [
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-08T19:40:43Z",
+          "jobID": "7cac8ef9-4dd8-4cf4-b43f-72a6c56af077",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1976009886080700416",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-08T19:40:48Z",
+          "jobID": "6468e8b3-64a1-46b8-b2b6-1785b8d74756",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1976009907261935616",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999",
@@ -61,9 +100,45 @@
         "jobStartTime": "2025-10-08T15:40:56Z",
         "jobID": "198556b2-975d-454a-8a19-a6444de83d6c",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1975949542553554944",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-08T18:42:08Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 106,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-08T19:40:59Z",
+          "jobID": "da8bb6cb-1626-4295-b90e-02f889be28b4",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2025-10-08T19:41:04Z",
+          "jobID": "a5efe33c-3f16-45b0-9698-4bfa712dc5cb",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999",
@@ -90,7 +165,8 @@
         "jobStartTime": "2025-10-08T15:41:07Z",
         "jobID": "9b252c78-0cef-4764-8e66-da9821838ff7",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/1975949584890859520",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-10-08T18:57:23Z"
       },
       "retriedJobs": []
     },
