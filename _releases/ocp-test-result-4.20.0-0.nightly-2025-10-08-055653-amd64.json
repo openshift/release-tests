@@ -137,13 +137,63 @@
           "jobStartTime": "2025-10-08T22:34:16Z",
           "jobID": "dfc5895f-1837-4bb2-9c17-b4fb550eea01",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1976053561133371392",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-09T01:58:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 117,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-10-08T22:34:21Z",
           "jobID": "7eccc66d-ab2f-4ad6-8311-c203f0c84e51",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1976053582369132544",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-09T01:54:06Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 117,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -292,5 +342,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2025-10-08-055653",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2025-10-08-055653"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
