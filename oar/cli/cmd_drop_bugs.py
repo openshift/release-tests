@@ -6,6 +6,7 @@ from oar.core.const import *
 from oar.core.notification import NotificationManager
 from oar.core.operators import BugOperator
 from oar.core.worksheet import WorksheetManager
+from oar.core.shipment import GitLabServer
 
 logger = logging.getLogger(__name__)
 
@@ -40,17 +41,19 @@ def drop_bugs(ctx):
             logger.info("updating test report")
             report.update_bug_list(operator.get_jira_issues(), dropped_bugs)
             nm.share_dropped_bugs(dropped_bugs)
-            # Notify ART using MR url directly from ShipmentData cache (no extra GitLab lookup)
+            # Get drop-bugs MR to notify ART team
             try:
-                from oar.core.shipment import ShipmentData
-                sd = ShipmentData(cs)
-                mr_url = sd.get_last_drop_bugs_mr_url()
-                if mr_url:
-                    nm.share_drop_bugs_mr_for_approval(mr_url, dropped_count=len(dropped_bugs))
+                gl = GitLabServer(cs.get_gitlab_url(), cs.get_gitlab_token())
+                mr_title = f"{cs.release} drop bugs"
+                # Try to scope to shipment project when available
+                project_name = operator._sd.get_mr().project_name if hasattr(operator, '_sd') and operator._sd.get_mr() else None
+                mr = gl.get_mr_by_title(mr_title, project_name)
+                if mr:
+                    nm.share_drop_bugs_mr_for_approval(mr.get_web_url())
                 else:
-                    logger.warning("drop-bugs MR url is not cached; skipping ART notification")
-            except Exception:
-                logger.warning("Failed to obtain MR url for drop-bugs; skipping ART notification")
+                    logger.warning("drop-bugs MR url not found by title; skipping ART notification")
+            except Exception as e:
+                logger.warning("Failed to locate MR url for drop-bugs; skipping ART notification: %s", e)
             if len(approved_doc_ads):
                 for ad in approved_doc_ads:
                     ad.refresh()

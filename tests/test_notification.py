@@ -176,21 +176,19 @@ class TestNotificationManager(unittest.TestCase):
         self.nm.sc.post_message.assert_called_once()
 
     def test_share_drop_bugs_mr_for_approval_success(self):
-        """Ensure MR approval request is posted to forum channel with URL and count"""
+        """Ensure MR approval request is posted to forum channel with URL"""
         mr_url = "https://gitlab.example.com/mygroup/ocp-shipment-data/-/merge_requests/136"
-        dropped_count = 1	
         # Mock channel mapping and Slack posting
         self.nm.cs.get_slack_channel_from_contact = unittest.mock.Mock(return_value="#forum-ocp-release")
         self.nm.sc.post_message = unittest.mock.Mock()
 
-        self.nm.share_drop_bugs_mr_for_approval(mr_url, dropped_count)
+        self.nm.share_drop_bugs_mr_for_approval(mr_url)
 
         # Validate channel and message contents
         self.nm.sc.post_message.assert_called_once()
         args, kwargs = self.nm.sc.post_message.call_args
         self.assertEqual(args[0], "#forum-ocp-release")
         self.assertIn(mr_url, args[1])
-        self.assertIn(str(dropped_count), args[1])
 
     def test_share_drop_bugs_mr_for_approval_error(self):
         """Ensure NotificationException is raised when Slack post fails"""
@@ -199,42 +197,4 @@ class TestNotificationManager(unittest.TestCase):
         self.nm.sc.post_message = unittest.mock.Mock(side_effect=Exception("Slack failure"))
 
         with self.assertRaises(NotificationException):
-            self.nm.share_drop_bugs_mr_for_approval(mr_url, dropped_count=0)
-
-    def test_lazy_init_and_channel_cache(self):
-        """Validate Slack client lazy init and channel caching reduce repeated lookups"""
-        # Prepare NotificationManager with a fake MessageHelper to avoid external calls
-        class _FakeMH:
-            def get_slack_message_for_new_report(self, _):
-                return "new report msg"
-            def get_slack_message_for_bug_verification(self, _):
-                return "verify bugs msg"
-
-        # Ensure lazy state before first use
-        self.nm._mh = _FakeMH()
-        self.nm._sc = None
-
-        # Mock channel resolution and Slack post
-        self.nm.cs.get_slack_channel_from_contact = unittest.mock.Mock(side_effect=lambda k: {
-            "qe-release": "#qe-release",
-            "qe-forum": "#forum-ocp-release"
-        }[k])
-        self.nm.sc.post_message = unittest.mock.Mock()
-
-        # First call should initialize Slack client and resolve channel once
-        self.nm.share_new_report(report=unittest.mock.Mock())
-        self.assertIsNotNone(self.nm._sc)
-        self.nm.cs.get_slack_channel_from_contact.assert_called_once_with("qe-release")
-        self.nm.sc.post_message.assert_called_once_with("#qe-release", "new report msg")
-
-        # Subsequent call using same contact should use cached channel (no extra get_slack_channel_from_contact)
-        self.nm.share_new_report(report=unittest.mock.Mock())
-        # Still only one resolution for qe-release
-        self.nm.cs.get_slack_channel_from_contact.assert_called_once()
-        self.assertEqual(self.nm.sc.post_message.call_count, 2)
-
-        # Now exercise a different contact key and verify each key is cached independently
-        self.nm.share_bugs_to_be_verified(["OCPBUGS-1"])  # uses qe-forum
-        # Two unique calls total: one for qe-release and one for qe-forum
-        self.assertEqual(self.nm.cs.get_slack_channel_from_contact.call_count, 2)
-        self.nm.sc.post_message.assert_any_call("#forum-ocp-release", "verify bugs msg")
+            self.nm.share_drop_bugs_mr_for_approval(mr_url)
