@@ -218,7 +218,32 @@
           "jobStartTime": "2025-10-12T07:28:27Z",
           "jobID": "42763e05-3b39-47ba-be3d-9d3f48df47ff",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/1977275154308272128",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-12T10:30:23Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 117,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
