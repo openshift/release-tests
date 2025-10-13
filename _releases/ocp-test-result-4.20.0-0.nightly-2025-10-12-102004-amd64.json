@@ -139,13 +139,67 @@
           "jobStartTime": "2025-10-12T22:29:17Z",
           "jobID": "6cef06c7-b66a-46f4-9bd4-45fb4bafccb4",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1977501856657575936",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-13T02:04:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 117,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-68237-Add the trusted CA bundle in the Prometheus user workload monitoring pods",
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-10-12T22:29:22Z",
           "jobID": "5299b4b7-6804-4534-8115-f1b821393fd9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1977501877947863040",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-13T01:57:55Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 117,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 35,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-High-52383-Keda Install"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-12482:Workloads Fixed predicates rules testing - PodFitsResources"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -294,5 +348,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2025-10-12-102004",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2025-10-12-102004"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
