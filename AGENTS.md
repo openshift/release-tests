@@ -1033,8 +1033,9 @@ See individual agent sections above for specific environment variables required.
 
 **Problem:** Metadata URL accessibility check times out
 - **Expected:** Default timeout is 2 days
-- **Solution:** Check if payload metadata URL is actually accessible for the release
-- **Debug:** Manually test URL: `curl https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4.19.0-0.nightly/latest`
+- **Solution:** Check if advisory metadata URL is actually accessible for the release
+- **Debug:** Manually test URL: `curl -I https://access.redhat.com/errata/RHBA-2025:17662`
+- **Expected Response:** HTTP 200 OK indicates the advisory page is accessible
 
 ### Debugging Tips
 
