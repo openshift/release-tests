@@ -266,8 +266,9 @@ class AdvisoryManager:
             rhsa_jira_issues = []
             for ad in rhsa_ads:
                 rhsa_jira_issues += ad.jira_issues
-            for trackers in json_obj.values():
-                if isinstance(trackers, list):
+            for key in ("rpm", "rhcos"):
+                trackers = json_obj.get(key)
+                if trackers and isinstance(trackers, list):
                     for tracker in trackers:
                         # add it to missed bug list if it is not attached on advisories
                         if tracker not in rhsa_jira_issues:
