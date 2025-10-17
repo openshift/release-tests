@@ -2,6 +2,28 @@
 
 This document describes the automated agents, controllers, and background services used in the ERT (Errata Reliability Team) release-tests project. These automated systems help manage OpenShift z-stream releases by handling testing, notifications, and release workflows.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Automated Agents and Services](#automated-agents-and-services)
+  - [1. Release Detector](#1-release-detector)
+  - [2. Job Controller](#2-job-controller)
+  - [3. Test Result Aggregator](#3-test-result-aggregator)
+  - [4. Jira Notificator](#4-jira-notificator)
+  - [5. Slack Message Receiver (Release Bot)](#5-slack-message-receiver-release-bot)
+  - [6. Test Result Checker](#6-test-result-checker)
+- [OAR CLI Tool (OpenShift Automatic Release)](#oar-cli-tool-openshift-automatic-release)
+  - [Available Commands](#available-commands)
+  - [Command Workflow](#command-workflow)
+- [OAR Core Modules](#oar-core-modules)
+  - [Core Module Architecture](#core-module-architecture)
+  - [Module List](#module-list)
+- [Integration and Workflow](#integration-and-workflow)
+- [Deployment Considerations](#deployment-considerations)
+- [Monitoring and Observability](#monitoring-and-observability)
+- [Troubleshooting](#troubleshooting)
+- [Version Compatibility](#version-compatibility)
+
 ## Overview
 
 The ERT release-tests project contains several automated agents and services that work together to streamline the OpenShift release process. These systems monitor release streams, trigger tests, aggregate results, send notifications, and support release operations.
@@ -18,7 +40,7 @@ The ERT release-tests project contains several automated agents and services tha
 - Fetches the latest z-stream version from a GitHub repository file maintained by ART
 - Fetches the latest stable version from the OpenShift release stream API
 - Compares versions using semantic versioning
-- When a new z-stream release is detected, automatically creates a test report to kickoff the QE release flow
+- When a new z-stream release is detected, automatically creates a test report to kickoff the QE release flow (see [create-test-report](#1-create-test-report) CLI command)
 
 **Trigger:** Can be run on-demand via CLI command:
 ```bash
@@ -810,9 +832,40 @@ All core modules follow a consistent pattern:
 
 ### 11. Operators Module (`oar/core/operators.py`)
 
-**Purpose:** Operator-specific functionality for OCP releases.
+**Purpose:** Provides composite operator classes that orchestrate operations across multiple core modules for complex workflows.
 
-*Details would require reading the module file*
+**Key Classes:**
+- `ReleaseOwnershipOperator` - Handles ownership updates across advisories and shipments
+- `BugOperator` - Manages bug operations across both advisory and shipment sources
+- `ApprovalOperator` - Handles approval operations based on release flow type (Errata or Konflux)
+- `ImageHealthOperator` - Checks image container health for both advisory and shipment data
+- `CVETrackerOperator` - Handles CVE tracker bug checking across both sources
+- `NotificationOperator` - Manages notifications based on release flow type
+- `LogCaptureHandler` - Custom logging handler to capture log messages for background processes
+
+**Key Functionality:**
+- Orchestrate complex operations across multiple modules
+- Support both Errata and Konflux workflow modes
+- Handle background processes with proper locking mechanisms
+- Schedule periodic checks with timeout handling
+- Aggregate data from multiple sources (advisories + shipments)
+
+**Key Methods:**
+- `ReleaseOwnershipOperator.update_owners()` - Update ownership across all sources
+- `BugOperator.get_jira_issues()` - Get combined Jira issues from all sources
+- `BugOperator.drop_bugs()` - Execute bug drop across advisories and shipments
+- `ApprovalOperator.approve_release()` - Execute approval with metadata URL checking
+- `ImageHealthOperator.check_image_health()` - Check container health across sources
+- `CVETrackerOperator.check_cve_tracker_bugs()` - Find missed CVE tracker bugs
+
+**Background Processing:**
+- Implements scheduler with file-based locking to prevent duplicate instances
+- Periodic metadata URL accessibility checking (every 30 minutes)
+- Automatic advisory status changes when metadata becomes accessible
+- Timeout handling (2 days default)
+- Proper cleanup and notification on completion/timeout/error
+
+**Dependencies:** Integrates AdvisoryManager, ShipmentData, JiraManager, NotificationManager, WorksheetManager
 
 ---
 
@@ -901,3 +954,139 @@ Most agents rely on:
 - **OAR configuration** for release-specific settings
 
 See individual agent sections above for specific environment variables required.
+
+---
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+#### Authentication Issues
+
+**Problem:** `JIRA_TOKEN` authentication fails
+- **Solution:** Regenerate your Jira personal access token at https://issues.redhat.com
+- **Verify:** Test with `curl -H "Authorization: Bearer $JIRA_TOKEN" https://issues.redhat.com/rest/api/2/myself`
+
+**Problem:** Kerberos ticket expired for Errata Tool access
+- **Solution:** Renew your Kerberos ticket: `kinit $kid@$domain`
+- **Verify:** Check ticket status with `klist`
+
+**Problem:** GitHub token permissions insufficient
+- **Solution:** Ensure token has `repo` scope for private repositories
+- **Verify:** Test with `gh auth status`
+
+#### Agent-Specific Issues
+
+**Release Detector**
+- **Problem:** Cannot detect new releases
+- **Check:** Verify GitHub repository access and ART's version file location
+- **Debug:** Run with `-v` flag for verbose logging: `oarctl start-release-detector -r 4.19 -v`
+
+**Job Controller**
+- **Problem:** Prow jobs not triggering
+- **Check:** Verify `APITOKEN` for Gangway authentication
+- **Check:** Ensure job registry files are properly configured in the repository
+- **Debug:** Check GitHub tracking files in `_releases` directory
+
+**Test Result Aggregator**
+- **Problem:** Results not being aggregated
+- **Check:** Verify `GCS_CRED_FILE` path and credentials
+- **Check:** Ensure result files exist in GitHub repository
+- **Debug:** Check for errors in aggregator logs regarding GCS access
+
+**Jira Notificator**
+- **Problem:** Notifications not sent to Jira
+- **Check:** Verify Jira token has permission to comment on issues
+- **Check:** Confirm LDAP connectivity for manager lookups
+- **Debug:** Use `--dry-run` flag to test without sending actual comments
+
+**Slack Bot**
+- **Problem:** Bot not responding to commands
+- **Check:** Verify both `SLACK_APP_TOKEN` and `SLACK_BOT_TOKEN` are set
+- **Check:** Ensure bot is invited to the channel
+- **Debug:** Check WebSocket connection logs for Socket Mode
+
+#### OAR CLI Issues
+
+**Problem:** ConfigStore cannot decrypt configuration
+- **Solution:** Verify `OAR_JWK` environment variable is set correctly
+- **Location:** JWK is stored in Bitwarden: *openshift-qe-trt-env-vars*
+
+**Problem:** Google Sheets API access fails
+- **Solution:** Verify Google Service Account credentials are properly configured
+- **Check:** Ensure service account has edit permissions on the spreadsheet
+
+**Problem:** Advisory operations fail
+- **Solution:** Ensure you have a valid Kerberos ticket: `kinit $kid@$domain`
+- **Check:** Test Errata Tool access: visit https://errata.devel.redhat.com
+
+**Problem:** CVE tracker bug check fails
+- **Solution:** Verify `elliott` command is available in PATH
+- **Check:** Ensure ocp-build-data repository is accessible
+
+#### Background Process Issues
+
+**Problem:** Approval operator background process not running
+- **Check:** Look for lock file in `/tmp/oar_scheduler_*.lock`
+- **Debug:** Check logs in `/tmp/oar_logs/metadata_checker_*.log`
+- **Solution:** Remove stale lock file if process is not actually running
+
+**Problem:** Metadata URL accessibility check times out
+- **Expected:** Default timeout is 2 days
+- **Solution:** Check if payload metadata URL is actually accessible for the release
+- **Debug:** Manually test URL: `curl https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4.19.0-0.nightly/latest`
+
+#### Workflow Issues
+
+**Problem:** Build not promoted after all tests pass
+- **Check:** Verify releasepayload label was updated in OpenShift cluster
+- **Check:** Ensure all required (non-optional) tests passed
+- **Debug:** Check aggregator logs for promotion logic
+
+**Problem:** Greenwave CVP tests stuck in FAILED state
+- **Solution:** Try "Refetch" operation in Errata Tool
+- **Escalation:** Contact CVP team via Google Spaces [CVP] if refetch doesn't resolve
+
+**Problem:** High severity bugs not being dropped
+- **Expected:** Critical/Blocker/CVE/Customer Case bugs require manual confirmation
+- **Action:** Respond to Slack notification to confirm if bug can be dropped
+
+### Debugging Tips
+
+1. **Enable verbose logging:** Most commands support `-v` or `--debug` flag
+2. **Check environment variables:** `env | grep -E '(JIRA|SLACK|GITHUB|OAR)'`
+3. **Review recent logs:** Agents use Python logging module with timestamps
+4. **Test individual components:** Use dry-run modes where available
+5. **Verify external service status:** Check status pages for Jira, GitHub, Slack
+6. **Check network connectivity:** Ensure access to internal Red Hat services
+
+---
+
+## Version Compatibility
+
+This project supports the following OpenShift versions for z-stream releases:
+
+**Currently Supported Versions:**
+- OpenShift 4.12.z
+- OpenShift 4.13.z
+- OpenShift 4.14.z
+- OpenShift 4.15.z
+- OpenShift 4.16.z
+- OpenShift 4.17.z
+- OpenShift 4.18.z
+- OpenShift 4.19.z
+
+**Workflow Support:**
+- **Errata Flow:** Traditional advisory-based workflow (all supported versions)
+- **Konflux Flow:** GitLab MR-based shipment workflow (newer versions)
+
+**Note:** Version support is configured in:
+- Jira Notificator query filters (`oar/notificator/jira_notificator.py`)
+- Job registry files for test definitions
+- ConfigStore release validation
+
+When adding support for new OpenShift versions, update:
+1. Jira query filters in the notificator
+2. Job registry configurations
+3. Test report templates
+4. Version validation logic in `oar/core/util.py`
