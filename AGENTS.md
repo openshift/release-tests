@@ -283,17 +283,44 @@ pip3 install -e .
 
 #### Required Environment Variables
 
+**OAR CLI:**
+- **OAR_JWK** - Encryption key for config_store.json (stored in Bitwarden: *openshift-qe-trt-env-vars*)
 - **JIRA_TOKEN** - Jira personal access token for API access
+- **GCP_SA_FILE** - Google Cloud Platform service account credentials file path for Google Sheets API access
+- **SLACK_BOT_TOKEN** - Slack bot token for sending notifications
 - **JENKINS_USER** - Jenkins username (email)
 - **JENKINS_TOKEN** - Jenkins API token
-- **OAR_JWK** - Encryption key for config_store.json (stored in Bitwarden: *openshift-qe-trt-env-vars*)
-- **Kerberos ticket** - Required for Errata Tool access: `kinit $kid@$domain`
+- **GITLAB_TOKEN** - GitLab personal access token for shipment MR operations
+- **Kerberos ticket** - Required for Errata Tool and LDAP access: `kinit $kid@$domain`
 - **Bugzilla credentials** - Cached in `~/.config/python-bugzilla/bugzillarc`
 
-#### Optional Environment Variables (for Slack notifications)
+**Release Detector:**
+- All OAR CLI environment variables (calls `create-test-report` command)
+- **GITHUB_TOKEN** - GitHub personal access token for monitoring repository file changes
 
-- **OAR_SLACK_CHANNEL** - Slack channel ID for notifications
-- **OAR_SLACK_THREAD** - Slack thread timestamp for threaded responses
+**Job Controller:**
+- **GITHUB_TOKEN** - GitHub personal access token for repository operations
+- **APITOKEN** - Prow/Gangway API token for triggering test jobs
+
+**Test Result Aggregator:**
+- **GITHUB_TOKEN** - GitHub personal access token for repository operations
+- **APITOKEN** - Prow/Gangway API token for triggering test jobs
+- **GCS_CRED_FILE** - Google Cloud Storage credentials file path for test artifact access
+
+**Jira Notificator:**
+- **JIRA_TOKEN** - Jira personal access token for API access
+- **Kerberos ticket** - For LDAP manager lookup
+
+**Slack Message Receiver (Release Bot):**
+- **SLACK_APP_TOKEN** - Slack app-level token for Socket Mode
+- **SLACK_BOT_TOKEN** - Slack bot token for API calls
+- All OAR CLI environment variables (executes OAR commands)
+
+**Test Result Checker:**
+- **GITHUB_TOKEN** - GitHub personal access token for repository operations
+- **SLACK_BOT_TOKEN** - Slack bot token for sending notifications
+
+**Note:** `OAR_SLACK_CHANNEL` and `OAR_SLACK_THREAD` are set internally by the Slack bot when executing commands and should not be configured manually by users.
 
 ### CLI Architecture
 
