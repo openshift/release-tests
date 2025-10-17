@@ -1036,21 +1036,6 @@ See individual agent sections above for specific environment variables required.
 - **Solution:** Check if payload metadata URL is actually accessible for the release
 - **Debug:** Manually test URL: `curl https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4.19.0-0.nightly/latest`
 
-#### Workflow Issues
-
-**Problem:** Build not promoted after all tests pass
-- **Check:** Verify releasepayload label was updated in OpenShift cluster
-- **Check:** Ensure all required (non-optional) tests passed
-- **Debug:** Check aggregator logs for promotion logic
-
-**Problem:** Greenwave CVP tests stuck in FAILED state
-- **Solution:** Try "Refetch" operation in Errata Tool
-- **Escalation:** Contact CVP team via Google Spaces [CVP] if refetch doesn't resolve
-
-**Problem:** High severity bugs not being dropped
-- **Expected:** Critical/Blocker/CVE/Customer Case bugs require manual confirmation
-- **Action:** Respond to Slack notification to confirm if bug can be dropped
-
 ### Debugging Tips
 
 1. **Enable verbose logging:** Most commands support `-v` or `--debug` flag
@@ -1075,6 +1060,7 @@ This project supports the following OpenShift versions for z-stream releases:
 - OpenShift 4.17.z
 - OpenShift 4.18.z
 - OpenShift 4.19.z
+- OpenShift 4.20.z
 
 **Workflow Support:**
 - **Errata Flow:** Traditional advisory-based workflow (all supported versions)
@@ -1089,4 +1075,6 @@ When adding support for new OpenShift versions, update:
 1. Jira query filters in the notificator
 2. Job registry configurations
 3. Test report templates
-4. Version validation logic in `oar/core/util.py`
+4. Add new ci-profile for stage-testing pipeline
+5. Add new release version to parameter `VERSION` of image-consistency-check job
+6. Update configstore config to add new test template doc ID and slack group alias for release leads
