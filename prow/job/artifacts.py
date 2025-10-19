@@ -50,6 +50,14 @@ class Artifacts():
         else:
             raise FileNotFoundError(f"QE test report file not found")
 
+    def get_build_log(self):
+        """Fetch the build-log.txt file from the job run root directory"""
+        blob = self._gcs.get_file(f"{self._root_dir}/build-log.txt")
+        if blob:
+            return blob.download_as_bytes().decode('utf-8', errors='ignore')
+        else:
+            raise FileNotFoundError(f"build-log.txt not found")
+
     def generate_test_failures_summary(self):
         test_count = 0
         failed_tests = []
