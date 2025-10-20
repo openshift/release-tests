@@ -20,17 +20,20 @@ Follow these steps:
    This will output JSON with failure details including test names, error messages, and stack traces.
 
 3. **AI Analysis**: Analyze the test failures and provide:
-   - **Failure Pattern Analysis**: Group similar failures and identify common root causes
+   - **Data Handling Note**: The fetcher automatically groups failures by pattern and may truncate data if there are many failures (>50 by default). Check the `truncation_info` and `failure_patterns` fields in the JSON output.
+   - **Failure Pattern Analysis**: Use the `failure_patterns` field to identify common root causes. Each pattern shows occurrence count and affected tests.
    - **Failure Categories**: Categorize failures (infrastructure, timeout, assertion, flaky test, etc.)
-   - **Priority Assessment**: Identify which failures are most critical
+   - **Priority Assessment**: Identify which failures are most critical based on pattern frequency
    - **Root Cause Hypotheses**: Suggest potential root causes for each failure pattern
    - **Recommended Actions**: Suggest next steps (bug reports, retries, infrastructure fixes, etc.)
    - **Known Issues**: If failures match known patterns, reference similar issues
    - **Bug Triage**: If the failure appears to be a product bug, include a tip to contact the component team to confirm if it's a known issue or a new bug that needs to be filed
+   - **Truncation Awareness**: If `is_truncated` is true, acknowledge that only representative samples are shown and mention the total failure count
 
 4. **Generate Summary**: Create a concise summary report with:
    - Overall test results (total, passed, failed, skipped)
-   - Top failure patterns with grouped test names
+   - If truncated, clearly state: "Analyzed X representative failures out of Y total failures across Z unique patterns"
+   - Top failure patterns with occurrence counts and affected test examples
    - Critical issues that need immediate attention
    - Links to GCS artifacts and detailed logs
 
@@ -47,6 +50,11 @@ Important notes:
 - **Required Environment Variable**: `GCS_CRED_FILE` must be set (path to Google Cloud service account credentials file)
   - Check if set with: `echo $GCS_CRED_FILE`
   - The script will fail if this variable is not set
+- **Token Limit Management**: The fetcher implements automatic truncation to prevent token limit issues:
+  - Individual error messages are limited to 500 characters, stack traces to 2000 characters
+  - Failures are grouped by pattern to identify common issues
+  - If there are >50 failures (configurable via `MAX_FAILURES_FOR_AI` env var), only representative samples are sent
+  - The `failure_patterns` field provides grouped analysis even when truncated
 - The helper script uses the existing `prow/job/artifacts.py` infrastructure
 - Provide actionable insights, not just raw data
 - If you encounter errors, check that dependencies are installed and GCS_CRED_FILE is properly configured

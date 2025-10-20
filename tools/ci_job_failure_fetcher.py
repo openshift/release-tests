@@ -17,7 +17,8 @@ import logging
 import os
 import re
 import sys
-from typing import Dict, Tuple
+from collections import defaultdict
+from typing import Dict, List, Tuple
 from xml.etree import ElementTree
 
 # Add parent directory to path to import from prow package
@@ -26,6 +27,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from prow.job.artifacts import Artifacts
 
 logger = logging.getLogger(__name__)
+
+# Configuration for AI token limit management
+MAX_FAILURES_FOR_AI = int(os.getenv('MAX_FAILURES_FOR_AI', '50'))  # Configurable via env var
+MAX_MESSAGE_LENGTH = 500  # Characters for error message
+MAX_DETAILS_LENGTH = 2000  # Characters for stack trace
 
 
 class DetailedJunitTestCase:
@@ -66,10 +72,14 @@ class DetailedJunitTestCase:
         else:
             return None
 
+        # Truncate message and details to reduce token usage
+        message = elem.attrib.get("message", "")
+        details = elem.text or ""
+
         return {
             "type": failure_type,
-            "message": elem.attrib.get("message", ""),
-            "details": elem.text or "",
+            "message": message[:MAX_MESSAGE_LENGTH] + ("..." if len(message) > MAX_MESSAGE_LENGTH else ""),
+            "details": details[:MAX_DETAILS_LENGTH] + ("..." if len(details) > MAX_DETAILS_LENGTH else ""),
             "error_type": elem.attrib.get("type", "")
         }
 
@@ -97,6 +107,40 @@ class CIJobFailureFetcher:
             job_run_id=self.job_run_id,
             bucket=self.bucket
         )
+
+    def _group_failures_by_pattern(self, failures: List[Dict]) -> List[Dict]:
+        """
+        Group failures with similar error signatures to identify patterns.
+
+        Returns:
+            List of grouped failure patterns with representative examples
+        """
+        if not failures:
+            return []
+
+        # Group by error signature (message + error_type)
+        groups = defaultdict(list)
+        for failure in failures:
+            # Create signature from error message (first 200 chars) + error type
+            signature = f"{failure['error_type']}:{failure['message'][:200]}"
+            groups[signature].append(failure)
+
+        # Convert to grouped format with representative samples
+        grouped_failures = []
+        for signature, items in sorted(groups.items(), key=lambda x: len(x[1]), reverse=True):
+            # Take the first item as representative
+            representative = items[0].copy()
+
+            grouped_failures.append({
+                "pattern_signature": signature[:100],  # Truncate for readability
+                "occurrence_count": len(items),
+                "representative_failure": representative,
+                "affected_tests": [f['test_name'] for f in items[:10]],  # Max 10 examples
+                "all_test_count": len(items),
+                "suites": list(set(f['suite'] for f in items))[:5]  # Up to 5 unique suites
+            })
+
+        return grouped_failures
 
     def _parse_prow_url(self, url: str) -> Tuple[str, str, str]:
         """Parse Prow deck URL to extract job name, run ID, and bucket"""
@@ -208,6 +252,31 @@ class CIJobFailureFetcher:
         if failed_tests > 0 or error_tests > 0:
             logger.warning(f"Found {len(failures)} failed test case(s)")
 
+        # Group failures by pattern to identify common issues
+        failure_patterns = self._group_failures_by_pattern(failures)
+        logger.info(f"Identified {len(failure_patterns)} unique failure patterns")
+
+        # Determine if we need to truncate for AI analysis
+        total_failure_count = len(failures)
+        is_truncated = total_failure_count > MAX_FAILURES_FOR_AI
+
+        # Select failures to send to AI
+        if is_truncated:
+            # Prioritize by pattern frequency - include representative failures from each pattern
+            ai_failures = []
+            remaining_quota = MAX_FAILURES_FOR_AI
+
+            for pattern in failure_patterns:
+                if remaining_quota <= 0:
+                    break
+                # Add representative failure from this pattern
+                ai_failures.append(pattern['representative_failure'])
+                remaining_quota -= 1
+
+            logger.warning(f"Truncated from {total_failure_count} to {len(ai_failures)} failures for AI analysis")
+        else:
+            ai_failures = failures
+
         return {
             'job_name': self.job_name,
             'job_run_id': self.job_run_id,
@@ -219,10 +288,20 @@ class CIJobFailureFetcher:
                 'failed': failed_tests,
                 'errors': error_tests,
                 'skipped': skipped_tests,
-                'junit_files': len(junit_files)
+                'junit_files': len(junit_files),
+                'total_failures': total_failure_count,
+                'unique_patterns': len(failure_patterns),
+                'is_truncated': is_truncated
             },
             'suites': suites_info,
-            'failures': failures
+            'failure_patterns': failure_patterns,  # Grouped view for pattern analysis
+            'failures': ai_failures,  # Individual failures (truncated if needed)
+            'truncation_info': {
+                'is_truncated': is_truncated,
+                'original_count': total_failure_count,
+                'analyzed_count': len(ai_failures),
+                'max_limit': MAX_FAILURES_FOR_AI
+            } if is_truncated else None
         }
 
     def _get_gcsweb_domain(self) -> str:
