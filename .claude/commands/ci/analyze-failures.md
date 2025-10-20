@@ -26,18 +26,41 @@ Follow these steps:
    - **Priority Assessment**: Identify which failures are most critical based on pattern frequency
    - **Root Cause Hypotheses**: Suggest potential root causes for each failure pattern
    - **Recommended Actions**: Suggest next steps (bug reports, retries, infrastructure fixes, etc.)
-   - **Known Issues**: If failures match known patterns, reference similar issues
-   - **Bug Triage**: If the failure appears to be a product bug, include a tip to contact the component team to confirm if it's a known issue or a new bug that needs to be filed
    - **Truncation Awareness**: If `is_truncated` is true, acknowledge that only representative samples are shown and mention the total failure count
 
-4. **Generate Summary**: Create a concise summary report with:
+4. **Query Known Issues from OCPBUGS** (Optional - requires Jira MCP):
+   - **Checkpoint**: First verify if Jira MCP is available by checking if `mcp__mcp-atlassian__jira_search` tool exists
+   - **If Jira MCP is NOT available**: Skip this step gracefully and continue to step 5. Mention in the final report that known issue lookup was skipped (MCP not configured).
+   - **If Jira MCP IS available**: For each major failure pattern (top 3-5 by occurrence count):
+     - Extract 2-3 key terms from error message (e.g., "ImagePullBackOff", "timeout", "authentication failed")
+     - Focus on specific component/feature names and unique error keywords
+     - Avoid generic terms like "error", "failed", "test", "timeout"
+     - Search OCPBUGS using JQL focused on **summary field only** (issue titles) for precise matching:
+       ```
+       project = OCPBUGS AND (summary ~ "keyword1" OR summary ~ "keyword2")
+       AND status NOT IN (Closed, Verified)
+       ORDER BY updated DESC
+       ```
+     - **Why summary only**: The `text` field includes descriptions, comments, logs, and stack traces, creating too many false positives. The `summary` field (issue title) is concise and more likely to match relevant issues.
+     - Limit to 3-5 most recent/relevant bugs per pattern
+     - **Important**: Don't rely on component names for matching - focus on error message keyword similarity only
+     - For each matching bug, assess relevance by comparing error messages and failure symptoms
+     - **Only include potentially relevant issues** - do not list issues that are clearly unrelated (adds noise)
+     - Present findings as:
+       - If relevant issues found: "Similarity query found X potentially related issues" with "⚠️ Please manually verify"
+       - If no relevant issues: "Similarity query found N total issues, but none appear related to this specific failure"
+     - Include for each relevant issue: bug key, status, summary, link to issue, and brief relevance assessment
+     - Always provide direct Jira search links so users can verify and explore further
+
+5. **Generate Summary**: Create a concise summary report with:
    - Overall test results (total, passed, failed, skipped)
    - If truncated, clearly state: "Analyzed X representative failures out of Y total failures across Z unique patterns"
    - Top failure patterns with occurrence counts and affected test examples
+   - Known issues from OCPBUGS (if Jira MCP was available and matches were found)
    - Critical issues that need immediate attention
    - Links to GCS artifacts and detailed logs
 
-5. **Present Results**: Show the analysis in a well-formatted markdown report
+6. **Present Results**: Show the analysis in a well-formatted markdown report
    - Use proper line breaks between sections (add blank lines)
    - Keep output concise and readable
    - Use bullet points instead of tables when possible
