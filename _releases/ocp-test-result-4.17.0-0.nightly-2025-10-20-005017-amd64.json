@@ -6,9 +6,61 @@
         "jobStartTime": "2025-10-20T05:20:26Z",
         "jobID": "cdea40c2-6734-485a-bb93-d3e1207b1439",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1980142039479619584",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-20T09:33:34Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 101,
+            "failures": 9,
+            "errors": 0,
+            "skipped": 20,
+            "failingScenarios": [
+              "[sig-apps] Workloads test kcm works well ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-High-43039-openshift-object-counts quota dynamically updating as the resource is deleted",
+              "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-50954-Allow the deployment of a dedicated UWM Alertmanager [Serial]",
+              "[sig-network-edge] Network_Edge Component_ALBO Author:hongli-ROSA-OSD_CCS-ConnectedOnly-LEVEL0-High-51189-Install aws-load-balancer-operator and controller [Serial]",
+              "[sig-operators] OLM should ConnectedOnly-Author:jiazha-LEVEL0-Critical-22070-support grpc sourcetype [Serial]",
+              "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:knarra-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-Longduration-NonPreRelease-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-20T19:31:50Z",
+          "jobID": "c6d5b265-1755-4adb-bcb5-264abdde9f69",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1980356302664110080",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-20T19:31:55Z",
+          "jobID": "8f3a1257-784c-42e6-8bb8-eea9285986a6",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1980356324122169344",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999",
@@ -16,9 +68,80 @@
         "jobStartTime": "2025-10-20T05:20:31Z",
         "jobID": "e0fdfd64-b640-4613-b09a-74cfb49f7077",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1980142060950261760",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-20T10:22:51Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 101,
+            "failures": 37,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-auth] Authentication Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy",
+              "[sig-cli] Workloads client test ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-High-67387-oc new-app propagate containerPort information to the deployment if import-mode is default",
+              "[sig-cli] Workloads ocmirror v1 works well NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Low-51093-oc-mirror init",
+              "[sig-cli] Workloads ocmirror v1 works well NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Medium-46770-Low-46520-Local backend support for oc-mirror",
+              "[sig-cli] Workloads test oc works well ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-Critical-63002-oc new-app propagate containerPort information to the deployment if import-mode is PreserveOriginal",
+              "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:jitli-LEVEL0-Critical-48959-Should be able to get public images connect to the server and have basic auth credentials",
+              "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+              "[sig-network-edge] Network_Edge Component_Router Author:aiyengar-ROSA-OSD_CCS-ARO-LEVEL0-High-41042-The Power-of-two balancing features defaults to random LB algorithm instead of leastconn for REEN/Edge/insecure routes",
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation ",
+              "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+              "[sig-node] NODE keda Author:weinliu-LEVEL0-StagerunBoth-High-52383-Keda Install",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-operators] OLM for an end user handle within a namespace Author:bandrade-LEVEL0-Critical-41026-OCS should only one installplan generated when creating subscription",
+              "[sig-operators] OLM should ConnectedOnly-Author:jiazha-LEVEL0-Critical-22070-support grpc sourcetype [Serial]",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44906-[CSI-Driver] [Dynamic PV] [Delete reclaimPolicy] volumes should be deleted after the pvc deletion",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI-Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-43971-CSI Driver [Dynamic PV] [FileShare] provisioning with VolumeBindingModes WaitForFirstConsumer, Immediate and volumes should store data and allow exec of files",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-50398-[CSI-Driver] [Daemonset] [Filesystem default] could provide RWX access mode volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-Critical-24485-[CSI-Driver] [Dynamic PV] [Filesystem default] volumes should store data and allow exec of files",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44903-[CSI-Driver] [Dynamic PV] [ext4] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-Critical-64157-[CSI-Driver] [Dynamic PV] [Filesystem default] ReadWriteOncePod volume will succeed mounting when consumed by a single pod on a node, and will fail to mount when consumed by second pod",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51160-[CSI-Driver] [Dynamic PV] [Filesystem ext4] volumes resize on-line",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46358-[CSI-Driver] [CSI Clone] Clone a pvc with filesystem VolumeMode",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46813-[CSI-Driver][CSI Clone] Clone a pvc with Raw Block VolumeMode",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-52743-[Storageclass] OCP Cluster should have no more than one default storageclass defined, PVC without specifying storagclass should succeed while only one default storageclass present",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-Author:pewang-LEVEL0-High-56080-[Local-ephemeral-storage] [emptyDir] with sizeLimit should work on Pod level"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-20T19:32:06Z",
+          "jobID": "ca452067-179d-4378-93b9-a7c7abad6232",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1980356370527948800",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-20T19:32:11Z",
+          "jobID": "9deafa19-7ef7-406e-865a-40c9e2df3516",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1980356391533023232",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999",
@@ -26,9 +149,56 @@
         "jobStartTime": "2025-10-20T05:20:36Z",
         "jobID": "2db9dfb9-e859-4da0-917c-3aafce2142d4",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1980142082093748224",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-20T09:29:52Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 101,
+            "failures": 7,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-50954-Allow the deployment of a dedicated UWM Alertmanager [Serial]",
+              "[sig-operators] OLM should ConnectedOnly-Author:jiazha-LEVEL0-Critical-22070-support grpc sourcetype [Serial]",
+              "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:knarra-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-20T19:32:22Z",
+          "jobID": "6ec2ece6-80e1-40f9-b548-d930dd130534",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1980356436231720960",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-20T19:32:27Z",
+          "jobID": "51fd38c3-31b5-4fed-96e1-38c63fdbe519",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1980356457438121984",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-disruptive-f999",
@@ -36,7 +206,16 @@
         "jobStartTime": "2025-10-20T05:20:41Z",
         "jobID": "5f242df4-45f3-4ff7-a478-2cc1ab427687",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-disruptive-f999/1980142103287566336",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2025-10-20T06:37:46Z",
+        "testResultSummary": {
+          "openshift-extended-test-disruptive": {
+            "total": 8,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 5
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -46,9 +225,23 @@
         "jobStartTime": "2025-10-20T05:20:46Z",
         "jobID": "97dbcaaa-6771-400e-a384-a0bc91dff942",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.16-gcp-ipi-f999/1980142124431052800",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-20T09:22:08Z"
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-20T19:32:38Z",
+          "jobID": "cb1802ef-c16e-4d67-b722-f5eeb0dcc76a",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.16-gcp-ipi-f999/1980356502707245056",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-20T19:32:43Z",
+          "jobID": "a0085e08-c3e7-4eba-958e-59adc35022cb",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.16-gcp-ipi-f999/1980356523913646080",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999",
@@ -56,9 +249,23 @@
         "jobStartTime": "2025-10-20T05:20:51Z",
         "jobID": "a393b23a-658e-4c24-a483-3affa197fad9",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999/1980142147612971008",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-20T10:07:24Z"
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-20T19:32:54Z",
+          "jobID": "b27d90a1-c2e9-4f2e-b6da-737c90c03466",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999/1980356570566889472",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-10-20T19:32:59Z",
+          "jobID": "7ae9504b-92bd-46da-a715-86dca2cc3db5",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999/1980356594017243136",
+          "jobState": "pending"
+        }
+      ]
     }
   ],
   "build": {
