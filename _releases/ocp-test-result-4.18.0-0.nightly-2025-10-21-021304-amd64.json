@@ -45,13 +45,58 @@
           "jobStartTime": "2025-10-21T08:38:19Z",
           "jobID": "0540c8d5-c040-4470-a7ce-1de66ba615fa",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1980554229919518720",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-10-21T11:53:20Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 29,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-64296-disable CORS headers on Thanos querier [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-10-21T08:38:24Z",
           "jobID": "b5a2faa6-0396-4592-9f20-f023d75055e7",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1980554251142696960",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-10-21T11:26:31Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 29
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -76,7 +121,28 @@
           "jobStartTime": "2025-10-21T08:38:40Z",
           "jobID": "a4417d6d-9a48-4728-9d76-6ac404c1a58c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/1980554316448010240",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-10-21T11:35:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -150,5 +216,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2025-10-21-021304",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2025-10-21-021304"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
