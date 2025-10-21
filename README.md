@@ -59,6 +59,12 @@ oar -r [release] change-advisory-status
 
 # Update bug list and notify the QA Contact
 oar -r [release] update-bug-list
+
+# Update bug list without sending notifications
+oar -r [release] update-bug-list --no-notify
+
+# Enable debug logging (global option -v comes before -r)
+oar -v -r [release] update-bug-list
 ...
 ```
 More details can be found in [oar/README.md](./oar/README.md)

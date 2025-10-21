@@ -26,6 +26,79 @@ class ConfigStore:
 
     """
 
+    @staticmethod
+    def validate_environment():
+        """
+        Validate required environment variables for OAR CLI commands.
+
+        VALIDATION ARCHITECTURE:
+        ========================
+        - OAR CLI commands: Validated here (ConfigStore.validate_environment)
+          Called from: oar/cli/cmd_group.py (CLI entry point)
+
+        - Prow controllers/aggregators: Validated separately
+          See: prow/job/controller.py (validate_environment function)
+          Vars: GITHUB_TOKEN, APITOKEN, GCS_CRED_FILE
+
+        - MCP server: Uses this validation (wraps OAR CLI commands)
+          See: mcp_server/server.py
+
+        This is a static method that validates environment variables needed by
+        OAR CLI commands only. Controller/agent components (release detector,
+        job controller) have their own separate validation.
+
+        Returns:
+            dict: {
+                'valid': bool,  # True if all required vars present
+                'missing_required': list,  # Missing required vars
+                'missing_optional': list,  # Missing optional vars
+                'errors': list  # Error messages
+            }
+
+        Example:
+            >>> result = ConfigStore.validate_environment()
+            >>> if not result['valid']:
+            >>>     print(f"Missing: {result['missing_required']}")
+        """
+        missing_required = []
+        missing_optional = []
+        errors = []
+
+        # Required variables for OAR CLI commands
+        # These are used by core OAR modules (advisory, jira, worksheet, jenkins, etc.)
+        required_vars = {
+            ENV_VAR_OAR_JWK: "Required for decrypting config_store.json (ConfigStore)",
+            ENV_VAR_JIRA_TOKEN: "Required for Jira operations (JiraManager)",
+            ENV_VAR_GCP_SA_FILE: "Required for Google Sheets operations (WorksheetManager)",
+            ENV_VAR_SLACK_BOT_TOKEN: "Required for Slack notifications (NotificationManager)",
+            ENV_JENKINS_USER: "Required for Jenkins job operations (JenkinsHelper)",
+            ENV_JENKINS_TOKEN: "Required for Jenkins job operations (JenkinsHelper)",
+            ENV_VAR_GITLAB_TOKEN: "Required for GitLab/Konflux shipment operations (ShipmentData)",
+        }
+
+        # Optional variables for specific OAR commands
+        optional_vars = {
+            ENV_VAR_SLACK_APP_TOKEN: "Optional for Slack socket mode",
+        }
+
+        # Check required variables
+        for var, desc in required_vars.items():
+            if not os.environ.get(var):
+                missing_required.append(var)
+                errors.append(f"{var}: {desc}")
+
+        # Check optional variables
+        for var, desc in optional_vars.items():
+            if not os.environ.get(var):
+                missing_optional.append(var)
+
+        return {
+            'valid': len(missing_required) == 0,
+            'missing_required': missing_required,
+            'missing_optional': missing_optional,
+            'errors': errors
+        }
+
     def __init__(self, release):
         if release == "":
             raise ConfigStoreException("argument release is required")
@@ -39,7 +112,7 @@ class ConfigStore:
         # load local config file
         path = os.path.dirname(__file__) + "/configstore.json"
         with open(path) as f:
-            jwk = self._get_env_var("OAR_JWK")
+            jwk = self._get_env_var(ENV_VAR_OAR_JWK)
             self._local_conf = json.loads(jwe.decrypt(f.read(), jwk))
 
         # download ocp build data with release branch e.g. openshift-4.12

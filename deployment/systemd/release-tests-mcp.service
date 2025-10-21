@@ -1,0 +1,33 @@
+[Unit]
+Description=Release Tests MCP Server
+After=network.target
+
+[Service]
+Type=simple
+
+# IMPORTANT: Replace 'your-username' with your actual username on the VM
+# This ensures the service runs as your user and inherits bash_profile environment
+User=your-username
+
+# Working directory (adjust path if needed)
+WorkingDirectory=/home/your-username/coderepo/release-tests
+
+# Server configuration
+Environment="MCP_HOST=0.0.0.0"
+Environment="MCP_PORT=8080"
+
+# Use bash login shell to load .bash_profile
+# This inherits all environment variables (OAR_JWK, JIRA_TOKEN, etc.)
+ExecStart=/bin/bash -l -c 'cd /home/your-username/coderepo/release-tests && ./mcp_server/run_server.sh ${MCP_HOST} ${MCP_PORT}'
+
+# Restart on failure
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=release-tests-mcp
+
+[Install]
+WantedBy=multi-user.target
