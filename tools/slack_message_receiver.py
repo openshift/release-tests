@@ -27,6 +27,15 @@ client = SocketModeClient(
     logger=logger,
 )
 
+# Get bot's own user ID for mention detection
+try:
+    bot_auth_info = client.web_client.auth_test()
+    BOT_USER_ID = bot_auth_info.get("user_id")
+    logger.info(f"Bot initialized with user_id: {BOT_USER_ID}")
+except Exception as e:
+    logger.error(f"Failed to get bot user ID: {e}")
+    BOT_USER_ID = None
+
 
 def replace_mailto(message):
     pattern = r'<mailto:([^|]+)\|([^>]+)>'
@@ -219,9 +228,27 @@ def process(client: SocketModeClient, req: SocketModeRequest):
                         thread_ts=thread_ts,
                         text=f"```{chunk}```")
             else:
+                # Check if this is a direct bot mention without a valid OAR command
+                # Don't forward these to LLM to avoid generating garbage responses
+                if BOT_USER_ID and message.strip().startswith(f"<@{BOT_USER_ID}>"):
+                    # Extract the part after the mention
+                    mention_prefix = f"<@{BOT_USER_ID}>"
+                    remaining_text = message[len(mention_prefix):].strip()
+
+                    # If it's a dash command (like -help, -version) or very short, provide help instead of forwarding to LLM
+                    if not remaining_text or remaining_text.startswith("-") or len(remaining_text.split()) <= 2:
+                        logger.info(f"Bot mentioned with short/dash command from user <{username}>: {remaining_text}")
+                        client.web_client.chat_postMessage(
+                            channel=channel_id,
+                            thread_ts=thread_ts,
+                            text="I'm ERT Release Bot. What can I do for you?"
+                        )
+                        return
+
                 # forward message as prompt to LLM, this feature is optional
                 # if required system environment variables are not defined
                 # API call with AI model is disabled, none will be returned
+                logger.debug(f"Forwarding message to LLM from user <{username}>: {message[:100]}")
                 answer = send_prompt_to_ai_model(message)
                 if answer:
                     client.web_client.chat_postMessage(
