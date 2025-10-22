@@ -55,6 +55,21 @@ def cli(ctx, release, debug):
             raise click.MissingParameter(
                 "-r/--release is required", param_type='option')
 
+        # Validate environment variables before proceeding
+        validation_result = ConfigStore.validate_environment()
+        if not validation_result['valid']:
+            logger.error("Missing required environment variables for OAR CLI:")
+            for error in validation_result['errors']:
+                logger.error(f"  - {error}")
+            logger.error("")
+            logger.error("Fix: Add these variables to ~/.bash_profile and run: source ~/.bash_profile")
+            sys.exit(1)
+
+        # Log warnings for optional variables
+        if validation_result['missing_optional']:
+            for var in validation_result['missing_optional']:
+                logger.warning(f"Optional environment variable not set: {var}")
+
         cs = ConfigStore(release)
         ctx.ensure_object(dict)
         ctx.obj["cs"] = cs

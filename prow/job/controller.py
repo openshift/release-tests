@@ -896,7 +896,16 @@ class TestResultAggregator():
                 logger.error(f"cannot find job name {job_name} in {file_path}")
 
 
-def validate_required_info(required_env_vars):
+def validate_environment(required_env_vars):
+    """
+    Validate required environment variables for Prow controllers/aggregators.
+
+    Args:
+        required_env_vars: List of required environment variable names
+
+    Raises:
+        SystemExit: If any required variables are missing
+    """
     missing_env_vars = [
         var for var in required_env_vars if os.environ.get(var) is None]
     if missing_env_vars:
@@ -920,7 +929,7 @@ def cli(debug):
 @click.option("--trigger-prow-job", help="trigger prow job if new build is found", default=True)
 @click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 def start_controller(release, nightly, trigger_prow_job, arch):
-    validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
+    validate_environment(REQUIRED_ENV_VARS_FOR_CONTROLLER)
     JobController(release, nightly, trigger_prow_job, arch).start()
 
 
@@ -928,7 +937,7 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
 @click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 def trigger_jobs_for_build(build, arch):
-    validate_required_info(REQUIRED_ENV_VARS_FOR_CONTROLLER)
+    validate_environment(REQUIRED_ENV_VARS_FOR_CONTROLLER)
     release = build[:4]
     nightly = "nightly" in build
     controller = JobController(release, nightly, True, arch)
@@ -944,7 +953,7 @@ def trigger_jobs_for_build(build, arch):
 @click.command
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 def start_aggregator(arch):
-    validate_required_info(REQUIRED_ENV_VARS_FOR_AGGREGATOR)
+    validate_environment(REQUIRED_ENV_VARS_FOR_AGGREGATOR)
     TestResultAggregator(arch).start()
 
 
@@ -952,7 +961,7 @@ def start_aggregator(arch):
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
 def promote_test_results(arch, build):
-    validate_required_info([SYS_ENV_VAR_GITHUB_TOKEN])
+    validate_environment([SYS_ENV_VAR_GITHUB_TOKEN])
     TestResultAggregator(arch).promote_test_results_for_build(build)
 
 
@@ -963,7 +972,7 @@ def promote_test_results(arch, build):
 @click.option("--current-job-id", help="current job run id", required=True)
 @click.option("--new-job-id", help="new job run id used to replace current job id", required=True)
 def update_retried_job_run(arch, build, job_name, current_job_id, new_job_id):
-    validate_required_info([SYS_ENV_VAR_GITHUB_TOKEN])
+    validate_environment([SYS_ENV_VAR_GITHUB_TOKEN])
     TestResultAggregator(arch).update_retried_job_run(
         build, job_name, current_job_id, new_job_id)
 
