@@ -1,0 +1,16 @@
+[Unit]
+Description=OAR Slack Bot service
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/YOUR_USER
+ExecStart=/usr/bin/bash -l -c 'python3 /home/YOUR_USER/release-tests/tools/slack_message_receiver.py'
+PIDFile=/run/oar-bot.pid
+User=YOUR_USER
+Group=YOUR_GROUP
+StandardOutput=journal+console
+StandardError=journal+console
+
+[Install]
+WantedBy=multi-user.target
