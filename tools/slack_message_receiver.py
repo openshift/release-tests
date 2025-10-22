@@ -52,6 +52,52 @@ def is_oar_related_message(message):
     return message.startswith("oar") or message.startswith("oarctl") or re.search("^<\@.*>\ oar\ ", message) or re.search("^<\@.*>\ oarctl\ ", message)
 
 
+def validate_oar_command(message):
+    """
+    Validate and extract OAR command from Slack message.
+
+    Returns:
+        tuple: (is_valid, command_string, error_message)
+
+    Security checks:
+    - Command must start with 'oar' or 'oarctl'
+    - No shell metacharacters that could chain commands
+    - No command substitution attempts
+    """
+    # Shell metacharacters that could be used for command injection
+    DANGEROUS_CHARS = [';', '&', '|', '`', '$', '(', ')', '<', '>', '\n', '\r']
+
+    # Extract the command part (handle both direct commands and @mentions)
+    if message.startswith("oar") or message.startswith("oarctl"):
+        cmd = message
+    else:
+        # Extract from @mention format: <@U12345> oar -r 4.19.1 ...
+        match = re.search(r'<@.*?>\s+(oar(?:ctl)?(?:\s|$).*)', message)
+        if not match:
+            return False, None, "Could not extract OAR command from message"
+        cmd = match.group(1)
+
+    # Check for dangerous shell metacharacters
+    for char in DANGEROUS_CHARS:
+        if char in cmd:
+            return False, None, f"Invalid character '{char}' detected in command. Command injection attempt blocked."
+
+    # Validate command starts with allowed commands
+    try:
+        cmd_parts = shlex.split(cmd)
+    except ValueError as e:
+        return False, None, f"Invalid command syntax: {e}"
+
+    if not cmd_parts:
+        return False, None, "Empty command"
+
+    ALLOWED_COMMANDS = ['oar', 'oarctl']
+    if cmd_parts[0] not in ALLOWED_COMMANDS:
+        return False, None, f"Command must start with 'oar' or 'oarctl', got: {cmd_parts[0]}"
+
+    return True, cmd, None
+
+
 def send_prompt_to_ai_model(prompt):
     """
     Send prompt message to LLM model and return the answer
@@ -87,12 +133,31 @@ def process(client: SocketModeClient, req: SocketModeRequest):
     if req.type == "events_api":
         event = req.payload["event"]
         event_type = event["type"]
+
+        # CRITICAL: Ignore bot messages to prevent infinite loops
+        # Bot messages have "bot_id" instead of "user"
+        if "bot_id" in event:
+            logger.debug(f"Ignoring bot message from bot_id: {event.get('bot_id')}")
+            return
+
+        # Check for bot_message subtype as additional safety
+        if event.get("subtype") == "bot_message":
+            logger.debug("Ignoring message with subtype: bot_message")
+            return
+
+        # Now safe to access user field
+        if "user" not in event:
+            logger.debug(f"Skipping event without user field: {event_type}")
+            return
+
         message = event["text"]
         channel_id = event["channel"]
         thread_ts = event["ts"]
         username = get_username(event["user"])
 
+        # Backup check: ignore known bot usernames
         if username == "qe-release-bot":
+            logger.debug(f"Ignoring message from bot username: {username}")
             return
 
         if event_type in ["message", "app_mention"]:
@@ -107,16 +172,45 @@ def process(client: SocketModeClient, req: SocketModeRequest):
             message = replace_mailto(message)
             if is_oar_related_message(message):
                 logger.info(f"received cmd from user <{username}>: {message}")
-                cmd = message[message.index("oar"):]
-                
+
+                # Validate command for security
+                is_valid, cmd, error_msg = validate_oar_command(message)
+                if not is_valid:
+                    logger.warning(f"Invalid command from user <{username}>: {error_msg}")
+                    client.web_client.chat_postMessage(
+                        channel=channel_id,
+                        thread_ts=thread_ts,
+                        text=f"❌ Invalid command: {error_msg}"
+                    )
+                    return
+
                 # Set environment variables for Slack context to enable background notifications
                 env = os.environ.copy()
                 env['OAR_SLACK_CHANNEL'] = channel_id
                 env['OAR_SLACK_THREAD'] = thread_ts
-                
-                result = subprocess.run(shlex.split(
-                    cmd), text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
-                output = result.stdout
+
+                try:
+                    result = subprocess.run(
+                        shlex.split(cmd),
+                        text=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        env=env,
+                        timeout=600  # 10 minute timeout
+                    )
+                    output = result.stdout or "Command completed with no output"
+
+                    if result.returncode != 0:
+                        output = f"⚠️ Command failed with exit code {result.returncode}\n\n{output}"
+                        logger.warning(f"Command failed with exit code {result.returncode}: {cmd}")
+
+                except subprocess.TimeoutExpired:
+                    output = "❌ Command timed out after 10 minutes"
+                    logger.error(f"Command timeout for user <{username}>: {cmd}")
+                except Exception as e:
+                    output = f"❌ Command execution failed: {str(e)}"
+                    logger.error(f"Command execution error for user <{username}>: {e}", exc_info=True)
+
                 # Use utility function to split large messages
                 message_chunks = util.split_large_message(output)
                 for chunk in message_chunks:
