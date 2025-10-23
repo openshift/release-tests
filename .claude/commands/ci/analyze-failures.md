@@ -52,15 +52,57 @@ Follow these steps:
      - Include for each relevant issue: bug key, status, summary, link to issue, and brief relevance assessment
      - Always provide direct Jira search links so users can verify and explore further
 
-5. **Generate Summary**: Create a concise summary report with:
+5. **Check for QE Automation Issues** (if openshift-tests-private detected):
+   - **Detection**: Check if stack traces contain `github.com/openshift/openshift-tests-private`
+   - **Extract Case ID**: Find sequences of digits between dashes in the test name
+     - Example: "Author:$uid-LEVEL0-Medium-64296-disable CORS" → case ID is 64296
+     - Look for pattern `-{digits}-` in test name (usually the longest digit sequence is the case ID)
+   - **Determine Release Branch**: Extract release version from job name
+     - Job name pattern: `periodic-ci-openshift-openshift-tests-private-release-{X.Y}-...`
+     - Example: `periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999` → use branch `release-4.17`
+     - If no release version found, use `master` branch
+   - **Setup Repository Access**:
+     - Check if repo exists: `../openshift-tests-private` (parent directory of current repo)
+     - If NOT exists: Clone the repository (user should have access via SSH/HTTPS credentials)
+       ```bash
+       cd .. && git clone git@github.com:openshift/openshift-tests-private.git
+       ```
+     - If exists: Update to ensure fresh code
+       ```bash
+       cd ../openshift-tests-private && git fetch origin
+       ```
+     - Checkout the correct branch:
+       ```bash
+       cd ../openshift-tests-private && git checkout {branch_name} && git pull
+       ```
+   - **Search Test Code**: Use Grep tool to search for the case ID in openshift-tests-private repository
+     - Search path: `../openshift-tests-private`
+     - Search pattern: `-{case_id}-` to find the test file containing this case
+     - If found, use Read tool to get the test source code (focus on the test logic, typically 50-100 lines around the case ID)
+     - **Important**: searching in `test/extended/` directory
+   - **Analyze Test Code**: For each found test, analyze:
+     - Test implementation quality (potential race conditions, hardcoded waits, flaky selectors)
+     - Error handling robustness
+     - Whether the failure indicates an automation bug vs product bug
+     - Common automation anti-patterns: tight timeouts, missing retries, improper assertions
+   - **Assessment**: Provide for each test:
+     - `is_likely_automation_issue`: true/false/uncertain
+     - `confidence`: high/medium/low
+     - `reasoning`: why this appears to be automation vs product issue
+     - `test_code_location`: file path (relative to repo root)
+     - `recommended_action`: fix test code, file product bug, or investigate further
+   - **Important**: Only flag as automation issue if there's clear evidence in the code. When uncertain, default to product bug investigation.
+
+6. **Generate Summary**: Create a concise summary report with:
    - Overall test results (total, passed, failed, skipped)
    - If truncated, clearly state: "Analyzed X representative failures out of Y total failures across Z unique patterns"
    - Top failure patterns with occurrence counts and affected test examples
+   - QE Automation Issues (if any detected with test code analysis)
    - Known issues from OCPBUGS (if Jira MCP was available and matches were found)
    - Critical issues that need immediate attention
    - Links to GCS artifacts and detailed logs
 
-6. **Present Results**: Show the analysis in a well-formatted markdown report
+7. **Present Results**: Show the analysis in a well-formatted markdown report
    - Use proper line breaks between sections (add blank lines)
    - Keep output concise and readable
    - Use bullet points instead of tables when possible
