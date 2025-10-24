@@ -19,7 +19,21 @@ Follow these steps:
    ```
    This will output JSON with failure details including test names, error messages, and stack traces.
 
-3. **AI Analysis**: Analyze the test failures and provide:
+3. **Extract Test Metadata** (for later use in Jira searches and code analysis):
+   - **Case ID Extraction** (if openshift-tests-private tests detected):
+     - Check if test names or stack traces contain `github.com/openshift/openshift-tests-private`
+     - Find sequences of digits between dashes in the test name
+     - Example: "Author:$uid-LEVEL0-Medium-64296-disable CORS" → case ID is `64296`
+     - Look for pattern `-{digits}-` in test name (usually the longest digit sequence is the case ID)
+     - Store extracted case IDs for use in steps 4 and 5
+
+   - **Release Branch Extraction** (for code analysis):
+     - Extract release version from job name
+     - Job name pattern: `periodic-ci-openshift-openshift-tests-private-release-{X.Y}-...`
+     - Example: `periodic-ci-openshift-openshift-tests-private-release-4.17-...` → use branch `release-4.17`
+     - If no release version found, use `master` branch
+
+4. **AI Analysis**: Analyze the test failures and provide:
    - **Data Handling Note**: The fetcher automatically groups failures by pattern and may truncate data if there are many failures (>50 by default). Check the `truncation_info` and `failure_patterns` fields in the JSON output.
    - **Failure Pattern Analysis**: Use the `failure_patterns` field to identify common root causes. Each pattern shows occurrence count and affected tests.
    - **Failure Categories**: Categorize failures (infrastructure, timeout, assertion, flaky test, etc.)
@@ -28,39 +42,83 @@ Follow these steps:
    - **Recommended Actions**: Suggest next steps (bug reports, retries, infrastructure fixes, etc.)
    - **Truncation Awareness**: If `is_truncated` is true, acknowledge that only representative samples are shown and mention the total failure count
 
-4. **Query Known Issues from OCPBUGS** (Optional - requires Jira MCP):
+5. **Query Known Issues from Jira** (Optional - requires Jira MCP):
    - **Checkpoint**: First verify if Jira MCP is available by checking if `mcp__mcp-atlassian__jira_search` tool exists
-   - **If Jira MCP is NOT available**: Skip this step gracefully and continue to step 5. Mention in the final report that known issue lookup was skipped (MCP not configured).
-   - **If Jira MCP IS available**: For each major failure pattern (top 3-5 by occurrence count):
+   - **If Jira MCP is NOT available**: Skip this step gracefully and continue to step 6. Mention in the final report that known issue lookup was skipped (MCP not configured).
+   - **If Jira MCP IS available**: Search both OCPBUGS (product bugs) and OCPQE (QE automation issues)
+
+   **A. Search OCPBUGS for Product Bugs**:
+   - For each major failure pattern (top 3-5 by occurrence count):
      - Extract 2-3 key terms from error message (e.g., "ImagePullBackOff", "timeout", "authentication failed")
      - Focus on specific component/feature names and unique error keywords
      - Avoid generic terms like "error", "failed", "test", "timeout"
-     - Search OCPBUGS using JQL focused on **summary field only** (issue titles) for precise matching:
-       ```
+     - Search OCPBUGS using JQL focused on **summary field only** (issue titles):
+       ```jql
        project = OCPBUGS AND (summary ~ "keyword1" OR summary ~ "keyword2")
        AND status NOT IN (Closed, Verified)
        ORDER BY updated DESC
        ```
-     - **Why summary only**: The `text` field includes descriptions, comments, logs, and stack traces, creating too many false positives. The `summary` field (issue title) is concise and more likely to match relevant issues.
+     - **Why summary only**: The `text` field includes descriptions, comments, logs, and stack traces, creating too many false positives
      - Limit to 3-5 most recent/relevant bugs per pattern
-     - **Important**: Don't rely on component names for matching - focus on error message keyword similarity only
-     - For each matching bug, assess relevance by comparing error messages and failure symptoms
-     - **Only include potentially relevant issues** - do not list issues that are clearly unrelated (adds noise)
-     - Present findings as:
-       - If relevant issues found: "Similarity query found X potentially related issues" with "⚠️ Please manually verify"
-       - If no relevant issues: "Similarity query found N total issues, but none appear related to this specific failure"
-     - Include for each relevant issue: bug key, status, summary, link to issue, and brief relevance assessment
-     - Always provide direct Jira search links so users can verify and explore further
 
-5. **Check for QE Automation Issues** (if openshift-tests-private detected):
-   - **Detection**: Check if stack traces contain `github.com/openshift/openshift-tests-private`
-   - **Extract Case ID**: Find sequences of digits between dashes in the test name
-     - Example: "Author:$uid-LEVEL0-Medium-64296-disable CORS" → case ID is 64296
-     - Look for pattern `-{digits}-` in test name (usually the longest digit sequence is the case ID)
-   - **Determine Release Branch**: Extract release version from job name
-     - Job name pattern: `periodic-ci-openshift-openshift-tests-private-release-{X.Y}-...`
-     - Example: `periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999` → use branch `release-4.17`
-     - If no release version found, use `master` branch
+   **B. Search OCPQE for QE Automation Issues**:
+
+   - **By Case ID** (use case IDs extracted in step 3):
+     ```jql
+     project = OCPQE AND (summary ~ "{case_id}" OR description ~ "{case_id}")
+     ORDER BY updated DESC
+     ```
+
+   - **By Test Name and Error Keywords**:
+     - Extract test name (e.g., "OCP-12345") or unique error keywords
+     - Focus on test infrastructure terms: "flaky", "intermittent", "race condition", "timeout", "automation"
+     ```jql
+     project = OCPQE AND (summary ~ "OCP-12345" OR summary ~ "keyword1" OR summary ~ "keyword2")
+     ORDER BY updated DESC
+     ```
+
+   - **IMPORTANT**:
+     - **Include Closed/Done issues** in OCPQE searches (fixes may not be backported to z-stream branches)
+     - Limit to 3-5 most relevant issues per search
+     - Assess relevance - only include issues that appear related
+
+   **Present Findings**:
+   ```markdown
+   ### Known Product Bugs (OCPBUGS)
+   {if found:}
+   - **{BUG_KEY}** ({status}): {summary}
+     - Relevance: {brief assessment}
+     - Link: {jira_url}
+   {if none:}
+   - No related OCPBUGS issues found
+
+   ### Known QE Automation Issues (OCPQE)
+   {if found by case ID:}
+   - **{OCPQE_KEY}** ({status}): {summary}
+     - Case ID: {case_id}
+     - Relevance: {brief assessment}
+     - Link: {jira_url}
+     - ⚠️ Note: If Closed/Done, fix may not be backported to this release branch
+
+   {if found by keywords:}
+   - **{OCPQE_KEY}** ({status}): {summary}
+     - Keywords matched: {list}
+     - Relevance: {brief assessment}
+     - Link: {jira_url}
+
+   {if none:}
+   - No related OCPQE issues found
+
+   **Jira Search Links** (for manual verification):
+   - [Search OCPBUGS by keywords]({jira_search_url})
+   - [Search OCPQE by case ID]({jira_search_url})
+   - [Search OCPQE by keywords]({jira_search_url})
+   ```
+   - Present with "⚠️ Please manually verify" disclaimer
+   - **Only include potentially relevant issues** - do not list clearly unrelated issues (adds noise)
+
+6. **Analyze QE Automation Test Code** (if openshift-tests-private detected):
+   - Use case IDs and release branch extracted in step 3
    - **Setup Repository Access**:
      - Check if repo exists: `../openshift-tests-private` (parent directory of current repo)
      - If NOT exists: Clone the repository (user should have access via SSH/HTTPS credentials)
@@ -93,16 +151,16 @@ Follow these steps:
      - `recommended_action`: fix test code, file product bug, or investigate further
    - **Important**: Only flag as automation issue if there's clear evidence in the code. When uncertain, default to product bug investigation.
 
-6. **Generate Summary**: Create a concise summary report with:
+7. **Generate Summary**: Create a concise summary report with:
    - Overall test results (total, passed, failed, skipped)
    - If truncated, clearly state: "Analyzed X representative failures out of Y total failures across Z unique patterns"
    - Top failure patterns with occurrence counts and affected test examples
    - QE Automation Issues (if any detected with test code analysis)
-   - Known issues from OCPBUGS (if Jira MCP was available and matches were found)
+   - Known issues from OCPBUGS and OCPQE (if Jira MCP was available and matches were found)
    - Critical issues that need immediate attention
    - Links to GCS artifacts and detailed logs
 
-7. **Present Results**: Show the analysis in a well-formatted markdown report
+8. **Present Results**: Show the analysis in a well-formatted markdown report
    - Use proper line breaks between sections (add blank lines)
    - Keep output concise and readable
    - Use bullet points instead of tables when possible
