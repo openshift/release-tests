@@ -572,15 +572,15 @@ class ReleaseShipmentOperator:
         self._am = AdvisoryManager(cs)
 
         # Try to initialize ShipmentData
-        # For already shipped Konflux releases, MR is merged/closed and ShipmentData will raise exception
+        # For already shipped Konflux releases, MR is merged and ShipmentData will raise exception
         self._sd = None
         self._sd_init_error = None
         try:
             self._sd = ShipmentData(cs)
         except Exception as e:
-            # Store the error - it may indicate the MR is already merged (which is good for shipped check)
+            # Store the error - "state is not open" means the MR is merged (shipped)
             self._sd_init_error = str(e)
-            logger.info(f"ShipmentData initialization failed (may indicate MR already merged): {str(e)}")
+            logger.info(f"ShipmentData initialization failed: {str(e)}")
 
     def is_release_shipped(self) -> dict:
         """
@@ -662,13 +662,12 @@ class ReleaseShipmentOperator:
         details = {}
         all_shipped = True
 
-        # If ShipmentData initialization failed, it likely means MR is not open (merged/closed)
-        # This is actually a good sign for shipped releases
+        # If ShipmentData initialization failed, check why
         if self._sd is None:
             if self._sd_init_error and "state is not open" in self._sd_init_error:
-                # MR is not open = likely merged/closed, which means shipped
-                details["shipment_mr_status"] = "not open (likely merged/closed)"
-                logger.info("ShipmentData not available - MR likely merged/closed (shipped)")
+                # MR is not open = merged, which means shipped!
+                details["shipment_mr_status"] = "merged"
+                logger.info("ShipmentData not available - MR is merged (shipped)")
             else:
                 # Some other error
                 details["shipment_mr_status"] = f"error: {self._sd_init_error}"
