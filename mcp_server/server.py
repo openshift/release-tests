@@ -438,7 +438,7 @@ def jobctl_start_controller(
     Returns:
         Controller startup confirmation
     """
-    args = ["-r", release]
+    args = ["start-controller", "-r", release]
     if nightly:
         args.append("--nightly")
     else:
@@ -446,7 +446,6 @@ def jobctl_start_controller(
     if trigger_prow_job:
         args.extend(["--trigger-prow-job", "True"])
     args.extend(["--arch", arch])
-    args.append("start-controller")
 
     result = run_jobctl_command(args)
     return format_result(result)
@@ -466,7 +465,7 @@ def jobctl_trigger_jobs_for_build(build: str, arch: str = "amd64") -> str:
     Returns:
         Job trigger confirmation
     """
-    result = run_jobctl_command(["--build", build, "--arch", arch, "trigger-jobs-for-build"])
+    result = run_jobctl_command(["trigger-jobs-for-build", "--build", build, "--arch", arch])
     return format_result(result)
 
 
@@ -483,7 +482,7 @@ def jobctl_start_aggregator(arch: str = "amd64") -> str:
     Returns:
         Aggregator startup confirmation
     """
-    result = run_jobctl_command(["--arch", arch, "start-aggregator"])
+    result = run_jobctl_command(["start-aggregator", "--arch", arch])
     return format_result(result)
 
 
@@ -501,7 +500,7 @@ def jobctl_promote_test_results(build: str, arch: str = "amd64") -> str:
     Returns:
         Promotion confirmation
     """
-    result = run_jobctl_command(["--arch", arch, "--build", build, "promote-test-results"])
+    result = run_jobctl_command(["promote-test-results", "--build", build, "--arch", arch])
     return format_result(result)
 
 
@@ -529,12 +528,12 @@ def jobctl_update_retried_job_run(
         Update confirmation
     """
     result = run_jobctl_command([
-        "--arch", arch,
+        "update-retried-job-run",
         "--build", build,
         "--job-name", job_name,
         "--current-job-id", current_job_id,
         "--new-job-id", new_job_id,
-        "update-retried-job-run"
+        "--arch", arch
     ])
     return format_result(result)
 
