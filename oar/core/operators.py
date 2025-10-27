@@ -599,13 +599,53 @@ class ReleaseShipmentOperator:
             logger.error(f"Failed to check release shipment status: {str(e)}")
             raise
 
+    def _check_advisories_shipped(self, details: dict) -> bool:
+        """Check if all advisories are shipped
+
+        Gets all advisories from ConfigStore and checks if their state is REL_PREP or higher.
+        For Konflux: returns rpm and rhcos advisories
+        For Errata: returns all advisories (extras, image, metadata, rpm, rhcos)
+
+        Args:
+            details (dict): Dictionary to store advisory status details
+
+        Returns:
+            bool: True if all advisories are shipped, False otherwise
+        """
+        all_shipped = True
+
+        try:
+            advisories_map = self._cs.get_advisories()
+
+            for impetus, errata_id in advisories_map.items():
+                try:
+                    ad = Advisory(errata_id=errata_id, impetus=impetus)
+                    ad_state = ad.get_state()
+                    details[f"{impetus}_advisory"] = ad_state
+
+                    # Check if advisory is in REL_PREP or higher state
+                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
+                        all_shipped = False
+                        logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
+                except Exception as e:
+                    logger.warning(f"Failed to check {impetus} advisory: {str(e)}")
+                    details[f"{impetus}_advisory"] = f"error: {str(e)}"
+                    all_shipped = False
+
+        except Exception as e:
+            logger.warning(f"Failed to get advisories from ConfigStore: {str(e)}")
+            details["advisories_error"] = str(e)
+            all_shipped = False
+
+        return all_shipped
+
     def _check_konflux_shipped(self) -> dict:
         """Check shipment status for Konflux flow
 
         Checks if either:
         - prod-release pipeline succeeded, OR
         - shipment MR is in merged state
-        Plus rpm and rhcos advisories in REL_PREP or higher state
+        Plus all advisories (rpm and rhcos) in REL_PREP or higher state
         """
         logger.info("Checking Konflux flow release shipment status")
 
@@ -636,28 +676,9 @@ class ReleaseShipmentOperator:
         if not shipment_ready:
             all_shipped = False
 
-        # Check advisories status (rpm and rhcos for Konflux)
-        # ConfigStore.get_advisories() only returns rpm and rhcos for Konflux releases
-        try:
-            advisories_map = self._cs.get_advisories()
-
-            for impetus, errata_id in advisories_map.items():
-                try:
-                    ad = Advisory(errata_id=errata_id, impetus=impetus)
-                    ad_state = ad.get_state()
-                    details[f"{impetus}_advisory"] = ad_state
-
-                    # Check if advisory is in REL_PREP or higher state
-                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
-                        all_shipped = False
-                        logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
-                except Exception as e:
-                    logger.warning(f"Failed to check {impetus} advisory: {str(e)}")
-                    details[f"{impetus}_advisory"] = f"error: {str(e)}"
-                    all_shipped = False
-        except Exception as e:
-            logger.warning(f"Failed to get advisories from ConfigStore: {str(e)}")
-            details["advisories_error"] = str(e)
+        # Check all advisories status
+        advisories_shipped = self._check_advisories_shipped(details)
+        if not advisories_shipped:
             all_shipped = False
 
         return {
@@ -669,36 +690,14 @@ class ReleaseShipmentOperator:
     def _check_errata_shipped(self) -> dict:
         """Check shipment status for Errata flow
 
-        Gets all advisories from ConfigStore and checks if their state is REL_PREP or higher
+        Checks if all advisories are in REL_PREP or higher state
         """
         logger.info("Checking Errata flow release shipment status")
 
         details = {}
-        all_shipped = True
 
-        try:
-            # Get all advisories from ConfigStore (excludes MICROSHIFT and DROPPED_NO_SHIP)
-            advisories_map = self._cs.get_advisories()
-
-            for impetus, errata_id in advisories_map.items():
-                try:
-                    ad = Advisory(errata_id=errata_id, impetus=impetus)
-                    ad_state = ad.get_state()
-                    details[f"advisory_{impetus}"] = ad_state
-
-                    # Check if advisory is in REL_PREP or higher state
-                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
-                        all_shipped = False
-                        logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
-                except Exception as e:
-                    logger.warning(f"Failed to check advisory {impetus}: {str(e)}")
-                    details[f"advisory_{impetus}"] = f"error: {str(e)}"
-                    all_shipped = False
-
-        except Exception as e:
-            logger.warning(f"Failed to get advisories from ConfigStore: {str(e)}")
-            details["error"] = str(e)
-            all_shipped = False
+        # Check all advisories status
+        all_shipped = self._check_advisories_shipped(details)
 
         return {
             "shipped": all_shipped,
