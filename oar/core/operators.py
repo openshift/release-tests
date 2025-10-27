@@ -16,6 +16,7 @@ from oar.core.notification import NotificationManager
 from oar.core.shipment import ShipmentData
 from oar.core.worksheet import WorksheetManager
 from oar.core.const import *
+from oar.core.exceptions import ShipmentDataException
 
 logger = logging.getLogger(__name__)
 
@@ -562,3 +563,167 @@ class NotificationOperator:
         except Exception as e:
             logger.error(f"Ownership change notification failed: {str(e)}")
             raise
+
+
+class ReleaseShipmentOperator:
+    """Handles checking if a release is fully shipped (Errata or Konflux flow)"""
+
+    def __init__(self, cs: ConfigStore):
+        self._cs = cs
+        self._am = AdvisoryManager(cs)
+
+        # Try to initialize ShipmentData
+        # For already shipped Konflux releases, MR is merged and ShipmentData will raise exception
+        self._sd = None
+        self._sd_init_error = None
+        try:
+            self._sd = ShipmentData(cs)
+        except ShipmentDataException as e:
+            # Store the error - "state is not open" means the MR is merged (shipped)
+            self._sd_init_error = str(e)
+            logger.info(f"ShipmentData initialization failed: {str(e)}")
+
+    def is_release_shipped(self) -> dict:
+        """
+        Check if a release is fully shipped.
+
+        For Konflux flow:
+        - Shipment MR must be either merged OR prod-release pipeline succeeded
+        - rpm advisory must be in REL_PREP or higher state
+        - rhcos advisory must be in REL_PREP or higher state
+
+        For Errata flow:
+        - All advisories (from ConfigStore) must be in REL_PREP or higher state
+
+        Returns:
+            dict: Status information with keys:
+                - shipped (bool): Whether release is fully shipped
+                - flow_type (str): "errata" or "konflux"
+                - details (dict): Detailed status for each component
+        """
+        try:
+            if self._cs.is_konflux_flow():
+                return self._check_konflux_shipped()
+            else:
+                return self._check_errata_shipped()
+        except Exception as e:
+            logger.error(f"Failed to check release shipment status: {str(e)}")
+            raise
+
+    def _check_advisories_shipped(self, details: dict) -> bool:
+        """Check if all advisories are shipped
+
+        Gets all advisories from ConfigStore and checks if their state is REL_PREP or higher.
+        For Konflux: returns rpm and rhcos advisories
+        For Errata: returns all advisories (extras, image, metadata, rpm, rhcos)
+
+        Args:
+            details (dict): Dictionary to store advisory status details
+
+        Returns:
+            bool: True if all advisories are shipped, False otherwise
+        """
+        all_shipped = True
+
+        try:
+            advisories_map = self._cs.get_advisories()
+
+            for impetus, errata_id in advisories_map.items():
+                try:
+                    ad = Advisory(errata_id=errata_id, impetus=impetus)
+                    ad_state = ad.get_state()
+                    details[f"{impetus}_advisory"] = ad_state
+
+                    # Check if advisory is in REL_PREP or higher state
+                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
+                        all_shipped = False
+                        logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
+                except Exception as e:
+                    logger.warning(f"Failed to check {impetus} advisory: {str(e)}")
+                    details[f"{impetus}_advisory"] = f"error: {str(e)}"
+                    all_shipped = False
+
+        except Exception as e:
+            logger.warning(f"Failed to get advisories from ConfigStore: {str(e)}")
+            details["advisories_error"] = str(e)
+            all_shipped = False
+
+        return all_shipped
+
+    def _check_konflux_shipped(self) -> dict:
+        """Check shipment status for Konflux flow
+
+        Checks if either:
+        - prod-release pipeline succeeded, OR
+        - shipment MR is in merged state
+        Plus all advisories (rpm and rhcos) in REL_PREP or higher state
+        """
+        logger.info("Checking Konflux flow release shipment status")
+
+        details = {}
+        all_shipped = True
+
+        # If ShipmentData initialization failed, check why
+        if self._sd is None:
+            if self._sd_init_error and "state is not open" in self._sd_init_error:
+                # MR is not open = merged, which means shipped!
+                details["shipment_mr_status"] = "merged"
+                logger.info("ShipmentData not available - MR is merged (shipped)")
+            else:
+                # Some other error
+                details["shipment_mr_status"] = f"error: {self._sd_init_error}"
+                logger.warning(f"ShipmentData not available due to error: {self._sd_init_error}")
+                all_shipped = False
+        else:
+            # ShipmentData available, check prod release success OR shipment MR merged status
+            shipment_ready = False
+            try:
+                prod_success = self._sd.is_prod_release_success()
+                details["prod_release"] = "success" if prod_success else "not yet"
+                if prod_success:
+                    shipment_ready = True
+            except Exception as e:
+                logger.warning(f"Failed to check prod release: {str(e)}")
+                details["prod_release"] = f"error: {str(e)}"
+
+            # Also check if MR is merged
+            try:
+                mr_merged = self._sd.is_merged()
+                details["shipment_mr_merged"] = "yes" if mr_merged else "no"
+                if mr_merged:
+                    shipment_ready = True
+            except Exception as e:
+                logger.warning(f"Failed to check MR merged status: {str(e)}")
+                details["shipment_mr_merged"] = f"error: {str(e)}"
+
+            if not shipment_ready:
+                all_shipped = False
+
+        # Check all advisories status
+        advisories_shipped = self._check_advisories_shipped(details)
+        if not advisories_shipped:
+            all_shipped = False
+
+        return {
+            "shipped": all_shipped,
+            "flow_type": "konflux",
+            "details": details
+        }
+
+    def _check_errata_shipped(self) -> dict:
+        """Check shipment status for Errata flow
+
+        Checks if all advisories are in REL_PREP or higher state
+        """
+        logger.info("Checking Errata flow release shipment status")
+
+        details = {}
+
+        # Check all advisories status
+        all_shipped = self._check_advisories_shipped(details)
+
+        return {
+            "shipped": all_shipped,
+            "flow_type": "errata",
+            "details": details
+        }

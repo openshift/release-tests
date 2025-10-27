@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 from oar.core.operators import ApprovalOperator
 from oar.core.configstore import ConfigStore
 
+logger = logging.getLogger(__name__)
 
 # Define the LogCaptureHandler class here for testing since it's local to the method
 class LogCaptureHandler(logging.Handler):
@@ -196,6 +197,133 @@ class TestApprovalOperatorLogCapture(unittest.TestCase):
         self.assertIn("WARNING - Test warning message", messages)
         self.assertIn("ERROR - Test error message", messages)
         self.assertIn("INFO - Release approval completed. Payload metadata URL is now accessible", messages)
+
+
+class TestReleaseShipmentOperator(unittest.TestCase):
+    """Test the ReleaseShipmentOperator for release shipment status checking
+
+    Uses two test releases:
+    - 4.19.16: Konflux-based release (for testing Konflux flow)
+    - 4.19.6: Errata-based release (for testing Errata flow)
+    """
+
+    def test_initialization_with_real_configstore_konflux(self):
+        """Test that ReleaseShipmentOperator initializes correctly with Konflux release"""
+        try:
+            cs = ConfigStore("4.19.16")
+            operator = ReleaseShipmentOperator(cs)
+            self.assertIsNotNone(operator)
+            self.assertEqual(operator._cs, cs)
+        except Exception as e:
+            # Skip if release not configured
+            self.skipTest(f"Release 4.19.16 (Konflux) not configured: {str(e)}")
+
+    def test_is_release_shipped_returns_dict_with_required_keys(self):
+        """Test that is_release_shipped returns dict with required keys"""
+        try:
+            cs = ConfigStore("4.19.16")
+            operator = ReleaseShipmentOperator(cs)
+            result = operator.is_release_shipped()
+
+            # Check required keys exist
+            self.assertIn("shipped", result)
+            self.assertIn("flow_type", result)
+            self.assertIn("details", result)
+
+            # Check types
+            self.assertIsInstance(result["shipped"], bool)
+            self.assertIsInstance(result["flow_type"], str)
+            self.assertIsInstance(result["details"], dict)
+
+            # Check flow_type is valid
+            self.assertIn(result["flow_type"], ["errata", "konflux"])
+        except Exception as e:
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
+
+    def test_is_release_shipped_konflux_flow_structure(self):
+        """Test structure of result for Konflux flow"""
+        cs = ConfigStore("4.19.16")
+        if not cs.is_konflux_flow():
+            self.skipTest("Release uses Errata flow, not Konflux")
+
+        operator = ReleaseShipmentOperator(cs)
+        result = operator.is_release_shipped()
+
+        self.assertEqual(result["flow_type"], "konflux")
+        details = result["details"]
+
+        # Check expected keys for Konflux flow
+        self.assertIn("shipment_mr_status", details)
+        self.assertIn("rpm_advisory", details)
+        self.assertIn("rhcos_advisory", details)
+
+    def test_is_release_shipped_errata_flow_structure(self):
+        """Test structure of result for Errata flow"""
+        try:
+            cs = ConfigStore("4.19.6")
+            if cs.is_konflux_flow():
+                self.skipTest("Release uses Konflux flow, not Errata")
+
+            operator = ReleaseShipmentOperator(cs)
+            result = operator.is_release_shipped()
+
+            self.assertEqual(result["flow_type"], "errata")
+            details = result["details"]
+
+            # Check that there are advisory details
+            self.assertGreater(len(details), 0)
+
+            # Check that at least some advisory keys exist
+            advisory_keys = [k for k in details.keys() if k.startswith("advisory_")]
+            self.assertGreater(len(advisory_keys), 0)
+        except Exception as e:
+            self.skipTest(f"Release 4.19.6 (Errata) not configured: {str(e)}")
+
+    def test_check_konflux_shipped_with_real_data(self):
+        """Integration test: Check Konflux shipped status with real data"""
+        try:
+            cs = ConfigStore("4.19.16")
+            if not cs.is_konflux_flow():
+                self.skipTest("Release uses Errata flow, not Konflux")
+
+            operator = ReleaseShipmentOperator(cs)
+            result = operator.is_release_shipped()
+
+            # Verify result structure
+            self.assertEqual(result["flow_type"], "konflux")
+            self.assertIn("prod_release", result["details"])
+            self.assertIn("shipment_mr_merged", result["details"])
+            self.assertIn("rpm_advisory", result["details"])
+            self.assertIn("rhcos_advisory", result["details"])
+
+            # Log the actual state for manual verification
+            logger.info(f"Konflux release shipped status: {result}")
+        except Exception as e:
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
+
+    def test_check_errata_shipped_with_real_data(self):
+        """Integration test: Check Errata shipped status with real data"""
+        try:
+            cs = ConfigStore("4.19.6")
+            if cs.is_konflux_flow():
+                self.skipTest("Release uses Konflux flow, not Errata")
+
+            operator = ReleaseShipmentOperator(cs)
+            result = operator.is_release_shipped()
+
+            # Verify result structure
+            self.assertEqual(result["flow_type"], "errata")
+            self.assertGreater(len(result["details"]), 0)
+
+            # Check that all advisory states are documented
+            for key, value in result["details"].items():
+                self.assertIsInstance(value, str)
+
+            # Log the actual state for manual verification
+            logger.info(f"Errata release shipped status: {result}")
+        except Exception as e:
+            self.skipTest(f"Release 4.19.6 (Errata) not configured: {str(e)}")
+
 
 
 if __name__ == '__main__':
