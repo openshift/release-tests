@@ -30,6 +30,7 @@ from fastmcp import FastMCP
 # Add parent directory to path to import oar modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from oar.core.configstore import ConfigStore
+from oar.core.operators import ReleaseShipmentOperator
 
 # Setup logging
 logging.basicConfig(
@@ -706,6 +707,50 @@ def oar_get_release_metadata(release: str) -> str:
     except Exception as e:
         logger.error(f"Failed to get release metadata: {e}")
         return f"Error: {str(e)}"
+
+
+@mcp.tool()
+def oar_is_release_shipped(release: str) -> str:
+    """
+    Check if a release is fully shipped (both Errata and Konflux flows).
+
+    This is a READ-ONLY operation - it only queries shipment status.
+
+    For Konflux flow, checks:
+    - Shipment MR is either merged OR prod-release pipeline succeeded
+    - rpm advisory in REL_PREP or higher state
+    - rhcos advisory in REL_PREP or higher state
+
+    For Errata flow, checks:
+    - All advisories in REL_PREP or higher state
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+
+    Returns:
+        JSON string with shipment status:
+        {
+            "shipped": bool,
+            "flow_type": "errata" or "konflux",
+            "details": {
+                // status for each checked component
+            }
+        }
+    """
+    try:
+        cs = ConfigStore(release)
+        operator = ReleaseShipmentOperator(cs)
+        result = operator.is_release_shipped()
+
+        return json.dumps(result, indent=2)
+
+    except Exception as e:
+        logger.error(f"Failed to check release shipment status: {e}")
+        return json.dumps({
+            "error": str(e),
+            "shipped": False,
+            "details": {}
+        }, indent=2)
 
 
 # ============================================================================
