@@ -53,9 +53,44 @@
         "jobStartTime": "2025-10-27T11:20:35Z",
         "jobID": "f4fb8806-4858-4fca-bb13-1680d2114d7c",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1982769389723717632",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-10-27T14:50:27Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 103,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-ROSA-OSD_CCS-ARO-High-21205-Install descheduler operator via a deployment"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-10-27T15:22:27Z",
+          "jobID": "c6cbe80c-f535-43c4-b1e0-e81caf68ec59",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2025-10-27T15:22:32Z",
+          "jobID": "4f66f12f-68e8-4114-8592-fc8cc8edec6c",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
