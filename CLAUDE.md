@@ -156,7 +156,7 @@ The OAR system is built on a layered architecture where all modules depend on `C
 - `git.py` - Git operations for shipment data
 
 **Orchestration Layer:**
-- `operators.py` - Composite operators that coordinate across multiple modules (ReleaseOwnershipOperator, BugOperator, ApprovalOperator, etc.)
+- `operators.py` - Composite operators that coordinate across multiple modules (ReleaseOwnershipOperator, BugOperator, ApprovalOperator, ReleaseShipmentOperator, etc.)
 
 **Key Design Pattern:**
 All core modules follow Manager/Helper pattern with:
@@ -196,14 +196,14 @@ The MCP (Model Context Protocol) server (`mcp_server/server.py`) exposes OAR com
 - Runs as HTTP server (SSE transport) for remote access
 
 **Categories of tools:**
-1. **Read-only tools** - Safe query operations (check-greenwave-cvp-tests, check-cve-tracker-bug, image-signed-check)
+1. **Read-only tools** - Safe query operations (check-greenwave-cvp-tests, check-cve-tracker-bug, image-signed-check, is-release-shipped)
 2. **Status check tools** - Query job status (image-consistency-check -n, stage-testing -n)
 3. **Write operations** - Modify state (create-test-report, update-bug-list, take-ownership)
 4. **Critical operations** - Production impact (push-to-cdn-staging, change-advisory-status)
 5. **Controller tools** - Background agents (start-release-detector, jira-notificator)
 6. **Job controller tools** - CI orchestration (start-controller, trigger-jobs-for-build)
 7. **Generic runners** - Advanced usage (oar_run_command, jobctl_run_command)
-8. **Configuration tools** - Metadata access (oar_get_release_metadata)
+8. **Configuration tools** - Metadata access (oar_get_release_metadata, is-release-shipped)
 
 **Running the server:**
 
