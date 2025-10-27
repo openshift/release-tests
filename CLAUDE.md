@@ -52,7 +52,7 @@ Test files are located in `tests/` directory.
 
 ## CLI Commands
 
-This project provides two main CLI entry points:
+This project provides three main CLI entry points, plus an MCP server for AI agent integration:
 
 ### 1. OAR CLI (`oar`)
 
@@ -101,6 +101,21 @@ jobctl start-controller -r 4.19 --nightly --arch amd64
 jobctl start-aggregator --arch amd64
 ```
 
+### 4. MCP Server (AI Integration)
+
+Exposes all OAR commands as MCP tools for AI agents:
+
+```bash
+# Start MCP server
+cd mcp_server
+python3 server.py
+
+# Access via AI agents (Claude Code, etc.)
+# Server runs at http://localhost:8000 by default
+```
+
+See the "MCP Server" section under Architecture for detailed information.
+
 ## Architecture
 
 ### High-Level Structure
@@ -114,6 +129,8 @@ release-tests/
 │   └── notificator/       # Jira notificator agent
 ├── prow/                  # Prow job controller system
 │   └── job/              # Job orchestration, test aggregation
+├── mcp_server/            # MCP server for AI agent integration
+│   └── server.py          # FastMCP server exposing OAR commands as tools
 ├── tools/                 # Standalone tools (Slack bot, checkers)
 ├── tests/                 # Unit tests
 └── _releases/            # GitHub-based persistent state (build tracking)
@@ -166,6 +183,65 @@ Six automated agents work together for end-to-end release automation (see AGENTS
 4. **Jira Notificator** (`oar/notificator/jira_notificator.py`) - Escalates unverified bugs
 5. **Slack Bot** (`tools/slack_message_receiver.py`) - Executes OAR commands via Slack
 6. **Test Result Checker** (`tools/auto_release_test_result_checker.py`) - Notifies about rejected builds
+
+### MCP Server (AI Agent Integration)
+
+The MCP (Model Context Protocol) server (`mcp_server/server.py`) exposes OAR commands as structured tools for AI agents like Claude Code.
+
+**What it does:**
+- Wraps all OAR/oarctl/job/jobctl commands as MCP tools (27 total)
+- Provides structured input/output for AI agent interaction
+- Categorizes operations by safety (read-only, write, critical)
+- Validates environment on startup
+- Runs as HTTP server (SSE transport) for remote access
+
+**Categories of tools:**
+1. **Read-only tools** - Safe query operations (check-greenwave-cvp-tests, check-cve-tracker-bug, image-signed-check)
+2. **Status check tools** - Query job status (image-consistency-check -n, stage-testing -n)
+3. **Write operations** - Modify state (create-test-report, update-bug-list, take-ownership)
+4. **Critical operations** - Production impact (push-to-cdn-staging, change-advisory-status)
+5. **Controller tools** - Background agents (start-release-detector, jira-notificator)
+6. **Job controller tools** - CI orchestration (start-controller, trigger-jobs-for-build)
+7. **Generic runners** - Advanced usage (oar_run_command, jobctl_run_command)
+8. **Configuration tools** - Metadata access (oar_get_release_metadata)
+
+**Running the server:**
+
+```bash
+# Navigate to MCP server directory
+cd mcp_server
+
+# Check environment setup
+./check_env.sh
+
+# Start server (default: localhost:8000)
+python3 server.py
+
+# For remote access
+# Edit server.py line 759: mcp.run(transport="sse", host="0.0.0.0", port=8080)
+```
+
+**Environment requirements:**
+- All OAR CLI environment variables (OAR_JWK, JIRA_TOKEN, GCP_SA_FILE, etc.)
+- Server validates environment on startup and exits if critical vars missing
+
+**Use cases:**
+- AI-assisted release management workflows
+- Automated release operations via Claude Code
+- Interactive debugging and troubleshooting
+- Documentation and training with AI guidance
+
+**Safety features:**
+- Operations clearly marked with warning emoji (⚠️ WRITE, ⚠️ CRITICAL)
+- Read-only operations for safe exploration
+- Timeout handling (default 10 minutes)
+- Structured error reporting
+
+**Development notes:**
+- Built with FastMCP framework
+- Tool definitions include comprehensive docstrings for AI context
+- All tools wrap existing CLI commands (no new business logic)
+- See AGENTS.md for complete tool reference
 
 ## Environment Variables
 
