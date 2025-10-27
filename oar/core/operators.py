@@ -570,7 +570,17 @@ class ReleaseShipmentOperator:
     def __init__(self, cs: ConfigStore):
         self._cs = cs
         self._am = AdvisoryManager(cs)
-        self._sd = ShipmentData(cs)
+
+        # Try to initialize ShipmentData
+        # For already shipped Konflux releases, MR is merged/closed and ShipmentData will raise exception
+        self._sd = None
+        self._sd_init_error = None
+        try:
+            self._sd = ShipmentData(cs)
+        except Exception as e:
+            # Store the error - it may indicate the MR is already merged (which is good for shipped check)
+            self._sd_init_error = str(e)
+            logger.info(f"ShipmentData initialization failed (may indicate MR already merged): {str(e)}")
 
     def is_release_shipped(self) -> dict:
         """
@@ -652,29 +662,42 @@ class ReleaseShipmentOperator:
         details = {}
         all_shipped = True
 
-        # Check prod release success OR shipment MR merged status
-        shipment_ready = False
-        try:
-            prod_success = self._sd.is_prod_release_success()
-            details["prod_release"] = "success" if prod_success else "not yet"
-            if prod_success:
-                shipment_ready = True
-        except Exception as e:
-            logger.warning(f"Failed to check prod release: {str(e)}")
-            details["prod_release"] = f"error: {str(e)}"
+        # If ShipmentData initialization failed, it likely means MR is not open (merged/closed)
+        # This is actually a good sign for shipped releases
+        if self._sd is None:
+            if self._sd_init_error and "state is not open" in self._sd_init_error:
+                # MR is not open = likely merged/closed, which means shipped
+                details["shipment_mr_status"] = "not open (likely merged/closed)"
+                logger.info("ShipmentData not available - MR likely merged/closed (shipped)")
+            else:
+                # Some other error
+                details["shipment_mr_status"] = f"error: {self._sd_init_error}"
+                logger.warning(f"ShipmentData not available due to error: {self._sd_init_error}")
+                all_shipped = False
+        else:
+            # ShipmentData available, check prod release success OR shipment MR merged status
+            shipment_ready = False
+            try:
+                prod_success = self._sd.is_prod_release_success()
+                details["prod_release"] = "success" if prod_success else "not yet"
+                if prod_success:
+                    shipment_ready = True
+            except Exception as e:
+                logger.warning(f"Failed to check prod release: {str(e)}")
+                details["prod_release"] = f"error: {str(e)}"
 
-        # Also check if MR is merged
-        try:
-            mr_merged = self._sd.is_merged()
-            details["shipment_mr_merged"] = "yes" if mr_merged else "no"
-            if mr_merged:
-                shipment_ready = True
-        except Exception as e:
-            logger.warning(f"Failed to check MR merged status: {str(e)}")
-            details["shipment_mr_merged"] = f"error: {str(e)}"
+            # Also check if MR is merged
+            try:
+                mr_merged = self._sd.is_merged()
+                details["shipment_mr_merged"] = "yes" if mr_merged else "no"
+                if mr_merged:
+                    shipment_ready = True
+            except Exception as e:
+                logger.warning(f"Failed to check MR merged status: {str(e)}")
+                details["shipment_mr_merged"] = f"error: {str(e)}"
 
-        if not shipment_ready:
-            all_shipped = False
+            if not shipment_ready:
+                all_shipped = False
 
         # Check all advisories status
         advisories_shipped = self._check_advisories_shipped(details)
