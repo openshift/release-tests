@@ -204,18 +204,18 @@ class TestReleaseShipmentOperator(unittest.TestCase):
     def test_initialization_with_real_configstore(self):
         """Test that ReleaseShipmentOperator initializes correctly with real ConfigStore"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             operator = ReleaseShipmentOperator(cs)
             self.assertIsNotNone(operator)
             self.assertEqual(operator._cs, cs)
         except Exception as e:
             # Skip if release not configured
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_is_release_shipped_returns_dict_with_required_keys(self):
         """Test that is_release_shipped returns dict with required keys"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             operator = ReleaseShipmentOperator(cs)
             result = operator.is_release_shipped()
 
@@ -232,12 +232,12 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             # Check flow_type is valid
             self.assertIn(result["flow_type"], ["errata", "konflux"])
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_is_release_shipped_konflux_flow_structure(self):
         """Test structure of result for Konflux flow"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             if not cs.is_konflux_flow():
                 self.skipTest("Release uses Errata flow, not Konflux")
 
@@ -253,12 +253,12 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             self.assertIn("rpm_advisory", details)
             self.assertIn("rhcos_advisory", details)
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_is_release_shipped_errata_flow_structure(self):
         """Test structure of result for Errata flow"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             if cs.is_konflux_flow():
                 self.skipTest("Release uses Konflux flow, not Errata")
 
@@ -275,12 +275,12 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             advisory_keys = [k for k in details.keys() if k.startswith("advisory_")]
             self.assertGreater(len(advisory_keys), 0)
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_get_advisory_by_impetus_returns_advisory_or_none(self):
         """Test _get_advisory_by_impetus returns Advisory object or None"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             operator = ReleaseShipmentOperator(cs)
 
             # Try to get rpm advisory (Konflux flow) or any advisory (Errata flow)
@@ -298,12 +298,12 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             else:
                 self.skipTest("No advisories configured for release")
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_get_advisory_by_impetus_not_found_returns_none(self):
         """Test _get_advisory_by_impetus returns None for non-existent advisory"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             operator = ReleaseShipmentOperator(cs)
 
             # Try to get an advisory that shouldn't exist
@@ -311,12 +311,12 @@ class TestReleaseShipmentOperator(unittest.TestCase):
 
             self.assertIsNone(result)
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_check_konflux_shipped_with_real_data(self):
         """Integration test: Check Konflux shipped status with real data"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             if not cs.is_konflux_flow():
                 self.skipTest("Release uses Errata flow, not Konflux")
 
@@ -333,12 +333,12 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             # Log the actual state for manual verification
             logger.info(f"Konflux release shipped status: {result}")
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
     def test_check_errata_shipped_with_real_data(self):
         """Integration test: Check Errata shipped status with real data"""
         try:
-            cs = ConfigStore("4.19.1")
+            cs = ConfigStore("4.19.16")
             if cs.is_konflux_flow():
                 self.skipTest("Release uses Konflux flow, not Errata")
 
@@ -356,7 +356,7 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             # Log the actual state for manual verification
             logger.info(f"Errata release shipped status: {result}")
         except Exception as e:
-            self.skipTest(f"Release 4.19.1 not configured: {str(e)}")
+            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
 
 
 
