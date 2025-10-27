@@ -9,7 +9,7 @@ import sys
 import oar.core.util as util
 
 from typing import Union
-from oar.core.advisory import AdvisoryManager
+from oar.core.advisory import AdvisoryManager, Advisory
 from oar.core.configstore import ConfigStore
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
