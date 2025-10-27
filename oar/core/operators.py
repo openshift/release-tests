@@ -562,3 +562,169 @@ class NotificationOperator:
         except Exception as e:
             logger.error(f"Ownership change notification failed: {str(e)}")
             raise
+
+
+class ReleaseShipmentOperator:
+    """Handles checking if a release is fully shipped (Errata or Konflux flow)"""
+
+    def __init__(self, cs: ConfigStore):
+        self._cs = cs
+        self._am = AdvisoryManager(cs)
+        self._sd = ShipmentData(cs)
+
+    def is_release_shipped(self) -> dict:
+        """
+        Check if a release is fully shipped.
+
+        For Konflux flow:
+        - Shipment MR must be either merged OR prod-release pipeline succeeded
+        - rpm advisory must be in REL_PREP or higher state
+        - rhcos advisory must be in REL_PREP or higher state
+
+        For Errata flow:
+        - All advisories (from ConfigStore) must be in REL_PREP or higher state
+
+        Returns:
+            dict: Status information with keys:
+                - shipped (bool): Whether release is fully shipped
+                - flow_type (str): "errata" or "konflux"
+                - details (dict): Detailed status for each component
+        """
+        try:
+            if self._cs.is_konflux_flow():
+                return self._check_konflux_shipped()
+            else:
+                return self._check_errata_shipped()
+        except Exception as e:
+            logger.error(f"Failed to check release shipment status: {str(e)}")
+            raise
+
+    def _check_konflux_shipped(self) -> dict:
+        """Check shipment status for Konflux flow
+
+        Checks if either:
+        - prod-release pipeline succeeded, OR
+        - shipment MR is in merged state
+        Plus rpm and rhcos advisories in REL_PREP or higher state
+        """
+        logger.info("Checking Konflux flow release shipment status")
+
+        details = {}
+        all_shipped = True
+
+        # Check prod release success OR shipment MR merged status
+        shipment_ready = False
+        try:
+            prod_success = self._sd.is_prod_release_success()
+            details["prod_release"] = "success" if prod_success else "not yet"
+            if prod_success:
+                shipment_ready = True
+        except Exception as e:
+            logger.warning(f"Failed to check prod release: {str(e)}")
+            details["prod_release"] = f"error: {str(e)}"
+
+        # Also check if MR is merged
+        try:
+            mr_merged = self._sd.is_merged()
+            details["shipment_mr_merged"] = "yes" if mr_merged else "no"
+            if mr_merged:
+                shipment_ready = True
+        except Exception as e:
+            logger.warning(f"Failed to check MR merged status: {str(e)}")
+            details["shipment_mr_merged"] = f"error: {str(e)}"
+
+        if not shipment_ready:
+            all_shipped = False
+
+        # Check rpm advisory status
+        try:
+            rpm_ad = self._get_advisory_by_impetus(AD_IMPETUS_RPM)
+            if rpm_ad:
+                rpm_state = rpm_ad.get_state()
+                details["rpm_advisory"] = rpm_state
+                if rpm_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
+                    all_shipped = False
+            else:
+                details["rpm_advisory"] = "not found"
+                all_shipped = False
+        except Exception as e:
+            logger.warning(f"Failed to check rpm advisory: {str(e)}")
+            details["rpm_advisory"] = f"error: {str(e)}"
+            all_shipped = False
+
+        # Check rhcos advisory status
+        try:
+            rhcos_ad = self._get_advisory_by_impetus(AD_IMPETUS_RHCOS)
+            if rhcos_ad:
+                rhcos_state = rhcos_ad.get_state()
+                details["rhcos_advisory"] = rhcos_state
+                if rhcos_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
+                    all_shipped = False
+            else:
+                details["rhcos_advisory"] = "not found"
+                all_shipped = False
+        except Exception as e:
+            logger.warning(f"Failed to check rhcos advisory: {str(e)}")
+            details["rhcos_advisory"] = f"error: {str(e)}"
+            all_shipped = False
+
+        return {
+            "shipped": all_shipped,
+            "flow_type": "konflux",
+            "details": details
+        }
+
+    def _check_errata_shipped(self) -> dict:
+        """Check shipment status for Errata flow
+
+        Gets all advisories from ConfigStore and checks if their state is REL_PREP or higher
+        """
+        logger.info("Checking Errata flow release shipment status")
+
+        details = {}
+        all_shipped = True
+
+        try:
+            # Get all advisories from ConfigStore (excludes MICROSHIFT and DROPPED_NO_SHIP)
+            advisories_map = self._cs.get_advisories()
+
+            for impetus, errata_id in advisories_map.items():
+                try:
+                    ad = Advisory(errata_id=errata_id, impetus=impetus)
+                    ad_state = ad.get_state()
+                    details[f"advisory_{impetus}"] = ad_state
+
+                    # Check if advisory is in REL_PREP or higher state
+                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
+                        all_shipped = False
+                        logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
+                except Exception as e:
+                    logger.warning(f"Failed to check advisory {impetus}: {str(e)}")
+                    details[f"advisory_{impetus}"] = f"error: {str(e)}"
+                    all_shipped = False
+
+        except Exception as e:
+            logger.warning(f"Failed to get advisories from ConfigStore: {str(e)}")
+            details["error"] = str(e)
+            all_shipped = False
+
+        return {
+            "shipped": all_shipped,
+            "flow_type": "errata",
+            "details": details
+        }
+
+    def _get_advisory_by_impetus(self, impetus: str):
+        """Get advisory by impetus type
+
+        Args:
+            impetus (str): Advisory impetus (e.g., AD_IMPETUS_RPM, AD_IMPETUS_RHCOS)
+
+        Returns:
+            Advisory: The advisory object, or None if not found
+        """
+        advisories_map = self._cs.get_advisories()
+        if impetus in advisories_map:
+            from oar.core.advisory import Advisory
+            return Advisory(errata_id=advisories_map[impetus], impetus=impetus)
+        return None
