@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 from oar.core.operators import ApprovalOperator
 from oar.core.configstore import ConfigStore
 
+logger = logging.getLogger(__name__)
 
 # Define the LogCaptureHandler class here for testing since it's local to the method
 class LogCaptureHandler(logging.Handler):
@@ -279,42 +280,6 @@ class TestReleaseShipmentOperator(unittest.TestCase):
             # Check that at least some advisory keys exist
             advisory_keys = [k for k in details.keys() if k.startswith("advisory_")]
             self.assertGreater(len(advisory_keys), 0)
-        except Exception as e:
-            self.skipTest(f"Release 4.19.6 (Errata) not configured: {str(e)}")
-
-    def test_get_advisory_by_impetus_returns_advisory_or_none_konflux(self):
-        """Test _get_advisory_by_impetus returns Advisory object or None (Konflux)"""
-        try:
-            cs = ConfigStore("4.19.16")
-            operator = ReleaseShipmentOperator(cs)
-
-            # Try to get rpm advisory (Konflux flow)
-            advisories = cs.get_advisories()
-
-            if advisories:
-                # Get first advisory impetus
-                first_impetus = list(advisories.keys())[0]
-                result = operator._get_advisory_by_impetus(first_impetus)
-
-                # Should return Advisory object or None
-                if result is not None:
-                    from oar.core.advisory import Advisory
-                    self.assertIsInstance(result, Advisory)
-            else:
-                self.skipTest("No advisories configured for release")
-        except Exception as e:
-            self.skipTest(f"Release 4.19.16 (Konflux) not configured: {str(e)}")
-
-    def test_get_advisory_by_impetus_not_found_returns_none_errata(self):
-        """Test _get_advisory_by_impetus returns None for non-existent advisory (Errata)"""
-        try:
-            cs = ConfigStore("4.19.6")
-            operator = ReleaseShipmentOperator(cs)
-
-            # Try to get an advisory that shouldn't exist
-            result = operator._get_advisory_by_impetus("nonexistent_impetus")
-
-            self.assertIsNone(result)
         except Exception as e:
             self.skipTest(f"Release 4.19.6 (Errata) not configured: {str(e)}")
 
