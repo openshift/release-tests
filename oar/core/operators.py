@@ -577,7 +577,7 @@ class ReleaseShipmentOperator:
         self._sd_init_error = None
         try:
             self._sd = ShipmentData(cs)
-        except Exception as e:
+        except BaseException as e:
             # Store the error - "state is not open" means the MR is merged (shipped)
             self._sd_init_error = str(e)
             logger.info(f"ShipmentData initialization failed: {str(e)}")
