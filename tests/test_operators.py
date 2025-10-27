@@ -242,24 +242,20 @@ class TestReleaseShipmentOperator(unittest.TestCase):
 
     def test_is_release_shipped_konflux_flow_structure(self):
         """Test structure of result for Konflux flow"""
-        try:
-            cs = ConfigStore("4.19.16")
-            if not cs.is_konflux_flow():
-                self.skipTest("Release uses Errata flow, not Konflux")
+        cs = ConfigStore("4.19.16")
+        if not cs.is_konflux_flow():
+            self.skipTest("Release uses Errata flow, not Konflux")
 
-            operator = ReleaseShipmentOperator(cs)
-            result = operator.is_release_shipped()
+        operator = ReleaseShipmentOperator(cs)
+        result = operator.is_release_shipped()
 
-            self.assertEqual(result["flow_type"], "konflux")
-            details = result["details"]
+        self.assertEqual(result["flow_type"], "konflux")
+        details = result["details"]
 
-            # Check expected keys for Konflux flow
-            self.assertIn("prod_release", details)
-            self.assertIn("shipment_mr_merged", details)
-            self.assertIn("rpm_advisory", details)
-            self.assertIn("rhcos_advisory", details)
-        except Exception as e:
-            self.skipTest(f"Release 4.19.16 not configured: {str(e)}")
+        # Check expected keys for Konflux flow
+        self.assertIn("shipment_mr_status", details)
+        self.assertIn("rpm_advisory", details)
+        self.assertIn("rhcos_advisory", details)
 
     def test_is_release_shipped_errata_flow_structure(self):
         """Test structure of result for Errata flow"""
