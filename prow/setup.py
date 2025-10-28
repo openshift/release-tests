@@ -17,7 +17,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=['semver', 'requests', 'pyyaml',
-                      'click', 'PyGithub', 'google-cloud-storage', "GitPython"],
+                      'click', 'PyGithub', 'google-cloud-storage', "GitPython", 'packaging'],
     entry_points={
         'console_scripts': [
             'job = job.job:cli',
