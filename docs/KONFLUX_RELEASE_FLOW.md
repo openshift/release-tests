@@ -49,6 +49,8 @@ take-ownership
     ↓
 check-cve-tracker-bug (always passes, notifies ART)
     ↓
+check-rhcos-security-alerts (Konflux only - checks blocking security alerts)
+    ↓
     ├─→ push-to-cdn-staging (async - runs independently in parallel)
     └─→ [WAIT FOR BUILD PROMOTION - check API until phase == "Accepted"]
             ↓
@@ -302,13 +304,120 @@ stdout contains: "task [Check CVE tracker bugs] status is changed to [Pass]"
 
 **Expected Duration:** 1 minute
 
+**Next Action:** Proceed to check-rhcos-security-alerts
+
+---
+
+### 4. check-rhcos-security-alerts
+
+**Purpose:** Check for blocking security alerts on RHCOS advisory (Konflux flow only)
+
+**When to run:** Konflux release flow only (releases with shipment_mr in metadata)
+
+**Prerequisites:** check-cve-tracker-bug completed
+
+**Implementation:** Uses curl with Kerberos authentication (no existing MCP tool)
+
+**Execution Steps:**
+
+**Step 1: Verify Kerberos ticket exists**
+```bash
+klist
+```
+
+If no ticket or ticket expired:
+- Report to user: "No valid Kerberos ticket found. Please run: kinit $kid@$domain"
+- STOP task execution
+
+**Step 2: Get RHCOS advisory ID**
+```python
+metadata = oar_get_release_metadata(release)
+rhcos_advisory_id = metadata.advisories.rhcos
+```
+
+**Step 3: Fetch security alerts from Errata Tool**
+```bash
+curl -s -u : --negotiate 'https://errata.devel.redhat.com/api/v1/erratum/{rhcos_advisory_id}/security_alerts'
+```
+
+**Step 4: Parse response and check for blocking alerts**
+```python
+response = json.loads(curl_output)
+
+# Filter blocking alerts from the alerts array
+blocking_alerts = [alert for alert in response.alerts.alerts if alert.blocking == true]
+
+IF len(blocking_alerts) > 0:
+    # Blocking security alert(s) found
+    Report to user: """
+    BLOCKING SECURITY ALERT(S) FOUND on RHCOS advisory {rhcos_advisory_id}
+
+    Blocking alerts:
+    {for each alert in blocking_alerts:
+        - Name: {alert.name}
+        - Text: {alert.text}
+        - Description: {alert.description}
+        - How to resolve: {alert.how_to_resolve}
+    }
+
+    ACTION REQUIRED:
+    Please send an email to secalert@redhat.com to escalate this issue.
+    Include the advisory ID ({rhcos_advisory_id}) and alert details in your email.
+
+    Pipeline will continue but manual resolution is required before final approval.
+    """
+
+    # Log warning in Google Sheets (if possible)
+    # Continue pipeline - this is not a hard blocker, but requires follow-up
+
+ELSE:
+    Report to user: "No blocking security alerts found on RHCOS advisory"
+```
+
+**Success Detection:**
+```
+Task always passes - this is an informational check
+Blocking alerts require manual follow-up but don't stop the pipeline
+```
+
+**Expected Duration:** 10 seconds
+
+**Errata Tool API Response Format:**
+```json
+{
+  "id": 8885,
+  "rhsa_id": 155455,
+  "has_yet_to_be_fetched": false,
+  "created_at": "2025-10-23T06:27:03Z",
+  "updated_at": "2025-10-24T12:51:38Z",
+  "alerts": {
+    "erratum_id": "RHSA-2025:19002",
+    "alerts": [
+      {
+        "name": "erratum_missing_notes_link",
+        "text": "Erratum does not contain link to Release/Technical Notes in References",
+        "description": "The References field of an erratum...",
+        "how_to_resolve": "If an erratum refers to Technical or Release Notes...",
+        "blocking": false
+      }
+    ],
+    "blocking": false
+  }
+}
+```
+
+**Key Fields:**
+- `.alerts.alerts[]` (array) - List of individual alerts
+- `.alerts.alerts[].blocking` (boolean) - Per-alert blocking status (THIS is what we check)
+- `.alerts.blocking` (boolean) - Top-level blocking status (informational only)
+
 **Next Action:**
 - Trigger push-to-cdn-staging (async)
 - Start checking for build promotion (parallel)
 
 ---
 
-### 4. push-to-cdn-staging (Async Task)
+### 5. push-to-cdn-staging (Async Task)
 
 **Purpose:** Push release images to CDN staging environment
 
@@ -343,7 +452,7 @@ Failure: stdout contains: "task [Push to CDN staging] status is changed to [Fail
 
 ---
 
-### 5. analyze-candidate-build (Parallel Task)
+### 6. analyze-candidate-build (Parallel Task)
 
 **Purpose:** Evaluate test results from candidate nightly build
 
@@ -417,7 +526,7 @@ OR
 
 ---
 
-### 6. analyze-promoted-build (Sequential Task)
+### 7. analyze-promoted-build (Sequential Task)
 
 **Purpose:** Evaluate test results from promoted stable build
 
@@ -517,7 +626,7 @@ OR
 
 ---
 
-### 7. image-consistency-check (Async Task)
+### 8. image-consistency-check (Async Task)
 
 **Purpose:** Verify image consistency across architectures
 
@@ -559,7 +668,7 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 
 ---
 
-### 8. stage-testing (Async Task)
+### 9. stage-testing (Async Task)
 
 **Purpose:** Run stage testing jobs on Jenkins
 
@@ -601,7 +710,7 @@ Failure: stdout contains: "task [Stage testing] status is changed to [Fail]"
 
 ---
 
-### 9. image-signed-check
+### 10. image-signed-check
 
 **Purpose:** Verify release images are properly signed
 
@@ -623,7 +732,7 @@ stdout contains: "task [Image signature check] status is changed to [Pass]"
 
 ---
 
-### 10. change-advisory-status
+### 11. change-advisory-status
 
 **Purpose:** Change advisory status to QE/PUSH_READY (final approval)
 

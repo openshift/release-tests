@@ -46,6 +46,7 @@ Based on task status, identify which phase the release is in:
 - Create test report
 - Take ownership
 - Check CVE tracker bugs
+- Check RHCOS security alerts (Konflux only)
 - Trigger push-to-cdn-staging (async)
 - Start candidate build analysis (parallel)
 
