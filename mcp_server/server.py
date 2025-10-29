@@ -10,11 +10,11 @@ Tools exposed:
 - 2 OAR controller commands (start-release-detector, jira-notificator)
 - 1 job command (run)
 - 5 jobctl commands (start-controller, trigger-jobs-for-build, start-aggregator, etc.)
-- 1 configuration tool (get-release-metadata)
+- 3 configuration tools (get-release-metadata, is-release-shipped, get-release-status)
 - 3 generic command runners (oar_run_command, oarctl_run_command, jobctl_run_command)
 - 1 help/discovery tool (get_command_help)
 
-Total: 27 tools
+Total: 29 tools
 """
 
 import subprocess
@@ -31,6 +31,20 @@ from fastmcp import FastMCP
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from oar.core.configstore import ConfigStore
 from oar.core.operators import ReleaseShipmentOperator
+from oar.core.worksheet import WorksheetManager
+from oar.core.const import (
+    LABEL_OVERALL_STATUS,
+    LABEL_TASK_OWNERSHIP,
+    LABEL_TASK_BUGS_TO_VERIFY,
+    LABEL_TASK_IMAGE_CONSISTENCY_TEST,
+    LABEL_TASK_NIGHTLY_BUILD_TEST,
+    LABEL_TASK_SIGNED_BUILD_TEST,
+    LABEL_TASK_CHECK_CVE_TRACKERS,
+    LABEL_TASK_PUSH_TO_CDN,
+    LABEL_TASK_STAGE_TEST,
+    LABEL_TASK_PAYLOAD_IMAGE_VERIFY,
+    LABEL_TASK_CHANGE_AD_STATUS,
+)
 
 # Setup logging
 logging.basicConfig(
@@ -750,6 +764,89 @@ def oar_is_release_shipped(release: str) -> str:
             "error": str(e),
             "shipped": False,
             "details": {}
+        }, indent=2)
+
+
+@mcp.tool()
+def oar_get_release_status(release: str) -> str:
+    """
+    Get task execution status from Google Sheets test report.
+
+    This is a READ-ONLY operation - retrieves current task status for AI decision making.
+
+    Returns task status for all OAR workflow tasks including:
+    - Overall status (Green/Red)
+    - Individual task statuses (Pass/Fail/In Progress/Not Started)
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+
+    Returns:
+        JSON string with task execution status:
+        {
+            "release": "4.19.1",
+            "overall_status": "Green",
+            "tasks": {
+                "take-ownership": "Pass",
+                "update-bug-list": "Pass",
+                "image-consistency-check": "Not Started",
+                "analyze-candidate-build": "In Progress",
+                "analyze-promoted-build": "In Progress",
+                "check-greenwave-cvp-tests": "Pass",
+                "check-cve-tracker-bug": "Pass",
+                "push-to-cdn-staging": "In Progress",
+                "stage-testing": "Not Started",
+                "image-signed-check": "Not Started",
+                "change-advisory-status": "Not Started"
+            }
+        }
+
+    Note: analyze-candidate-build and analyze-promoted-build always show "In Progress"
+    in M1. AI must check test result files from GitHub to determine actual analysis status.
+    """
+    try:
+        cs = ConfigStore(release)
+        wm = WorksheetManager(cs)
+        report = wm.get_test_report()
+
+        # Map Google Sheets labels to task names from Konflux release flow spec
+        task_mapping = {
+            LABEL_TASK_OWNERSHIP: "take-ownership",
+            LABEL_TASK_BUGS_TO_VERIFY: "update-bug-list",
+            LABEL_TASK_IMAGE_CONSISTENCY_TEST: "image-consistency-check",
+            LABEL_TASK_NIGHTLY_BUILD_TEST: "analyze-candidate-build",
+            LABEL_TASK_SIGNED_BUILD_TEST: "analyze-promoted-build",
+            LABEL_TASK_CHECK_CVE_TRACKERS: "check-cve-tracker-bug",
+            LABEL_TASK_PUSH_TO_CDN: "push-to-cdn-staging",
+            LABEL_TASK_STAGE_TEST: "stage-testing",
+            LABEL_TASK_PAYLOAD_IMAGE_VERIFY: "image-signed-check",
+            LABEL_TASK_CHANGE_AD_STATUS: "change-advisory-status",
+        }
+
+        # Get overall status
+        overall_status = report.get_overall_status()
+
+        # Get all task statuses
+        tasks = {}
+        for label, task_name in task_mapping.items():
+            status = report.get_task_status(label)
+            tasks[task_name] = status if status else "Not Started"
+
+        result = {
+            "release": release,
+            "overall_status": overall_status if overall_status else "Green",
+            "tasks": tasks
+        }
+
+        return json.dumps(result, indent=2)
+
+    except Exception as e:
+        logger.error(f"Failed to get release status: {e}")
+        return json.dumps({
+            "error": str(e),
+            "release": release,
+            "overall_status": "Unknown",
+            "tasks": {}
         }, indent=2)
 
 
