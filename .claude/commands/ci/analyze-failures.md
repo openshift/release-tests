@@ -234,7 +234,7 @@ Follow these steps:
    omc logs <test-pod> -n <namespace>
 
    # 4. Check related events
-   omc get events -n <namespace> --sort-by='.lastTimestamp' | tail -20
+   omc get events -n <namespace> | tail -20
 
    # 5. If networking issue, check service/endpoints
    omc get svc -n <namespace>
