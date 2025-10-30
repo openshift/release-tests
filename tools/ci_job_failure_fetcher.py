@@ -16,9 +16,11 @@ import json
 import logging
 import os
 import re
+import shutil
 import sys
+import tarfile
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from xml.etree import ElementTree
 
 # Add parent directory to path to import from prow package
@@ -32,6 +34,9 @@ logger = logging.getLogger(__name__)
 MAX_FAILURES_FOR_AI = int(os.getenv('MAX_FAILURES_FOR_AI', '50'))  # Configurable via env var
 MAX_MESSAGE_LENGTH = 500  # Characters for error message
 MAX_DETAILS_LENGTH = 2000  # Characters for stack trace
+
+# Must-gather extraction configuration
+MUST_GATHER_EXTRACT_DIR = os.getenv('MUST_GATHER_EXTRACT_DIR', '/tmp')
 
 
 class DetailedJunitTestCase:
@@ -82,6 +87,56 @@ class DetailedJunitTestCase:
             "details": details[:MAX_DETAILS_LENGTH] + ("..." if len(details) > MAX_DETAILS_LENGTH else ""),
             "error_type": elem.attrib.get("type", "")
         }
+
+
+def extract_must_gather(must_gather_tar: bytes, job_run_id: str) -> Optional[str]:
+    """
+    Extract must-gather archive to configured directory.
+
+    Args:
+        must_gather_tar: The must-gather.tar file content as bytes
+        job_run_id: The Prow job run ID for unique directory naming
+
+    Returns:
+        Path to the extraction directory (e.g., /tmp/must-gather-{job_run_id}),
+        or None if extraction failed
+
+    Note:
+        Uses MUST_GATHER_EXTRACT_DIR environment variable (default: /tmp)
+        omc will automatically find the must-gather subdirectory
+    """
+    # Create extraction directory
+    extract_dir = f"{MUST_GATHER_EXTRACT_DIR}/must-gather-{job_run_id}"
+
+    try:
+        # Clean up existing directory if it exists
+        if os.path.exists(extract_dir):
+            logger.info(f"Removing existing must-gather directory: {extract_dir}")
+            shutil.rmtree(extract_dir)
+
+        # Create directory
+        os.makedirs(extract_dir, exist_ok=True)
+        logger.info(f"Created must-gather extraction directory: {extract_dir}")
+
+        # Write tar file to temp location
+        tar_path = f"{extract_dir}/must-gather.tar"
+        with open(tar_path, 'wb') as f:
+            f.write(must_gather_tar)
+
+        # Extract tar file
+        logger.info(f"Extracting must-gather archive to {extract_dir}")
+        with tarfile.open(tar_path, 'r') as tar:
+            tar.extractall(path=extract_dir)
+
+        # Remove the tar file after extraction
+        os.remove(tar_path)
+
+        logger.info(f"Successfully extracted must-gather to {extract_dir}")
+        return extract_dir
+
+    except Exception as e:
+        logger.error(f"Failed to extract must-gather: {e}")
+        return None
 
 
 class CIJobFailureFetcher:
@@ -319,6 +374,50 @@ class CIJobFailureFetcher:
         """Get the GCS web URL for the build log"""
         return f"https://{self._get_gcsweb_domain()}/gcs/{self.bucket}/logs/{self.job_name}/{self.job_run_id}/build-log.txt"
 
+    def setup_must_gather_analysis(self) -> Dict:
+        """
+        Download and extract must-gather for AI-powered debugging.
+
+        Returns:
+            Dictionary with must-gather extraction information
+        """
+        logger.info("Attempting to fetch must-gather archive")
+
+        try:
+            # Fetch must-gather archive
+            must_gather_tar = self.artifacts.get_must_gather()
+            logger.info(f"Successfully fetched must-gather archive ({len(must_gather_tar)} bytes)")
+
+            # Extract to configured directory
+            extract_path = extract_must_gather(must_gather_tar, self.job_run_id)
+
+            if extract_path:
+                return {
+                    'available': True,
+                    'must_gather_dir': extract_path,
+                    'extracted': True
+                }
+            else:
+                return {
+                    'available': False,
+                    'reason': 'Failed to extract must-gather archive',
+                    'must_gather_downloaded': True
+                }
+
+        except FileNotFoundError as e:
+            logger.warning(f"Must-gather not found: {e}")
+            return {
+                'available': False,
+                'reason': 'must-gather.tar not found in job artifacts',
+                'note': 'Job may not have a gather-must-gather step'
+            }
+        except Exception as e:
+            logger.error(f"Error during must-gather extraction: {e}")
+            return {
+                'available': False,
+                'reason': f'Error during extraction: {str(e)}'
+            }
+
 
 def main():
     """Main entry point for CLI usage"""
@@ -330,17 +429,26 @@ def main():
     )
 
     if len(sys.argv) < 2:
-        print("Usage: python ci_job_failure_fetcher.py <prow_deck_url>", file=sys.stderr)
+        print("Usage: python ci_job_failure_fetcher.py <prow_deck_url> [--setup-must-gather]", file=sys.stderr)
+        print("", file=sys.stderr)
+        print("Options:", file=sys.stderr)
+        print("  --setup-must-gather: Download and setup must-gather for omc analysis", file=sys.stderr)
         print("", file=sys.stderr)
         print("Environment variables:", file=sys.stderr)
         print("  GCS_CRED_FILE: Path to Google Cloud Storage credentials file (required)", file=sys.stderr)
         sys.exit(1)
 
     prow_url = sys.argv[1]
+    setup_must_gather_flag = '--setup-must-gather' in sys.argv
 
     try:
         fetcher = CIJobFailureFetcher(prow_url)
         results = fetcher.fetch_failures()
+
+        # Setup must-gather if requested
+        if setup_must_gather_flag:
+            must_gather_info = fetcher.setup_must_gather_analysis()
+            results['must_gather'] = must_gather_info
 
         # Output JSON to stdout for Claude Code to consume
         print(json.dumps(results, indent=2))
