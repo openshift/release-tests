@@ -58,6 +58,28 @@ class Artifacts():
         else:
             raise FileNotFoundError(f"build-log.txt not found")
 
+    def get_must_gather(self):
+        """
+        Fetch the must-gather.tar file from gather-must-gather step artifacts.
+
+        Returns:
+            bytes: The must-gather.tar file content
+
+        Raises:
+            FileNotFoundError: If must-gather.tar is not found in any artifact directory
+        """
+        # Search pattern: artifacts/*/gather-must-gather/artifacts/must-gather.tar
+        patterns = [r'.*/gather-must-gather/artifacts/must-gather\.tar']
+        blobs = self._gcs.get_files(self._root_dir, patterns)
+
+        if blobs:
+            logger.info(f"Found must-gather archive at: {blobs[0].name}")
+            return blobs[0].download_as_bytes()
+        else:
+            raise FileNotFoundError(
+                f"must-gather.tar not found in artifacts for job {self._job_name}/{self._job_run_id}"
+            )
+
     def generate_test_failures_summary(self):
         test_count = 0
         failed_tests = []

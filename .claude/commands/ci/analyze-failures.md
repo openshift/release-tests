@@ -13,11 +13,26 @@ Follow these steps:
    - Example: `https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1979765746749673472`
    - Extract: bucket (e.g., `qe-private-deck`), job_name, and job_run_id
 
-2. **Fetch test failures**: Use the Python helper script to fetch JUnit XML files and extract failure details
+2. **Fetch test failures and setup must-gather**: Use the Python helper script to fetch JUnit XML files and optionally download/extract must-gather for cluster analysis
    ```bash
-   python3 tools/ci_job_failure_fetcher.py <prow_deck_url>
+   python3 tools/ci_job_failure_fetcher.py <prow_deck_url> --setup-must-gather
    ```
-   This will output JSON with failure details including test names, error messages, and stack traces.
+   This will:
+   - Output JSON with failure details including test names, error messages, and stack traces
+   - Download must-gather.tar if available (from gather-must-gather step)
+   - Extract to configured directory (default: `/tmp/must-gather-{job_run_id}/`)
+   - Include `must_gather` field in JSON output with extraction status and path
+
+   **Configure omc**: If `must_gather.available` is true in JSON output, run:
+   ```bash
+   omc use {must_gather.must_gather_dir}
+   ```
+   Example: `omc use /tmp/must-gather-1983618134094909440`
+
+   **Note**: The `--setup-must-gather` flag is optional. If:
+   - must-gather.tar not found: Job may not have gather-must-gather step (skip cluster analysis in step 7)
+   - Extraction fails: Check logs and JSON output for error reason
+   - Extraction succeeds: Proceed to step 7 for cluster state analysis with omc
 
 3. **Extract Test Metadata** (for later use in Jira searches and code analysis):
    - **Case ID Extraction** (if openshift-tests-private tests detected):
@@ -151,7 +166,106 @@ Follow these steps:
      - `recommended_action`: fix test code, file product bug, or investigate further
    - **Important**: Only flag as automation issue if there's clear evidence in the code. When uncertain, default to product bug investigation.
 
-7. **Generate Summary**: Create a concise summary report with:
+7. **Cluster State Analysis with must-gather** (Optional - if must-gather is available):
+   - **Check Availability**: Look for `must_gather` field in the JSON output from step 2
+   - **If available = false**: Skip this step and note the reason in final report
+   - **If available = true**: Use omc commands to analyze cluster state and debug failures
+
+   **Supported omc Commands for Failure Analysis**:
+   ```bash
+   # View pods in all namespaces (check for CrashLoopBackOff, ImagePullBackOff, etc.)
+   omc get pods -A
+
+   # Check specific pod details
+   omc get pod <pod-name> -n <namespace> -o yaml
+   omc describe pod <pod-name> -n <namespace>
+
+   # Check pod logs for failed test resources
+   omc logs -n <namespace> <pod-name>
+   omc logs -n <namespace> <pod-name> --previous  # Previous container logs
+
+   # View events (shows root causes for resource failures)
+   omc get events -A
+   omc get events -n <namespace>
+
+   # Check node status
+   omc get nodes
+   omc describe node <node-name>
+
+   # View cluster operators status
+   omc get co
+   omc describe co <operator-name>
+
+   # Check deployments, replicasets, statefulsets
+   omc get deploy -A
+   omc get rs -A
+   omc get sts -A
+
+   # Check services, routes, endpoints
+   omc get svc -A
+   omc get route -A
+   omc get endpoints -A
+
+   # Check PVCs and storage
+   omc get pvc -A
+   omc describe pvc <pvc-name> -n <namespace>
+
+   # Check networking diagnostic events
+   omc get events -n openshift-network-diagnostics
+   ```
+
+   **Analysis Strategy for Failed Tests**:
+   1. **Identify test namespace**: Extract from failure details (e.g., test creates resources in specific namespace)
+   2. **Check test resources**: Use `omc get pods -n <test-namespace>` to see pod status
+   3. **Analyze pod failures**: Use `omc describe pod` and `omc logs` for failed pods
+   4. **Check events**: Use `omc get events -n <test-namespace>` to see what happened
+   5. **Verify dependencies**: Check if services, configmaps, secrets exist as expected
+   6. **Cluster health**: Check nodes, cluster operators for infrastructure issues
+
+   **Example Workflow for Failed Test Analysis**:
+   ```bash
+   # 1. Find pods related to failed test (e.g., test creates pods with specific labels)
+   omc get pods -A | grep <test-identifier>
+
+   # 2. Check pod status and events
+   omc describe pod <test-pod> -n <namespace>
+
+   # 3. Get pod logs to see actual error
+   omc logs <test-pod> -n <namespace>
+
+   # 4. Check related events
+   omc get events -n <namespace> --sort-by='.lastTimestamp' | tail -20
+
+   # 5. If networking issue, check service/endpoints
+   omc get svc -n <namespace>
+   omc get endpoints -n <namespace>
+   ```
+
+   **Include in Report**:
+   ```markdown
+   ### Cluster State Analysis (must-gather)
+
+   **Must-gather Status**: {available/not available - reason}
+
+   {if available:}
+   **Resources Analyzed for Failed Tests**:
+   - Test namespace: {namespace}
+   - Pods checked: {list of relevant pods and their status}
+   - Key findings: {what omc commands revealed}
+
+   **Root Cause Evidence from Cluster**:
+   - {Finding 1 from omc - e.g., "Pod test-xyz-123 in CrashLoopBackOff, logs show ImagePullBackOff"}
+   - {Finding 2 - e.g., "Events show 'Failed to pull image: unauthorized'"}
+   - {Finding 3 - e.g., "Service endpoint missing for test workload"}
+
+   **Correlation with Test Failures**:
+   - {How cluster resource state explains the test failure}
+
+   **Recommended Actions**:
+   - {Actions based on cluster analysis - e.g., "Fix image pull secret", "Increase resource limits"}
+   ```
+
+8. **Generate Summary**: Create a concise summary report with:
    - Overall test results (total, passed, failed, skipped)
    - If truncated, clearly state: "Analyzed X representative failures out of Y total failures across Z unique patterns"
    - Top failure patterns with occurrence counts and affected test examples
@@ -160,11 +274,17 @@ Follow these steps:
    - Critical issues that need immediate attention
    - Links to GCS artifacts and detailed logs
 
-8. **Present Results**: Show the analysis in a well-formatted markdown report
+9. **Present Results**: Show the analysis in a well-formatted markdown report
    - Use proper line breaks between sections (add blank lines)
    - Keep output concise and readable
    - Use bullet points instead of tables when possible
    - Ensure each field is on its own line with proper spacing
+
+10. **Cleanup must-gather** (if must-gather was downloaded):
+   - After completing the analysis, clean up the must-gather directory to free disk space
+   - Use the path from `must_gather.must_gather_dir` field in JSON output
+   - Example: `rm -rf /tmp/must-gather-{job_run_id}/`
+   - **IMPORTANT**: Always include the cleanup command in your final report so the user can clean up manually if needed
 
 Important notes:
 - **Dependencies**: The OAR package must be installed for this command to work
