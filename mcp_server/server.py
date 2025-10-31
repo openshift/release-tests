@@ -213,7 +213,7 @@ def oar_image_signed_check(release: str) -> str:
 # ============================================================================
 
 @mcp.tool()
-def oar_image_consistency_check(release: str, build_number: Optional[str] = None) -> str:
+def oar_image_consistency_check(release: str, build_number: str = None) -> str:
     """
     Check status of image consistency check or start new check.
 
@@ -228,7 +228,7 @@ def oar_image_consistency_check(release: str, build_number: Optional[str] = None
         Job status information or new job details
     """
     args = ["-r", release, "image-consistency-check"]
-    if build_number:
+    if build_number is not None and build_number != "":
         args.extend(["-n", build_number])
 
     result = run_oar_command(args)
@@ -236,7 +236,7 @@ def oar_image_consistency_check(release: str, build_number: Optional[str] = None
 
 
 @mcp.tool()
-def oar_stage_testing(release: str, build_number: Optional[str] = None) -> str:
+def oar_stage_testing(release: str, build_number: str = None) -> str:
     """
     Check status of stage testing or start new tests.
 
@@ -251,7 +251,7 @@ def oar_stage_testing(release: str, build_number: Optional[str] = None) -> str:
         Stage testing job status or new job details
     """
     args = ["-r", release, "stage-testing"]
-    if build_number:
+    if build_number is not None and build_number != "":
         args.extend(["-n", build_number])
 
     result = run_oar_command(args)
