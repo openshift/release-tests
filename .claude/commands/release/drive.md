@@ -95,15 +95,21 @@ elif "status is changed to [In Progress]" in result:
 ### 4. Special Cases (M1 Limitations)
 
 **Candidate/Promoted Build Analysis:**
-- These tasks (B11/B12 in Google Sheets) always show "In Progress"
+- These tasks (B11/B12 in Google Sheets) always show "In Progress" by default
 - You MUST check test result files from GitHub to determine actual status:
   ```bash
-  git show record:_releases/ocp-test-result-{build}-amd64.json
+  git show origin/record:_releases/ocp-test-result-{build}-amd64.json
   ```
-- If `accepted == true`: Continue pipeline
+- If `accepted == true`:
+  - Mark task as "Pass" using `oar_update_task_status(release, task_name, "Pass")`
+  - Continue pipeline
 - If `accepted == false`: Trigger `/ci:analyze-build-test-results {build}`
-  - If AI recommends ACCEPT: Continue pipeline
-  - If AI recommends REJECT: Report blocking issues, STOP pipeline, ask user to manually add bugs to Critical Issues table
+  - If AI recommends ACCEPT:
+    - Mark task as "Pass" using `oar_update_task_status(release, task_name, "Pass")`
+    - Continue pipeline
+  - If AI recommends REJECT:
+    - Mark task as "Fail" using `oar_update_task_status(release, task_name, "Fail")`
+    - Report blocking issues, STOP pipeline, ask user to manually add bugs to Critical Issues table
 
 **Async Task Monitoring:**
 - Re-execute the same MCP tool to check status

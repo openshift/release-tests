@@ -503,8 +503,9 @@ IF file.aggregated != true:
 ```python
 IF file.accepted == true:
     Log: "Candidate build tests passed - all tests successful"
+    # Update Google Sheets task status
+    oar_update_task_status(release, "analyze-candidate-build", "Pass")
     Continue to next task
-    # Note: B11 (Nightly build test) remains "In Progress" in Google Sheets
 
 ELSE IF file.accepted == false:
     Trigger: /ci:analyze-build-test-results {candidate_build} --arch amd64
@@ -512,13 +513,16 @@ ELSE IF file.accepted == false:
 
     IF recommendation == ACCEPT:
         Log: "Candidate build failures are waivable - continuing"
+        # Update Google Sheets task status
+        oar_update_task_status(release, "analyze-candidate-build", "Pass")
         Continue to next task
-        # Note: B11 remains "In Progress" in Google Sheets
 
     ELSE IF recommendation == REJECT:
         Report blocking issues to user
         Ask user to manually add critical bugs to Google Sheets if needed
-        Update overall status to "Red" (manual or via notification)
+        # Update Google Sheets task status to Fail
+        oar_update_task_status(release, "analyze-candidate-build", "Fail")
+        Update overall status to "Red" (automatically updated by oar_update_task_status)
         STOP pipeline - manual intervention required
 ```
 
@@ -529,11 +533,12 @@ OR
 (accepted == false AND AI recommendation == ACCEPT)
 ```
 
-**Google Sheets Behavior (M1):**
-- B11 (Nightly build test) stays "In Progress" throughout the flow
-- Only updated to "Pass" by `change-advisory-status` at the end
-- If REJECT: Overall status → "Red", critical bugs added manually
-- Analysis results tracked in Claude Code session, NOT in Google Sheets
+**Google Sheets Behavior (M1 with oar_update_task_status):**
+- B11 (Nightly build test) can now be updated by AI using `oar_update_task_status` MCP tool
+- AI marks as "Pass" when tests pass or waivable failures detected
+- AI marks as "Fail" when blocking failures detected
+- If REJECT: Overall status → "Red" (automatically updated), critical bugs added manually
+- Analysis results tracked via `oar_update_task_status` updates to Google Sheets
 
 **Expected Duration:** 2-5 minutes (if analysis needed)
 
@@ -591,8 +596,9 @@ When /release:drive invoked:
 ```python
 IF file.accepted == true:
     Log: "Promoted build tests passed - all tests successful"
+    # Update Google Sheets task status
+    oar_update_task_status(release, "analyze-promoted-build", "Pass")
     Proceed to trigger async tasks (gate check passed)
-    # Note: B12 (Signed build test) remains "In Progress" in Google Sheets
     RETURN
 
 ELSE IF file.accepted == false:
@@ -601,14 +607,17 @@ ELSE IF file.accepted == false:
 
     IF recommendation == ACCEPT:
         Log: "Promoted build failures are waivable - proceeding to async tasks"
+        # Update Google Sheets task status
+        oar_update_task_status(release, "analyze-promoted-build", "Pass")
         Proceed to trigger async tasks (gate check passed)
-        # Note: B12 remains "In Progress" in Google Sheets
         RETURN
 
     ELSE IF recommendation == REJECT:
         Report blocking issues to user with failure details
         Ask user to manually add critical bugs to Google Sheets Critical Issues table
-        Update overall status to "Red"
+        # Update Google Sheets task status to Fail
+        oar_update_task_status(release, "analyze-promoted-build", "Fail")
+        Update overall status to "Red" (automatically updated by oar_update_task_status)
         Notify owner via Slack with analysis results
         BLOCK at gate check
         STOP pipeline - manual intervention required
@@ -621,14 +630,15 @@ OR
 (accepted == false AND AI recommendation == ACCEPT)
 ```
 
-**Google Sheets Behavior (M1):**
-- B12 (Signed build test) stays "In Progress" throughout the flow
-- Only updated to "Pass" by `change-advisory-status` at the end
+**Google Sheets Behavior (M1 with oar_update_task_status):**
+- B12 (Signed build test) can now be updated by AI using `oar_update_task_status` MCP tool
+- AI marks as "Pass" when tests pass or waivable failures detected
+- AI marks as "Fail" when blocking failures detected
 - If REJECT:
-  - Overall status → "Red"
+  - Overall status → "Red" (automatically updated)
   - QE manually adds critical bugs to Critical Issues table
   - Pipeline stops
-- Analysis results tracked in Claude Code session, NOT in Google Sheets
+- Analysis results tracked via `oar_update_task_status` updates to Google Sheets
 
 **Expected Duration:**
 - File creation: 10-120 minutes after promotion (user re-invokes /release:drive to check)
