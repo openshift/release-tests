@@ -54,23 +54,22 @@ check-rhcos-security-alerts (Konflux only - checks blocking security alerts)
     ├─→ push-to-cdn-staging (async - runs independently in parallel)
     └─→ [WAIT FOR BUILD PROMOTION - check API until phase == "Accepted"]
             ↓
-        [WAIT FOR TEST RESULT FILE - check GitHub until file exists]
-            ↓
-        [WAIT FOR AGGREGATION - check until aggregated == true]
-            ↓
-        analyze-promoted-build (conditionally - only if accepted == false)
-            ↓
-        [GATE CHECK - promoted build must be acceptable]
-            ↓
-            ├─→ image-consistency-check (async)
-            └─→ stage-testing (async)
-            ↓
-        [WAIT FOR ALL 3 ASYNC TASKS TO COMPLETE]
-        (push-to-cdn-staging, image-consistency-check, stage-testing)
-            ↓
-        image-signed-check
-            ↓
-        change-advisory-status (final approval)
+            ├─→ image-consistency-check (async - triggered immediately after promotion)
+            ├─→ stage-testing (async - triggered immediately after promotion)
+            └─→ [WAIT FOR TEST RESULT FILE - check GitHub until file exists]
+                    ↓
+                [WAIT FOR AGGREGATION - check until aggregated == true]
+                    ↓
+                analyze-promoted-build (conditionally - only if accepted == false)
+                    ↓
+                [GATE CHECK - promoted build must be acceptable]
+                    ↓
+                [WAIT FOR ALL 3 ASYNC TASKS TO COMPLETE]
+                (push-to-cdn-staging, image-consistency-check, stage-testing)
+                    ↓
+                image-signed-check
+                    ↓
+                change-advisory-status (final approval)
 
 [PARALLEL TRACK - can start immediately]
 analyze-candidate-build (conditionally - only if accepted == false)
@@ -80,12 +79,14 @@ analyze-candidate-build (conditionally - only if accepted == false)
 - **Sequential:** Most tasks run one after another
 - **Parallel Execution:**
   - `analyze-candidate-build` runs independently (tests already completed when flow starts)
-  - `push-to-cdn-staging` starts immediately after check-cve-tracker-bug (runs while waiting for build promotion)
-  - 2 async tasks (image-consistency-check, stage-testing) run simultaneously after gate check
-- **Build Promotion Checkpoint:** Critical decision point before proceeding
-- **Test Result Checkpoints:** Must wait for file existence and aggregation
-- **Gate Check:** Promoted build must have acceptable test results
-- **Final Sync Point:** image-signed-check waits for all 3 async tasks (push-to-cdn-staging, image-consistency-check, stage-testing)
+  - `push-to-cdn-staging` starts immediately after check-rhcos-security-alerts (runs while waiting for build promotion)
+  - **ENHANCED:** 2 async tasks (image-consistency-check, stage-testing) triggered immediately after build promotion is detected, running in parallel with test result analysis
+- **Build Promotion Checkpoint:** Critical decision point - once detected, async tasks trigger immediately
+- **Test Result Checkpoints:** Must wait for file existence and aggregation (runs in parallel with async tasks)
+- **Gate Check:** Promoted build must have acceptable test results before proceeding to final approval
+- **Final Sync Point:** image-signed-check waits for BOTH:
+  1. All 3 async tasks complete (push-to-cdn-staging, image-consistency-check, stage-testing)
+  2. Gate check passes (promoted build analysis acceptable)
 - **Default Architecture:** amd64 (x86_64) unless specified otherwise
 
 ## Build Promotion Checkpoint
@@ -210,24 +211,38 @@ The slash command provides:
 
 ### Gate Check Logic
 
-**Condition to PROCEED:**
+**ENHANCED LOGIC (Early Async Task Triggering):**
+
+The gate check has been optimized to trigger async tasks as soon as the stable build is promoted, without waiting for blocking tests analysis to complete.
+
+**Condition to Trigger Async Tasks:**
+```
+Build promotion detected (phase == "Accepted")
+```
+
+**Rationale:** Once the stable build is accepted by ART and promoted to the release stream, we can immediately start parallel async tasks (image-consistency-check, stage-testing) to save time. The blocking tests analysis happens independently and doesn't need to gate these operations.
+
+**Condition to PROCEED to Final Approval:**
 ```
 promoted_build_analysis == "Pass"
 (either accepted == true OR AI recommendation == ACCEPT)
+AND
+all 3 async tasks complete successfully
 ```
 
 **Note:** Candidate build analysis runs independently and doesn't block the gate check. It's informational for context.
 
-**If gate check FAILS:**
+**If promoted build test analysis FAILS:**
 1. Update overall status to "Red"
 2. Mark analyze-promoted-build task as "Fail"
 3. Notify owner via Slack with failure details from test analysis
 4. STOP pipeline - manual intervention required
+5. **Async tasks may still be running** - they will complete but won't proceed to final approval
 
-**If gate check PASSES:**
+**If promoted build test analysis PASSES:**
 1. Mark analyze-promoted-build task as "Pass"
-2. Trigger 3 async tasks in parallel
-3. Continue pipeline
+2. **Async tasks already triggered** - wait for completion
+3. Continue to final approval when all tasks complete
 
 ## Task Definitions
 
@@ -636,7 +651,9 @@ OR
 - `release`: Z-stream version
 - `build_number`: Optional Jenkins build number (for status check)
 
-**Prerequisites:** Gate check passed
+**Prerequisites:**
+- Build promotion detected (phase == "Accepted")
+- **CRITICAL (Konflux flow only):** Shipment MR stage-release pipeline must succeed first
 
 **Execution Phases:**
 
@@ -644,12 +661,38 @@ OR
 ```python
 Execute: oar_image_consistency_check(release)
 
+# Possible outcomes:
+
+# Success - Jenkins job triggered:
 stdout contains: "task [Image consistency check] status is changed to [In Progress]"
 AND
 Capture Jenkins build number from stdout pattern
+
+# OR
+
+# Blocked - Stage-release pipeline not succeeded (Konflux flow only):
+# The underlying code checks ShipmentData.check_component_image_health()
+# which raises ShipmentDataException: "Stage release pipeline is not completed yet"
+stderr/stdout contains error message or exception
+
+IF stage-release pipeline error detected:
+    Report to user: """
+    BLOCKED: Shipment MR stage-release pipeline has not succeeded yet.
+
+    Shipment MR: {metadata.shipment_mr}
+
+    ACTION REQUIRED:
+    1. Check shipment MR pipeline status (look for 'stage-release-triggers' stage)
+    2. If stage-release failed, work with ART team to fix the issue
+    3. Wait for stage-release pipeline to complete successfully
+    4. Re-invoke /release:drive to retry triggering this task
+
+    Pipeline will wait. This task cannot proceed until stage-release succeeds.
+    """
+    RETURN (do not mark as failed - this is a prerequisite wait state)
 ```
 
-**Phase 2 - Check Status:**
+**Phase 2 - Check Status (when build_number available):**
 ```python
 When user invokes /release:drive:
     Execute: oar_image_consistency_check(release, build_number={captured_build_number})
@@ -662,9 +705,14 @@ Success: stdout contains: "task [Image consistency check] status is changed to [
 Failure: stdout contains: "task [Image consistency check] status is changed to [Fail]"
 ```
 
-**Expected Duration:** 90-120 minutes (user should check status every 5-10 minutes)
+**Expected Duration:**
+- Stage-release pipeline wait: Variable (requires ART team intervention if failed)
+- Jenkins job execution: 90-120 minutes after trigger succeeds
+- User should check status every 10-15 minutes
 
-**Failure Handling:** If fails, mark overall status "Red", notify owner
+**Failure Handling:**
+- Stage-release pipeline not ready: Report to user, ask to work with ART, wait for user to re-invoke
+- Jenkins job failure: Mark overall status "Red", notify owner
 
 ---
 
@@ -678,7 +726,9 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 - `release`: Z-stream version
 - `build_number`: Optional Jenkins build number (for status check)
 
-**Prerequisites:** Gate check passed
+**Prerequisites:**
+- Build promotion detected (phase == "Accepted")
+- **CRITICAL (Konflux flow only):** Shipment MR stage-release pipeline must succeed first
 
 **Execution Phases:**
 
@@ -686,12 +736,38 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 ```python
 Execute: oar_stage_testing(release)
 
+# Possible outcomes:
+
+# Success - Jenkins job triggered:
 stdout contains: "task [Stage testing] status is changed to [In Progress]"
 AND
 Capture Jenkins build number from stdout pattern
+
+# OR
+
+# Blocked - Stage-release pipeline not succeeded (Konflux flow only):
+# The MCP tool will check stage-release status directly when invoked
+stderr/stdout contains error message indicating stage-release not complete
+Example: "MR stage-release pipeline has not succeeded yet"
+
+IF stage-release pipeline error detected:
+    Report to user: """
+    BLOCKED: Shipment MR stage-release pipeline has not succeeded yet.
+
+    Shipment MR: {metadata.shipment_mr}
+
+    ACTION REQUIRED:
+    1. Check shipment MR pipeline status (look for 'stage-release-triggers' stage)
+    2. If stage-release failed, work with ART team to fix the issue
+    3. Wait for stage-release pipeline to complete successfully
+    4. Re-invoke /release:drive to retry triggering this task
+
+    Pipeline will wait. This task cannot proceed until stage-release succeeds.
+    """
+    RETURN (do not mark as failed - this is a prerequisite wait state)
 ```
 
-**Phase 2 - Check Status:**
+**Phase 2 - Check Status (when build_number available):**
 ```python
 When user invokes /release:drive:
     Execute: oar_stage_testing(release, build_number={captured_build_number})
@@ -704,9 +780,14 @@ Success: stdout contains: "task [Stage testing] status is changed to [Pass]"
 Failure: stdout contains: "task [Stage testing] status is changed to [Fail]"
 ```
 
-**Expected Duration:** 2-4 hours (user should check status every 10-15 minutes)
+**Expected Duration:**
+- Stage-release pipeline wait: Variable (requires ART team intervention if failed)
+- Jenkins job execution: 2-4 hours after trigger succeeds
+- User should check status every 10-15 minutes
 
-**Failure Handling:** If fails, mark overall status "Red", notify owner
+**Failure Handling:**
+- Stage-release pipeline not ready: Report to user, ask to work with ART, wait for user to re-invoke
+- Jenkins job failure: Mark overall status "Red", notify owner
 
 ---
 
@@ -869,30 +950,88 @@ WHEN user re-invokes /release:drive:
         STOP pipeline
 ```
 
-**For Parallel Tasks After Gate Check:**
+**For Parallel Tasks After Build Promotion (ENHANCED):**
 ```
-Trigger 2 tasks simultaneously:
-    - image-consistency-check
-    - stage-testing
-
-Report to user: "2 async tasks triggered (image-consistency-check, stage-testing), check status in 10-15 minutes"
-
-When user re-invokes /release:drive:
-    Check status of all 3 async tasks:
-        - push-to-cdn-staging (triggered earlier, may already be complete)
+WHEN build promotion detected (phase == "Accepted"):
+    Trigger 2 tasks immediately:
         - image-consistency-check
         - stage-testing
 
-    IF all 3 tasks status == "Pass":
-        Proceed to image-signed-check
+    # Handle stage-release pipeline dependency (Konflux flow only)
+    IF either task fails due to stage-release pipeline not ready:
+        Report to user: """
+        Build promoted! Attempting to trigger async tasks...
 
-    ELSE IF any task status == "Fail":
-        STOP pipeline
-        Notify owner
+        BLOCKED: Shipment MR stage-release pipeline has not succeeded yet.
 
-    ELSE:
-        Report to user: "Tasks still running, check again in 10-15 minutes"
-        List which tasks are still in progress
+        Shipment MR: {metadata.shipment_mr}
+
+        ACTION REQUIRED:
+        1. Check shipment MR pipeline status (look for 'stage-release-triggers' stage)
+        2. If stage-release failed, work with ART team to fix the issue
+        3. Wait for stage-release pipeline to complete successfully
+        4. Re-invoke /release:drive to retry triggering async tasks
+
+        Tests are still running/aggregating in parallel. Pipeline will wait for both:
+        - Stage-release pipeline to succeed
+        - Test result analysis to complete
+        """
+        RETURN (tasks not triggered yet, will retry on next invocation)
+
+    # Both tasks triggered successfully
+    Report to user: "Build promoted! 2 async tasks triggered (image-consistency-check, stage-testing). Tests are still running/aggregating in parallel, check status in 10-15 minutes"
+
+    THEN proceed to check test results in parallel:
+        - Wait for test result file
+        - Wait for aggregation
+        - Analyze if needed
+
+When user re-invokes /release:drive:
+    # First, retry triggering any tasks that failed due to stage-release not ready
+    IF image-consistency-check or stage-testing not triggered yet:
+        Retry trigger (stage-release may have completed since last attempt)
+        IF still blocked:
+            Report same blocking message, RETURN
+
+    # Then check BOTH conditions for final approval
+
+    1. Test analysis status:
+        IF test result file not created yet:
+            Report: "Tests still running, async tasks continue in background"
+            RETURN
+
+        IF aggregated != true:
+            Report: "Tests still aggregating, async tasks continue in background"
+            RETURN
+
+        IF accepted == true OR AI recommendation == ACCEPT:
+            Gate check PASSED
+        ELSE:
+            Gate check FAILED
+            Update overall status to "Red"
+            Report: "Promoted build has blocking failures - async tasks may still complete but pipeline stopped"
+            STOP pipeline
+
+    2. Async task status:
+        Check all 3 tasks:
+            - push-to-cdn-staging (triggered earlier, may already be complete)
+            - image-consistency-check
+            - stage-testing
+
+        IF any task status == "Fail":
+            STOP pipeline
+            Notify owner
+
+        IF any task status == "In Progress":
+            Report to user: "Tasks still running, check again in 10-15 minutes"
+            List which tasks are still in progress
+            RETURN
+
+    3. Final check:
+        IF gate check PASSED AND all 3 async tasks == "Pass":
+            Proceed to image-signed-check
+        ELSE:
+            Report current status and wait
 ```
 
 ### 3. Error Handling
@@ -982,53 +1121,16 @@ ELSE:
     # Parse recommendation and mark task accordingly
 ```
 
-**Step 6: Check Build Promotion**
+**Step 6: Check Build Promotion and Trigger Async Tasks (ENHANCED)**
 ```python
 response = fetch("https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.1")
 IF response.phase != "Accepted":
     Report to user: "Build not yet promoted (current phase: {response.phase}), check again in 30 minutes"
     RETURN
-```
 
-**User re-invokes `/release:drive 4.20.1` after 30 minutes...**
+# Build promoted! Trigger async tasks immediately
+Report to user: "Build promoted (phase: Accepted)! Triggering async tasks now..."
 
-**Step 7: Check Promoted Build Test Results**
-```python
-# Checkpoint 1: File exists from branch record
-IF not file_exists(f"_releases/ocp-test-result-4.20.1-amd64.json"):
-    Report to user: "Test result file not yet created, check again in 10 minutes"
-    RETURN
-
-# Checkpoint 2: Aggregation complete
-result_file = fetch_github(f"_releases/ocp-test-result-4.20.1-amd64.json")
-
-IF 'aggregated' not in result_file:
-    Report to user: "Tests still running, aggregation not started. Check again in 10 minutes"
-    RETURN
-
-IF result_file.aggregated != true:
-    Report to user: "Tests still aggregating, check again in 10 minutes"
-    RETURN
-
-# Checkpoint 3: Check acceptance (now we know aggregated == true)
-IF result_file.accepted == true:
-    Mark analyze-promoted-build as "Pass"
-    Proceed to gate check
-ELSE:
-    Execute: /ci:analyze-build-test-results 4.20.1
-    IF recommendation == ACCEPT:
-        Mark analyze-promoted-build as "Pass"
-        Proceed to gate check
-    ELSE:
-        Mark analyze-promoted-build as "Fail"
-        Report to user: "Promoted build has blocking test failures - manual intervention required"
-        STOP pipeline
-```
-
-**Step 8: Trigger Remaining Async Tasks**
-```python
-# Gate check passed - trigger remaining 2 async tasks
-# Note: push-to-cdn-staging was already triggered in Step 4
 oar_image_consistency_check(release="4.20.1")
 oar_stage_testing(release="4.20.1")
 
@@ -1036,33 +1138,88 @@ oar_stage_testing(release="4.20.1")
 consistency_build = parse_build_number(stdout)
 stage_build = parse_build_number(stdout)
 
-Report to user: "2 async tasks triggered (image-consistency-check, stage-testing). Check status in 10-15 minutes."
+Report to user: """
+2 async tasks triggered:
+- image-consistency-check (build #{consistency_build})
+- stage-testing (build #{stage_build})
+
+These tasks are now running in parallel with test result analysis.
+Check status in 10-15 minutes.
+"""
 RETURN
 ```
 
-**User re-invokes `/release:drive 4.20.1` periodically...**
+**User re-invokes `/release:drive 4.20.1` after 10-15 minutes...**
 
-**Step 9: Check Async Task Status**
+**Step 7: Check Async Tasks and Test Results in Parallel (ENHANCED)**
 ```python
-# Check all 3 tasks
+# First check async task status
 oar_push_to_cdn_staging(release="4.20.1")  # Check status
 oar_image_consistency_check(release="4.20.1", build_number=consistency_build)
 oar_stage_testing(release="4.20.1", build_number=stage_build)
 
-IF any task == "Fail":
-    Report to user: "Task failed - manual intervention required"
-    STOP pipeline
-ELSE IF any task == "In Progress":
-    Report to user: "Tasks still running, check again in 10-15 minutes"
+async_tasks_status = {
+    "push-to-cdn-staging": parse_status(stdout),
+    "image-consistency-check": parse_status(stdout),
+    "stage-testing": parse_status(stdout)
+}
+
+# Then check test result analysis
+# Checkpoint 1: File exists from branch record
+IF not file_exists(f"_releases/ocp-test-result-4.20.1-amd64.json"):
+    Report to user: f"Test result file not yet created. Async tasks status: {async_tasks_status}. Check again in 10 minutes"
     RETURN
+
+# Checkpoint 2: Aggregation complete
+result_file = fetch_github(f"_releases/ocp-test-result-4.20.1-amd64.json")
+
+IF 'aggregated' not in result_file:
+    Report to user: f"Tests still running, aggregation not started. Async tasks status: {async_tasks_status}. Check again in 10 minutes"
+    RETURN
+
+IF result_file.aggregated != true:
+    Report to user: f"Tests still aggregating. Async tasks status: {async_tasks_status}. Check again in 10 minutes"
+    RETURN
+
+# Checkpoint 3: Check acceptance (now we know aggregated == true)
+gate_check_passed = False
+
+IF result_file.accepted == true:
+    gate_check_passed = True
+    Report: "Promoted build tests passed - all tests successful"
 ELSE:
-    # All tasks passed
-    Proceed to final tasks
+    Execute: /ci:analyze-build-test-results 4.20.1
+    IF recommendation == ACCEPT:
+        gate_check_passed = True
+        Report: "Promoted build failures are waivable - gate check passed"
+    ELSE:
+        Report to user: f"""
+        GATE CHECK FAILED: Promoted build has blocking test failures.
+        Async tasks status: {async_tasks_status}
+        Async tasks may still complete but pipeline cannot proceed to final approval.
+        Manual intervention required.
+        """
+        STOP pipeline
+
+# Checkpoint 4: Wait for all async tasks
+IF any task in async_tasks_status == "Fail":
+    Report to user: "One or more async tasks failed - manual intervention required"
+    STOP pipeline
+
+IF any task in async_tasks_status == "In Progress":
+    Report to user: f"Gate check passed! Waiting for async tasks to complete. Status: {async_tasks_status}. Check again in 10-15 minutes"
+    RETURN
+
+# All conditions met!
+Report to user: "Gate check passed and all async tasks completed successfully!"
+Proceed to final tasks
 ```
 
-**Step 10: Final Tasks**
+**User may need to re-invoke `/release:drive 4.20.1` multiple times until all async tasks complete...**
+
+**Step 8: Final Tasks**
 ```python
-# All async tasks passed
+# All async tasks passed and gate check passed
 oar_image_signed_check(release="4.20.1")
 oar_change_advisory_status(release="4.20.1")
 
@@ -1071,7 +1228,7 @@ Report to user: "Release 4.20.1 completed successfully!"
 notify_slack(message="Release 4.20.1 completed successfully!")
 ```
 
-## AI Orchestrator Decision Flow
+## AI Orchestrator Decision Flow (ENHANCED)
 
 ```
 START
@@ -1083,24 +1240,43 @@ Identify next pending task
 Check prerequisites satisfied? ──NO──→ Report to user, RETURN
   ↓ YES
   ↓
+Is this build promotion checkpoint? ──YES──→ Check promotion status (phase == "Accepted")?
+  ↓ NO                                        ↓ NO → Report to user, RETURN
+  ↓                                           ↓ YES
+  ↓                                       TRIGGER async tasks immediately:
+  ↓                                         - image-consistency-check
+  ↓                                         - stage-testing
+  ↓                                           ↓
+  ↓                                       Report to user, RETURN (parallel execution started)
+  ↓                                           ↓
+  ↓←──────────────────────────────────────────┘
+  ↓
 Is this a test analysis task? ──YES──→ Check test result file exists?
-  ↓ NO                                   ↓ NO → Report to user, RETURN
+  ↓ NO                                   ↓ NO → Report async status, RETURN
   ↓                                      ↓ YES
+  ↓                                  Check async task status in parallel
+  ↓                                      ↓
   ↓                                  aggregated == true?
-  ↓                                      ↓ NO → Report to user, RETURN
+  ↓                                      ↓ NO → Report async status, RETURN
   ↓                                      ↓ YES
   ↓                                  accepted == true? ──YES──→ Mark "Pass"
-  ↓                                      ↓ NO
+  ↓                                      ↓ NO                      ↓
   ↓                                  Trigger /ci:analyze-build-test-results
-  ↓                                      ↓
-  ↓                                  Parse AI recommendation
-  ↓                                      ↓
-  ↓                              ACCEPT → Mark "Pass"
+  ↓                                      ↓                          ↓
+  ↓                                  Parse AI recommendation       ↓
+  ↓                                      ↓                          ↓
+  ↓                              ACCEPT → Mark "Pass" ──────────────┘
   ↓                              REJECT → Mark "Fail", STOP
   ↓                                      ↓
   ↓←─────────────────────────────────────┘
   ↓
-Execute task via MCP
+Are there async tasks in progress? ──YES──→ Report status to user, RETURN
+  ↓ NO (all 3 async tasks passed)
+  ↓
+Is gate check passed? ──NO──→ STOP (blocking test failures)
+  ↓ YES
+  ↓
+Execute next task via MCP
   ↓
 Parse stdout for status
   ↓
@@ -1110,9 +1286,6 @@ Update state
   ↓
 More tasks remaining? ──NO──→ Mark overall "Green", DONE
   ↓ YES
-  ↓
-Are there async tasks in progress? ──YES──→ Report to user, RETURN
-  ↓ NO
 Loop back to retrieve state
 ```
 
@@ -1187,6 +1360,56 @@ Loop back to retrieve state
 **Resolution:**
 - Restart MCP server: `cd mcp_server && python3 server.py`
 - Check firewall/network settings
+
+### Issue: Stage-Release Pipeline Not Succeeded (Konflux Flow Only)
+
+**Symptom:**
+- image-consistency-check or stage-testing fails to trigger
+- Error message: "Stage release pipeline is not completed yet" or "MR stage-release pipeline has not succeeded yet"
+
+**Diagnosis:**
+1. Check shipment MR pipeline status:
+   - Get shipment MR URL from `oar_get_release_metadata(release).shipment_mr`
+   - Open MR in browser
+   - Navigate to Pipelines tab
+   - Look for 'stage-release-triggers' stage status
+
+2. Check for failure reasons:
+   - If stage failed: Review pipeline logs for error details
+   - If stage pending: Check if pipeline is still running
+   - If stage skipped: Check MR approval/merge status
+
+**Common Causes:**
+- Advisory creation failed in stage environment
+- Shipment YAML validation errors
+- GitLab runner infrastructure issues
+- Permission issues accessing Errata Tool or other services
+
+**Resolution:**
+
+**If stage-release failed:**
+1. Review pipeline failure logs
+2. Identify root cause (advisory creation, YAML errors, etc.)
+3. Work with ART team to fix the issue:
+   - For advisory issues: Contact ART team via Slack
+   - For YAML issues: Fix in shipment MR and push update
+   - For infrastructure: Escalate to GitLab/platform team
+4. Retry pipeline once issue is fixed
+5. Once stage-release succeeds, re-invoke `/release:drive` to trigger async tasks
+
+**If stage-release still running:**
+- Wait for pipeline to complete (typical: 10-30 minutes)
+- Monitor progress in GitLab UI
+- Re-invoke `/release:drive` periodically to check status
+
+**Manual Workaround (if stage-release cannot be fixed):**
+- Not recommended - stage-release must succeed for proper release
+- Contact ART team for alternative approaches
+
+**Prevention:**
+- Ensure shipment YAML files are validated before MR creation
+- Verify all required advisories exist before triggering pipeline
+- Monitor ART team notifications for known issues
 
 ## References
 
