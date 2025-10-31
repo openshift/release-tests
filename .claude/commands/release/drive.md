@@ -54,15 +54,21 @@ Based on task status, identify which phase the release is in:
 - Check Release Controller API for promotion status
 - Report to user and ask them to re-invoke `/release:drive` later
 
-**Phase 3: Promoted Build Test Evaluation** (if promoted but tests not analyzed)
-- Wait for test result file creation
-- Wait for test aggregation
-- Analyze test results (if accepted == false)
-- Perform gate check
+**Phase 3: Async Task Triggering and Test Evaluation** (ENHANCED - if promoted)
+- **TRIGGER async tasks immediately** after promotion detected:
+  - image-consistency-check
+  - stage-testing
+- In parallel with async tasks:
+  - Wait for test result file creation
+  - Wait for test aggregation
+  - Analyze test results (if accepted == false)
+  - Perform gate check
 
-**Phase 4: Async Task Execution** (if gate passed)
-- Trigger image-consistency-check and stage-testing
-- Monitor all 3 async tasks (including push-to-cdn-staging from Phase 1)
+**Phase 4: Final Sync Point** (if gate passed and async tasks complete)
+- Wait for all 3 async tasks to complete:
+  - push-to-cdn-staging (from Phase 1)
+  - image-consistency-check (from Phase 3)
+  - stage-testing (from Phase 3)
 
 **Phase 5: Final Approval** (if all async tasks passed)
 - Run image-signed-check
@@ -117,14 +123,19 @@ if phase != "Accepted":
     RETURN
 ```
 
-### Gate Check (Critical)
+### Gate Check (Critical - ENHANCED)
 ```python
-# After promoted build test analysis
+# ENHANCED: Async tasks already triggered after build promotion
+# Gate check now happens in parallel with async task execution
+
+# After promoted build test analysis completes
 if promoted_build_analysis == "Pass":
-    Trigger async tasks: image-consistency-check, stage-testing
+    # Async tasks already running - proceed to wait for completion
+    Wait for all 3 async tasks: push-to-cdn-staging, image-consistency-check, stage-testing
 else:
     Report blocking failures
     Update overall status to "Red"
+    Note: Async tasks may still be running but pipeline cannot proceed
     STOP pipeline
 ```
 
