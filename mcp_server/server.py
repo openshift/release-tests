@@ -10,11 +10,11 @@ Tools exposed:
 - 2 OAR controller commands (start-release-detector, jira-notificator)
 - 1 job command (run)
 - 5 jobctl commands (start-controller, trigger-jobs-for-build, start-aggregator, etc.)
-- 3 configuration tools (get-release-metadata, is-release-shipped, get-release-status)
+- 4 configuration tools (get-release-metadata, is-release-shipped, get-release-status, update-task-status)
 - 3 generic command runners (oar_run_command, oarctl_run_command, jobctl_run_command)
 - 1 help/discovery tool (get_command_help)
 
-Total: 29 tools
+Total: 30 tools
 """
 
 import subprocess
@@ -35,7 +35,6 @@ from oar.core.worksheet import WorksheetManager
 from oar.core.const import (
     LABEL_OVERALL_STATUS,
     LABEL_TASK_OWNERSHIP,
-    LABEL_TASK_BUGS_TO_VERIFY,
     LABEL_TASK_IMAGE_CONSISTENCY_TEST,
     LABEL_TASK_NIGHTLY_BUILD_TEST,
     LABEL_TASK_SIGNED_BUILD_TEST,
@@ -44,6 +43,9 @@ from oar.core.const import (
     LABEL_TASK_STAGE_TEST,
     LABEL_TASK_PAYLOAD_IMAGE_VERIFY,
     LABEL_TASK_CHANGE_AD_STATUS,
+    TASK_STATUS_INPROGRESS,
+    TASK_STATUS_PASS,
+    TASK_STATUS_FAIL,
 )
 
 # Setup logging
@@ -788,11 +790,9 @@ def oar_get_release_status(release: str) -> str:
             "overall_status": "Green",
             "tasks": {
                 "take-ownership": "Pass",
-                "update-bug-list": "Pass",
                 "image-consistency-check": "Not Started",
                 "analyze-candidate-build": "In Progress",
                 "analyze-promoted-build": "In Progress",
-                "check-greenwave-cvp-tests": "Pass",
                 "check-cve-tracker-bug": "Pass",
                 "push-to-cdn-staging": "In Progress",
                 "stage-testing": "Not Started",
@@ -812,7 +812,6 @@ def oar_get_release_status(release: str) -> str:
         # Map Google Sheets labels to task names from Konflux release flow spec
         task_mapping = {
             LABEL_TASK_OWNERSHIP: "take-ownership",
-            LABEL_TASK_BUGS_TO_VERIFY: "update-bug-list",
             LABEL_TASK_IMAGE_CONSISTENCY_TEST: "image-consistency-check",
             LABEL_TASK_NIGHTLY_BUILD_TEST: "analyze-candidate-build",
             LABEL_TASK_SIGNED_BUILD_TEST: "analyze-promoted-build",
@@ -847,6 +846,95 @@ def oar_get_release_status(release: str) -> str:
             "release": release,
             "overall_status": "Unknown",
             "tasks": {}
+        }, indent=2)
+
+
+@mcp.tool()
+def oar_update_task_status(release: str, task_name: str, status: str) -> str:
+    """
+    Update specific task status in Google Sheets test report.
+
+    ⚠️ WRITE OPERATION: Updates task status in Google Sheets.
+
+    This allows AI to mark tasks as Pass/Fail/In Progress based on analysis.
+    For example, after analyzing blocking test results, AI can mark the task as Pass if results look acceptable.
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+        task_name: Task name (e.g., "analyze-candidate-build", "analyze-promoted-build", "image-consistency-check")
+        status: Task status - must be one of: "Pass", "Fail", "In Progress"
+
+    Returns:
+        JSON string with update confirmation
+
+    Valid task names:
+    - take-ownership
+    - image-consistency-check
+    - analyze-candidate-build
+    - analyze-promoted-build
+    - check-cve-tracker-bug
+    - push-to-cdn-staging
+    - stage-testing
+    - image-signed-check
+    - change-advisory-status
+
+    Valid status values:
+    - Pass: Task completed successfully
+    - Fail: Task failed (will set overall status to Red)
+    - In Progress: Task is currently being worked on
+    """
+    # Validate status
+    valid_statuses = [TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS]
+    if status not in valid_statuses:
+        return json.dumps({
+            "success": False,
+            "error": f"Invalid status: {status}. Must be one of: {', '.join(valid_statuses)}"
+        }, indent=2)
+
+    # Map task names to Google Sheets labels
+    task_to_label = {
+        "take-ownership": LABEL_TASK_OWNERSHIP,
+        "image-consistency-check": LABEL_TASK_IMAGE_CONSISTENCY_TEST,
+        "analyze-candidate-build": LABEL_TASK_NIGHTLY_BUILD_TEST,
+        "analyze-promoted-build": LABEL_TASK_SIGNED_BUILD_TEST,
+        "check-cve-tracker-bug": LABEL_TASK_CHECK_CVE_TRACKERS,
+        "push-to-cdn-staging": LABEL_TASK_PUSH_TO_CDN,
+        "stage-testing": LABEL_TASK_STAGE_TEST,
+        "image-signed-check": LABEL_TASK_PAYLOAD_IMAGE_VERIFY,
+        "change-advisory-status": LABEL_TASK_CHANGE_AD_STATUS,
+    }
+
+    if task_name not in task_to_label:
+        return json.dumps({
+            "success": False,
+            "error": f"Invalid task name: {task_name}. Must be one of: {', '.join(task_to_label.keys())}"
+        }, indent=2)
+
+    try:
+        cs = ConfigStore(release)
+        wm = WorksheetManager(cs)
+        report = wm.get_test_report()
+
+        # Update task status
+        label = task_to_label[task_name]
+        report.update_task_status(label, status)
+
+        return json.dumps({
+            "success": True,
+            "release": release,
+            "task": task_name,
+            "status": status,
+            "message": f"Successfully updated task '{task_name}' to '{status}'"
+        }, indent=2)
+
+    except Exception as e:
+        logger.error(f"Failed to update task status: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "release": release,
+            "task": task_name,
+            "status": status
         }, indent=2)
 
 
