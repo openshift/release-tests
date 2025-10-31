@@ -688,7 +688,7 @@ class ReleaseShipmentOperator:
 
             # Also check if MR is merged
             try:
-                mr_merged = self._sd.is_merged()
+                mr_merged = self._sd.is_mr_merged()
                 details["shipment_mr_merged"] = "yes" if mr_merged else "no"
                 if mr_merged:
                     shipment_ready = True

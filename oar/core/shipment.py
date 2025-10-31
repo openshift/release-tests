@@ -510,6 +510,17 @@ class GitLabMergeRequest:
         """
         return self.get_status() == 'opened'
 
+    def is_merged(self) -> bool:
+        """Check if the merge request is in 'merged' state
+
+        Returns:
+            bool: True if MR is merged, False otherwise
+
+        Raises:
+            GitLabMergeRequestException: If unable to get MR status
+        """
+        return self.get_status() == 'merged'
+
     def approve(self) -> None:
         """Approve the current merge request (adds your approval)
         
@@ -932,15 +943,26 @@ class ShipmentData:
 
     def is_prod_release_success(self) -> bool:
         """Check if prod-release-triggers stage has succeeded for shipment MR
-        
+
         Returns:
             bool: True if prod release succeeded, False otherwise
-            
+
         Raises:
             ShipmentDataException: If unable to check stage status
         """
-            
+
         return self._mr.is_prod_release_success()
+
+    def is_mr_merged(self) -> bool:
+        """Check if the shipment merge request is in 'merged' state
+
+        Returns:
+            bool: True if MR is merged, False otherwise
+
+        Raises:
+            ShipmentDataException: If unable to check MR status
+        """
+        return self._mr.is_merged()
 
     def drop_bugs(self) -> list[str]:
         """Create or update a merge request to drop unverified bugs from shipment YAML files.
