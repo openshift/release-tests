@@ -825,7 +825,7 @@ stdout contains: "task [Image signature check] status is changed to [Pass]"
 
 ### 11. change-advisory-status
 
-**Purpose:** Change advisory status to QE/PUSH_READY (final approval)
+**Purpose:** Change advisory status from QE to REL_PREP (final QE approval)
 
 **MCP Tool:** `oar_change_advisory_status(release)`
 
