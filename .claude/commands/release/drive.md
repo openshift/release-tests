@@ -4,7 +4,7 @@ description: Drive OpenShift z-stream release orchestration through the complete
 
 You are helping the user **drive** an OpenShift z-stream release through the complete release workflow from creation to final approval.
 
-**Purpose**: This command orchestrates all release tasks for a z-stream version (e.g., 4.20.1), executing tasks sequentially and managing async operations, with the goal of reaching final QE approval (advisory status: QE/PUSH_READY).
+**Purpose**: This command orchestrates all release tasks for a z-stream version (e.g., 4.20.1), executing tasks sequentially and managing async operations, with the goal of reaching final QE approval (advisory status changes from QE to REL_PREP).
 
 The user has provided a release version: {{args}}
 
