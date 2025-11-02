@@ -706,6 +706,7 @@ def oar_get_release_metadata(release: str) -> str:
         - jira_ticket: Jira ticket created by ART team
         - candidate_builds: Candidate nightly builds by architecture
         - shipment_mr: GitLab shipment MR URL (empty if using Errata flow)
+        - release_date: Planned release date in YYYY-MMM-DD format (e.g., "2025-Nov-04")
     """
     try:
         cs = ConfigStore(release)
@@ -716,6 +717,7 @@ def oar_get_release_metadata(release: str) -> str:
             "jira_ticket": cs.get_jira_ticket() or "",
             "candidate_builds": cs.get_candidate_builds() or {},
             "shipment_mr": cs.get_shipment_mr() or "",
+            "release_date": cs.get_release_date(),
         }
 
         return json.dumps(metadata, indent=2)
