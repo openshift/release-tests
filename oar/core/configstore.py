@@ -380,6 +380,21 @@ class ConfigStore:
 
         return shipment["url"]
 
+    def get_release_date(self):
+        """Get planned release date from assembly config.
+
+        Returns:
+            str: Release date in format YYYY-MMM-DD (e.g., "2025-Nov-04")
+
+        Raises:
+            ConfigStoreException: If release_date not found in assembly config
+        """
+        release_date = self._get_assembly_attr("group/release_date")
+        if not release_date:
+            raise ConfigStoreException(
+                f"release_date not found in assembly config for {self.release}")
+        return release_date
+
     def is_konflux_flow(self) -> bool:
         """Check if current release uses Konflux flow by verifying shipment MR exists.
         

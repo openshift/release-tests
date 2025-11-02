@@ -834,14 +834,87 @@ stdout contains: "task [Image signature check] status is changed to [Pass]"
 
 **Prerequisites:** All previous tasks must be "Pass"
 
-**Success Detection:**
-```
-stdout contains: "task [Change advisory status] status is changed to [Pass]"
+**Timing Guidance:**
+This task should be run **1 day before the scheduled release date** for optimal results.
+
+**Why timing matters:**
+- The command approves the shipment MR
+- It launches a background metadata URL checker process (2-day timeout)
+- The checker waits for ART's prod-release pipeline to make the metadata URL accessible
+- Once accessible, advisories automatically move from QE → REL_PREP
+- Running too early (>2 days before release) causes timeout before ART triggers prod-release
+
+**How to determine release date:**
+```python
+metadata = oar_get_release_metadata(release)
+release_date = metadata.release_date  # Format: "2025-Nov-04"
+
+# Calculate optimal execution date: release_date - 1 day
+# If today < optimal_date: Wait to execute
+# If today >= optimal_date: Safe to execute
 ```
 
-**Expected Duration:** 5 mins
+**Execution Flow:**
 
-**Final Action:** Mark overall status as "Green", notify owner of successful release
+**Phase 1 - Trigger (Immediate Return):**
+```
+Execute: oar_change_advisory_status(release)
+Action: Approves shipment MR + launches detached background process
+Return: "SCHEDULED" - parent process terminates immediately
+Google Sheets: Task status updated to "In Progress"
+```
+
+**IMPORTANT - Asynchronous Execution:**
+- The parent process returns immediately after launching the background checker
+- You CANNOT get "[Pass]" status from stdout during execution
+- The background process runs independently with a 2-day timeout
+- Status updates happen via Slack notifications and Google Sheets (not stdout)
+
+**Phase 2 - Background Process (Runs Independently):**
+The metadata URL checker process runs detached for up to 2 days:
+- Checks every 30 minutes if metadata URL is accessible
+- Monitored URL: `shipment.environments.prod.advisory.url` from shipment YAML
+  - Path: `shipment/ocp/openshift-$y_release/openshift-$y_release/prod/$z_release.image.*.yaml`
+  - Example: `$y_release = 4.20`, `$z_release = 4.20.1`
+- Waits for: ART to trigger prod-release pipeline (makes URL accessible)
+- Locks: `/tmp/oar_scheduler_<release>.lock` (Only available on the host that has OAR deployed)
+- Logs: `/tmp/oar_logs/metadata_checker_<release>.log` (Only available on the host that has OAR deployed)
+
+**Phase 3 - Completion Notifications:**
+
+**On Success (Metadata URL becomes accessible):**
+1. Advisories automatically moved from QE → REL_PREP
+2. Google Sheets task status updated to "Pass"
+3. Slack notifications sent to:
+   - Original command thread 
+   - Internal QE channel
+
+**On Timeout/Failure (2 days elapsed without URL becoming accessible):**
+1. Background process terminates
+2. Google Sheets task status updated to "Fail"
+3. Slack failure notifications sent to both channels
+
+**If task times out:**
+1. Verify ART has triggered prod-release pipeline on shipment MR
+2. Check pipeline status in GitLab (look for 'prod-release-triggers' stage)
+3. Once prod-release pipeline is triggered, re-execute the command:
+   ```
+   oar_change_advisory_status(release)
+   ```
+4. The checker will restart with a fresh 2-day timeout
+
+**Monitoring Progress:**
+- Check Slack notifications in original thread
+- Check Google Sheets test report for task status updates
+- Check background process logs: `/tmp/oar_logs/metadata_checker_<release>.log`
+- Do NOT poll stdout - process returns immediately
+
+**Expected Timeline:**
+- Immediate: Shipment MR approval, background process launch
+- Variable (minutes to 2 days): Waiting for ART's prod-release pipeline
+- Automatic: Advisory status update + Slack notifications once URL accessible
+
+**Final Action:** When background process succeeds, overall status marked "Green" and Slack notifications sent
 
 ---
 
