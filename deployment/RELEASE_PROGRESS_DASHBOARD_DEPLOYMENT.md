@@ -19,7 +19,7 @@ This guide covers deploying the Release Progress Dashboard as a systemd service 
 3. **Dependencies**:
    ```bash
    # Install dashboard dependencies
-   cd ~/coderepo/release-tests
+   cd ~/release-tests
    pip3 install -r tools/release_progress_dashboard/requirements.txt
    ```
 
@@ -33,7 +33,7 @@ This guide covers deploying the Release Progress Dashboard as a systemd service 
 ### 1. Clone Repository
 
 ```bash
-cd ~/coderepo
+cd ~
 git clone https://github.com/openshift/release-tests.git
 cd release-tests
 ```
@@ -52,8 +52,8 @@ sudo vi /etc/systemd/system/release-progress-dashboard.service
 ```ini
 # Replace 'your-username' with your actual username (2 occurrences)
 User=your-username
-WorkingDirectory=/home/your-username/coderepo/release-tests
-ExecStart=/bin/bash -l -c 'cd /home/your-username/coderepo/release-tests && ...'
+WorkingDirectory=/home/your-username/release-tests
+ExecStart=/bin/bash -l -c 'cd /home/your-username/release-tests && ...'
 
 # Optional: Customize MCP server URL if using remote server
 Environment="MCP_SERVER_URL=http://your-mcp-server:8080/sse"
@@ -273,7 +273,7 @@ If service fails due to permissions:
 
 1. **Check file ownership**:
    ```bash
-   ls -la ~/coderepo/release-tests/tools/release_progress_dashboard/
+   ls -la ~/release-tests/tools/release_progress_dashboard/
    ```
 
 2. **Ensure user matches service file**:
@@ -284,7 +284,7 @@ If service fails due to permissions:
 
 3. **Verify working directory exists**:
    ```bash
-   ls -la /home/your-username/coderepo/release-tests
+   ls -la /home/your-username/release-tests
    ```
 
 ## Architecture
@@ -317,7 +317,7 @@ External Services (Google Sheets, Jira, etc.)
 
 ### Update Code
 ```bash
-cd ~/coderepo/release-tests
+cd ~/release-tests
 git pull origin master
 
 # If dependencies changed

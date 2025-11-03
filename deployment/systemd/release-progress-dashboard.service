@@ -10,7 +10,7 @@ Type=simple
 User=your-username
 
 # Working directory (adjust path if needed)
-WorkingDirectory=/home/your-username/coderepo/release-tests
+WorkingDirectory=/home/your-username/release-tests
 
 # Dashboard configuration
 Environment="MCP_SERVER_URL=http://localhost:8080/sse"
@@ -20,7 +20,7 @@ Environment="STREAMLIT_SERVER_HEADLESS=true"
 
 # Use bash login shell to load .bash_profile
 # This inherits environment variables (GITHUB_TOKEN, etc.)
-ExecStart=/bin/bash -l -c 'cd /home/your-username/coderepo/release-tests && streamlit run tools/release_progress_dashboard/release_progress_dashboard.py --server.port=${STREAMLIT_SERVER_PORT} --server.address=${STREAMLIT_SERVER_ADDRESS} --server.headless=${STREAMLIT_SERVER_HEADLESS}'
+ExecStart=/bin/bash -l -c 'cd /home/your-username/release-tests && streamlit run tools/release_progress_dashboard/release_progress_dashboard.py --server.port=${STREAMLIT_SERVER_PORT} --server.address=${STREAMLIT_SERVER_ADDRESS} --server.headless=${STREAMLIT_SERVER_HEADLESS}'
 
 # Restart on failure
 Restart=always
