@@ -1,0 +1,35 @@
+[Unit]
+Description=Release Progress Dashboard (Streamlit)
+After=network.target
+
+[Service]
+Type=simple
+
+# IMPORTANT: Replace 'your-username' with your actual username on the VM
+# This ensures the service runs as your user and inherits bash_profile environment
+User=your-username
+
+# Working directory (adjust path if needed)
+WorkingDirectory=/home/your-username/coderepo/release-tests
+
+# Dashboard configuration
+Environment="MCP_SERVER_URL=http://localhost:8080/sse"
+Environment="STREAMLIT_SERVER_PORT=8501"
+Environment="STREAMLIT_SERVER_ADDRESS=0.0.0.0"
+Environment="STREAMLIT_SERVER_HEADLESS=true"
+
+# Use bash login shell to load .bash_profile
+# This inherits environment variables (GITHUB_TOKEN, etc.)
+ExecStart=/bin/bash -l -c 'cd /home/your-username/coderepo/release-tests && streamlit run tools/release_progress_dashboard/release_progress_dashboard.py --server.port=${STREAMLIT_SERVER_PORT} --server.address=${STREAMLIT_SERVER_ADDRESS} --server.headless=${STREAMLIT_SERVER_HEADLESS}'
+
+# Restart on failure
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=release-progress-dashboard
+
+[Install]
+WantedBy=multi-user.target
