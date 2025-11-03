@@ -6,14 +6,13 @@ This guide covers deploying the Release Progress Dashboard as a systemd service 
 
 1. **VM Requirements**:
    - Linux system with systemd
-   - Python 3.11+
-   - Network access to MCP server (default: localhost:8080)
+   - Python 3.12+
+   - Network access to MCP server (default: localhost:8000)
 
 2. **Environment Variables** (in `~/.bash_profile` or `~/.bashrc`):
    ```bash
-   # Required for dashboard
-   export GITHUB_TOKEN="your-github-token"
-   export MCP_SERVER_URL="http://localhost:8080/sse"  # Or remote MCP server URL
+   # Optional: MCP server URL (defaults to localhost:8000)
+   export MCP_SERVER_URL="http://localhost:8000/sse"  # Or remote MCP server URL
    ```
 
 3. **Dependencies**:
@@ -26,7 +25,7 @@ This guide covers deploying the Release Progress Dashboard as a systemd service 
 4. **MCP Server**:
    - The dashboard requires the MCP server to be running
    - See `MCP_SERVER_DEPLOYMENT.md` for MCP server deployment
-   - Default MCP server URL: `http://localhost:8080/sse`
+   - Default MCP server URL: `http://localhost:8000/sse`
 
 ## Installation Steps
 
@@ -56,7 +55,7 @@ WorkingDirectory=/home/your-username/release-tests
 ExecStart=/bin/bash -l -c 'cd /home/your-username/release-tests && ...'
 
 # Optional: Customize MCP server URL if using remote server
-Environment="MCP_SERVER_URL=http://your-mcp-server:8080/sse"
+Environment="MCP_SERVER_URL=http://your-mcp-server:8000/sse"
 
 # Optional: Change dashboard port (default: 8501)
 Environment="STREAMLIT_SERVER_PORT=8501"
@@ -159,16 +158,13 @@ sudo systemctl disable release-progress-dashboard.service
 
 ### Environment Variables
 
-The service inherits environment variables from the user's `.bash_profile`. Required variables:
+The service can optionally use environment variables from the user's `.bash_profile`:
 
 ```bash
 # ~/.bash_profile or ~/.bashrc
 
-# GitHub token (for release data access)
-export GITHUB_TOKEN="your-github-token"
-
-# MCP server URL (optional, defaults to localhost:8080)
-export MCP_SERVER_URL="http://localhost:8080/sse"
+# MCP server URL (optional, defaults to localhost:8000)
+export MCP_SERVER_URL="http://localhost:8000/sse"
 ```
 
 After modifying environment variables, restart the service:
@@ -219,8 +215,7 @@ sudo journalctl -u release-progress-dashboard.service -n 50
 
 4. **Environment variables not set**: Check `.bash_profile`
    ```bash
-   # Verify variables are set
-   bash -l -c 'echo $GITHUB_TOKEN'
+   # Verify MCP server URL (optional)
    bash -l -c 'echo $MCP_SERVER_URL'
    ```
 
@@ -232,13 +227,13 @@ sudo journalctl -u release-progress-dashboard.service -n 50
 sudo systemctl status release-tests-mcp.service
 
 # Test MCP server endpoint
-curl http://localhost:8080/sse
+curl http://localhost:8000/sse
 ```
 
 **Check network connectivity**:
 ```bash
 # If using remote MCP server
-curl http://your-mcp-server:8080/sse
+curl http://your-mcp-server:8000/sse
 ```
 
 **Review dashboard logs**:
@@ -302,7 +297,7 @@ network.target
 ```
 Browser → Dashboard (port 8501)
              ↓
-MCP Server (port 8080)
+MCP Server (port 8000)
              ↓
 OAR Core Modules
              ↓
@@ -311,7 +306,7 @@ External Services (Google Sheets, Jira, etc.)
 
 ### Ports Used
 - **8501**: Dashboard web interface (Streamlit)
-- **8080**: MCP server (default)
+- **8000**: MCP server (default)
 
 ## Updating the Dashboard
 
