@@ -198,11 +198,13 @@ For each image in the "#Mismatch between payload and Advisory" section, you MUST
    Multi-arch images can fail manifest parsing with transient errors. This is the MOST COMMON false positive.
 
    **Detection pattern**:
-   - Search console for `[WARNING] root: OpenshiftImage: oc image info` with manifest parsing errors
-   - Look for errors like:
+   - Search console for `[WARNING] root: OpenshiftImage: oc image info` with ANY error (Return code: 1)
+   - Common error patterns include (but not limited to):
      - `error: unable to read image ... unable to retrieve source image ... manifest #N from manifest list`
      - `error unmarshalling content: invalid character 'H' looking for beginning of value`
-     - `Return code: 1` on multi-arch image inspection
+     - `error: unauthorized: authentication required`
+     - `error: manifest unknown`
+     - Any other `oc image info` failure on multi-arch images
 
    **Verification workflow** (MANDATORY):
 
