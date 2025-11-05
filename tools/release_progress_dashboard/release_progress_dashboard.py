@@ -64,6 +64,10 @@ st.markdown("""
         background-color: #dc3545;
         color: white;
     }
+    .status-yellow {
+        background-color: #ffc107;
+        color: white;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -259,7 +263,7 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
         "📋 Advisories",
         "📦 Candidate Builds",
         "🎫 Jira Ticket",
-        "🚢 Shipment",
+        "🚢 Shipment Data",
         "📅 Release Info"
     ])
 
@@ -319,18 +323,11 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
             st.info("No Jira ticket configured for this release")
 
     with tab4:
-        shipped = shipped_data.get('shipped', False)
         shipment_mr = metadata.get('shipment_mr', '')
         details = shipped_data.get('details', {})
 
         # Build shipment data table
         shipment_data = []
-
-        # Add shipped status
-        shipment_data.append({
-            "Field": "Shipped",
-            "Value": "✅ Yes" if shipped else "⏳ No"
-        })
 
         # Add shipment MR if available
         if shipment_mr:
@@ -341,20 +338,20 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
             })
 
             # Add MR-related details
-            if 'mr_merged' in details:
+            if 'shipment_mr_merged' in details:
                 shipment_data.append({
                     "Field": "MR Merged",
-                    "Value": "✅ Yes" if details['mr_merged'] else "❌ No"
+                    "Value": "✅ Yes" if details['shipment_mr_merged'] == "yes" else "❌ No"
                 })
-            if 'mr_state' in details:
+            if 'shipment_mr_status' in details:
                 shipment_data.append({
-                    "Field": "MR State",
-                    "Value": str(details['mr_state'])
+                    "Field": "MR Status",
+                    "Value": str(details['shipment_mr_status'])
                 })
-            if 'pipeline_status' in details:
+            if 'prod_release' in details:
                 shipment_data.append({
-                    "Field": "Pipeline Status",
-                    "Value": str(details['pipeline_status'])
+                    "Field": "Prod Release Pipeline",
+                    "Value": str(details['prod_release'])
                 })
 
         if shipment_data:
@@ -394,12 +391,22 @@ def main():
     if 'release_data_cache' not in st.session_state:
         st.session_state.release_data_cache = {}
 
-    # Add release input
+    # Define callback for adding release
+    def add_release_callback():
+        new_release = st.session_state.get(f"release_input_field_{st.session_state.input_counter}", "").strip()
+        if new_release:
+            if new_release not in st.session_state.releases:
+                st.session_state.releases.append(new_release)
+                # Increment counter to force widget recreation with new key (clearing the value)
+                st.session_state.input_counter += 1
+
+    # Add release input with on_change callback
     new_release = st.sidebar.text_input(
         "Release version:",
         placeholder="e.g., 4.19.1",
-        help="Enter a z-stream release version (format: X.Y.Z)",
-        key=f"release_input_field_{st.session_state.input_counter}"
+        help="Enter a z-stream release version (format: X.Y.Z) and press Enter",
+        key=f"release_input_field_{st.session_state.input_counter}",
+        on_change=add_release_callback
     )
 
     if st.sidebar.button("➕ Add Release", use_container_width=True):
@@ -412,8 +419,6 @@ def main():
                 st.rerun()
             else:
                 st.sidebar.warning(f"{new_release} already added")
-        else:
-            st.sidebar.error("Please enter a release version")
 
     # Show current releases
     st.sidebar.divider()
@@ -510,16 +515,26 @@ def main():
     if selected_release:
         release_data = valid_releases[selected_release]
 
-        # Show overall status
+        # Show overall status and shipment status
         overall_status = release_data['status'].get('overall_status', 'Unknown')
+        shipped_status = release_data['shipped'].get('shipped', False)
+
+        # Build status badges HTML
+        task_badge = ""
         if overall_status == "Green":
-            st.markdown(f'<span class="status-badge status-green">Overall Status: {overall_status}</span>',
-                       unsafe_allow_html=True)
+            task_badge = f'<span class="status-badge status-green">Task Status: {overall_status}</span>'
         elif overall_status == "Red":
-            st.markdown(f'<span class="status-badge status-red">Overall Status: {overall_status}</span>',
-                       unsafe_allow_html=True)
+            task_badge = f'<span class="status-badge status-red">Task Status: {overall_status}</span>'
         else:
-            st.info(f"Overall Status: {overall_status}")
+            task_badge = f'<span class="status-badge">Task Status: {overall_status}</span>'
+
+        if shipped_status:
+            shipment_badge = '<span class="status-badge status-green">Shipment Status: ✅ Shipped</span>'
+        else:
+            shipment_badge = '<span class="status-badge status-yellow">Shipment Status: ⏳ Not Shipped</span>'
+
+        # Display badges side by side with some spacing
+        st.markdown(f'{task_badge}&nbsp;&nbsp;&nbsp;&nbsp;{shipment_badge}', unsafe_allow_html=True)
 
         st.markdown("---")
 

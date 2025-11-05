@@ -635,7 +635,8 @@ class ReleaseShipmentOperator:
                     details[f"{impetus}_advisory"] = ad_state
 
                     # Check if advisory is in REL_PREP or higher state
-                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_SHIPPED_LIVE, AD_STATUS_PUSHED_LIVE]:
+                    # REL_PREP or higher includes: REL_PREP, PUSH_READY, IN_PUSH, SHIPPED_LIVE
+                    if ad_state not in [AD_STATUS_REL_PREP, AD_STATUS_PUSH_READY, AD_STATUS_IN_PUSH, AD_STATUS_SHIPPED_LIVE]:
                         all_shipped = False
                         logger.warning(f"Advisory {errata_id} ({impetus}) is in state {ad_state}, not ready for ship")
                 except Exception as e:
