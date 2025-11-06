@@ -31,13 +31,46 @@
           "jobStartTime": "2025-11-06T14:35:37Z",
           "jobID": "d5fda98d-c098-49ea-be38-568b227ef894",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/1986442352138391552",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-06T17:21:25Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 72,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 14,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging CPaasrunBoth-ConnectedOnly-Author:anli-LEVEL0-Critical-43443-Fluentd Forward logs to Cloudwatch by logtype [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-06T14:35:42Z",
           "jobID": "c71eb2a3-7713-46e2-83c8-c2cac5d24888",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/1986442373437067264",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-11-06T17:10:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 72,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 15
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -149,5 +182,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2025-11-06-040447",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2025-11-06-040447"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
