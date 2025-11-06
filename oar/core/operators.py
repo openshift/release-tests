@@ -404,21 +404,31 @@ class ApprovalOperator:
                 os.makedirs(log_dir, exist_ok=True)
                 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
                 log_file = os.path.join(log_dir, f"metadata_checker_{minor_release}_{timestamp}.log")
-                
+
                 with open(log_file, 'w') as f:
                     f.write(f"Background metadata checker process started at {datetime.datetime.now()}\n")
                     f.write(f"Command: {' '.join(cmd)}\n")
                     f.write(f"Release: {minor_release}\n")
                     f.write("-" * 80 + "\n")
-                
-                process = subprocess.Popen(
-                    cmd, 
-                    start_new_session=True, 
-                    env=env,
-                    stdout=open(log_file, 'a'),
-                    stderr=subprocess.STDOUT,  # Combine stderr with stdout
-                    stdin=subprocess.DEVNULL
-                )
+
+                # Open log file for subprocess and close in parent immediately after fork
+                # This prevents parent process shutdown from affecting the detached subprocess
+                # See: OCPERT-209
+                log_fd = os.open(log_file, os.O_WRONLY | os.O_APPEND)
+                try:
+                    process = subprocess.Popen(
+                        cmd,
+                        start_new_session=True,
+                        env=env,
+                        stdout=log_fd,
+                        stderr=subprocess.STDOUT,  # Combine stderr with stdout
+                        stdin=subprocess.DEVNULL,
+                        close_fds=True  # Close all FDs in parent after fork
+                    )
+                finally:
+                    # Close file descriptor in parent immediately
+                    # Subprocess still has it open via inherited FD
+                    os.close(log_fd)
                 
                 logger.info(f"Background metadata checker process started (PID: {process.pid}) - running independently after parent exit")
                 logger.info(f"Process output redirected to: {log_file}")
