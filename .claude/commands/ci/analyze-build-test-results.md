@@ -31,8 +31,14 @@ Follow these steps:
 
 **Fetch the test result JSON:**
 ```bash
-git fetch origin record:record 2>/dev/null || echo "Branch exists"
-git show record:_releases/ocp-test-result-{build}-{arch}.json | jq '.'
+# Find the remote pointing to openshift/release-tests (where record branch lives)
+RECORD_REMOTE=$(git remote -v | grep 'openshift/release-tests' | head -1 | awk '{print $1}')
+
+# Fetch the record branch
+git fetch "$RECORD_REMOTE" record
+
+# Show the test result file
+git show "$RECORD_REMOTE/record:_releases/ocp-test-result-{build}-{arch}.json" | jq '.'
 ```
 
 ## 2. Understand Test Result Structure
