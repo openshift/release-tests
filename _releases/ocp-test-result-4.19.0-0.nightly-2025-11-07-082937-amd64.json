@@ -76,7 +76,31 @@
           "jobStartTime": "2025-11-07T15:52:10Z",
           "jobID": "3bed8765-1f4c-49b7-a8cc-8297a5457245",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/1986824004693921792",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-07T18:50:03Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 108,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 29,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-07T15:52:15Z",
@@ -140,13 +164,15 @@
           "jobStartTime": "2025-11-07T15:52:25Z",
           "jobID": "6e11cfe5-f747-47fd-8a95-ab3541418ede",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-stable-4.19-upgrade-from-stable-4.18-gcp-ipi-f999/1986824066585071616",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-11-07T18:36:13Z"
         },
         {
           "jobStartTime": "2025-11-07T15:52:30Z",
           "jobID": "64aa92ab-2acb-4c2d-be79-be5c22faf66b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-stable-4.19-upgrade-from-stable-4.18-gcp-ipi-f999/1986824087879553024",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-11-07T18:36:19Z"
         }
       ]
     },
@@ -167,5 +193,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-11-07-082937",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-11-07-082937"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
