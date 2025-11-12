@@ -48,7 +48,7 @@ See the complete deployment guide:
 
 ## Available Tools
 
-The server exposes these OAR commands as MCP tools:
+The server exposes these OAR commands as MCP tools (33 total):
 
 | Tool Name | Description | Type |
 |-----------|-------------|------|
@@ -72,6 +72,12 @@ The server exposes these OAR commands as MCP tools:
 | `jobctl_promote_test_results` | Promote test results for a build | Job Control |
 | `jobctl_update_retried_job_run` | Update retried job run information | Job Control |
 | `oar_get_release_metadata` | Get release configuration metadata | Read-only |
+| `oar_is_release_shipped` | Check if release is fully shipped | Read-only |
+| `oar_get_release_status` | Get task execution status from test report | Read-only |
+| `oar_update_task_status` | Update task status in test report | Write |
+| `mcp_cache_stats` | View ConfigStore cache performance metrics | Cache Mgmt |
+| `mcp_cache_invalidate` | Manually invalidate cache entries | Cache Mgmt |
+| `mcp_cache_warm` | Pre-populate cache with releases | Cache Mgmt |
 | `get_command_help` | Get help for any CLI command (oar/oarctl/job/jobctl) | Help |
 | `oar_run_command` | Run any OAR command with custom arguments | Generic |
 | `oarctl_run_command` | Run any oarctl command with custom arguments | Generic |
@@ -169,6 +175,94 @@ This server uses **SSE (Server-Sent Events)** transport, which means:
 - ✅ No special network configuration needed
 - ✅ Simple to debug with curl/browser
 
+## Performance Optimization: ConfigStore Caching
+
+The MCP server implements intelligent caching of ConfigStore instances to optimize performance for AI agent workflows.
+
+### Why Caching?
+
+ConfigStore initialization involves:
+- JWE decryption (~5-10ms)
+- **GitHub HTTP request (~300-800ms)** ← Main bottleneck
+- YAML parsing (~10-50ms)
+
+Total: ~1000ms per request
+
+Since ConfigStore data is **immutable** after ART announces a release, without caching every tool call pays this cost even for the same release.
+
+### Performance Improvement
+
+**Before caching:**
+```
+oar_get_release_metadata('4.19.1'): 1000ms
+oar_is_release_shipped('4.19.1'):   1000ms
+oar_get_release_status('4.19.1'):   1000ms
+Total: ~3000ms
+```
+
+**After caching:**
+```
+oar_get_release_metadata('4.19.1'): 1000ms (cache miss)
+oar_is_release_shipped('4.19.1'):   <10ms  (cache hit)
+oar_get_release_status('4.19.1'):   <10ms  (cache hit)
+Total: ~1020ms (3x faster)
+```
+
+### Cache Design
+
+- **Scope**: Per z-stream release (e.g., "4.19.1")
+- **TTL**: 7 days (aligns with weekly release schedule)
+- **Max size**: 50 entries with LRU eviction
+- **Thread-safe**: RLock for concurrent AI agent requests
+- **Implementation**: Built on `cachetools.TTLCache`
+
+### Cache Management Tools
+
+Monitor and manage cache performance:
+
+```bash
+# View cache statistics
+mcp_cache_stats()
+# Output:
+{
+  "metrics": {
+    "hits": 150,
+    "misses": 10,
+    "hit_rate": "93.75%",
+    "evictions": 0,
+    "manual_invalidations": 0
+  },
+  "cache_size": 5,
+  "max_size": 50,
+  "ttl_human": "7 days",
+  "entries": [
+    {"release": "4.19.1", "cached": true},
+    {"release": "4.18.5", "cached": true}
+  ]
+}
+
+# Manually invalidate cache (rarely needed)
+mcp_cache_invalidate(release="4.19.1")  # Specific release
+mcp_cache_invalidate()                  # All releases
+
+# Pre-populate cache before operations
+mcp_cache_warm(releases="4.19.1,4.18.5,4.17.10")
+```
+
+### When to Invalidate Cache
+
+**Rarely needed!** ConfigStore data is immutable after release announcement.
+
+Only invalidate if ART updates build data post-announcement (exceptional case):
+```python
+# ART changed candidate build for 4.19.1
+mcp_cache_invalidate(release="4.19.1")
+```
+
+### Note on CLI vs MCP Server
+
+Caching is **only used in MCP server**, not in CLI commands. CLI commands are short-lived processes where caching provides no benefit since each invocation creates a new process.
+
 ## Adding New Tools
 
 To expose a new OAR command:
@@ -219,10 +313,11 @@ sudo journalctl -u release-tests-mcp -f
 ## Dependencies
 
 ```bash
-pip3 install fastmcp
+pip3 install fastmcp cachetools
 ```
 
-FastMCP provides the MCP protocol implementation with SSE transport support.
+- **FastMCP**: MCP protocol implementation with SSE transport support
+- **cachetools**: TTL-based caching for ConfigStore instances (performance optimization)
 
 ## Related Documentation
 
