@@ -96,14 +96,10 @@ elif "status is changed to [In Progress]" in result:
 
 **Candidate/Promoted Build Analysis:**
 - These tasks (B11/B12 in Google Sheets) always show "In Progress" by default
-- You MUST check test result files from GitHub to determine actual status:
-  ```bash
-  git show origin/record:_releases/ocp-test-result-{build}-amd64.json
-  ```
-- If `accepted == true`:
-  - Mark task as "Pass" using `oar_update_task_status(release, task_name, "Pass")`
-  - Continue pipeline
-- If `accepted == false`: Trigger `/ci:analyze-build-test-results {build}`
+- You MUST use `/ci:analyze-build-test-results {build}` to determine actual status
+  - The command will automatically find the correct remote, fetch the record branch, and analyze test results
+  - It handles both `accepted == true` (quick summary) and `accepted == false` (detailed analysis)
+- Based on the command's recommendation:
   - If AI recommends ACCEPT:
     - Mark task as "Pass" using `oar_update_task_status(release, task_name, "Pass")`
     - Continue pipeline
