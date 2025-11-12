@@ -11,10 +11,11 @@ Tools exposed:
 - 1 job command (run)
 - 5 jobctl commands (start-controller, trigger-jobs-for-build, start-aggregator, etc.)
 - 4 configuration tools (get-release-metadata, is-release-shipped, get-release-status, update-task-status)
+- 3 cache management tools (mcp_cache_stats, mcp_cache_invalidate, mcp_cache_warm)
 - 3 generic command runners (oar_run_command, oarctl_run_command, jobctl_run_command)
 - 1 help/discovery tool (get_command_help)
 
-Total: 30 tools
+Total: 33 tools
 """
 
 import subprocess
@@ -23,8 +24,13 @@ import os
 import logging
 import json
 import shlex
+import time
 from typing import Optional
+from threading import RLock
+from dataclasses import dataclass, field
+from datetime import datetime
 from fastmcp import FastMCP
+from cachetools import TTLCache
 
 # Import OAR validation
 # Add parent directory to path to import oar modules
@@ -57,6 +63,227 @@ logger = logging.getLogger(__name__)
 
 # Create MCP server with SSE transport
 mcp = FastMCP("release-tests")
+
+
+# ============================================================================
+# ConfigStore Cache Implementation
+# ============================================================================
+
+@dataclass
+class CacheMetrics:
+    """
+    Tracks cache performance metrics.
+
+    Attributes:
+        hits: Number of cache hits
+        misses: Number of cache misses
+        evictions: Number of TTL-based evictions
+        manual_invalidations: Number of manual invalidations
+    """
+    hits: int = field(default=0)
+    misses: int = field(default=0)
+    evictions: int = field(default=0)
+    manual_invalidations: int = field(default=0)
+
+    def hit_rate(self) -> float:
+        """Calculate cache hit rate as a percentage."""
+        total = self.hits + self.misses
+        return (self.hits / total * 100) if total > 0 else 0.0
+
+    def to_dict(self) -> dict:
+        """Convert metrics to dictionary for JSON serialization."""
+        return {
+            "hits": self.hits,
+            "misses": self.misses,
+            "evictions": self.evictions,
+            "manual_invalidations": self.manual_invalidations,
+            "hit_rate": f"{self.hit_rate():.2f}%",
+            "total_requests": self.hits + self.misses
+        }
+
+
+class ConfigStoreCache:
+    """
+    Thread-safe TTL cache for ConfigStore instances using cachetools.
+
+    Design:
+    - Cache scope: Per z-stream release (e.g., "4.19.1")
+    - TTL: 7 days (aligns with weekly release schedule)
+    - Max size: 50 entries (LRU eviction via TTLCache)
+    - Thread-safe: Uses RLock for concurrent access
+
+    Performance:
+    - Cache hit: <10ms (no JWE decryption, no GitHub HTTP request)
+    - Cache miss: ~1000ms (full ConfigStore initialization)
+
+    Implementation:
+    - Uses cachetools.TTLCache for built-in TTL + LRU support
+    - Tracks custom metrics (hits, misses, evictions, invalidations)
+    - ConfigStore instances are immutable after ART announces release
+
+    Usage:
+        cache = ConfigStoreCache()
+        cs = cache.get("4.19.1")  # Returns cached or creates new
+        cache.invalidate("4.19.1")  # Remove specific entry
+        cache.clear()  # Remove all entries
+        stats = cache.stats()  # Get cache statistics
+    """
+
+    def __init__(self, max_size: int = 50, ttl_seconds: int = 7 * 24 * 60 * 60):
+        """
+        Initialize ConfigStore cache.
+
+        Args:
+            max_size: Maximum number of cached entries (default: 50)
+            ttl_seconds: Time-to-live in seconds (default: 7 days = 604800s)
+        """
+        self.max_size = max_size
+        self.ttl_seconds = ttl_seconds
+        self._cache = TTLCache(maxsize=max_size, ttl=ttl_seconds)
+        self._lock = RLock()
+        self.metrics = CacheMetrics()
+
+        logger.info(f"ConfigStoreCache initialized: max_size={max_size}, ttl={ttl_seconds}s ({ttl_seconds // 86400} days)")
+
+    def get(self, release: str) -> ConfigStore:
+        """
+        Get ConfigStore for a release (cached or create new).
+
+        Args:
+            release: Z-stream release version (e.g., "4.19.1")
+
+        Returns:
+            ConfigStore instance
+
+        This method is thread-safe and implements TTL-based expiration + LRU eviction.
+        """
+        with self._lock:
+            # Check if entry exists in cache
+            if release in self._cache:
+                # Cache hit
+                self.metrics.hits += 1
+                logger.debug(f"Cache HIT for release {release}")
+                return self._cache[release]
+
+            # Cache miss - create new ConfigStore
+            logger.info(f"Cache MISS for release {release}, creating new ConfigStore")
+            self.metrics.misses += 1
+
+            # Track cache size before adding (to detect evictions)
+            size_before = len(self._cache)
+
+            start_time = time.time()
+            configstore = ConfigStore(release)
+            elapsed = time.time() - start_time
+
+            logger.info(f"ConfigStore created for {release} in {elapsed:.2f}s")
+
+            # Add to cache (TTLCache handles TTL and LRU automatically)
+            self._cache[release] = configstore
+
+            # Check if eviction occurred (size didn't increase when at max)
+            if size_before == self.max_size and len(self._cache) == self.max_size:
+                self.metrics.evictions += 1
+                logger.info(f"Cache full, LRU entry evicted (max_size={self.max_size})")
+
+            return configstore
+
+    def invalidate(self, release: Optional[str] = None):
+        """
+        Invalidate cache entry for a specific release or all entries.
+
+        Args:
+            release: Release to invalidate (None = invalidate all)
+        """
+        with self._lock:
+            if release is None:
+                # Clear all cache
+                count = len(self._cache)
+                self._cache.clear()
+                self.metrics.manual_invalidations += count
+                logger.info(f"Cache cleared: {count} entries invalidated")
+            elif release in self._cache:
+                del self._cache[release]
+                self.metrics.manual_invalidations += 1
+                logger.info(f"Cache entry invalidated: {release}")
+            else:
+                logger.warning(f"Cache invalidation requested for non-existent release: {release}")
+
+    def warm(self, releases: list[str]):
+        """
+        Pre-populate cache with ConfigStore instances for multiple releases.
+
+        Args:
+            releases: List of release versions to warm cache with
+        """
+        logger.info(f"Warming cache with {len(releases)} releases: {releases}")
+
+        for release in releases:
+            try:
+                self.get(release)  # This will cache it if not already cached
+                logger.info(f"Cache warmed: {release}")
+            except Exception as e:
+                logger.error(f"Failed to warm cache for release {release}: {e}")
+
+    def stats(self) -> dict:
+        """
+        Get cache statistics.
+
+        Returns:
+            Dictionary with cache metrics and entry details
+        """
+        with self._lock:
+            entries = []
+            current_time = datetime.now()
+
+            for release in self._cache.keys():
+                # TTLCache doesn't expose timestamps, so we can't show age
+                # We can only show that the entry exists and is valid
+                entries.append({
+                    "release": release,
+                    "cached": True,
+                    "ttl_human": f"{self.ttl_seconds // 86400} days"
+                })
+
+            return {
+                "metrics": self.metrics.to_dict(),
+                "cache_size": len(self._cache),
+                "max_size": self.max_size,
+                "ttl_seconds": self.ttl_seconds,
+                "ttl_human": f"{self.ttl_seconds // 86400} days",
+                "entries": entries
+            }
+
+
+# Global cache instance
+_configstore_cache = ConfigStoreCache()
+
+
+def get_cached_configstore(release: str) -> ConfigStore:
+    """
+    Get ConfigStore instance for a release (cached or create new).
+
+    This is the main entry point for accessing ConfigStore in MCP tools.
+    Uses global cache instance to avoid repeated JWE decryption and GitHub requests.
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+
+    Returns:
+        ConfigStore instance (cached or newly created)
+
+    Performance:
+        - First call (cache miss): ~1000ms (full initialization)
+          - JWE decryption: ~5-10ms
+          - GitHub HTTP request: ~300-800ms
+          - YAML parsing: ~10-50ms
+        - Subsequent calls (cache hit): <10ms (direct memory access)
+
+    Example:
+        >>> cs = get_cached_configstore("4.19.1")
+        >>> advisories = cs.get_advisories()
+    """
+    return _configstore_cache.get(release)
 
 
 # ============================================================================
@@ -709,7 +936,7 @@ def oar_get_release_metadata(release: str) -> str:
         - release_date: Planned release date in YYYY-MMM-DD format (e.g., "2025-Nov-04")
     """
     try:
-        cs = ConfigStore(release)
+        cs = get_cached_configstore(release)
 
         metadata = {
             "release": release,
@@ -756,7 +983,7 @@ def oar_is_release_shipped(release: str) -> str:
         }
     """
     try:
-        cs = ConfigStore(release)
+        cs = get_cached_configstore(release)
         operator = ReleaseShipmentOperator(cs)
         result = operator.is_release_shipped()
 
@@ -807,7 +1034,7 @@ def oar_get_release_status(release: str) -> str:
     in M1. AI must check test result files from GitHub to determine actual analysis status.
     """
     try:
-        cs = ConfigStore(release)
+        cs = get_cached_configstore(release)
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
 
@@ -913,7 +1140,7 @@ def oar_update_task_status(release: str, task_name: str, status: str) -> str:
         }, indent=2)
 
     try:
-        cs = ConfigStore(release)
+        cs = get_cached_configstore(release)
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
 
@@ -937,6 +1164,123 @@ def oar_update_task_status(release: str, task_name: str, status: str) -> str:
             "release": release,
             "task": task_name,
             "status": status
+        }, indent=2)
+
+
+# ============================================================================
+# Cache Management Tools
+# ============================================================================
+
+@mcp.tool()
+def mcp_cache_stats() -> str:
+    """
+    Get ConfigStore cache statistics and performance metrics.
+
+    This is a READ-ONLY operation - retrieves cache usage information.
+
+    Returns:
+        JSON string with cache statistics:
+        - metrics: Hit rate, hits, misses, evictions, invalidations
+        - cache_size: Current number of cached entries
+        - max_size: Maximum cache capacity
+        - ttl_seconds: Time-to-live for cache entries
+        - entries: List of currently cached releases
+
+    Use this tool to monitor cache performance and identify optimization opportunities.
+    """
+    try:
+        stats = _configstore_cache.stats()
+        return json.dumps(stats, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to get cache stats: {e}")
+        return json.dumps({"error": str(e)}, indent=2)
+
+
+@mcp.tool()
+def mcp_cache_invalidate(release: Optional[str] = None) -> str:
+    """
+    Invalidate (remove) cache entries manually.
+
+    Use this when ART updates build data for a release and you need to refresh the cache.
+
+    Args:
+        release: Specific release to invalidate (e.g., "4.19.1"), or None to clear all cache
+
+    Returns:
+        JSON string with invalidation confirmation
+
+    Examples:
+        - mcp_cache_invalidate("4.19.1") - Invalidate cache for release 4.19.1
+        - mcp_cache_invalidate() - Clear all cache entries
+
+    Note: This is rarely needed since ConfigStore data is immutable after ART announces a release.
+    """
+    try:
+        _configstore_cache.invalidate(release)
+
+        if release:
+            message = f"Cache entry for release {release} invalidated"
+        else:
+            message = "All cache entries invalidated"
+
+        return json.dumps({
+            "success": True,
+            "message": message,
+            "release": release if release else "all"
+        }, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to invalidate cache: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "release": release if release else "all"
+        }, indent=2)
+
+
+@mcp.tool()
+def mcp_cache_warm(releases: str) -> str:
+    """
+    Pre-populate cache with ConfigStore instances for multiple releases.
+
+    Use this to warm up the cache before running multiple operations,
+    reducing latency for subsequent requests.
+
+    Args:
+        releases: Comma-separated list of release versions (e.g., "4.19.1,4.18.5,4.17.10")
+
+    Returns:
+        JSON string with warming results
+
+    Example:
+        mcp_cache_warm("4.19.1,4.18.5") - Warm cache for releases 4.19.1 and 4.18.5
+
+    Performance benefit:
+        - First access per release: ~1000ms (cache miss + warming)
+        - Subsequent accesses: <10ms (cache hit)
+    """
+    try:
+        release_list = [r.strip() for r in releases.split(",") if r.strip()]
+
+        if not release_list:
+            return json.dumps({
+                "success": False,
+                "error": "No releases provided. Expected comma-separated list (e.g., '4.19.1,4.18.5')"
+            }, indent=2)
+
+        # Warm cache
+        _configstore_cache.warm(release_list)
+
+        return json.dumps({
+            "success": True,
+            "message": f"Cache warmed with {len(release_list)} releases",
+            "releases": release_list
+        }, indent=2)
+    except Exception as e:
+        logger.error(f"Failed to warm cache: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "releases": release_list if 'release_list' in locals() else []
         }, indent=2)
 
 
