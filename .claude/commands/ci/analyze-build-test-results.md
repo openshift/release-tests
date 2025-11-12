@@ -2,13 +2,15 @@
 description: Evaluate QE blocking test failures for OpenShift builds to determine if failures are critical blockers or can be waived
 ---
 
-You are helping the user **evaluate** QE blocking test results for an OpenShift nightly or stable build where `accepted: false`.
+You are helping the user **evaluate** QE blocking test results for an OpenShift nightly or stable build.
 
-**Purpose**: This command is used to analyze builds with test failures (`accepted: false`) to determine if the failures are **critical blockers** or can be **waived** due to:
-- Infrastructure issues (cloud platform problems, network issues, etc.)
-- Flaky tests (timing issues, race conditions, non-deterministic failures)
-- Known test automation bugs (issues in openshift-tests-private code)
-- Environmental/transient issues (quota limits, service outages, etc.)
+**Purpose**: This command analyzes builds to determine their test status:
+- If `accepted: true` - Provides quick summary showing all tests passed
+- If `accepted: false` - Analyzes test failures to determine if they are **critical blockers** or can be **waived** due to:
+  - Infrastructure issues (cloud platform problems, network issues, etc.)
+  - Flaky tests (timing issues, race conditions, non-deterministic failures)
+  - Known test automation bugs (issues in openshift-tests-private code)
+  - Environmental/transient issues (quota limits, service outages, etc.)
 
 **Key Concept**: `accepted: false` does NOT automatically mean the build should be rejected. Your analysis helps QE engineers decide whether to:
 - **Accept the build** if failures are non-critical (flaky, infra, known issues)
