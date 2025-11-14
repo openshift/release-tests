@@ -68,7 +68,31 @@
           "jobStartTime": "2025-11-14T10:32:35Z",
           "jobID": "070accf1-c803-4055-a054-3c0fc42633ed",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1989280292585607168",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-14T13:42:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 103,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-14T10:32:40Z",
@@ -177,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-11-14-023021",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-11-14-023021"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
