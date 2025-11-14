@@ -36,9 +36,32 @@
         "jobStartTime": "2025-11-14T19:31:04Z",
         "jobID": "d7706a20-7163-4ae2-b51a-d6c544deb187",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-disruptive-f999/1989415807511171072",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-11-14T21:29:26Z",
+        "testResultSummary": {
+          "openshift-extended-test-disruptive": {
+            "total": 10,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 5,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads taints and toleration works well ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-Medium-13538-Check Existing pods with matched NoExecute will stay on node for time of tolerationSeconds [Disruptive] [Serial]"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-11-14T21:36:08Z",
+          "jobID": "ebb6557a-9a44-4727-81fc-55b25ba97fc1",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2025-11-14T21:36:13Z",
+          "jobID": "e9dbeda7-03fe-490a-a3b7-3a9b2473d5ed",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.19-gcp-ipi-f999",
