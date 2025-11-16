@@ -136,13 +136,64 @@
           "jobStartTime": "2025-11-16T07:39:48Z",
           "jobID": "41ca1510-0223-434c-b205-18d11c03874e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1989961586789322752",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-16T10:58:50Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 108,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 31,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-75516-CRD upgrade checks for the field maximum minimum changes",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-High-74978-CRD upgrade will be prevented if the Scope is switched between Namespaced and Cluster"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-16T07:39:53Z",
           "jobID": "63e4d010-25e7-4f06-ad3f-f6919152b180",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/1989961608033472512",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-16T10:57:33Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 108,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 31,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-69123-Catalogd clustercatalog offer the operator content through http server",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-75516-CRD upgrade checks for the field maximum minimum changes",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-High-74978-CRD upgrade will be prevented if the Scope is switched between Namespaced and Cluster"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -306,5 +357,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-11-15-214255",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-11-15-214255"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
