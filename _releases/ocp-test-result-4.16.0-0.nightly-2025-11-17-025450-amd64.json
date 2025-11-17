@@ -103,7 +103,31 @@
           "jobStartTime": "2025-11-17T11:38:37Z",
           "jobID": "1e2cd41b-2f7c-4186-8707-6775a404e881",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1990384072811089920",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-17T14:35:45Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 103,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46813-[CSI-Driver][CSI Clone] Clone a pvc with Raw Block VolumeMode"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-17T11:38:42Z",
@@ -192,5 +216,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-11-17-025450",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-11-17-025450"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
