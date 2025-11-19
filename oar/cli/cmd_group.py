@@ -70,9 +70,15 @@ def cli(ctx, release, debug):
             for var in validation_result['missing_optional']:
                 logger.warning(f"Optional environment variable not set: {var}")
 
-        cs = ConfigStore(release)
+        # Check if ConfigStore was already provided (e.g., from MCP server cache)
         ctx.ensure_object(dict)
-        ctx.obj["cs"] = cs
+        if "cs" not in ctx.obj:
+            # Create new ConfigStore only if not provided
+            cs = ConfigStore(release)
+            ctx.obj["cs"] = cs
+        else:
+            # Use cached ConfigStore from MCP server
+            logger.debug(f"Using cached ConfigStore for release {release}")
 
 # TODO remove eliminated commands
 cli.add_command(create_test_report)
