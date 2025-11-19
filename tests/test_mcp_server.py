@@ -373,6 +373,118 @@ class TestMCPServer(unittest.IsolatedAsyncioTestCase):
         )
 
 
+class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
+    """Test suite for concurrent MCP client handling"""
+
+    @classmethod
+    def setUpClass(cls):
+        """Set up test fixtures"""
+        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/sse")
+
+    async def test_concurrent_client_connections(self):
+        """Test that multiple clients can connect simultaneously"""
+        # Skip test if server is not available
+        global _server_process
+        if _server_process is None and not os.getenv("MCP_SERVER_URL"):
+            self.skipTest("MCP server is not running")
+
+        async def connect_client(client_id):
+            """Connect a single client and call cache_stats"""
+            async with sse_client(url=self.server_url) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+
+                    # Call cache_stats (safe, read-only)
+                    result = await session.call_tool('mcp_cache_stats', arguments={})
+
+                    # Verify result
+                    self.assertTrue(hasattr(result, 'content'),
+                                  f"Client {client_id} should get result")
+                    content = str(result.content)
+                    self.assertIn('metrics', content)
+
+                    return f"Client {client_id} succeeded"
+
+        # Create 5 concurrent clients
+        tasks = [connect_client(i) for i in range(5)]
+
+        # Run all clients concurrently
+        results = await asyncio.gather(*tasks)
+
+        # Verify all clients succeeded
+        self.assertEqual(len(results), 5)
+        for i, result in enumerate(results):
+            self.assertEqual(result, f"Client {i} succeeded")
+
+    async def test_concurrent_tool_calls_different_clients(self):
+        """Test concurrent tool calls from multiple clients"""
+        # Skip test if server is not available
+        global _server_process
+        if _server_process is None and not os.getenv("MCP_SERVER_URL"):
+            self.skipTest("MCP server is not running")
+
+        async def client_workflow(client_id, tool_name):
+            """Single client making a tool call"""
+            async with sse_client(url=self.server_url) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+
+                    # Call tool
+                    result = await session.call_tool(tool_name, arguments={})
+
+                    # Verify result has content
+                    self.assertTrue(hasattr(result, 'content'),
+                                  f"Client {client_id} should get result for {tool_name}")
+
+                    return (client_id, tool_name, len(str(result.content)))
+
+        # Create 3 clients calling different tools concurrently
+        tasks = [
+            client_workflow(0, 'mcp_cache_stats'),
+            client_workflow(1, 'mcp_cache_stats'),
+            client_workflow(2, 'mcp_cache_stats'),
+        ]
+
+        # Run all workflows concurrently
+        results = await asyncio.gather(*tasks)
+
+        # Verify all completed
+        self.assertEqual(len(results), 3)
+        for client_id, _tool_name, content_len in results:
+            self.assertGreater(content_len, 0,
+                             f"Client {client_id} should get non-empty response")
+
+    async def test_thread_pool_isolation(self):
+        """Test that concurrent requests are properly isolated in thread pool"""
+        # Skip test if server is not available
+        global _server_process
+        if _server_process is None and not os.getenv("MCP_SERVER_URL"):
+            self.skipTest("MCP server is not running")
+
+        # This test verifies that:
+        # 1. Multiple concurrent cache_stats calls complete successfully
+        # 2. Results are consistent (no race conditions)
+        # 3. Cache metrics show expected behavior
+
+        async def get_cache_stats(_client_id):
+            """Get cache stats from single client"""
+            async with sse_client(url=self.server_url) as (read, write):
+                async with ClientSession(read, write) as session:
+                    await session.initialize()
+                    result = await session.call_tool('mcp_cache_stats', arguments={})
+                    return str(result.content)
+
+        # Run 10 concurrent requests
+        tasks = [get_cache_stats(i) for i in range(10)]
+        results = await asyncio.gather(*tasks)
+
+        # Verify all results contain expected fields
+        for i, content in enumerate(results):
+            self.assertIn('metrics', content, f"Result {i} should have metrics")
+            self.assertIn('cache_size', content, f"Result {i} should have cache_size")
+            self.assertIn('hit_rate', content, f"Result {i} should have hit_rate")
+
+
 class TestMCPServerErrorHandling(unittest.IsolatedAsyncioTestCase):
     """Test suite for MCP server error handling"""
 

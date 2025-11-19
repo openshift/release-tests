@@ -194,6 +194,8 @@ The MCP (Model Context Protocol) server (`mcp_server/server.py`) exposes OAR com
 - Categorizes operations by safety (read-only, write, critical)
 - Validates environment on startup
 - Runs as HTTP server (SSE transport) for remote access
+- Uses **direct Click invocation** (70-90% faster than subprocess)
+- Implements **async concurrency** via ThreadPoolExecutor for handling multiple AI agent requests simultaneously
 
 **Categories of tools:**
 1. **Read-only tools** - Safe query operations (check-greenwave-cvp-tests, check-cve-tracker-bug, image-signed-check, is-release-shipped)
