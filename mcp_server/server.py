@@ -1078,7 +1078,7 @@ async def oar_get_release_metadata(release: str) -> str:
             "release_date": cs.get_release_date(),
         }
 
-        return json.dumps(metadata, indent=2)
+        return json.dumps(metadata)
 
     except Exception as e:
         logger.error(f"Failed to get release metadata: {e}")
@@ -1118,7 +1118,7 @@ async def oar_is_release_shipped(release: str) -> str:
         operator = ReleaseShipmentOperator(cs)
         result = operator.is_release_shipped()
 
-        return json.dumps(result, indent=2)
+        return json.dumps(result)
 
     except Exception as e:
         logger.error(f"Failed to check release shipment status: {e}")
@@ -1126,7 +1126,7 @@ async def oar_is_release_shipped(release: str) -> str:
             "error": str(e),
             "shipped": False,
             "details": {}
-        }, indent=2)
+        })
 
 
 @mcp.tool()
@@ -1197,7 +1197,7 @@ async def oar_get_release_status(release: str) -> str:
             "tasks": tasks
         }
 
-        return json.dumps(result, indent=2)
+        return json.dumps(result)
 
     except Exception as e:
         logger.error(f"Failed to get release status: {e}")
@@ -1206,7 +1206,7 @@ async def oar_get_release_status(release: str) -> str:
             "release": release,
             "overall_status": "Unknown",
             "tasks": {}
-        }, indent=2)
+        })
 
 
 @mcp.tool()
@@ -1249,7 +1249,7 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         return json.dumps({
             "success": False,
             "error": f"Invalid status: {status}. Must be one of: {', '.join(valid_statuses)}"
-        }, indent=2)
+        })
 
     # Map task names to Google Sheets labels
     task_to_label = {
@@ -1268,7 +1268,7 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         return json.dumps({
             "success": False,
             "error": f"Invalid task name: {task_name}. Must be one of: {', '.join(task_to_label.keys())}"
-        }, indent=2)
+        })
 
     try:
         cs = get_cached_configstore(release)
@@ -1285,7 +1285,7 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
             "task": task_name,
             "status": status,
             "message": f"Successfully updated task '{task_name}' to '{status}'"
-        }, indent=2)
+        })
 
     except Exception as e:
         logger.error(f"Failed to update task status: {e}")
@@ -1295,7 +1295,7 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
             "release": release,
             "task": task_name,
             "status": status
-        }, indent=2)
+        })
 
 
 # ============================================================================
@@ -1321,10 +1321,10 @@ async def mcp_cache_stats() -> str:
     """
     try:
         stats = _configstore_cache.stats()
-        return json.dumps(stats, indent=2)
+        return json.dumps(stats)
     except Exception as e:
         logger.error(f"Failed to get cache stats: {e}")
-        return json.dumps({"error": str(e)}, indent=2)
+        return json.dumps({"error": str(e)})
 
 
 @mcp.tool()
@@ -1358,14 +1358,14 @@ async def mcp_cache_invalidate(release: Optional[str] = None) -> str:
             "success": True,
             "message": message,
             "release": release if release else "all"
-        }, indent=2)
+        })
     except Exception as e:
         logger.error(f"Failed to invalidate cache: {e}")
         return json.dumps({
             "success": False,
             "error": str(e),
             "release": release if release else "all"
-        }, indent=2)
+        })
 
 
 @mcp.tool()
@@ -1396,7 +1396,7 @@ async def mcp_cache_warm(releases: str) -> str:
             return json.dumps({
                 "success": False,
                 "error": "No releases provided. Expected comma-separated list (e.g., '4.19.1,4.18.5')"
-            }, indent=2)
+            })
 
         # Warm cache
         _configstore_cache.warm(release_list)
@@ -1405,14 +1405,14 @@ async def mcp_cache_warm(releases: str) -> str:
             "success": True,
             "message": f"Cache warmed with {len(release_list)} releases",
             "releases": release_list
-        }, indent=2)
+        })
     except Exception as e:
         logger.error(f"Failed to warm cache: {e}")
         return json.dumps({
             "success": False,
             "error": str(e),
             "releases": release_list if 'release_list' in locals() else []
-        }, indent=2)
+        })
 
 
 # ============================================================================
