@@ -45,13 +45,6 @@ class NotificationManager:
             NotificationException: error when share this info
         """
         try:
-            # Send email
-            # mail_subject = self.cs.release + " z-stream errata test status"
-            # mail_content = self.mh.get_mail_content_for_new_report(report)
-            # self.mc.send_email(
-            #     self.cs.get_email_contact("qe"), mail_subject, mail_content
-            # )
-            # Send slack message
             slack_msg = self.mh.get_slack_message_for_new_report(report)
             self.sc.post_message(
                 self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
@@ -76,7 +69,6 @@ class NotificationManager:
         """
 
         try:
-            # Send slack message only
             slack_msg = self.mh.get_slack_message_for_ownership_change(
                 updated_ads, abnormal_ads, updated_subtasks, new_owner
             )
@@ -153,7 +145,7 @@ class NotificationManager:
                 cve_tracker_bugs)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact("art"), slack_msg
+                    self._get_channel("art"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
@@ -195,13 +187,12 @@ class NotificationManager:
             slack_msg = self.mh.get_slack_message_for_dropped_bugs(dropped_bugs)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
-                "share dropped bugs failed"
-            ) from e
+                "share dropped bugs failed") from e
     
     
     def share_dropped_and_high_severity_bugs(self, dropped_bugs, high_severity_bugs):
@@ -221,13 +212,12 @@ class NotificationManager:
             )
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-release"), slack_msg
                 )
         except Exception as e:
             raise NotificationException(
-                "share dropped and high severity bugs failed"
-            ) from e
+                "share dropped and high severity bugs failed") from e
 
     def share_doc_prodsec_approval_result(self, doc_appr, prodsec_appr):
         """
@@ -239,7 +229,7 @@ class NotificationManager:
             )
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "approver"), slack_msg
                 )
         except Exception as e:
@@ -325,6 +315,24 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share shipment MR and AD info failed") from e
         
+    def share_drop_bugs_mr_for_approval(self, mr_url: str):
+        """
+        Notify ART forum channel to approve the drop-bugs merge request
+
+        Args:
+            mr_url (str): URL of the drop-bugs merge request
+
+        Raises:
+            NotificationException: error when posting message
+        """
+        try:
+            slack_msg = f"ART team, please review and approve the drop-bugs MR: {mr_url}"
+            # Use forum channel mapping from config
+            channel = self.cs.get_slack_channel_from_contact("qe-forum")
+            self.sc.post_message(channel, slack_msg)
+        except Exception as e:
+            raise NotificationException("share drop-bugs MR for approval failed") from e
+
     def share_unverified_cve_issues_to_managers(self, unverified_cve_issues):
         """
         Share unverified CVE issues to managers of QA contacts
@@ -340,7 +348,7 @@ class NotificationManager:
                 unverified_cve_issues)
             if len(slack_msg):
                 self.sc.post_message(
-                    self.cs.get_slack_channel_from_contact(
+                    self._get_channel(
                         "qe-forum"), slack_msg
                 )
         except Exception as e:

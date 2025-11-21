@@ -14,7 +14,7 @@ logging.basicConfig(
 
 class TestNotificationManager(unittest.TestCase):
     def setUp(self):
-        self.cs = ConfigStore("4.13.6")
+        self.cs = ConfigStore("4.19.14")
         self.nm = NotificationManager(self.cs)
 
     @unittest.skip
@@ -174,3 +174,27 @@ class TestNotificationManager(unittest.TestCase):
             self.nm.share_unverified_cve_issues_to_managers([test_issue])
 
         self.nm.sc.post_message.assert_called_once()
+
+    def test_share_drop_bugs_mr_for_approval_success(self):
+        """Ensure MR approval request is posted to forum channel with URL"""
+        mr_url = "https://gitlab.example.com/mygroup/ocp-shipment-data/-/merge_requests/136"
+        # Mock channel mapping and Slack posting
+        self.nm.cs.get_slack_channel_from_contact = unittest.mock.Mock(return_value="#forum-ocp-release")
+        self.nm.sc.post_message = unittest.mock.Mock()
+
+        self.nm.share_drop_bugs_mr_for_approval(mr_url)
+
+        # Validate channel and message contents
+        self.nm.sc.post_message.assert_called_once()
+        args, kwargs = self.nm.sc.post_message.call_args
+        self.assertEqual(args[0], "#forum-ocp-release")
+        self.assertIn(mr_url, args[1])
+
+    def test_share_drop_bugs_mr_for_approval_error(self):
+        """Ensure NotificationException is raised when Slack post fails"""
+        mr_url = "https://gitlab.example.com/mygroup/ocp-shipment-data/-/merge_requests/999"
+        self.nm.cs.get_slack_channel_from_contact = unittest.mock.Mock(return_value="#forum-ocp-release")
+        self.nm.sc.post_message = unittest.mock.Mock(side_effect=Exception("Slack failure"))
+
+        with self.assertRaises(NotificationException):
+            self.nm.share_drop_bugs_mr_for_approval(mr_url)
