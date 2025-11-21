@@ -132,7 +132,188 @@ Follow these steps:
    - Present with "⚠️ Please manually verify" disclaimer
    - **Only include potentially relevant issues** - do not list clearly unrelated issues (adds noise)
 
-6. **Analyze QE Automation Test Code** (if openshift-tests-private detected):
+6. **Analyze Cucushift/Cucumber Test Code** (if cucushift failures detected):
+
+   **Detection**: Check if any failure has `cucushift-e2e` in the `source_file` field from JSON output.
+
+   **Cucushift Test Analysis**:
+   - Cucushift tests use Cucumber framework (NOT Ginkgo)
+   - Test repositories:
+     - **verification-tests**: https://github.com/openshift/verification-tests (public)
+     - **cucushift**: https://github.com/openshift/cucushift (internal QE - may need auth)
+   - **Feature files**: Tests defined in `.feature` files using Ginkgo/Cucumber BDD syntax
+   - **Full trace logs**: Available in `cucushift_trace.full_trace` field (enriched from console log)
+
+   **Analyze Cucushift Failures**:
+
+   For each cucushift failure in the JSON output:
+
+   a. **Check for enriched trace data**:
+      ```json
+      {
+        "test_name": "Scenario name from feature file",
+        "source_file": "artifacts/.../cucushift-e2e/junit_cucushift-e2e-combined-....xml",
+        "cucushift_trace": {
+          "full_trace": "... complete trace log from console ...",
+          "error_snippet": "... key error messages ...",
+          "feature_file": "features/path/to/file.feature",
+          "line_number": "123"
+        }
+      }
+      ```
+
+   b. **Locate feature file** (if `feature_file` provided):
+      - Clone verification-tests or cucushift repository
+      - Navigate to the feature file path (e.g., `features/networking/sdn.feature`)
+      - Read scenario at the specified line number
+
+   c. **Analyze full trace log**:
+      - Review `cucushift_trace.full_trace` for complete failure context
+      - `error_snippet` contains key error messages (filtered for keywords like "error:", "expected:", "got:")
+      - Trace includes ~550 lines of context (50 before, 500 after scenario start)
+
+   d. **Root cause assessment workflow**:
+
+      **Step 1: Identify Error Type**
+      - Data type mismatches (number vs string, array vs object) → Usually **automation bug**
+      - API errors, product crashes, unexpected behavior → Usually **product bug**
+      - Setup/teardown errors, missing resources → Usually **infrastructure/automation**
+
+      **Step 2: Locate Source Code**
+      - Feature file: `verification-tests/features/<area>/<feature>.feature`
+      - Step definitions: `verification-tests/lib/rules/` or `features/step_definitions/`
+      - Helper code: `verification-tests/lib/`
+      - Look for the feature file path and line number in `cucushift_trace.feature_file`
+
+      **Step 3: Trace the Data Flow**
+      - Find where test parameters are defined (feature file, example tables, scenario outline)
+      - Find where parameters are processed (step definitions in Ruby)
+      - Find where parameters are passed to OpenShift API (helper methods, kubectl/oc commands)
+
+      **Step 4: Determine Root Cause**
+
+      **Example: Type Mismatch Errors**
+      ```
+      Error: "json: cannot unmarshal number into Go struct field ObjectMeta.metadata.namespace of type string"
+
+      Root Cause Analysis:
+      1. Error shows namespace expected as STRING but received NUMBER
+      2. Check feature file for namespace definition:
+         Examples:
+           | namespace |
+           | 49831     |  # <-- YAML interprets this as integer
+
+      3. Check step definition handling this parameter:
+         When /^I run the :create command with:$/ do |table|
+           opts = table.rows_hash
+           # BUG: opts[:namespace] is Integer (49831) not String ("49831")
+           run_command(:create, opts)
+         end
+
+      4. Conclusion: Test automation bug - needs type conversion
+      ```
+
+      **Step 5: Common Cucumber/Cucushift Anti-patterns**
+      - Hardcoded waits without proper conditionals
+      - Missing type conversions for parameters from example tables
+      - Missing step error handling
+      - Flaky element selectors or timing issues
+      - Race conditions in async operations
+
+   e. **Provide comprehensive analysis with fix proposal**:
+      ```markdown
+      ### Cucushift Test Failure Analysis
+
+      **Scenario**: {test_name}
+      **Feature File**: {feature_file}:{line_number}
+      **Source Repository**: https://github.com/openshift/verification-tests
+
+      **Error Summary**:
+      {error_snippet from cucushift_trace}
+
+      **Full Error Context**:
+      {relevant portion of full_trace showing error and surrounding context}
+
+      **Root Cause Analysis**:
+
+      1. **Error Type**: {Data type mismatch / API error / etc.}
+
+      2. **Data Flow Trace**:
+         - Parameter defined in: {feature file location}
+         - Parameter processed by: {step definition file/method}
+         - Parameter passed to: {OpenShift API / kubectl command}
+
+      3. **Root Cause**: {detailed explanation of what went wrong}
+
+      4. **Evidence**:
+         - Expected: {what the code expected}
+         - Actual: {what was provided}
+         - Why mismatch occurred: {explanation}
+
+      **Assessment**:
+      - **Classification**: {Automation Bug / Product Bug / Infrastructure Issue}
+      - **Confidence**: {HIGH / MEDIUM / LOW}
+      - **Reasoning**: {why this classification - reference error patterns}
+
+      **Fix Proposal**:
+
+      **Location**: `verification-tests/{file_path}`
+
+      **Current Code** (estimated based on error):
+      ```ruby
+      When /^I run the :create command with:$/ do |table|
+        opts = table.rows_hash
+        # BUG: namespace comes as Integer from YAML example table
+        run_command(:create, opts)
+      end
+      ```
+
+      **Proposed Fix**:
+      ```ruby
+      When /^I run the :create command with:$/ do |table|
+        opts = table.rows_hash
+        # FIX: Convert all parameter values to strings for API compatibility
+        opts = opts.transform_values(&:to_s)
+        run_command(:create, opts)
+      end
+      ```
+
+      **OR** (if only namespace needs conversion):
+      ```ruby
+      When /^I run the :create command with:$/ do |table|
+        opts = table.rows_hash
+        opts[:namespace] = opts[:namespace].to_s if opts[:namespace]
+        run_command(:create, opts)
+      end
+      ```
+
+      **Alternative Fix** (in feature file):
+      ```gherkin
+      Examples:
+        | namespace |
+        | "49831"   |  # Quote to force string in YAML
+      ```
+
+      **Recommended Action**:
+      1. Clone verification-tests repository
+      2. Locate the step definition handling this command
+      3. Add type conversion as shown above
+      4. Add test case to verify fix
+      5. Submit PR to verification-tests
+
+      **References**:
+      - Test case: {test_name}
+      - Feature file: {feature_file}:{line_number}
+      - Prow job: {job_url}
+      ```
+
+   **Important Notes**:
+   - **DO NOT** search openshift-tests-private for cucushift tests (that's for Ginkgo tests only)
+   - **DO NOT** confuse Cucumber scenarios with Ginkgo test cases
+   - Cucushift tests focus on operator/workload behavior, not core OpenShift APIs
+   - If `cucushift_trace` field is missing: trace extraction failed (scenario not found in console log)
+
+7. **Analyze Ginkgo QE Automation Test Code** (if openshift-tests-private detected):
    - Use case IDs and release branch extracted in step 3
    - **Setup Repository Access**:
      - Check if repo exists: `../openshift-tests-private` (parent directory of current repo)
