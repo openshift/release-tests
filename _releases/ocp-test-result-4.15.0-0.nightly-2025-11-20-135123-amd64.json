@@ -32,9 +32,48 @@
         "jobStartTime": "2025-11-21T04:29:39Z",
         "jobID": "d1161fab-653d-4261-ab33-5adb65688c0e",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1991725671272943616",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-11-21T07:36:48Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 86,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-11-21T18:01:14Z",
+          "jobID": "3cbf0a77-1f17-41fd-b37e-712a814bb426",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1991929947328876544",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-11-21T18:01:19Z",
+          "jobID": "eecc9ca3-6c6e-4914-b357-483f953e45e4",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1991929949841264640",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
