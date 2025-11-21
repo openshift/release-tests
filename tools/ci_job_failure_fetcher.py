@@ -39,6 +39,94 @@ MAX_DETAILS_LENGTH = 2000  # Characters for stack trace
 MUST_GATHER_EXTRACT_DIR = os.getenv('MUST_GATHER_EXTRACT_DIR', '/tmp')
 
 
+class CucushiftConsoleLogParser:
+    """Parser for cucushift-e2e build-log.txt to extract detailed trace logs for failed tests"""
+
+    def __init__(self, console_log: str):
+        """
+        Initialize parser with cucushift console log content.
+
+        Args:
+            console_log: Full content of cucushift-e2e/build-log.txt
+        """
+        self.console_log = console_log
+        self.lines = console_log.split('\n')
+
+    def extract_trace_for_scenario(self, scenario_name: str) -> Dict:
+        """
+        Extract full trace log for a specific failed Cucumber scenario.
+
+        Args:
+            scenario_name: Name of the failed scenario from JUnit XML
+
+        Returns:
+            Dictionary with trace information including:
+            - full_trace: Complete trace log for the scenario
+            - error_snippet: Key error message excerpt
+            - feature_file: Feature file path if found
+            - line_number: Line number in feature file if found
+        """
+        trace_info = {
+            'scenario_name': scenario_name,
+            'full_trace': None,
+            'error_snippet': None,
+            'feature_file': None,
+            'line_number': None,
+            'found': False
+        }
+
+        # Search for scenario name in console log
+        scenario_start_idx = None
+        for i, line in enumerate(self.lines):
+            # Cucumber scenario markers: "Scenario: <name>" or "cucumber features/..."
+            if f"Scenario: {scenario_name}" in line or scenario_name in line:
+                scenario_start_idx = i
+                break
+
+        if scenario_start_idx is None:
+            logger.warning(f"Could not find scenario '{scenario_name}' in cucushift console log")
+            return trace_info
+
+        # Extract trace from scenario start to next scenario or end
+        trace_lines = []
+        error_lines = []
+
+        # Look backwards to capture any setup logs
+        lookback_start = max(0, scenario_start_idx - 50)
+
+        # Look forward to capture full trace (typically 100-500 lines for failures)
+        lookforward_end = min(len(self.lines), scenario_start_idx + 500)
+
+        for i in range(lookback_start, lookforward_end):
+            line = self.lines[i]
+            trace_lines.append(line)
+
+            # Capture error indicators - look for key error/failure keywords
+            lower_line = line.lower()
+            if any(keyword in lower_line for keyword in ['error', 'fail', 'panic', 'exception', 'traceback']):
+                error_lines.append(line)
+
+            # Extract feature file info from Cucumber output
+            # Format: "cucumber features/xxx.feature:123"
+            if 'cucumber features/' in line:
+                import re
+                match = re.search(r'cucumber (features/[^:]+):(\d+)', line)
+                if match:
+                    trace_info['feature_file'] = match.group(1)
+                    trace_info['line_number'] = match.group(2)
+
+            # Stop at next scenario
+            if i > scenario_start_idx and line.strip().startswith('Scenario:'):
+                break
+
+        if trace_lines:
+            trace_info['full_trace'] = '\n'.join(trace_lines)
+            trace_info['error_snippet'] = '\n'.join(error_lines[:10]) if error_lines else None
+            trace_info['found'] = True
+
+        return trace_info
+
+
 class DetailedJunitTestCase:
     """Extended JUnit test case parser that extracts failure messages and stack traces"""
 
@@ -307,6 +395,12 @@ class CIJobFailureFetcher:
         if failed_tests > 0 or error_tests > 0:
             logger.warning(f"Found {len(failures)} failed test case(s)")
 
+        # Detect and enrich cucushift failures with full trace logs
+        has_cucushift = self._detect_cucushift_failures(suites_info)
+        if has_cucushift and failures:
+            logger.info("Detected cucushift test failures - enriching with console log traces")
+            failures = self._enrich_cucushift_failures(failures)
+
         # Group failures by pattern to identify common issues
         failure_patterns = self._group_failures_by_pattern(failures)
         logger.info(f"Identified {len(failure_patterns)} unique failure patterns")
@@ -373,6 +467,67 @@ class CIJobFailureFetcher:
     def _get_build_log_url(self) -> str:
         """Get the GCS web URL for the build log"""
         return f"https://{self._get_gcsweb_domain()}/gcs/{self.bucket}/logs/{self.job_name}/{self.job_run_id}/build-log.txt"
+
+    def _detect_cucushift_failures(self, suites_info: List[Dict]) -> bool:
+        """
+        Detect if this job has cucushift test failures.
+
+        Args:
+            suites_info: List of test suite information
+
+        Returns:
+            True if cucushift failures detected
+        """
+        for suite in suites_info:
+            if 'cucushift' in suite.get('source_file', '').lower():
+                return True
+        return False
+
+    def _enrich_cucushift_failures(self, failures: List[Dict]) -> List[Dict]:
+        """
+        Enrich cucushift test failures with full trace logs from console.
+
+        Args:
+            failures: List of failure dictionaries from JUnit XML
+
+        Returns:
+            Enriched failures list with full_trace added to cucushift failures
+        """
+        # Try to fetch cucushift console log
+        try:
+            console_log = self.artifacts.get_cucushift_build_log()
+            logger.info(f"Successfully fetched cucushift console log ({len(console_log)} bytes)")
+            parser = CucushiftConsoleLogParser(console_log)
+        except FileNotFoundError as e:
+            logger.warning(f"Cucushift console log not found: {e}")
+            return failures
+        except Exception as e:
+            logger.error(f"Error fetching cucushift console log: {e}")
+            return failures
+
+        # Enrich each cucushift failure with trace log
+        enriched_failures = []
+        for failure in failures:
+            # Check if this is a cucushift failure
+            if 'cucushift' in failure.get('source_file', '').lower():
+                # Extract trace for this scenario
+                trace_info = parser.extract_trace_for_scenario(failure['test_name'])
+
+                if trace_info['found']:
+                    # Add trace information to failure
+                    failure['cucushift_trace'] = {
+                        'full_trace': trace_info['full_trace'][:5000],  # Limit to 5K chars
+                        'error_snippet': trace_info['error_snippet'],
+                        'feature_file': trace_info['feature_file'],
+                        'line_number': trace_info['line_number']
+                    }
+                    logger.info(f"Enriched cucushift failure '{failure['test_name']}' with trace log")
+                else:
+                    logger.warning(f"Could not find trace for cucushift scenario '{failure['test_name']}'")
+
+            enriched_failures.append(failure)
+
+        return enriched_failures
 
     def setup_must_gather_analysis(self) -> Dict:
         """

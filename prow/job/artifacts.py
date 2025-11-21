@@ -24,7 +24,8 @@ class Artifacts():
     def get_junit_files(self):
         patterns = [r'.*/junit.*import-.*xml',
                     r'.*/junit.*TEST-features-.*xml',
-                    r'.*/gui_test.*console-cypress.xml']
+                    r'.*/gui_test.*console-cypress.xml',
+                    r'.*/cucushift-e2e/artifacts/junit_cucushift-e2e-combined.*\.xml']
         return self._gcs.get_files(self._root_dir, patterns)
 
     def get_test_failures_summary(self):
@@ -57,6 +58,28 @@ class Artifacts():
             return blob.download_as_bytes().decode('utf-8', errors='ignore')
         else:
             raise FileNotFoundError(f"build-log.txt not found")
+
+    def get_cucushift_build_log(self):
+        """
+        Fetch the cucushift-e2e build-log.txt file containing detailed test trace logs.
+
+        Returns:
+            str: The cucushift build log content
+
+        Raises:
+            FileNotFoundError: If cucushift build-log.txt is not found
+        """
+        # Search pattern: artifacts/*/cucushift-e2e/build-log.txt
+        patterns = [r'.*/cucushift-e2e/build-log\.txt']
+        blobs = self._gcs.get_files(self._root_dir, patterns)
+
+        if blobs:
+            logger.info(f"Found cucushift build log at: {blobs[0].name}")
+            return blobs[0].download_as_bytes().decode('utf-8', errors='ignore')
+        else:
+            raise FileNotFoundError(
+                f"cucushift-e2e/build-log.txt not found for job {self._job_name}/{self._job_run_id}"
+            )
 
     def get_must_gather(self):
         """
