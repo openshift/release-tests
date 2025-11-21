@@ -48,8 +48,11 @@ The MCP server:
 # Ensure credentials are loaded
 source ~/.bash_profile
 
+# Navigate to mcp_server directory
+cd mcp_server/
+
 # Run the server
-python3 -m mcp.server
+python3 server.py
 ```
 
 ### Deploying on VM
