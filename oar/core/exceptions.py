@@ -43,3 +43,7 @@ class ShipmentDataException(BaseException):
 
 class GitException(BaseException):
     """Exception class to raise error in GitHelper"""
+
+
+class StateBoxException(BaseException):
+    """Exception class to raise error in StateBox"""

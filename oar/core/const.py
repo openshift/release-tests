@@ -48,6 +48,24 @@ ALL_TASKS = [
     LABEL_TASK_CHANGE_AD_STATUS,
 ]
 
+# Supported task names for OAR workflow
+# Human-readable task names used in StateBox and MCP server
+# Aligned with CLI commands and Konflux release flow specification
+SUPPORTED_TASK_NAMES = [
+    "take-ownership",
+    "update-bug-list",
+    "image-consistency-check",
+    "analyze-candidate-build",
+    "analyze-promoted-build",
+    "check-greenwave-cvp-tests",
+    "check-cve-tracker-bug",
+    "push-to-cdn-staging",
+    "stage-testing",
+    "image-signed-check",
+    "drop-bugs",
+    "change-advisory-status",
+]
+
 # overall status
 OVERALL_STATUS_GREEN = "Green"
 OVERALL_STATUS_RED = "Red"
