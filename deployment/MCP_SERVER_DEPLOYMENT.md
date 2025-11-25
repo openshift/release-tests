@@ -65,7 +65,7 @@ source ~/.bash_profile
 echo $OAR_JWK  # Should print your JWK key
 
 # Test the server (Ctrl+C to stop)
-python3 -m mcp.server
+python3 -m mcp_server.server
 ```
 
 You should see:
