@@ -53,9 +53,49 @@
         "jobStartTime": "2025-11-25T00:21:12Z",
         "jobID": "5cee9512-da8c-427b-bbe0-5645506fd205",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1993112699411632128",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-11-25T03:38:35Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 86,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46813-[CSI-Driver][CSI Clone] Clone a pvc with Raw Block VolumeMode"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-11-25T04:21:21Z",
+          "jobID": "3e030f18-ad2f-4f6d-b1af-9fad0ccd0208",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1993173133770625024",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-11-25T04:21:26Z",
+          "jobID": "dd760511-4c33-403f-bcf1-6c5f08aca3f0",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1993173155002191872",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
@@ -71,7 +111,31 @@
           "jobStartTime": "2025-11-25T01:24:24Z",
           "jobID": "5da9c888-94a5-41c2-b92b-6241c26b1258",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1993128603012829184",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-25T04:13:52Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-25T01:24:29Z",
