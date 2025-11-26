@@ -111,7 +111,25 @@
           "jobStartTime": "2025-11-26T10:32:47Z",
           "jobID": "77debc28-814b-4a2d-94d3-b61375d7d7d8",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/1993629016417898496",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-26T13:36:07Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 72,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 23
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-26T10:32:52Z",
@@ -160,7 +178,25 @@
           "jobStartTime": "2025-11-26T10:33:08Z",
           "jobID": "e7452c70-620b-4cbd-b659-4edc3756e43d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/1993629085783298048",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-26T13:22:50Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 72,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            }
+          }
         }
       ]
     },
@@ -185,7 +221,8 @@
           "jobStartTime": "2025-11-26T10:33:23Z",
           "jobID": "bfc393a7-e295-4500-885b-eead42a24138",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f999/1993629149385723904",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-11-26T13:23:24Z"
         }
       ]
     },
@@ -221,5 +258,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2025-11-25-202516",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2025-11-25-202516"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
