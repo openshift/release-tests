@@ -268,7 +268,7 @@ Context Manager Support:
 import logging
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 import yaml
@@ -280,6 +280,32 @@ from oar.core.exceptions import StateBoxException
 from oar.core.util import validate_release_version
 
 logger = logging.getLogger(__name__)
+
+
+# Custom YAML representer for multi-line strings
+def str_representer(dumper, data):
+    """
+    Custom YAML string representer that uses block scalar style for multi-line strings.
+
+    This improves readability of multi-line log output in YAML files by using | style
+    instead of quoted strings with escaped newlines.
+    """
+    if '\n' in data:
+        # Multi-line string - use block scalar with strip chomping (|-)
+        # This preserves line breaks and strips trailing newlines
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    # Single-line string - use default style
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+
+# Create custom dumper class with str representer
+class StateBoxDumper(yaml.SafeDumper):
+    """Custom YAML dumper for StateBox with block scalar support for multi-line strings."""
+    pass
+
+
+# Register the custom representer with our dumper
+StateBoxDumper.add_representer(str, str_representer)
 
 
 # YAML Schema Constants
@@ -368,7 +394,7 @@ class StateBox:
         Returns:
             dict: Default state dictionary
         """
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         return {
             "schema_version": SCHEMA_VERSION,
             "release": self.release,
@@ -472,7 +498,7 @@ class StateBox:
                 attempt += 1
 
                 # Update timestamp on each attempt
-                state["updated_at"] = datetime.utcnow().isoformat()
+                state["updated_at"] = datetime.now(timezone.utc).isoformat()
 
                 # Try to fetch current content (optimization: skip exists() check)
                 try:
@@ -495,7 +521,7 @@ class StateBox:
                             remote_state = yaml.safe_load(content.decoded_content.decode('utf-8'))
                             state = self._merge_states(state, remote_state)
                             # Update timestamp after merge
-                            state["updated_at"] = datetime.utcnow().isoformat()
+                            state["updated_at"] = datetime.now(timezone.utc).isoformat()
                         else:
                             raise StateBoxException(
                                 f"Concurrent modification detected. "
@@ -508,7 +534,14 @@ class StateBox:
                     current_sha = content.sha
 
                     # Convert to YAML with latest state
-                    yaml_content = yaml.dump(state, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                    # Use custom dumper for better multi-line string formatting
+                    yaml_content = yaml.dump(
+                        state,
+                        Dumper=StateBoxDumper,
+                        default_flow_style=False,
+                        sort_keys=False,
+                        allow_unicode=True
+                    )
 
                     # Perform atomic update with fresh SHA
                     self._repo.update_file(
@@ -521,7 +554,14 @@ class StateBox:
                     logger.info(f"Updated state file {self.file_path} (attempt {attempt})")
                 else:
                     # Create new file
-                    yaml_content = yaml.dump(state, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                    # Use custom dumper for better multi-line string formatting
+                    yaml_content = yaml.dump(
+                        state,
+                        Dumper=StateBoxDumper,
+                        default_flow_style=False,
+                        sort_keys=False,
+                        allow_unicode=True
+                    )
                     self._repo.create_file(
                         path=self.file_path,
                         message=message,
@@ -762,17 +802,23 @@ class StateBox:
             logger.info(f"Created new task: {task_name}")
 
         # Update task fields
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
 
         if status:
             old_status = task["status"]
             task["status"] = status
 
             # Update timestamps based on status transition
-            if status == "In Progress" and old_status == "Not Started":
+            if status == "In Progress":
+                # Always update started_at when task starts (handles re-runs)
                 task["started_at"] = now
-            elif status in ["Pass", "Fail"] and old_status == "In Progress":
+            elif status in ["Pass", "Fail"]:
+                # Set completed_at when task completes
                 task["completed_at"] = now
+                # If started_at is None, set it to same time as completed_at
+                # (handles case where task completed without going through "In Progress")
+                if task["started_at"] is None:
+                    task["started_at"] = now
 
             logger.info(f"Updated task '{task_name}' status: {old_status} -> {status}")
 
@@ -882,7 +928,7 @@ class StateBox:
         # Create new issue
         issue_entry = {
             "issue": issue,
-            "reported_at": datetime.utcnow().isoformat(),
+            "reported_at": datetime.now(timezone.utc).isoformat(),
             "resolved": False,
             "resolution": None,
             "blocker": blocker,
@@ -956,7 +1002,7 @@ class StateBox:
 
         matched_issue["resolved"] = True
         matched_issue["resolution"] = resolution
-        matched_issue["resolved_at"] = datetime.utcnow().isoformat()
+        matched_issue["resolved_at"] = datetime.now(timezone.utc).isoformat()
 
         logger.info(f"Resolved issue: {matched_issue['issue']}")
 
