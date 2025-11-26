@@ -52,8 +52,11 @@ def cli_result_callback(result, release, debug):
         debug: Debug flag from CLI group option
 
     Design:
-        - Logs are captured via ctx.obj['_log_buffer'] (set by __main__.py or MCP server)
+        - Logs are captured via ctx.obj['_log_buffer'] (set by CLI group or provided by MCP server)
         - Task name is derived from Click command name (e.g., "create-test-report")
+        - ConfigStore retrieved from ctx.obj['cs'] (cached in MCP server, fresh in CLI)
+        - StateBox initialized with ConfigStore dependency injection: StateBox(configstore=cs)
+        - Release version extracted from configstore.release (not passed directly)
         - StateBox update happens after command completes
         - Failures are logged but don't block the command
     """
