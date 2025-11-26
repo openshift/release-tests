@@ -9,6 +9,8 @@ from urllib.parse import urlparse
 from subprocess import CalledProcessError
 from requests.exceptions import RequestException
 
+from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT
+
 logger = logging.getLogger(__name__)
 
 def is_valid_z_release(version):
@@ -48,8 +50,8 @@ def get_release_key(version):
 
 def init_logging(log_level=logging.INFO):
     logging.basicConfig(
-        format="%(asctime)s: %(levelname)s: %(message)s",
-        datefmt="%Y-%m-%dT%H:%M:%SZ",
+        format=LOG_FORMAT,
+        datefmt=LOG_DATE_FORMAT,
         level=log_level,
     )
 

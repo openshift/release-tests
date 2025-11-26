@@ -36,8 +36,10 @@ YAML Schema:
           related_tasks: list       # Related task names (empty = general issue)
 
 Example Usage:
-    # Initialize StateBox
-    statebox = StateBox(release="4.19.1")
+    # Initialize StateBox with ConfigStore
+    from oar.core.configstore import ConfigStore
+    cs = ConfigStore("4.19.1")
+    statebox = StateBox(cs)
 
     # Load existing state or create new
     state = statebox.load()
@@ -72,17 +74,21 @@ Example Usage:
 API Reference:
 
 Core Operations:
-    StateBox(release, repo_name="openshift/release-tests", branch="z-stream", github_token=None)
+    StateBox(configstore, repo_name="openshift/release-tests", branch="z-stream", github_token=None)
         Initialize StateBox for a specific release.
 
         Args:
-            release: Release version (e.g., "4.19.1")
-            repo_name: GitHub repository name
+            configstore: ConfigStore instance (provides release version and configuration)
+            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
             github_token: GitHub token (default: from GITHUB_TOKEN env)
 
         Raises:
-            StateBoxException: If release version invalid or token missing
+            StateBoxException: If GitHub token is missing
+
+        Note:
+            Release version is extracted from configstore.release.
+            ConfigStore can be cached (MCP server) or freshly created (CLI).
 
     exists() -> bool
         Check if state file exists in GitHub.
@@ -260,7 +266,9 @@ Error Handling:
     - Automatic retry on transient GitHub API failures (status 409)
 
 Context Manager Support:
-    with StateBox(release="4.19.1") as statebox:
+    from oar.core.configstore import ConfigStore
+    cs = ConfigStore("4.19.1")
+    with StateBox(cs) as statebox:
         statebox.update_task("task-name", status="Pass")
     # Automatic cleanup on exit
 """
@@ -268,18 +276,45 @@ Context Manager Support:
 import logging
 import os
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 import yaml
 from github import Auth, Github
 from github.GithubException import UnknownObjectException, GithubException
 
+from oar.core.configstore import ConfigStore
 from oar.core.const import SUPPORTED_TASK_NAMES
 from oar.core.exceptions import StateBoxException
 from oar.core.util import validate_release_version
 
 logger = logging.getLogger(__name__)
+
+
+# Custom YAML representer for multi-line strings
+def str_representer(dumper, data):
+    """
+    Custom YAML string representer that uses block scalar style for multi-line strings.
+
+    This improves readability of multi-line log output in YAML files by using | style
+    instead of quoted strings with escaped newlines.
+    """
+    if '\n' in data:
+        # Multi-line string - use block scalar with strip chomping (|-)
+        # This preserves line breaks and strips trailing newlines
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    # Single-line string - use default style
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+
+# Create custom dumper class with str representer
+class StateBoxDumper(yaml.SafeDumper):
+    """Custom YAML dumper for StateBox with block scalar support for multi-line strings."""
+    pass
+
+
+# Register the custom representer with our dumper
+StateBoxDumper.add_representer(str, str_representer)
 
 
 # YAML Schema Constants
@@ -317,7 +352,7 @@ class StateBox:
 
     def __init__(
         self,
-        release: str,
+        configstore: ConfigStore,
         repo_name: str = DEFAULT_REPO_NAME,
         branch: str = DEFAULT_BRANCH,
         github_token: Optional[str] = None
@@ -326,25 +361,27 @@ class StateBox:
         Initialize StateBox for a specific release.
 
         Args:
-            release: Release version (e.g., "4.19.1")
+            configstore: ConfigStore instance (provides release version and configuration)
             repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "zstream")
             github_token: GitHub personal access token (default: from GITHUB_TOKEN env)
 
         Raises:
-            StateBoxException: If release version is invalid or GitHub token is missing
-        """
-        # Validate release version
-        if not validate_release_version(release):
-            raise StateBoxException(f"Invalid release version: {release}")
+            StateBoxException: If GitHub token is missing
 
-        self.release = release
+        Note:
+            Release version is extracted from configstore.release.
+            ConfigStore can be cached (MCP server) or freshly created (CLI).
+        """
+        # Extract release from ConfigStore
+        self._configstore = configstore
+        self.release = configstore.release
         self.repo_name = repo_name
         self.branch = branch
 
         # Extract y-stream version (e.g., "4.19" from "4.19.1")
-        y_stream = ".".join(release.split(".")[:2])
-        self.file_path = f"{STATEBOX_PATH_PREFIX}/{y_stream}/statebox/{release}.yaml"
+        y_stream = ".".join(self.release.split(".")[:2])
+        self.file_path = f"{STATEBOX_PATH_PREFIX}/{y_stream}/statebox/{self.release}.yaml"
 
         # Initialize GitHub client
         token = github_token or os.environ.get("GITHUB_TOKEN")
@@ -359,16 +396,18 @@ class StateBox:
         self._state_cache: Optional[Dict[str, Any]] = None
         self._sha_cache: Optional[str] = None
 
-        logger.info(f"Initialized StateBox for release {release} at {repo_name}/{branch}/{self.file_path}")
+        logger.info(f"Initialized StateBox for release {self.release} at {repo_name}/{branch}/{self.file_path}")
 
     def _get_default_state(self) -> Dict[str, Any]:
         """
         Create default state structure for a new release.
 
+        Populates metadata from ConfigStore on initialization.
+
         Returns:
             dict: Default state dictionary
         """
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
         return {
             "schema_version": SCHEMA_VERSION,
             "release": self.release,
@@ -376,11 +415,11 @@ class StateBox:
             "updated_at": now,
             "metadata": {
                 "qe_owner": None,
-                "jira_ticket": None,
-                "advisory_ids": {},  # Flexible dict from ocp-build-data
-                "release_date": None,
-                "candidate_builds": {},
-                "shipment_mr": None,
+                "jira_ticket": self._configstore.get_jira_ticket(),
+                "advisory_ids": self._configstore.get_advisories() or {},
+                "release_date": self._configstore.get_release_date(),
+                "candidate_builds": self._configstore.get_candidate_builds() or {},
+                "shipment_mr": self._configstore.get_shipment_mr() or None,
             },
             "tasks": [],
             "issues": [],
@@ -472,7 +511,7 @@ class StateBox:
                 attempt += 1
 
                 # Update timestamp on each attempt
-                state["updated_at"] = datetime.utcnow().isoformat()
+                state["updated_at"] = datetime.now(timezone.utc).isoformat()
 
                 # Try to fetch current content (optimization: skip exists() check)
                 try:
@@ -495,7 +534,7 @@ class StateBox:
                             remote_state = yaml.safe_load(content.decoded_content.decode('utf-8'))
                             state = self._merge_states(state, remote_state)
                             # Update timestamp after merge
-                            state["updated_at"] = datetime.utcnow().isoformat()
+                            state["updated_at"] = datetime.now(timezone.utc).isoformat()
                         else:
                             raise StateBoxException(
                                 f"Concurrent modification detected. "
@@ -508,7 +547,14 @@ class StateBox:
                     current_sha = content.sha
 
                     # Convert to YAML with latest state
-                    yaml_content = yaml.dump(state, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                    # Use custom dumper for better multi-line string formatting
+                    yaml_content = yaml.dump(
+                        state,
+                        Dumper=StateBoxDumper,
+                        default_flow_style=False,
+                        sort_keys=False,
+                        allow_unicode=True
+                    )
 
                     # Perform atomic update with fresh SHA
                     self._repo.update_file(
@@ -521,7 +567,14 @@ class StateBox:
                     logger.info(f"Updated state file {self.file_path} (attempt {attempt})")
                 else:
                     # Create new file
-                    yaml_content = yaml.dump(state, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                    # Use custom dumper for better multi-line string formatting
+                    yaml_content = yaml.dump(
+                        state,
+                        Dumper=StateBoxDumper,
+                        default_flow_style=False,
+                        sort_keys=False,
+                        allow_unicode=True
+                    )
                     self._repo.create_file(
                         path=self.file_path,
                         message=message,
@@ -762,17 +815,23 @@ class StateBox:
             logger.info(f"Created new task: {task_name}")
 
         # Update task fields
-        now = datetime.utcnow().isoformat()
+        now = datetime.now(timezone.utc).isoformat()
 
         if status:
             old_status = task["status"]
             task["status"] = status
 
             # Update timestamps based on status transition
-            if status == "In Progress" and old_status == "Not Started":
+            if status == "In Progress":
+                # Always update started_at when task starts (handles re-runs)
                 task["started_at"] = now
-            elif status in ["Pass", "Fail"] and old_status == "In Progress":
+            elif status in ["Pass", "Fail"]:
+                # Set completed_at when task completes
                 task["completed_at"] = now
+                # If started_at is None, set it to same time as completed_at
+                # (handles case where task completed without going through "In Progress")
+                if task["started_at"] is None:
+                    task["started_at"] = now
 
             logger.info(f"Updated task '{task_name}' status: {old_status} -> {status}")
 
@@ -882,7 +941,7 @@ class StateBox:
         # Create new issue
         issue_entry = {
             "issue": issue,
-            "reported_at": datetime.utcnow().isoformat(),
+            "reported_at": datetime.now(timezone.utc).isoformat(),
             "resolved": False,
             "resolution": None,
             "blocker": blocker,
@@ -956,7 +1015,7 @@ class StateBox:
 
         matched_issue["resolved"] = True
         matched_issue["resolution"] = resolution
-        matched_issue["resolved_at"] = datetime.utcnow().isoformat()
+        matched_issue["resolved_at"] = datetime.now(timezone.utc).isoformat()
 
         logger.info(f"Resolved issue: {matched_issue['issue']}")
 

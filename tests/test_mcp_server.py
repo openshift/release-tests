@@ -527,6 +527,125 @@ class TestMCPServerErrorHandling(unittest.IsolatedAsyncioTestCase):
                     self.assertIsInstance(e, Exception, "Should raise or return error")
 
 
+class TestMCPServerStateBoxIntegration(unittest.IsolatedAsyncioTestCase):
+    """Test suite for MCP server StateBox integration"""
+
+    @classmethod
+    def setUpClass(cls):
+        """Set up test fixtures"""
+        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/sse")
+        # Use a test release version
+        cls.test_release = "4.20.5"
+
+    async def test_statebox_task_update_with_timestamps(self):
+        """Test that StateBox task is updated with status, result, and timestamps"""
+        # Skip test if server is not available
+        global _server_process
+        if _server_process is None and not os.getenv("MCP_SERVER_URL"):
+            self.skipTest("MCP server is not running")
+
+        # Import StateBox
+        sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        from oar.core.statebox import StateBox
+        from datetime import datetime, timezone
+
+        async with sse_client(url=self.server_url) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+
+                # Record time before calling command
+                time_before = datetime.now(timezone.utc)
+
+                # Call oar_image_signed_check via MCP
+                # This will execute the command and update StateBox via CLI layer's result_callback
+                result = await session.call_tool(
+                    'oar_image_signed_check',
+                    arguments={'release': self.test_release}
+                )
+
+                # Record time after command completes
+                time_after = datetime.now(timezone.utc)
+
+                # Verify MCP call completed
+                self.assertTrue(hasattr(result, 'content'), "Result should have content")
+                content = str(result.content)
+                print(f"\nMCP call completed with output length: {len(content)}")
+
+                # Reload StateBox state from GitHub to get latest updates
+                from oar.core.configstore import ConfigStore
+                cs = ConfigStore(self.test_release)
+                statebox = StateBox(configstore=cs)
+                task = statebox.get_task("image-signed-check")
+
+                # Verify task was created and updated
+                self.assertIsNotNone(task, "Task should exist in StateBox after MCP execution")
+
+                # Verify all required fields exist
+                self.assertIn("name", task, "Task should have 'name' field")
+                self.assertEqual(task["name"], "image-signed-check", "Task name should match")
+
+                self.assertIn("status", task, "Task should have 'status' field")
+                self.assertIn(task["status"], ["Pass", "Fail"],
+                            f"Task status should be Pass or Fail, got: {task['status']}")
+
+                self.assertIn("result", task, "Task should have 'result' field")
+                self.assertIsNotNone(task["result"], "Task result should not be None")
+                self.assertGreater(len(task["result"]), 0, "Task result should contain output")
+
+                # CRITICAL: Verify timestamps are set
+                self.assertIn("started_at", task, "Task should have 'started_at' timestamp")
+                self.assertIsNotNone(task["started_at"], "started_at should not be None")
+
+                self.assertIn("completed_at", task, "Task should have 'completed_at' timestamp")
+                self.assertIsNotNone(task["completed_at"], "completed_at should not be None")
+
+                # Parse timestamps (format: 2025-11-25T13:10:28.062203)
+                # StateBox stores timestamps as timezone-naive UTC timestamps
+                started_at = datetime.fromisoformat(task["started_at"])
+                completed_at = datetime.fromisoformat(task["completed_at"])
+
+                # Make timezone-aware by adding UTC (StateBox uses UTC timestamps)
+                if started_at.tzinfo is None:
+                    started_at = started_at.replace(tzinfo=timezone.utc)
+                if completed_at.tzinfo is None:
+                    completed_at = completed_at.replace(tzinfo=timezone.utc)
+
+                # Verify timestamp logic
+                self.assertLessEqual(started_at, completed_at,
+                                   "started_at should be <= completed_at")
+
+                # Verify completed_at is recent (CRITICAL: always updated on every run)
+                # StateBox behavior: completed_at is ALWAYS updated with current timestamp
+                self.assertGreaterEqual(completed_at, time_before,
+                                      "completed_at should be >= time_before (task just ran)")
+                self.assertLessEqual(completed_at, time_after,
+                                   "completed_at should be <= time_after (task just completed)")
+
+                # Note about started_at: It may be from a previous run if task was already "Pass"
+                # This is CORRECT StateBox behavior - it preserves the original start time
+                # We do NOT assert started_at >= time_before because it may be from days ago
+
+                # Print task details for manual verification
+                print(f"\nStateBox task details:")
+                print(f"  Name: {task['name']}")
+                print(f"  Status: {task['status']}")
+                print(f"  Started at: {task['started_at']}")
+                print(f"  Completed at: {task['completed_at']}")
+                print(f"  Result length: {len(task['result'])} characters")
+                print(f"  Result sample: {task['result'][:200]}")
+
+                # Verify result contains expected output (not empty)
+                # The result should contain captured logs from command execution
+                # Note: StateBox stores raw captured logs, NOT the formatted MCP output
+                # So we won't see ✓/✗ symbols (those are added by format_result() in MCP server)
+                # Instead, verify it contains actual log content
+                self.assertGreater(len(task['result']), 10,
+                                 "Result should contain substantial log output (>10 chars)")
+
+                print(f"\n✓ StateBox integration test passed!")
+                print(f"  Task was properly created with all timestamps and captured output")
+
+
 if __name__ == "__main__":
     # Run tests with verbose output
     unittest.main(verbosity=2)

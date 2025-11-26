@@ -82,6 +82,9 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from oar.core.configstore import ConfigStore
 from oar.core.operators import ReleaseShipmentOperator
 from oar.core.worksheet import WorksheetManager
+from oar.core.statebox import StateBox
+from oar.core.exceptions import StateBoxException
+from oar.core.log_capture import capture_logs, merge_output
 from oar.core.const import (
     LABEL_OVERALL_STATUS,
     LABEL_TASK_OWNERSHIP,
@@ -98,19 +101,8 @@ from oar.core.const import (
     TASK_STATUS_FAIL,
 )
 
-# Import Click subcommands for direct invocation (performance optimization)
-# OAR commands (11 total)
-from oar.cli.cmd_create_test_report import create_test_report
-from oar.cli.cmd_take_ownership import take_ownership
-from oar.cli.cmd_update_bug_list import update_bug_list
-from oar.cli.cmd_image_consistency_check import image_consistency_check
-from oar.cli.cmd_check_greenwave_cvp_tests import check_greenwave_cvp_tests
-from oar.cli.cmd_check_cve_tracker_bug import check_cve_tracker_bug
-from oar.cli.cmd_push_to_cdn import push_to_cdn_staging
-from oar.cli.cmd_stage_testing import stage_testing
-from oar.cli.cmd_image_signed_check import image_signed_check
-from oar.cli.cmd_drop_bugs import drop_bugs
-from oar.cli.cmd_change_advisory_status import change_advisory_status
+# Import CLI group for invoking commands (to enable result_callback for StateBox updates)
+from oar.cli.cmd_group import cli as oar_cli_group
 
 # oarctl commands (2 total)
 from oar.controller.detector import start_release_detector
@@ -422,38 +414,16 @@ def get_cached_configstore(release: str) -> ConfigStore:
 # Helper Functions
 # ============================================================================
 
-def merge_output(click_output: str, captured_logs: str) -> str:
+def invoke_oar_command(release: str, command_name: str, args: list[str]) -> dict:
     """
-    Merge Click command output with captured logs.
+    Invoke OAR Click command through CLI group to trigger result_callback for StateBox updates.
 
-    Args:
-        click_output: Output from Click's result.output (click.echo, print, etc.)
-        captured_logs: Logs captured from logger.info/warning/error
-
-    Returns:
-        Combined output string with proper newline handling
-    """
-    if not captured_logs:
-        return click_output
-
-    combined = click_output
-    if combined and not combined.endswith('\n'):
-        combined += '\n'
-    combined += captured_logs
-
-    return combined
-
-
-def invoke_oar_command(release: str, command_func, args: list[str]) -> dict:
-    """
-    Invoke OAR Click subcommand directly with cached ConfigStore.
-
-    This is the core optimization that eliminates subprocess overhead.
-    Performance improvement: 70-90% faster than subprocess approach.
+    This is the core optimization that eliminates subprocess overhead while ensuring
+    StateBox integration works properly by invoking through the CLI group.
 
     Args:
         release: Z-stream release version (e.g., "4.20.1")
-        command_func: OAR Click command function (e.g., update_bug_list)
+        command_name: OAR command name (e.g., "image-signed-check", "update-bug-list")
         args: Command arguments (e.g., ['--no-notify'])
 
     Returns:
@@ -464,8 +434,14 @@ def invoke_oar_command(release: str, command_func, args: list[str]) -> dict:
         - Subsequent calls: <10ms (cache hit) + command execution time
 
     Thread Safety:
-        - Uses thread-local log capture to isolate logs per concurrent request
-        - FastMCP runs each tool call in a new thread, so ThreadFilter prevents log mixing
+        - Uses shared capture_logs(thread_safe=True) to isolate logs per concurrent request
+        - FastMCP runs each tool call in a new thread, ThreadFilter prevents log mixing
+
+    StateBox Integration:
+        - Invokes through CLI group (`oar -r <release> <command>`) so result_callback gets called
+        - CLI layer's result_callback (cmd_group.py) handles StateBox updates automatically
+        - Command name is derived from ctx.invoked_subcommand
+        - Result and timestamps are captured and saved to StateBox
 
     Note:
         This function is specifically for OAR commands that require ConfigStore.
@@ -476,70 +452,30 @@ def invoke_oar_command(release: str, command_func, args: list[str]) -> dict:
     # Get cached ConfigStore (10ms after first call)
     cs = get_cached_configstore(release)
 
-    # Create thread-local log capture
-    log_capture = io.StringIO()
-    log_handler = logging.StreamHandler(log_capture)
-    log_handler.setLevel(logging.INFO)
-    log_handler.setFormatter(logging.Formatter('%(message)s'))
+    # Use shared capture_logs with thread safety for concurrent MCP requests
+    # ThreadFilter isolates logs between concurrent thread pool workers
+    with capture_logs(thread_safe=True) as log_buffer:
+        # Build command arguments: -r <release> <command> [args...]
+        # This invokes through the CLI group so result_callback gets triggered
+        cli_args = ['-r', release, command_name] + args
 
-    # CRITICAL: ThreadFilter isolates logs between concurrent thread pool workers
-    #
-    # Why this is needed:
-    # 1. FastMCP's async tool handlers run in asyncio event loop (main thread)
-    # 2. invoke_oar_command() runs in CLI_THREAD_POOL worker threads via run_in_executor()
-    # 3. Multiple concurrent AI agent requests → multiple thread pool workers running simultaneously
-    # 4. All workers share the same root logger (global singleton)
-    # 5. WITHOUT ThreadFilter: logs from worker A would leak into worker B's output
-    #
-    # ThreadFilter ensures each worker ONLY captures logs from its own thread ID.
-    # This prevents log mixing when handling concurrent MCP requests.
-    #
-    # Example scenario without filter:
-    #   - Client 1 calls oar_update_bug_list("4.19.1") → Worker Thread A
-    #   - Client 2 calls oar_check_greenwave("4.18.5") → Worker Thread B
-    #   - Both threads log to root logger simultaneously
-    #   - Client 1 would see mixed logs from both releases (WRONG!)
-    #
-    # With ThreadFilter:
-    #   - Worker A only captures logs from Thread A (4.19.1 operations)
-    #   - Worker B only captures logs from Thread B (4.18.5 operations)
-    #   - Clean isolation guaranteed
-    thread_id = threading.get_ident()
+        # Invoke Click command through CLI group with cached ConfigStore and log buffer
+        # The CLI layer's result_callback will handle StateBox updates automatically
+        # CRITICAL: We pass standalone_mode=False to prevent Click from calling sys.exit()
+        # on errors, which would crash the MCP server thread
+        result = runner.invoke(oar_cli_group, cli_args, obj={
+            "cs": cs,
+            "_log_buffer": log_buffer,
+        }, standalone_mode=False)
 
-    class ThreadFilter(logging.Filter):
-        """Filter logs to only include records from current thread.
-
-        This prevents log mixing between concurrent thread pool workers
-        when multiple AI agents send MCP requests simultaneously.
-        """
-        def filter(self, record):  # noqa: ARG002
-            # record parameter required by logging.Filter interface but unused
-            # We only check thread ID, not record content
-            return threading.get_ident() == thread_id
-
-    log_handler.addFilter(ThreadFilter())
-
-    # Add to root logger (safe because of thread filter)
-    root_logger = logging.getLogger()
-    root_logger.addHandler(log_handler)
-
-    try:
-        # Invoke Click command with cached ConfigStore injected into context
-        # The obj parameter bypasses ConfigStore.__init__ in cmd_group.py
-        result = runner.invoke(command_func, args, obj={"cs": cs})
-
-        # Combine Click output with captured logs using utility function
-        combined_output = merge_output(result.output, log_capture.getvalue())
+        # Combine Click output with captured logs using shared utility
+        combined_output = merge_output(result.output, log_buffer.getvalue())
 
         return {
             "success": result.exit_code == 0,
             "output": combined_output,
             "exit_code": result.exit_code
         }
-    finally:
-        # Always clean up handler to prevent memory leaks
-        root_logger.removeHandler(log_handler)
-        log_handler.close()
 
 
 def format_result(result: dict) -> str:
@@ -564,7 +500,7 @@ def format_result(result: dict) -> str:
 # Async Wrappers for Thread Pool Execution
 # ============================================================================
 
-async def invoke_oar_command_async(release: str, command_func, args: list[str]) -> dict:
+async def invoke_oar_command_async(release: str, command_name: str, args: list[str]) -> dict:
     """
     Async wrapper for invoke_oar_command that runs in thread pool.
 
@@ -574,7 +510,7 @@ async def invoke_oar_command_async(release: str, command_func, args: list[str]) 
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
-        command_func: OAR Click command function
+        command_name: OAR command name (e.g., "image-signed-check", "update-bug-list")
         args: Command arguments
 
     Returns:
@@ -585,7 +521,7 @@ async def invoke_oar_command_async(release: str, command_func, args: list[str]) 
         Each runs in its own worker thread with isolated log capture.
 
     Example:
-        >>> result = await invoke_oar_command_async("4.19.1", update_bug_list, [])
+        >>> result = await invoke_oar_command_async("4.19.1", "update-bug-list", [])
         >>> print(result["output"])
     """
     loop = asyncio.get_event_loop()
@@ -595,7 +531,7 @@ async def invoke_oar_command_async(release: str, command_func, args: list[str]) 
         CLI_THREAD_POOL,
         invoke_oar_command,
         release,
-        command_func,
+        command_name,
         args
     )
 
@@ -648,7 +584,7 @@ async def oar_check_greenwave_cvp_tests(release: str) -> str:
     Returns:
         Test status information from Greenwave
     """
-    result = await invoke_oar_command_async(release, check_greenwave_cvp_tests, [])
+    result = await invoke_oar_command_async(release, "check-greenwave-cvp-tests", [])
     return format_result(result)
 
 
@@ -667,7 +603,7 @@ async def oar_check_cve_tracker_bug(release: str, notify: bool = False) -> str:
         CVE tracker bug analysis
     """
     args = [] if notify else ["--no-notify"]
-    result = await invoke_oar_command_async(release, check_cve_tracker_bug, args)
+    result = await invoke_oar_command_async(release, "check-cve-tracker-bug", args)
     return format_result(result)
 
 
@@ -684,7 +620,7 @@ async def oar_image_signed_check(release: str) -> str:
     Returns:
         Image signature verification results
     """
-    result = await invoke_oar_command_async(release, image_signed_check, [])
+    result = await invoke_oar_command_async(release, "image-signed-check", [])
     return format_result(result)
 
 
@@ -711,7 +647,7 @@ async def oar_image_consistency_check(release: str, build_number: str = None) ->
     if build_number is not None and build_number != "":
         args.extend(["-n", build_number])
 
-    result = await invoke_oar_command_async(release, image_consistency_check, args)
+    result = await invoke_oar_command_async(release, "image-consistency-check", args)
     return format_result(result)
 
 
@@ -734,7 +670,7 @@ async def oar_stage_testing(release: str, build_number: str = None) -> str:
     if build_number is not None and build_number != "":
         args.extend(["-n", build_number])
 
-    result = await invoke_oar_command_async(release, stage_testing, args)
+    result = await invoke_oar_command_async(release, "stage-testing", args)
     return format_result(result)
 
 
@@ -755,7 +691,7 @@ async def oar_create_test_report(release: str) -> str:
     Returns:
         URL of created test report
     """
-    result = await invoke_oar_command_async(release, create_test_report, [])
+    result = await invoke_oar_command_async(release, "create-test-report", [])
     return format_result(result)
 
 
@@ -773,7 +709,7 @@ async def oar_take_ownership(release: str, email: str) -> str:
     Returns:
         Ownership assignment confirmation
     """
-    result = await invoke_oar_command_async(release, take_ownership, ["-e", email])
+    result = await invoke_oar_command_async(release, "take-ownership", ["-e", email])
     return format_result(result)
 
 
@@ -792,7 +728,7 @@ async def oar_update_bug_list(release: str, notify: bool = True) -> str:
         Bug synchronization results
     """
     args = [] if notify else ["--no-notify"]
-    result = await invoke_oar_command_async(release, update_bug_list, args)
+    result = await invoke_oar_command_async(release, "update-bug-list", args)
     return format_result(result)
 
 
@@ -810,7 +746,7 @@ async def oar_push_to_cdn_staging(release: str) -> str:
     Returns:
         CDN push operation results
     """
-    result = await invoke_oar_command_async(release, push_to_cdn_staging, [])
+    result = await invoke_oar_command_async(release, "push-to-cdn-staging", [])
     return format_result(result)
 
 
@@ -827,7 +763,7 @@ async def oar_drop_bugs(release: str) -> str:
     Returns:
         List of dropped bugs
     """
-    result = await invoke_oar_command_async(release, drop_bugs, [])
+    result = await invoke_oar_command_async(release, "drop-bugs", [])
     return format_result(result)
 
 
@@ -845,7 +781,7 @@ async def oar_change_advisory_status(release: str) -> str:
     Returns:
         Advisory status change confirmation
     """
-    result = await invoke_oar_command_async(release, change_advisory_status, [])
+    result = await invoke_oar_command_async(release, "change-advisory-status", [])
     return format_result(result)
 
 

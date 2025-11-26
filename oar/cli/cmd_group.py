@@ -19,6 +19,9 @@ from oar.cli.cmd_take_ownership import take_ownership
 from oar.cli.cmd_update_bug_list import update_bug_list
 from oar.core.configstore import ConfigStore
 from oar.core.const import CONTEXT_SETTINGS
+from oar.core.log_capture import capture_logs, merge_output
+from oar.core.statebox import StateBox
+from oar.core.exceptions import StateBoxException
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +34,105 @@ def print_version(ctx, param, value):
     ctx.exit()
 
 
-@click.group(context_settings=CONTEXT_SETTINGS)
+def cli_result_callback(result, release, debug):
+    """
+    Result callback for CLI group - automatically updates StateBox after command execution.
+
+    This callback is invoked after every subcommand completes, allowing us to:
+    1. Capture all logs from the command execution
+    2. Update StateBox with task results
+    3. Handle errors transparently
+
+    The callback runs transparently - users see normal output, StateBox updates happen
+    in the background.
+
+    Args:
+        result: Return value from subcommand (unused)
+        release: Release version from CLI group option
+        debug: Debug flag from CLI group option
+
+    Design:
+        - Logs are captured via ctx.obj['_log_buffer'] (set by CLI group or provided by MCP server)
+        - Task name is derived from Click command name (e.g., "create-test-report")
+        - ConfigStore retrieved from ctx.obj['cs'] (cached in MCP server, fresh in CLI)
+        - StateBox initialized with ConfigStore dependency injection: StateBox(configstore=cs)
+        - Release version extracted from configstore.release (not passed directly)
+        - StateBox update happens after command completes
+        - Failures are logged but don't block the command
+    """
+    # Get current context to access ctx.obj
+    try:
+        ctx = click.get_current_context()
+    except RuntimeError:
+        # No context available
+        return
+
+    # Skip StateBox update if:
+    # - No release in context (help mode)
+    # - No ConfigStore available (not initialized)
+    # - MCP server explicitly disabled updates (ctx.obj.get('skip_statebox_update'))
+    if not ctx.obj or 'cs' not in ctx.obj:
+        return
+
+    if ctx.obj.get('skip_statebox_update', False):
+        return
+
+    # Release is already passed as parameter from CLI group
+    if not release:
+        return
+
+    # Get command name from invoked subcommand
+    command_name = ctx.invoked_subcommand
+    if not command_name:
+        return
+
+    # Get captured logs from buffer (set by __main__.py or MCP server)
+    log_buffer = ctx.obj.get('_log_buffer')
+    if log_buffer:
+        captured_logs = log_buffer.getvalue()
+    else:
+        captured_logs = ctx.obj.get('captured_logs', '')
+
+    # Get explicit output if provided by command
+    explicit_output = ctx.obj.get('statebox_output')
+
+    # Determine final output for StateBox
+    if explicit_output:
+        output = explicit_output.strip() if explicit_output else None
+    elif captured_logs:
+        output = captured_logs.strip() if captured_logs else None
+    else:
+        output = None
+
+    # Determine task status based on command exit
+    # Commands that raise exceptions are caught by Click and don't reach here
+    # So if we're here, the command succeeded (unless it set explicit status)
+    status = ctx.obj.get('statebox_status', 'Pass')
+
+    try:
+        # Get ConfigStore from context (cached in MCP server)
+        cs = ctx.obj.get('cs')
+
+        # Pass cached ConfigStore to StateBox (release extracted from ConfigStore)
+        statebox = StateBox(configstore=cs)
+
+        # Update task with captured output
+        statebox.update_task(
+            task_name=command_name,
+            status=status,
+            result=output,
+            auto_save=True
+        )
+        logger.info(f"StateBox updated successfully for task '{command_name}'")
+
+    except StateBoxException as e:
+        # Log error but don't fail the command
+        logger.warning(f"Failed to update StateBox for task '{command_name}': {e}")
+    except Exception as e:
+        logger.warning(f"Unexpected error updating StateBox: {e}")
+
+
+@click.group(context_settings=CONTEXT_SETTINGS, result_callback=cli_result_callback)
 @click.pass_context
 @click.option(
     "-V",
@@ -45,6 +146,17 @@ def print_version(ctx, param, value):
 @click.option("-v", "--debug", help="enable debug logging", is_flag=True, default=False)
 def cli(ctx, release, debug):
     util.init_logging(logging.DEBUG if debug else logging.INFO)
+
+    # Setup log capture AFTER init_logging so console handler is already configured
+    # This allows logs to be both displayed AND captured for StateBox
+    ctx.ensure_object(dict)
+    if '_log_buffer' not in ctx.obj:
+        # Only setup log capture if not already provided (e.g., by MCP server)
+        # Use Click's with_resource() to properly manage context manager lifecycle
+        log_capture_cm = capture_logs(thread_safe=False)
+        log_buffer = ctx.with_resource(log_capture_cm)
+        ctx.obj['_log_buffer'] = log_buffer
+
     is_help = False
     for k in CONTEXT_SETTINGS["help_option_names"]:
         if k in sys.argv:
@@ -79,6 +191,11 @@ def cli(ctx, release, debug):
         else:
             # Use cached ConfigStore from MCP server
             logger.debug(f"Using cached ConfigStore for release {release}")
+
+        # Initialize log capture buffer for result_callback
+        # This will be populated by wrapper or MCP server
+        ctx.obj.setdefault('captured_logs', '')
+        ctx.obj.setdefault('skip_statebox_update', False)
 
 # TODO remove eliminated commands
 cli.add_command(create_test_report)

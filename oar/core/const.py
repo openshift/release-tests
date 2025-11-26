@@ -1,5 +1,9 @@
 CONTEXT_SETTINGS = dict(help_option_names=["-h", "--help"])
 
+# Logging format constants - shared across all handlers for consistency
+LOG_FORMAT = "%(asctime)s: %(levelname)s: %(message)s"
+LOG_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
 # cell labels
 LABEL_AD_OR_SHIPMENT = "B2"
 LABEL_BUILD = "B3"
@@ -52,6 +56,7 @@ ALL_TASKS = [
 # Human-readable task names used in StateBox and MCP server
 # Aligned with CLI commands and Konflux release flow specification
 SUPPORTED_TASK_NAMES = [
+    "create-test-report",
     "take-ownership",
     "update-bug-list",
     "image-consistency-check",
