@@ -572,7 +572,9 @@ class TestMCPServerStateBoxIntegration(unittest.IsolatedAsyncioTestCase):
                 print(f"\nMCP call completed with output length: {len(content)}")
 
                 # Reload StateBox state from GitHub to get latest updates
-                statebox = StateBox(release=self.test_release)
+                from oar.core.configstore import ConfigStore
+                cs = ConfigStore(self.test_release)
+                statebox = StateBox(configstore=cs)
                 task = statebox.get_task("image-signed-check")
 
                 # Verify task was created and updated

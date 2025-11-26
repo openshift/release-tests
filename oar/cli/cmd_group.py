@@ -107,7 +107,11 @@ def cli_result_callback(result, release, debug):
     status = ctx.obj.get('statebox_status', 'Pass')
 
     try:
-        statebox = StateBox(release=release)
+        # Get ConfigStore from context (cached in MCP server)
+        cs = ctx.obj.get('cs')
+
+        # Pass cached ConfigStore to StateBox (release extracted from ConfigStore)
+        statebox = StateBox(configstore=cs)
 
         # Update task with captured output
         statebox.update_task(

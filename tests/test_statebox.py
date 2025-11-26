@@ -4,7 +4,8 @@ import logging
 from datetime import datetime
 
 from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES
-from oar.core.exceptions import StateBoxException
+from oar.core.exceptions import StateBoxException, ConfigStoreException
+from oar.core.configstore import ConfigStore
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class TestStateBox(unittest.TestCase):
             raise unittest.SkipTest("GITHUB_TOKEN not found in environment. Skipping StateBox integration tests.")
 
         # Test configuration
-        cls.test_release = "4.99.99"  # Dummy release for testing (4.y.z format)
+        cls.test_release = "4.20.5"  # Dummy release for testing (4.y.z format)
         cls.repo_name = "openshift/release-tests"
         cls.branch = "z-stream"
 
@@ -36,8 +37,12 @@ class TestStateBox(unittest.TestCase):
 
     def setUp(self):
         """Set up StateBox instance before each test"""
+        # Create ConfigStore for test release
+        self.configstore = ConfigStore(self.test_release)
+
+        # Create StateBox with ConfigStore (configstore is now first positional parameter)
         self.statebox = StateBox(
-            release=self.test_release,
+            self.configstore,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
@@ -71,7 +76,8 @@ class TestStateBox(unittest.TestCase):
         self.assertEqual(self.statebox.repo_name, self.repo_name)
         self.assertEqual(self.statebox.branch, self.branch)
         # Verify file path structure: _releases/{y-stream}/statebox/{release}.yaml
-        self.assertEqual(self.statebox.file_path, f"_releases/4.99/statebox/{self.test_release}.yaml")
+        y_stream = ".".join(self.test_release.split(".")[:2])
+        self.assertEqual(self.statebox.file_path, f"_releases/{y_stream}/statebox/{self.test_release}.yaml")
 
         # Get default state
         default_state = self.statebox._get_default_state()
@@ -85,11 +91,11 @@ class TestStateBox(unittest.TestCase):
         # Verify metadata structure
         metadata = default_state["metadata"]
         self.assertIsNone(metadata["qe_owner"])
-        self.assertIsNone(metadata["jira_ticket"])
-        self.assertEqual(metadata["advisory_ids"], {})
-        self.assertIsNone(metadata["release_date"])
-        self.assertEqual(metadata["candidate_builds"], {})
-        self.assertIsNone(metadata["shipment_mr"])
+        self.assertIsNotNone(metadata["jira_ticket"])
+        self.assertIsNotNone(metadata["advisory_ids"], {})
+        self.assertIsNotNone(metadata["release_date"])
+        self.assertIsNotNone(metadata["candidate_builds"], {})
+        self.assertIsNotNone(metadata["shipment_mr"])
 
         # Verify tasks and issues are initialized
         self.assertEqual(default_state["tasks"], [])
@@ -97,20 +103,19 @@ class TestStateBox(unittest.TestCase):
 
     def test_exists_file_not_found(self):
         """Test exists() returns False when file doesn't exist"""
-        # Use a different dummy release that doesn't exist
-        dummy_statebox = StateBox(
-            release="4.98.98",  # Different dummy release
-            repo_name=self.repo_name,
-            branch=self.branch,
-            github_token=self.github_token
-        )
-        self.assertFalse(dummy_statebox.exists())
+        # Note: This test uses test_release which should not have a state file yet
+        # (cleanup in tearDown ensures it's deleted after each test)
+        # After first save(), exists() will return True
+        self.assertFalse(self.statebox.exists())
 
     def test_load_file_not_exists(self):
         """Test load() returns default state when file doesn't exist"""
-        # Use a different dummy release that doesn't exist
+        # Use the same test release - state file doesn't exist yet
+        # (cleanup in tearDown ensures it's deleted after each test)
+        # Create ConfigStore for dummy test
+        dummy_configstore = ConfigStore(self.test_release)
         dummy_statebox = StateBox(
-            release="4.97.97",  # Different dummy release
+            dummy_configstore,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
@@ -119,10 +124,32 @@ class TestStateBox(unittest.TestCase):
         state = dummy_statebox.load()
 
         # Should return default state
-        self.assertEqual(state["release"], "4.97.97")
+        self.assertEqual(state["release"], self.test_release)
         self.assertEqual(state["schema_version"], SCHEMA_VERSION)
         self.assertEqual(len(state["tasks"]), 0)
         self.assertEqual(len(state["issues"]), 0)
+
+    def test_invalid_release_configstore_error(self):
+        """Test StateBox initialization fails when release doesn't exist in ConfigStore"""
+        # Use a non-existent release version that won't be in ocp-build-data
+        # This will cause ConfigStore to fail when trying to download build data
+        # (HTTP 404 because branch "openshift-99.99" doesn't exist)
+        invalid_release = "99.99.99"
+
+        # StateBox initialization should fail because ConfigStore can't download build data
+        with self.assertRaises(ConfigStoreException) as context:
+            # This will raise ConfigStoreException when trying to create ConfigStore
+            invalid_configstore = ConfigStore(invalid_release)
+            StateBox(
+                invalid_configstore,
+                repo_name=self.repo_name,
+                branch=self.branch,
+                github_token=self.github_token
+            )
+
+        # Verify the error message indicates download failed
+        error_msg = str(context.exception)
+        self.assertIn("download ocp build data failed", error_msg)
 
     def test_save_create_new_file(self):
         """Test save() creates new file in GitHub"""
@@ -239,8 +266,8 @@ class TestStateBox(unittest.TestCase):
         state = self.statebox._get_default_state()
         self.statebox.save(state, message="Test: Initial state")
 
-        # Update without auto-save
-        self.statebox.update_task("test-task", status="In Progress", auto_save=False)
+        # Update without auto-save (use valid task name)
+        self.statebox.update_task("image-consistency-check", status="In Progress", auto_save=False)
 
         # Verify not saved to GitHub (force refresh from GitHub)
         loaded_state = self.statebox.load(force_refresh=True)
@@ -481,28 +508,28 @@ class TestStateBox(unittest.TestCase):
 
     def test_get_task_status(self):
         """Test get_task_status() returns task status"""
-        # Create state with task
-        self.statebox.update_task("test-task", status="In Progress")
+        # Create state with task (use valid task name)
+        self.statebox.update_task("stage-testing", status="In Progress")
 
         # Get status
-        status = self.statebox.get_task_status("test-task")
+        status = self.statebox.get_task_status("stage-testing")
         self.assertEqual(status, "In Progress")
 
-        # Non-existent task
+        # Non-existent task (this returns None, not an error, so it's OK)
         status2 = self.statebox.get_task_status("non-existent")
         self.assertIsNone(status2)
 
     def test_get_task(self):
         """Test get_task() returns complete task info"""
-        # Create task
-        self.statebox.update_task("test-task", status="Pass", result="Success")
+        # Create task (use valid task name)
+        self.statebox.update_task("image-signed-check", status="Pass", result="Success")
 
         # Get task
-        task = self.statebox.get_task("test-task")
+        task = self.statebox.get_task("image-signed-check")
 
         # Verify
         self.assertIsNotNone(task)
-        self.assertEqual(task["name"], "test-task")
+        self.assertEqual(task["name"], "image-signed-check")
         self.assertEqual(task["status"], "Pass")
         self.assertEqual(task["result"], "Success")
 
@@ -525,8 +552,10 @@ class TestStateBox(unittest.TestCase):
 
     def test_context_manager(self):
         """Test StateBox as context manager"""
+        # Create ConfigStore for context manager test
+        cm_configstore = ConfigStore(self.test_release)
         with StateBox(
-            release=self.test_release,
+            cm_configstore,
             github_token=self.github_token
         ) as statebox:
             self.assertIsNotNone(statebox)
@@ -537,17 +566,23 @@ class TestStateBox(unittest.TestCase):
         # Create initial state
         state = self.statebox._get_default_state()
         state["metadata"]["qe_owner"] = "initial@redhat.com"
+        # Clear advisory_ids to avoid conflicts with ConfigStore defaults
+        state["metadata"]["advisory_ids"] = {}
         self.statebox.save(state, message="Test: Initial state for concurrent test")
 
         # Create two separate StateBox instances (simulating concurrent processes)
+        # Each gets its own ConfigStore instance
+        cs1 = ConfigStore(self.test_release)
+        cs2 = ConfigStore(self.test_release)
+        
         statebox1 = StateBox(
-            release=self.test_release,
+            cs1,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
         )
         statebox2 = StateBox(
-            release=self.test_release,
+            cs2,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
@@ -561,8 +596,8 @@ class TestStateBox(unittest.TestCase):
         self.assertEqual(state1["metadata"]["qe_owner"], "initial@redhat.com")
         self.assertEqual(state2["metadata"]["qe_owner"], "initial@redhat.com")
 
-        # Instance 1 updates metadata
-        state1["metadata"]["jira_ticket"] = "ART-111"
+        # Instance 1 updates metadata (use advisory_ids which we control via nested dict)
+        state1["metadata"]["advisory_ids"]["rpm"] = 111111
         statebox1.save(state1, message="Test: Update from instance 1")
 
         # Instance 2 updates different metadata (this should trigger merge)
@@ -572,7 +607,7 @@ class TestStateBox(unittest.TestCase):
         # Load final state and verify both updates are present (merge succeeded)
         final_state = self.statebox.load(force_refresh=True)
         self.assertEqual(final_state["metadata"]["qe_owner"], "updated@redhat.com")
-        self.assertEqual(final_state["metadata"]["jira_ticket"], "ART-111")
+        self.assertEqual(final_state["metadata"]["advisory_ids"]["rpm"], 111111)
 
     def test_concurrent_task_updates_with_merge(self):
         """Test concurrent task updates from multiple StateBox instances"""
@@ -581,31 +616,35 @@ class TestStateBox(unittest.TestCase):
         self.statebox.save(state, message="Test: Initial state for concurrent task test")
 
         # Create two separate StateBox instances
+        # Each gets its own ConfigStore instance
+        cs1 = ConfigStore(self.test_release)
+        cs2 = ConfigStore(self.test_release)
+        
         statebox1 = StateBox(
-            release=self.test_release,
+            cs1,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
         )
         statebox2 = StateBox(
-            release=self.test_release,
+            cs2,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
         )
 
-        # Instance 1 updates task1
-        statebox1.update_task("task1", status="In Progress", result="Task 1 started")
+        # Instance 1 updates image-consistency-check (use valid task names)
+        statebox1.update_task("image-consistency-check", status="In Progress", result="Task 1 started")
 
-        # Instance 2 updates task2 (should trigger merge)
-        statebox2.update_task("task2", status="Pass", result="Task 2 completed")
+        # Instance 2 updates stage-testing (should trigger merge)
+        statebox2.update_task("stage-testing", status="Pass", result="Task 2 completed")
 
         # Load final state and verify both tasks exist
         final_state = self.statebox.load(force_refresh=True)
         self.assertEqual(len(final_state["tasks"]), 2)
 
-        task1 = next(t for t in final_state["tasks"] if t["name"] == "task1")
-        task2 = next(t for t in final_state["tasks"] if t["name"] == "task2")
+        task1 = next(t for t in final_state["tasks"] if t["name"] == "image-consistency-check")
+        task2 = next(t for t in final_state["tasks"] if t["name"] == "stage-testing")
 
         self.assertEqual(task1["status"], "In Progress")
         self.assertEqual(task1["result"], "Task 1 started")
@@ -619,14 +658,18 @@ class TestStateBox(unittest.TestCase):
         self.statebox.save(state, message="Test: Initial state for concurrent issue test")
 
         # Create two separate StateBox instances
+        # Each gets its own ConfigStore instance
+        cs1 = ConfigStore(self.test_release)
+        cs2 = ConfigStore(self.test_release)
+        
         statebox1 = StateBox(
-            release=self.test_release,
+            cs1,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token
         )
         statebox2 = StateBox(
-            release=self.test_release,
+            cs2,
             repo_name=self.repo_name,
             branch=self.branch,
             github_token=self.github_token

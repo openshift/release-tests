@@ -36,8 +36,10 @@ YAML Schema:
           related_tasks: list       # Related task names (empty = general issue)
 
 Example Usage:
-    # Initialize StateBox
-    statebox = StateBox(release="4.19.1")
+    # Initialize StateBox with ConfigStore
+    from oar.core.configstore import ConfigStore
+    cs = ConfigStore("4.19.1")
+    statebox = StateBox(cs)
 
     # Load existing state or create new
     state = statebox.load()
@@ -72,17 +74,21 @@ Example Usage:
 API Reference:
 
 Core Operations:
-    StateBox(release, repo_name="openshift/release-tests", branch="z-stream", github_token=None)
+    StateBox(configstore, repo_name="openshift/release-tests", branch="z-stream", github_token=None)
         Initialize StateBox for a specific release.
 
         Args:
-            release: Release version (e.g., "4.19.1")
-            repo_name: GitHub repository name
+            configstore: ConfigStore instance (provides release version and configuration)
+            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
             github_token: GitHub token (default: from GITHUB_TOKEN env)
 
         Raises:
-            StateBoxException: If release version invalid or token missing
+            StateBoxException: If GitHub token is missing
+
+        Note:
+            Release version is extracted from configstore.release.
+            ConfigStore can be cached (MCP server) or freshly created (CLI).
 
     exists() -> bool
         Check if state file exists in GitHub.
@@ -260,7 +266,9 @@ Error Handling:
     - Automatic retry on transient GitHub API failures (status 409)
 
 Context Manager Support:
-    with StateBox(release="4.19.1") as statebox:
+    from oar.core.configstore import ConfigStore
+    cs = ConfigStore("4.19.1")
+    with StateBox(cs) as statebox:
         statebox.update_task("task-name", status="Pass")
     # Automatic cleanup on exit
 """
@@ -275,6 +283,7 @@ import yaml
 from github import Auth, Github
 from github.GithubException import UnknownObjectException, GithubException
 
+from oar.core.configstore import ConfigStore
 from oar.core.const import SUPPORTED_TASK_NAMES
 from oar.core.exceptions import StateBoxException
 from oar.core.util import validate_release_version
@@ -343,7 +352,7 @@ class StateBox:
 
     def __init__(
         self,
-        release: str,
+        configstore: ConfigStore,
         repo_name: str = DEFAULT_REPO_NAME,
         branch: str = DEFAULT_BRANCH,
         github_token: Optional[str] = None
@@ -352,25 +361,27 @@ class StateBox:
         Initialize StateBox for a specific release.
 
         Args:
-            release: Release version (e.g., "4.19.1")
+            configstore: ConfigStore instance (provides release version and configuration)
             repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "zstream")
             github_token: GitHub personal access token (default: from GITHUB_TOKEN env)
 
         Raises:
-            StateBoxException: If release version is invalid or GitHub token is missing
-        """
-        # Validate release version
-        if not validate_release_version(release):
-            raise StateBoxException(f"Invalid release version: {release}")
+            StateBoxException: If GitHub token is missing
 
-        self.release = release
+        Note:
+            Release version is extracted from configstore.release.
+            ConfigStore can be cached (MCP server) or freshly created (CLI).
+        """
+        # Extract release from ConfigStore
+        self._configstore = configstore
+        self.release = configstore.release
         self.repo_name = repo_name
         self.branch = branch
 
         # Extract y-stream version (e.g., "4.19" from "4.19.1")
-        y_stream = ".".join(release.split(".")[:2])
-        self.file_path = f"{STATEBOX_PATH_PREFIX}/{y_stream}/statebox/{release}.yaml"
+        y_stream = ".".join(self.release.split(".")[:2])
+        self.file_path = f"{STATEBOX_PATH_PREFIX}/{y_stream}/statebox/{self.release}.yaml"
 
         # Initialize GitHub client
         token = github_token or os.environ.get("GITHUB_TOKEN")
@@ -385,11 +396,13 @@ class StateBox:
         self._state_cache: Optional[Dict[str, Any]] = None
         self._sha_cache: Optional[str] = None
 
-        logger.info(f"Initialized StateBox for release {release} at {repo_name}/{branch}/{self.file_path}")
+        logger.info(f"Initialized StateBox for release {self.release} at {repo_name}/{branch}/{self.file_path}")
 
     def _get_default_state(self) -> Dict[str, Any]:
         """
         Create default state structure for a new release.
+
+        Populates metadata from ConfigStore on initialization.
 
         Returns:
             dict: Default state dictionary
@@ -402,11 +415,11 @@ class StateBox:
             "updated_at": now,
             "metadata": {
                 "qe_owner": None,
-                "jira_ticket": None,
-                "advisory_ids": {},  # Flexible dict from ocp-build-data
-                "release_date": None,
-                "candidate_builds": {},
-                "shipment_mr": None,
+                "jira_ticket": self._configstore.get_jira_ticket(),
+                "advisory_ids": self._configstore.get_advisories() or {},
+                "release_date": self._configstore.get_release_date(),
+                "candidate_builds": self._configstore.get_candidate_builds() or {},
+                "shipment_mr": self._configstore.get_shipment_mr() or None,
             },
             "tasks": [],
             "issues": [],
