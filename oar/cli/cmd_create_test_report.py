@@ -4,6 +4,8 @@ import click
 
 from oar.core.notification import NotificationManager, NotificationException
 from oar.core.worksheet import WorksheetManager, WorksheetException, WorksheetExistsException
+from oar.core.statebox import StateBox
+from oar.core.exceptions import StateBoxException
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +18,28 @@ def create_test_report(ctx):
     """
     # get config store from context
     cs = ctx.obj["cs"]
+
+    # Initialize StateBox before creating test report
+    try:
+        statebox = StateBox(cs)
+
+        # Initialize state if it doesn't exist yet
+        if not statebox.exists():
+            logger.info(f"Initializing StateBox for {cs.release}")
+            # Load will create default state with metadata from ConfigStore
+            state = statebox.load()
+            # Save to GitHub to persist the initial state
+            statebox.save(state, message=f"Initialize StateBox for release {cs.release}")
+            logger.info(f"StateBox initialized successfully for {cs.release}")
+        else:
+            logger.info(f"StateBox already exists for {cs.release}")
+    except StateBoxException as e:
+        logger.warning(f"Failed to initialize StateBox for {cs.release}: {e}")
+        logger.warning("Continuing with test report creation despite StateBox initialization failure")
+    except Exception as e:
+        logger.warning(f"Unexpected error initializing StateBox for {cs.release}: {e}")
+        logger.warning("Continuing with test report creation despite StateBox initialization failure")
+
     # init worksheet manager
     try:
         wm = WorksheetManager(cs)
