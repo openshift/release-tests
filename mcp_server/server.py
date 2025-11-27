@@ -99,6 +99,7 @@ from oar.core.const import (
     TASK_STATUS_INPROGRESS,
     TASK_STATUS_PASS,
     TASK_STATUS_FAIL,
+    WORKFLOW_TASK_NAMES,
 )
 
 # Import CLI group for invoking commands (to enable result_callback for StateBox updates)
@@ -1119,19 +1120,7 @@ async def oar_get_release_status(release: str) -> str:
 
                 # Extract task statuses from StateBox
                 tasks = {}
-                task_names = [
-                    "take-ownership",
-                    "image-consistency-check",
-                    "analyze-candidate-build",
-                    "analyze-promoted-build",
-                    "check-cve-tracker-bug",
-                    "push-to-cdn-staging",
-                    "stage-testing",
-                    "image-signed-check",
-                    "change-advisory-status",
-                ]
-
-                for task_name in task_names:
+                for task_name in WORKFLOW_TASK_NAMES:
                     task = statebox.get_task(task_name)
                     if task:
                         tasks[task_name] = task["status"]
@@ -1226,16 +1215,8 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
     Returns:
         JSON string with update confirmation including which systems were updated
 
-    Valid task names:
-    - take-ownership
-    - image-consistency-check
-    - analyze-candidate-build
-    - analyze-promoted-build
-    - check-cve-tracker-bug
-    - push-to-cdn-staging
-    - stage-testing
-    - image-signed-check
-    - change-advisory-status
+    Valid task names: See WORKFLOW_TASK_NAMES in oar/core/const.py
+    (Excludes one-time/optional tasks: create-test-report, update-bug-list, drop-bugs)
 
     Valid status values:
     - Pass: Task completed successfully
@@ -1263,10 +1244,10 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         "change-advisory-status": LABEL_TASK_CHANGE_AD_STATUS,
     }
 
-    if task_name not in task_to_label:
+    if task_name not in WORKFLOW_TASK_NAMES:
         return json.dumps({
             "success": False,
-            "error": f"Invalid task name: {task_name}. Must be one of: {', '.join(task_to_label.keys())}"
+            "error": f"Invalid task name: {task_name}. Must be one of: {', '.join(WORKFLOW_TASK_NAMES)}"
         })
 
     try:
