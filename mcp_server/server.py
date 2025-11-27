@@ -99,6 +99,7 @@ from oar.core.const import (
     TASK_STATUS_INPROGRESS,
     TASK_STATUS_PASS,
     TASK_STATUS_FAIL,
+    WORKFLOW_TASK_NAMES,
 )
 
 # Import CLI group for invoking commands (to enable result_callback for StateBox updates)
@@ -1068,13 +1069,18 @@ async def oar_is_release_shipped(release: str) -> str:
 @mcp.tool()
 async def oar_get_release_status(release: str) -> str:
     """
-    Get task execution status from Google Sheets test report.
+    Get task execution status from StateBox (primary) or Google Sheets (fallback).
 
     This is a READ-ONLY operation - retrieves current task status for AI decision making.
+
+    Data Source Priority:
+    1. StateBox (GitHub-backed YAML) - Primary source for AI resumability
+    2. Google Sheets - Fallback when StateBox doesn't exist
 
     Returns task status for all OAR workflow tasks including:
     - Overall status (Green/Red)
     - Individual task statuses (Pass/Fail/In Progress/Not Started)
+    - Data source indicator (statebox/worksheet)
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
@@ -1083,6 +1089,7 @@ async def oar_get_release_status(release: str) -> str:
         JSON string with task execution status:
         {
             "release": "4.19.1",
+            "source": "statebox",  # or "worksheet"
             "overall_status": "Green",
             "tasks": {
                 "take-ownership": "Pass",
@@ -1102,6 +1109,45 @@ async def oar_get_release_status(release: str) -> str:
     """
     try:
         cs = get_cached_configstore(release)
+
+        # Try StateBox first
+        try:
+            statebox = StateBox(cs)
+
+            if statebox.exists():
+                logger.info(f"Using StateBox for release status (release: {release})")
+                state = statebox.load()
+
+                # Extract task statuses from StateBox
+                tasks = {}
+                for task_name in WORKFLOW_TASK_NAMES:
+                    task = statebox.get_task(task_name)
+                    if task:
+                        tasks[task_name] = task["status"]
+                    else:
+                        tasks[task_name] = "Not Started"
+
+                # Calculate overall status based on task statuses
+                overall_status = "Green"
+                for status in tasks.values():
+                    if status == "Fail":
+                        overall_status = "Red"
+                        break
+
+                result = {
+                    "release": release,
+                    "source": "statebox",
+                    "overall_status": overall_status,
+                    "tasks": tasks
+                }
+
+                return json.dumps(result)
+
+        except StateBoxException as e:
+            logger.warning(f"StateBox access failed, falling back to Google Sheets: {e}")
+
+        # Fallback to Google Sheets
+        logger.info(f"Using Google Sheets for release status (release: {release})")
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
 
@@ -1129,6 +1175,7 @@ async def oar_get_release_status(release: str) -> str:
 
         result = {
             "release": release,
+            "source": "worksheet",
             "overall_status": overall_status if overall_status else "Green",
             "tasks": tasks
         }
@@ -1140,6 +1187,7 @@ async def oar_get_release_status(release: str) -> str:
         return json.dumps({
             "error": str(e),
             "release": release,
+            "source": "error",
             "overall_status": "Unknown",
             "tasks": {}
         })
@@ -1148,9 +1196,13 @@ async def oar_get_release_status(release: str) -> str:
 @mcp.tool()
 async def oar_update_task_status(release: str, task_name: str, status: str) -> str:
     """
-    Update specific task status in Google Sheets test report.
+    Update specific task status in StateBox (primary) or Google Sheets (fallback).
 
-    ⚠️ WRITE OPERATION: Updates task status in Google Sheets.
+    ⚠️ WRITE OPERATION: Updates task status in StateBox and/or Google Sheets.
+
+    Data Source Priority:
+    1. StateBox (GitHub-backed YAML) - Primary source, updated if exists
+    2. Google Sheets - Updated regardless for backwards compatibility
 
     This allows AI to mark tasks as Pass/Fail/In Progress based on analysis.
     For example, after analyzing blocking test results, AI can mark the task as Pass if results look acceptable.
@@ -1161,18 +1213,10 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         status: Task status - must be one of: "Pass", "Fail", "In Progress"
 
     Returns:
-        JSON string with update confirmation
+        JSON string with update confirmation including which systems were updated
 
-    Valid task names:
-    - take-ownership
-    - image-consistency-check
-    - analyze-candidate-build
-    - analyze-promoted-build
-    - check-cve-tracker-bug
-    - push-to-cdn-staging
-    - stage-testing
-    - image-signed-check
-    - change-advisory-status
+    Valid task names: See WORKFLOW_TASK_NAMES in oar/core/const.py
+    (Excludes one-time/optional tasks: create-test-report, update-bug-list, drop-bugs)
 
     Valid status values:
     - Pass: Task completed successfully
@@ -1200,27 +1244,42 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         "change-advisory-status": LABEL_TASK_CHANGE_AD_STATUS,
     }
 
-    if task_name not in task_to_label:
+    if task_name not in WORKFLOW_TASK_NAMES:
         return json.dumps({
             "success": False,
-            "error": f"Invalid task name: {task_name}. Must be one of: {', '.join(task_to_label.keys())}"
+            "error": f"Invalid task name: {task_name}. Must be one of: {', '.join(WORKFLOW_TASK_NAMES)}"
         })
 
     try:
         cs = get_cached_configstore(release)
+        updated_systems = []
+
+        # Try to update StateBox first
+        try:
+            statebox = StateBox(cs)
+            if statebox.exists():
+                # StateBox exists, update it
+                statebox.update_task(task_name, status=status)
+                updated_systems.append("statebox")
+                logger.info(f"Updated StateBox for task '{task_name}' to '{status}'")
+        except StateBoxException as e:
+            logger.warning(f"StateBox update failed (will update Google Sheets): {e}")
+
+        # Always update Google Sheets for backwards compatibility
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
-
-        # Update task status
         label = task_to_label[task_name]
         report.update_task_status(label, status)
+        updated_systems.append("worksheet")
+        logger.info(f"Updated Google Sheets for task '{task_name}' to '{status}'")
 
         return json.dumps({
             "success": True,
             "release": release,
             "task": task_name,
             "status": status,
-            "message": f"Successfully updated task '{task_name}' to '{status}'"
+            "updated_systems": updated_systems,
+            "message": f"Successfully updated task '{task_name}' to '{status}' in {', '.join(updated_systems)}"
         })
 
     except Exception as e:

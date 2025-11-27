@@ -71,6 +71,21 @@ SUPPORTED_TASK_NAMES = [
     "change-advisory-status",
 ]
 
+# Workflow task names tracked during release lifecycle
+# Excludes one-time/optional tasks: create-test-report, update-bug-list, drop-bugs
+# Used by MCP server for status tracking and Google Sheets integration
+WORKFLOW_TASK_NAMES = [
+    "take-ownership",
+    "image-consistency-check",
+    "analyze-candidate-build",
+    "analyze-promoted-build",
+    "check-cve-tracker-bug",
+    "push-to-cdn-staging",
+    "stage-testing",
+    "image-signed-check",
+    "change-advisory-status",
+]
+
 # overall status
 OVERALL_STATUS_GREEN = "Green"
 OVERALL_STATUS_RED = "Red"
