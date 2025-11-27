@@ -1142,6 +1142,22 @@ class StateBox:
             return state["metadata"]
         return state["metadata"].get(key)
 
+    def to_json(self, indent: Optional[int] = None) -> str:
+        """
+        Convert complete StateBox state to JSON string.
+
+        Returns entire state including metadata, tasks, and issues.
+
+        Args:
+            indent: JSON indentation spaces (default: None for compact)
+
+        Returns:
+            JSON string representation of complete state
+        """
+        import json
+        state = self.load()
+        return json.dumps(state, indent=indent)
+
     def __enter__(self):
         """Context manager entry"""
         return self

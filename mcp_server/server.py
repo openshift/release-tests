@@ -1069,43 +1069,19 @@ async def oar_is_release_shipped(release: str) -> str:
 @mcp.tool()
 async def oar_get_release_status(release: str) -> str:
     """
-    Get task execution status from StateBox (primary) or Google Sheets (fallback).
+    Get complete release state from StateBox (primary) or Google Sheets (fallback).
 
-    This is a READ-ONLY operation - retrieves current task status for AI decision making.
+    This is a READ-ONLY operation - retrieves full release context for AI decision making and resumability.
 
     Data Source Priority:
-    1. StateBox (GitHub-backed YAML) - Primary source for AI resumability
-    2. Google Sheets - Fallback when StateBox doesn't exist
-
-    Returns task status for all OAR workflow tasks including:
-    - Overall status (Green/Red)
-    - Individual task statuses (Pass/Fail/In Progress/Not Started)
-    - Data source indicator (statebox/worksheet)
+    1. StateBox (GitHub-backed YAML) - Returns complete state (metadata, tasks with results, issues)
+    2. Google Sheets - Fallback when StateBox doesn't exist (limited to task status only)
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
 
     Returns:
-        JSON string with task execution status:
-        {
-            "release": "4.19.1",
-            "source": "statebox",  # or "worksheet"
-            "overall_status": "Green",
-            "tasks": {
-                "take-ownership": "Pass",
-                "image-consistency-check": "Not Started",
-                "analyze-candidate-build": "In Progress",
-                "analyze-promoted-build": "In Progress",
-                "check-cve-tracker-bug": "Pass",
-                "push-to-cdn-staging": "In Progress",
-                "stage-testing": "Not Started",
-                "image-signed-check": "Not Started",
-                "change-advisory-status": "Not Started"
-            }
-        }
-
-    Note: analyze-candidate-build and analyze-promoted-build always show "In Progress"
-    in M1. AI must check test result files from GitHub to determine actual analysis status.
+        JSON string with complete release state from StateBox or limited status from Google Sheets.
     """
     try:
         cs = get_cached_configstore(release)
@@ -1116,37 +1092,13 @@ async def oar_get_release_status(release: str) -> str:
 
             if statebox.exists():
                 logger.info(f"Using StateBox for release status (release: {release})")
-                state = statebox.load()
-
-                # Extract task statuses from StateBox
-                tasks = {}
-                for task_name in WORKFLOW_TASK_NAMES:
-                    task = statebox.get_task(task_name)
-                    if task:
-                        tasks[task_name] = task["status"]
-                    else:
-                        tasks[task_name] = "Not Started"
-
-                # Calculate overall status based on task statuses
-                overall_status = "Green"
-                for status in tasks.values():
-                    if status == "Fail":
-                        overall_status = "Red"
-                        break
-
-                result = {
-                    "release": release,
-                    "source": "statebox",
-                    "overall_status": overall_status,
-                    "tasks": tasks
-                }
-
-                return json.dumps(result)
+                # Return complete state as JSON using StateBox.to_json()
+                return statebox.to_json()
 
         except StateBoxException as e:
             logger.warning(f"StateBox access failed, falling back to Google Sheets: {e}")
 
-        # Fallback to Google Sheets
+        # Fallback to Google Sheets (status only, no detailed info)
         logger.info(f"Using Google Sheets for release status (release: {release})")
         wm = WorksheetManager(cs)
         report = wm.get_test_report()
@@ -1174,8 +1126,8 @@ async def oar_get_release_status(release: str) -> str:
             tasks[task_name] = status if status else "Not Started"
 
         result = {
-            "release": release,
             "source": "worksheet",
+            "release": release,
             "overall_status": overall_status if overall_status else "Green",
             "tasks": tasks
         }
@@ -1185,9 +1137,9 @@ async def oar_get_release_status(release: str) -> str:
     except Exception as e:
         logger.error(f"Failed to get release status: {e}")
         return json.dumps({
+            "source": "error",
             "error": str(e),
             "release": release,
-            "source": "error",
             "overall_status": "Unknown",
             "tasks": {}
         })
