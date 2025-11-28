@@ -18,7 +18,7 @@ from oar.cli.cmd_stage_testing import stage_testing
 from oar.cli.cmd_take_ownership import take_ownership
 from oar.cli.cmd_update_bug_list import update_bug_list
 from oar.core.configstore import ConfigStore
-from oar.core.const import CONTEXT_SETTINGS
+from oar.core.const import CONTEXT_SETTINGS, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS
 from oar.core.log_capture import capture_logs, merge_output
 from oar.core.statebox import StateBox
 from oar.core.exceptions import StateBoxException
@@ -118,20 +118,20 @@ def cli_result_callback(result, release, debug):
     elif output:
         last_line = output.strip().split('\n')[-1] if output.strip() else ''
         if '[Fail]' in last_line:
-            status = 'Fail'
+            status = TASK_STATUS_FAIL
         elif '[Pass]' in last_line:
-            status = 'Pass'
+            status = TASK_STATUS_PASS
         elif '[In Progress]' in last_line:
-            status = 'In Progress'
+            status = TASK_STATUS_INPROGRESS
         elif ': ERROR:' in output:
             # Check for error logs in output (handles exceptions before update_task_status)
-            status = 'Fail'
+            status = TASK_STATUS_FAIL
         else:
             # No status marker in last line → async job triggered but not completed
-            status = 'In Progress'
+            status = TASK_STATUS_INPROGRESS
     else:
         # No output captured - default to Pass for backward compatibility
-        status = 'Pass'
+        status = TASK_STATUS_PASS
 
     try:
         # Get ConfigStore from context (cached in MCP server)
