@@ -15,7 +15,6 @@ YAML Schema:
     created_at: datetime            # Creation timestamp
     updated_at: datetime            # Last update timestamp
     metadata:                       # Release metadata
-        qe_owner: str               # QE release owner email
         jira_ticket: str            # ART Jira ticket
         advisory_ids: dict          # Advisory IDs from ocp-build-data (e.g., rpm, rhcos, microshift)
         release_date: str           # Planned release date
@@ -26,7 +25,7 @@ YAML Schema:
           status: str               # Status: "Not Started", "In Progress", "Pass", "Fail"
           started_at: datetime      # When task started
           completed_at: datetime    # When task completed
-          result: str               # CLI command output (AI-readable)
+          result: str               # CLI command output (AI-readable, sensitive data masked)
     issues: list                    # Issues (blocking and non-blocking)
         - issue: str                # Issue description
           reported_at: datetime     # When reported
@@ -69,7 +68,7 @@ Example Usage:
     )
 
     # Update metadata
-    statebox.update_metadata({"qe_owner": "user@redhat.com"})
+    statebox.update_metadata({"jira_ticket": "ART-12345"})
 
 API Reference:
 
@@ -180,7 +179,7 @@ Metadata Management:
             })
 
             # Update single field
-            statebox.update_metadata({"qe_owner": "user@redhat.com"})
+            statebox.update_metadata({"jira_ticket": "ART-12345"})
 
     get_metadata(key=None) -> Any
         Get metadata value(s).
@@ -275,6 +274,7 @@ Context Manager Support:
 
 import logging
 import os
+import re
 import time
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
@@ -331,6 +331,53 @@ STATEBOX_PATH_PREFIX = "_releases"
 MAX_RETRIES = 5
 INITIAL_BACKOFF = 0.5  # seconds
 MAX_BACKOFF = 10.0  # seconds
+
+
+def mask_sensitive_data(text: Optional[str]) -> Optional[str]:
+    """
+    Mask sensitive data in text before storing in public StateBox repository.
+
+    Currently supports:
+    - Email addresses: Redacted to [EMAIL_REDACTED]
+
+    Future extensibility:
+    - API tokens
+    - Passwords
+    - SSH keys
+    - Personal identifiable information (PII)
+
+    Args:
+        text: Text to mask (e.g., command output, logs)
+
+    Returns:
+        Text with sensitive data masked, or None if input is None
+
+    Examples:
+        >>> mask_sensitive_data("Owner updated to user@redhat.com")
+        'Owner updated to [EMAIL_REDACTED]'
+
+        >>> mask_sensitive_data("Multiple emails: alice@example.com, bob@test.org")
+        'Multiple emails: [EMAIL_REDACTED], [EMAIL_REDACTED]'
+
+        >>> mask_sensitive_data(None)
+        None
+
+        >>> mask_sensitive_data("No sensitive data here")
+        'No sensitive data here'
+    """
+    if text is None:
+        return None
+
+    # Redact email addresses
+    # Pattern matches standard email format: user@domain.tld
+    # Handles common formats like user.name+tag@subdomain.domain.tld
+    masked_text = re.sub(
+        r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b',
+        '[EMAIL_REDACTED]',
+        text
+    )
+
+    return masked_text
 
 
 class StateBox:
@@ -414,7 +461,6 @@ class StateBox:
             "created_at": now,
             "updated_at": now,
             "metadata": {
-                "qe_owner": None,
                 "jira_ticket": self._configstore.get_jira_ticket(),
                 "advisory_ids": self._configstore.get_advisories() or {},
                 "release_date": self._configstore.get_release_date(),
@@ -836,8 +882,9 @@ class StateBox:
             logger.info(f"Updated task '{task_name}' status: {old_status} -> {status}")
 
         if result is not None:
-            task["result"] = result
-            logger.info(f"Updated task '{task_name}' result")
+            # Mask sensitive data before storing
+            task["result"] = mask_sensitive_data(result)
+            logger.info(f"Updated task '{task_name}' result (sensitive data masked)")
 
         # Auto-save if enabled
         if auto_save:
@@ -864,9 +911,9 @@ class StateBox:
 
         Example:
             statebox.update_metadata({
-                "qe_owner": "user@redhat.com",
+                "jira_ticket": "ART-12345",
                 "advisory_ids": {"rpm": 12345, "rhcos": 12346},
-                "candidate_builds": {"amd64": "4.19.1-x86_64"}
+                "candidate_builds": {"x86_64": "4.19.1-x86_64"}
             })
         """
         state = self.load()
