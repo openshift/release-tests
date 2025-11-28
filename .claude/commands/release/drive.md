@@ -26,24 +26,55 @@ You MUST read and follow that document for:
 
 Before executing ANY tasks, you MUST:
 
-### 1. Retrieve Release State
+### 1. Retrieve Release State from StateBox
 
-Use TWO MCP tools to get complete state:
+**ALWAYS start by retrieving release state:**
 
 ```python
-# Get release configuration (advisories, candidate builds, etc.)
-metadata = oar_get_release_metadata(release="4.20.1")
+# Get release state (StateBox primary, Google Sheets fallback)
+state = oar_get_release_status(release="4.20.1")
+```
 
-# Get task execution status from Google Sheets
-status = oar_get_release_status(release="4.20.1")
+**Data Source Priority:**
+1. **StateBox (Primary)**: Complete state with metadata, tasks with results, and blocking issues
+2. **Google Sheets (Fallback)**: Task status only (if StateBox doesn't exist)
+
+**IMPORTANT**: StateBox should already exist (initialized by release detector when release is announced). If `oar_get_release_status` returns `"source": "worksheet"`, StateBox doesn't exist and you're running in **limited mode**:
+
+**Limited Mode (Google Sheets fallback):**
+- ✅ Can still execute workflow using task status from Google Sheets
+- ✅ Task status updates via `oar_update_task_status` work (updates Google Sheets)
+- ❌ No access to task execution results (can't extract Jenkins build numbers)
+- ❌ No issue tracking (can't use `oar_add_issue`, `oar_resolve_issue`)
+- ❌ No metadata access from StateBox (use `oar_get_release_metadata` instead)
+
+**How to handle limited mode:**
+
+```python
+state = oar_get_release_status(release="4.20.1")
+state_data = json.loads(state)
+
+if state_data.get("source") == "worksheet":
+    Log: "⚠️ Running in LIMITED MODE - StateBox not found, using Google Sheets"
+    Log: "Some features unavailable:"
+    Log: "  - Cannot resume async tasks (no build numbers in results)"
+    Log: "  - Cannot track blocking issues"
+    Log: "  - Task results not available for context"
+
+    # Get metadata separately
+    metadata = oar_get_release_metadata(release="4.20.1")
+
+    # Continue workflow with limitations
+    # - Skip async task resumption (treat as "Not Started")
+    # - Skip blocker checks (no issue tracking)
+    # - Execute tasks normally, status updates still work
 ```
 
 ### 2. Determine Current Phase
 
-Based on task status, identify which phase the release is in:
+Based on StateBox task status, identify which phase the release is in:
 
-**Phase 1: Initialization** (if create-test-report not started)
-- Create test report
+**Phase 1: Initialization**
 - Take ownership
 - Check CVE tracker bugs
 - Check RHCOS security alerts (Konflux only)
@@ -188,7 +219,390 @@ If you encounter errors:
 
 ---
 
-**Remember**: This is M1 implementation. StateBox is not yet implemented, so state is tracked via:
-- Google Sheets for most tasks
-- Test result files in GitHub for analysis tasks
-- Claude Code conversation context for in-session state
+## StateBox Workflow Resumption
+
+**IMPORTANT**: StateBox provides AI-driven workflow resumption across multiple sessions.
+
+### State Retrieval
+
+**Always retrieve StateBox state at the start:**
+
+```python
+# Get complete release state (metadata, tasks with results, issues)
+state = oar_get_release_status(release="4.20.1")
+```
+
+**StateBox state structure:**
+```json
+{
+  "release": "4.20.1",
+  "created_at": "2025-01-15T10:30:00Z",
+  "updated_at": "2025-01-15T14:45:00Z",
+  "metadata": {
+    "jira_ticket": "ART-12345",
+    "advisory_ids": {"rpm": 12345, "rhcos": 12346},
+    "release_date": "2025-Nov-04",
+    "candidate_builds": {"x86_64": "4.20.0-0.nightly-..."},
+    "shipment_mr": "https://gitlab.com/..."
+  },
+  "tasks": [
+    {
+      "name": "take-ownership",
+      "status": "Pass",
+      "started_at": "2025-01-15T10:35:00Z",
+      "completed_at": "2025-01-15T10:36:00Z",
+      "result": "Ownership assigned to rioliu@redhat.com..."
+    },
+    {
+      "name": "image-consistency-check",
+      "status": "In Progress",
+      "started_at": "2025-01-15T14:00:00Z",
+      "completed_at": null,
+      "result": "Jenkins job #123 triggered..."
+    }
+  ],
+  "issues": [
+    {
+      "issue": "CVE-2024-12345 not covered in advisory",
+      "blocker": true,
+      "related_tasks": ["check-cve-tracker-bug"],
+      "reported_at": "2025-01-15T12:00:00Z",
+      "resolved": false,
+      "resolution": null
+    }
+  ]
+}
+```
+
+### Task Resumption Logic
+
+**For EACH task in the workflow, apply this decision tree:**
+
+```python
+# Parse state to get task information
+state_data = json.loads(state)
+
+# Handle limited mode (Google Sheets fallback)
+if state_data.get("source") == "worksheet":
+    # Limited mode - only have task status, no results or issues
+    tasks = state_data.get("tasks", {})
+    task_status = tasks.get(task_name, "Not Started")
+
+    if task_status == "Pass":
+        Log: f"✓ {task_name} already completed"
+        Continue to next task
+    elif task_status == "In Progress":
+        # No build numbers available - treat as interrupted
+        Log: f"⚠ {task_name} was interrupted (limited mode), retrying..."
+        Execute task_name
+    elif task_status == "Fail":
+        # No blocker tracking - ask user
+        Log: f"✗ {task_name} previously failed"
+        Ask user: "Retry failed task? (y/n)"
+        if yes: Execute task_name
+        else: STOP
+    else:
+        # Not started - execute normally
+        Execute task_name
+
+    RETURN
+
+# Full mode (StateBox) - complete decision tree
+tasks = {t["name"]: t for t in state_data["tasks"]}
+task = tasks.get(task_name)
+
+if not task or task["status"] == "Not Started":
+    # Check for general blockers before starting
+    issues = [i for i in state.get("issues", [])
+              if i.get("blocker") and not i.get("resolved")
+              and not i.get("related_tasks")]
+
+    if issues:
+        Log: "✗ Release blocked by general issues:"
+        for issue in issues:
+            Log: f"  - {issue['issue']}"
+        Ask user to resolve blockers
+        STOP pipeline
+
+    # Execute task normally
+    Execute task_name
+
+elif task["status"] == "Pass":
+    # Skip completed tasks
+    Log: f"✓ {task_name} already completed at {task['completed_at']}"
+    Continue to next task
+
+elif task["status"] == "In Progress":
+    # Check if async task (Jenkins jobs)
+    if task_name in ["image-consistency-check", "stage-testing"]:
+        # Extract build number from task result
+        build_number = extract_from_result(task["result"], r"Build number: (\d+)")
+
+        if not build_number:
+            Log: f"⚠ {task_name} in progress but no build number found, retrying..."
+            Execute task_name
+        else:
+            # Query Jenkins job status
+            result = execute_mcp_tool(task_name, build_number=build_number)
+
+            if "status is changed to [Pass]" in result:
+                Log: f"✓ {task_name} completed successfully"
+                Continue to next task
+            elif "status is changed to [Fail]" in result:
+                Log: f"✗ {task_name} failed"
+                STOP pipeline
+            else:
+                Log: f"⏳ {task_name} still running (job #{build_number})"
+                Ask user to check back later
+                RETURN
+    else:
+        # Non-async task stuck in progress - retry
+        Log: f"⚠ {task_name} was interrupted, retrying..."
+        Execute task_name
+
+elif task["status"] == "Fail":
+    # Check if task has unresolved blocker
+    task_issues = [i for i in state.get("issues", [])
+                   if i.get("blocker") and not i.get("resolved")
+                   and task_name in i.get("related_tasks", [])]
+
+    if task_issues:
+        Log: f"✗ {task_name} blocked by:"
+        for issue in task_issues:
+            Log: f"  - {issue['issue']}"
+        Ask user to resolve blockers and re-run /release:drive
+        STOP pipeline
+    else:
+        # Blocker resolved or no blocker - retry task
+        Log: f"↻ Retrying {task_name} (previous failure)..."
+        Execute task_name
+```
+
+### Async Task Monitoring
+
+**For long-running Jenkins tasks:**
+
+```python
+# Initial trigger (when task doesn't exist or has no build number)
+result = oar_image_consistency_check(release=release)
+
+if "Build number:" in result:
+    build_number = extract_build_number(result)
+    Log: f"⏳ Jenkins job #{build_number} triggered"
+    Log: "Check back in 20-30 minutes with: /release:drive {release}"
+    RETURN
+
+# Status check on resume (when task has build number in result)
+result = oar_image_consistency_check(release=release, build_number=build_number)
+
+if "status is changed to [Pass]" in result:
+    Log: f"✓ Job #{build_number} completed successfully"
+    Continue to next task
+elif "status is changed to [Fail]" in result:
+    # Add issue to StateBox
+    oar_add_issue(
+        release=release,
+        issue=f"image-consistency-check job #{build_number} failed: {extract_failure_reason(result)}",
+        blocker=True,
+        related_tasks=["image-consistency-check"]
+    )
+    Log: "✗ Job failed, blocker added to StateBox"
+    STOP pipeline
+else:
+    Log: f"⏳ Job #{build_number} still running..."
+    RETURN
+```
+
+### Issue Tracking Integration
+
+**Adding blocking issues:**
+
+```python
+# When you encounter a blocking problem during execution
+oar_add_issue(
+    release=release,
+    issue="CVE-2024-12345 not covered in advisory",
+    blocker=True,
+    related_tasks=["check-cve-tracker-bug"]
+)
+```
+
+**Resolving issues (typically done by user manually):**
+
+```python
+# User fixes the problem, then resolves via MCP tool
+oar_resolve_issue(
+    release=release,
+    issue="CVE-2024-12345",  # Supports partial/fuzzy matching
+    resolution="Added CVE to advisory #12345, ART confirmed coverage"
+)
+
+# Next /release:drive invocation will retry the task
+```
+
+**Checking for blockers before starting workflow:**
+
+```python
+state = oar_get_release_status(release=release)
+
+# Check for unresolved blocking issues
+blockers = [i for i in state.get("issues", [])
+            if i.get("blocker") and not i.get("resolved")]
+
+if blockers:
+    Log: "⚠ Found unresolved blocking issues:"
+    for issue in blockers:
+        related = issue.get("related_tasks", [])
+        if related:
+            Log: f"  - {issue['issue']} (affects: {', '.join(related)})"
+        else:
+            Log: f"  - {issue['issue']} (GENERAL BLOCKER - affects entire release)"
+
+    Ask user: "Some tasks are blocked. Continue anyway? (y/n)"
+    if user says no:
+        STOP
+```
+
+### Workflow Phase Detection
+
+**Use StateBox task statuses to determine current phase:**
+
+```python
+state = oar_get_release_status(release=release)
+tasks = {t["name"]: t["status"] for t in state["tasks"]}
+
+# Determine phase based on task completion
+if tasks.get("take-ownership") != "Pass":
+    phase = "PHASE 1: Initialization"
+    next_steps = ["take-ownership", "check-cve-tracker-bug", ...]
+
+elif not is_build_promoted(release):
+    phase = "PHASE 2: Waiting for Build Promotion"
+    next_steps = ["Check Release Controller API in 30 min"]
+
+elif tasks.get("analyze-promoted-build") != "Pass":
+    phase = "PHASE 3: Test Evaluation & Async Task Triggering"
+    next_steps = ["Trigger async tasks", "Analyze test results"]
+
+elif not all_async_tasks_pass(tasks):
+    phase = "PHASE 4: Waiting for Async Tasks"
+    pending = [t for t in ["push-to-cdn-staging", "image-consistency-check", "stage-testing"]
+               if tasks.get(t) != "Pass"]
+    next_steps = [f"Wait for {', '.join(pending)}"]
+
+else:
+    phase = "PHASE 5: Final Approval"
+    next_steps = ["image-signed-check", "change-advisory-status"]
+
+Log: f"Current Phase: {phase}"
+Log: f"Next Steps: {next_steps}"
+```
+
+### Multi-Session Resumption Example
+
+**Session 1 (interrupted after triggering async tasks):**
+```
+User: /release:drive 4.20.1
+AI: Loading StateBox state for 4.20.1...
+AI: Current Phase: PHASE 1 - Initialization
+AI: ✓ take-ownership completed
+AI: ✓ check-cve-tracker-bug completed
+AI: ⏳ push-to-cdn-staging triggered (job #456)
+AI: Build not yet promoted, check back in 30 minutes
+```
+
+**Session 2 (hours later, build promoted):**
+```
+User: /release:drive 4.20.1
+AI: Loading StateBox state for 4.20.1...
+AI: Resuming from PHASE 2...
+AI: ✓ Skipping 2 completed tasks (take-ownership, check-cve-tracker-bug)
+AI: ⏳ push-to-cdn-staging still running (job #456)
+AI: ✓ Build promoted! Phase: PHASE 3 - Test Evaluation
+AI: ⏳ image-consistency-check triggered (job #789)
+AI: ⏳ stage-testing triggered (job #790)
+AI: Waiting for test results, check back in 1 hour
+```
+
+**Session 3 (after async tasks complete):**
+```
+User: /release:drive 4.20.1
+AI: Loading StateBox state for 4.20.1...
+AI: Resuming from PHASE 4...
+AI: ✓ Skipping 4 completed tasks
+AI: ✓ push-to-cdn-staging completed (job #456)
+AI: ✓ image-consistency-check completed (job #789)
+AI: ✓ stage-testing completed (job #790)
+AI: Analyzing promoted build test results...
+AI: ✓ All tests passed, proceeding to PHASE 5
+AI: ✓ image-signed-check completed
+AI: ✓ change-advisory-status completed
+AI: 🎉 Release 4.20.1 approved!
+```
+
+### Error Recovery
+
+**When task fails with error:**
+
+```python
+try:
+    result = execute_mcp_tool(task_name, release=release)
+
+    if "status is changed to [Fail]" in result:
+        # Task failed - determine if blocker should be added
+        if is_permanent_failure(result):
+            # Add blocking issue
+            oar_add_issue(
+                release=release,
+                issue=f"{task_name} failed: {extract_error(result)}",
+                blocker=True,
+                related_tasks=[task_name]
+            )
+            Log: f"✗ {task_name} failed, blocker added"
+            Log: "Please investigate and resolve, then re-run /release:drive"
+            STOP
+        else:
+            # Transient failure - will retry on next invocation
+            Log: f"⚠ {task_name} failed (transient), will retry on next invocation"
+            RETURN
+
+except Exception as e:
+    # Unexpected error - add general blocker
+    Log: f"✗ Unexpected error in {task_name}: {e}"
+    oar_add_issue(
+        release=release,
+        issue=f"Unexpected error in {task_name}: {str(e)}",
+        blocker=True,
+        related_tasks=[task_name]
+    )
+    STOP
+```
+
+### Key Principles
+
+1. **Idempotency**: Re-running `/release:drive` multiple times is safe
+   - Completed tasks (Pass) are skipped
+   - In-progress async tasks are checked, not re-triggered
+   - Failed tasks are retried only after blockers resolved
+
+2. **StateBox vs Google Sheets**:
+   - **StateBox**: Primary source of truth for AI
+     - Complete state (tasks + results + issues)
+     - AI-readable task results for context
+     - Issue tracking for blockers
+   - **Google Sheets**: Still updated for backwards compatibility
+     - Task status only (Pass/Fail/In Progress)
+     - Human-readable format for manual review
+
+3. **State Priority**:
+   - Always check StateBox first (should exist for all active releases)
+   - Fall back to Google Sheets only if StateBox doesn't exist (abnormal)
+
+4. **Session Independence**:
+   - Never rely on previous conversation context
+   - Always load StateBox state at session start
+   - StateBox persists across days, weeks, or machine restarts
+
+---
+
+**Remember**: StateBox enables true workflow resumption. Always check state first, respect task statuses, and track blockers properly.

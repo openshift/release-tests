@@ -10,24 +10,25 @@ This document defines the complete workflow for OpenShift z-stream release orche
 
 ## Architecture Components
 
-### Google Sheets (Source of Truth for M1)
-- Primary source of task execution state for M1
+### StateBox (M2 - Primary Source of Truth)
+- **Primary source of truth** for AI workflow resumption and task execution state
+- Persists in GitHub: `_releases/{y-stream}/statebox/{release}.yaml`
+- Stores complete release context:
+  - Metadata (advisories, builds, Jira ticket, release date, shipment MR)
+  - Task execution history with AI-readable results (sensitive data masked)
+  - Blocking issues with resolution tracking
+- Enables workflow resumption across multiple AI sessions (hours/days/weeks apart)
+- Supports concurrent access via SHA-based optimistic locking
+- Automatically updated by all OAR CLI commands (transparent to AI)
+- **AI MUST retrieve StateBox state at start of each session**: `oar_get_release_status(release)`
+
+### Google Sheets (Legacy - Human Interface)
+- Still updated for backwards compatibility and human visibility
 - Each OAR command updates its corresponding task status directly
 - Task status: "Not Started" / "In Progress" / "Pass" / "Fail"
 - Overall status: "Green" / "Red"
-- **Special cases (M1):**
-  - B11 (Nightly build test / analyze-candidate-build): Stays "In Progress" until final approval
-  - B12 (Signed build test / analyze-promoted-build): Stays "In Progress" until final approval
-  - Test analysis results tracked via test result files in GitHub, not in Sheets
-  - AI re-checks test result files each session to determine if analysis needed
-
-### StateBox (Future - M2)
-- Centralized component for storing ALL task execution state
-- Will persist in GitHub `_releases/state_box/{release}.json`
-- Will include analysis task results (analyze-candidate-build, analyze-promoted-build)
-- StateBox will be used by AI agent internally
-- Google Sheets will by updated as usual
-- **Not implemented in M1**
+- **Used as fallback** if StateBox doesn't exist (abnormal situation)
+- **Note**: AI should always check StateBox first, Google Sheets second
 
 ### MCP Server
 - Exposes 27 OAR tools for command execution
@@ -922,49 +923,13 @@ The metadata URL checker process runs detached for up to 2 days:
 
 ### 1. State Retrieval
 
-Before making ANY decisions, AI must retrieve current release state using TWO MCP tools:
+Before making ANY decisions, AI must retrieve release state:
 
-**Tool 1: `oar_get_release_metadata(release)`** - Get release configuration
-```json
-{
-  "release": "4.20.1",
-  "advisories": {
-    "rpm": "12345",
-    "image": "12346",
-    ...
-  },
-  "jira_ticket": "ART-12345",
-  "candidate_builds": {
-    "x86_64": "4.20.0-0.nightly-2025-01-28-123456"
-  },
-  "shipment_mr": "https://gitlab.com/..."
-}
+```python
+state = oar_get_release_status(release="4.20.1")
 ```
 
-**Tool 2: `oar_get_release_status(release)`** - Get task execution status from Google Sheets
-```json
-{
-  "release": "4.20.1",
-  "overall_status": "Green",
-  "tasks": {
-    "take-ownership": "Pass",
-    "image-consistency-check": "Not Started",
-    "analyze-candidate-build": "In Progress",
-    "analyze-promoted-build": "In Progress",
-    "check-greenwave-cvp-tests": "Pass",
-    "check-cve-tracker-bug": "Pass",
-    "push-to-cdn-staging": "In Progress",
-    "stage-testing": "Not Started",
-    "image-signed-check": "Not Started",
-    "change-advisory-status": "Not Started"
-  }
-}
-```
-
-**Note on analyze tasks (M1 limitation):**
-- `analyze-candidate-build` and `analyze-promoted-build` always show "In Progress" in Google Sheets
-- AI must check test result files from GitHub to determine actual analysis status
-- See "Test Result Evaluation" section for detailed logic
+This returns task statuses, metadata, and any blocking issues from StateBox (or Google Sheets as fallback).
 
 ### 2. Decision Logic
 
