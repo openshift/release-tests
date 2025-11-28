@@ -457,7 +457,7 @@ class StateBox:
         Args:
             configstore: ConfigStore instance (provides release version and configuration)
             repo_name: GitHub repository name (default: "openshift/release-tests")
-            branch: Branch name (default: "zstream")
+            branch: Branch name (default: "z-stream")
             github_token: GitHub personal access token (default: from GITHUB_TOKEN env)
 
         Raises:
