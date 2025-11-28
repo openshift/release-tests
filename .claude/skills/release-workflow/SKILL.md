@@ -67,7 +67,7 @@ analyze-candidate-build (independent)
 - Analysis can run immediately
 
 **Promoted Build:**
-- Stable z-stream version (e.g., `4.20.1`)
+- Stable z-stream version (e.g., `X.Y.Z` such as `4.20.1`)
 - After ART promotion to release stream
 - Tests triggered after promotion
 - Must wait for test completion and aggregation

@@ -102,7 +102,7 @@ analyze-candidate-build (conditionally - only if accepted == false)
 
 **Promoted Build:**
 - Stable build after ART promotion
-- Format: `4.20.1` (z-stream version)
+- Format: `X.Y.Z` (z-stream version, e.g., 4.20.1)
 - Checked via Release Controller API
 - **Test status:** Tests triggered after promotion, must wait for completion
 
@@ -926,7 +926,7 @@ The metadata URL checker process runs detached for up to 2 days:
 Before making ANY decisions, AI must retrieve release state:
 
 ```python
-state = oar_get_release_status(release="4.20.1")
+state = oar_get_release_status(release="{release}")
 ```
 
 This returns task statuses, metadata, and any blocking issues from StateBox (or Google Sheets as fallback).

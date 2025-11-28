@@ -76,7 +76,7 @@ This is likely a product bug requiring OCPBUGS ticket."
 
 ### Use Case 1: Understanding Current State
 
-**User asks:** "Where are we in the 4.20.1 release?"
+**User asks:** "Where are we in the X.Y.Z release?" (example: "Where are we in the 4.20.1 release?")
 
 **Skill provides:**
 - Current task phase
