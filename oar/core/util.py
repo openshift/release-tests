@@ -4,6 +4,7 @@ import warnings
 import re
 import subprocess
 import json
+from datetime import datetime, timezone
 from semver.version import Version
 from urllib.parse import urlparse
 from subprocess import CalledProcessError
@@ -39,6 +40,18 @@ def validate_release_version(version):
         return True
     except ValueError:
         return False
+
+def get_current_timestamp() -> str:
+    """
+    Get current UTC timestamp in standardized LOG_DATE_FORMAT.
+
+    Returns timestamps in format: YYYY-MM-DDTHH:MM:SSZ
+    This ensures consistency across all OAR components (logs, StateBox, etc.)
+
+    Returns:
+        Timestamp string in LOG_DATE_FORMAT (e.g., "2025-11-28T06:19:44Z")
+    """
+    return datetime.now(timezone.utc).strftime(LOG_DATE_FORMAT)
 
 def get_release_key(version):
     version_info = Version.parse(version)
