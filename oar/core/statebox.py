@@ -910,29 +910,32 @@ class StateBox:
         # Update task fields
         now = datetime.now(timezone.utc).isoformat()
 
+        # Extract timestamps from result text (before status-specific logic to avoid duplication)
+        extracted_start = extract_start_timestamp(result) if result else None
+        extracted_end = extract_end_timestamp(result) if result else None
+        if extracted_start:
+            logger.debug(f"Extracted start timestamp from result: {extracted_start}")
+        if extracted_end:
+            logger.debug(f"Extracted end timestamp from result: {extracted_end}")
+
         if status:
             old_status = task["status"]
             task["status"] = status
 
             # Update timestamps based on status transition
             if status == TASK_STATUS_INPROGRESS:
-                # Always update started_at when task starts (handles re-runs)
-                task["started_at"] = now
+                # Use extracted start timestamp or current time
+                task["started_at"] = extracted_start or now
+                # Clear completed_at for In Progress tasks
+                task["completed_at"] = None
             elif status in [TASK_STATUS_PASS, TASK_STATUS_FAIL]:
-                # Try to extract actual completion timestamp from result text
-                extracted_end = extract_end_timestamp(result) if result else None
+                # Use extracted end timestamp or current time
                 task["completed_at"] = extracted_end or now
-                if extracted_end:
-                    logger.debug(f"Extracted end timestamp from result: {extracted_end}")
 
-                # If started_at is None, try to extract from result, otherwise use extracted_end or now
+                # If started_at is None, use extracted start or fall back to end/now
                 # (handles case where task completed without going through "In Progress")
                 if task["started_at"] is None:
-                    # Try to extract actual start timestamp from result text
-                    extracted_start = extract_start_timestamp(result) if result else None
                     task["started_at"] = extracted_start or extracted_end or now
-                    if extracted_start:
-                        logger.debug(f"Extracted start timestamp from result: {extracted_start}")
 
             logger.info(f"Updated task '{task_name}' status: {old_status} -> {status}")
 
