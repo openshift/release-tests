@@ -46,9 +46,10 @@ Tools exposed:
 - 6 jobctl commands (start-controller, trigger-jobs-for-build, start-aggregator, etc.)
 - 1 job command (run)
 - 4 configuration tools (get-release-metadata, is-release-shipped, get-release-status, update-task-status)
+- 4 issue management tools (add-issue, resolve-issue, get-issues, get-task-blocker)
 - 3 cache management tools (mcp_cache_stats, mcp_cache_invalidate, mcp_cache_warm)
 
-Total: 27 tools (100% optimized - all CLI commands use direct Click invocation)
+Total: 31 tools (100% optimized - all CLI commands use direct Click invocation)
 
 Performance Characteristics:
 - ConfigStore cache hit: <10ms (3x-100x faster than miss)
@@ -1363,6 +1364,356 @@ async def mcp_cache_warm(releases: str) -> str:
 
 
 # ============================================================================
+# StateBox Issue Management Tools
+# ============================================================================
+
+@mcp.tool()
+async def oar_add_issue(
+    release: str,
+    issue: str,
+    blocker: bool = True,
+    related_tasks: Optional[str] = None
+) -> str:
+    """
+    Add an issue to StateBox for tracking release problems.
+
+    ⚠️ WRITE OPERATION: Creates new issue entry in StateBox.
+
+    Use this tool to track both blocking and non-blocking issues during release workflow.
+    AI should analyze task failures to identify root causes before creating issues.
+
+    Issue Types:
+    - Blocking issues (blocker=True): Critical problems that prevent release from proceeding
+      Examples: CVE not covered, advisory in wrong state, ART pipeline down
+    - Non-blocking issues (blocker=False): Problems to track but don't stop release
+      Examples: Automation failures, test flakiness, tool improvements needed
+
+    Issue Scopes:
+    - Task-specific issues: Problems related to specific tasks (provide related_tasks)
+      Example: "CVE-2024-12345 not covered" blocks check-cve-tracker-bug task
+    - General issues: Problems affecting entire release (related_tasks=None or empty)
+      Example: "ART build pipeline down - ETA: 2025-01-16"
+
+    Constraints:
+    - Only ONE unresolved blocker per task allowed (prevents duplicate blocking issues)
+    - Multiple non-blocking issues per task allowed (for tracking improvements)
+    - Automatic deduplication: Won't create duplicate issues with same description
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+        issue: Issue description (human-readable root cause)
+        blocker: Is this a blocking issue? (default: True)
+        related_tasks: Comma-separated task names (e.g., "check-cve-tracker-bug,take-ownership")
+                      Leave None or empty for general issues affecting entire release
+
+    Returns:
+        JSON string with issue entry details
+
+    Examples:
+        # Blocking issue for specific task
+        oar_add_issue("4.19.1", "CVE-2024-12345 not covered in advisory", True, "check-cve-tracker-bug")
+
+        # General blocking issue
+        oar_add_issue("4.19.1", "ART build pipeline down - ETA: 2025-01-16", True, None)
+
+        # Non-blocking issue (automation improvement)
+        oar_add_issue("4.19.1", "Jenkins job timeout - retry succeeded", False, "image-consistency-check")
+    """
+    try:
+        cs = get_cached_configstore(release)
+        statebox = StateBox(cs)
+
+        # Parse related_tasks
+        task_list = None
+        if related_tasks:
+            task_list = [t.strip() for t in related_tasks.split(",") if t.strip()]
+
+        # Add issue
+        issue_entry = statebox.add_issue(
+            issue=issue,
+            blocker=blocker,
+            related_tasks=task_list,
+            auto_save=True
+        )
+
+        logger.info(f"Added issue to StateBox (release: {release}, blocker: {blocker})")
+
+        return json.dumps({
+            "success": True,
+            "message": f"Added {'blocking' if blocker else 'non-blocking'} issue",
+            "issue": issue_entry,
+            "release": release
+        })
+
+    except StateBoxException as e:
+        logger.error(f"Failed to add issue: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "release": release
+        })
+    except Exception as e:
+        logger.error(f"Unexpected error adding issue: {e}")
+        return json.dumps({
+            "success": False,
+            "error": f"Unexpected error: {str(e)}",
+            "release": release
+        })
+
+
+@mcp.tool()
+async def oar_resolve_issue(
+    release: str,
+    issue: str,
+    resolution: str
+) -> str:
+    """
+    Resolve an issue in StateBox when problem is fixed.
+
+    ⚠️ WRITE OPERATION: Updates issue resolution status in StateBox.
+
+    Use this tool to mark issues as resolved after problems are fixed.
+    Supports fuzzy matching - you can provide partial issue description.
+
+    Matching Logic:
+    1. Try exact match (case-insensitive)
+    2. Try partial match (input is substring of existing issue)
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+        issue: Issue description (can be partial, case-insensitive)
+        resolution: Resolution description (how the problem was fixed)
+
+    Returns:
+        JSON string with resolved issue details
+
+    Examples:
+        # Exact match
+        oar_resolve_issue("4.19.1", "CVE-2024-12345 not covered", "CVE added to advisory 156789")
+
+        # Partial match
+        oar_resolve_issue("4.19.1", "pipeline down", "Pipeline restored at 14:30 UTC")
+
+        # General blocker resolved
+        oar_resolve_issue("4.19.1", "ART build", "Build pipeline operational again")
+    """
+    try:
+        cs = get_cached_configstore(release)
+        statebox = StateBox(cs)
+
+        # Resolve issue
+        resolved_issue = statebox.resolve_issue(
+            issue=issue,
+            resolution=resolution,
+            auto_save=True
+        )
+
+        logger.info(f"Resolved issue in StateBox (release: {release})")
+
+        return json.dumps({
+            "success": True,
+            "message": "Issue resolved successfully",
+            "issue": resolved_issue,
+            "release": release
+        })
+
+    except StateBoxException as e:
+        logger.error(f"Failed to resolve issue: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "release": release
+        })
+    except Exception as e:
+        logger.error(f"Unexpected error resolving issue: {e}")
+        return json.dumps({
+            "success": False,
+            "error": f"Unexpected error: {str(e)}",
+            "release": release
+        })
+
+
+@mcp.tool()
+async def oar_get_issues(
+    release: str,
+    unresolved_only: bool = False,
+    blockers_only: bool = False,
+    task_name: Optional[str] = None
+) -> str:
+    """
+    Get issues from StateBox with optional filtering.
+
+    This is a READ-ONLY operation - retrieves issues for analysis.
+
+    Use this tool to:
+    - Understand what's blocking release progress
+    - Get context on problems that need attention
+    - Check if specific task has blockers
+    - Review resolved issues for historical context
+
+    Filter combinations:
+    - No filters: Get all issues (resolved + unresolved, blockers + non-blockers)
+    - unresolved_only=True: Get only active issues
+    - blockers_only=True: Get only blocking issues
+    - task_name="xxx": Get issues related to specific task
+    - Combine filters: e.g., unresolved blockers for specific task
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+        unresolved_only: Only return unresolved issues (default: False)
+        blockers_only: Only return blocking issues (default: False)
+        task_name: Only return issues related to specific task (default: None)
+
+    Returns:
+        JSON string with list of issues matching filters
+
+    Examples:
+        # Get all unresolved blockers (what's stopping release?)
+        oar_get_issues("4.19.1", unresolved_only=True, blockers_only=True)
+
+        # Get issues for specific task
+        oar_get_issues("4.19.1", task_name="check-cve-tracker-bug")
+
+        # Get all issues (historical view)
+        oar_get_issues("4.19.1")
+    """
+    try:
+        cs = get_cached_configstore(release)
+        statebox = StateBox(cs)
+
+        # Get issues with filters
+        issues = statebox.get_issues(
+            unresolved_only=unresolved_only,
+            blockers_only=blockers_only,
+            task_name=task_name
+        )
+
+        logger.info(f"Retrieved {len(issues)} issues from StateBox (release: {release})")
+
+        return json.dumps({
+            "success": True,
+            "count": len(issues),
+            "issues": issues,
+            "filters": {
+                "unresolved_only": unresolved_only,
+                "blockers_only": blockers_only,
+                "task_name": task_name
+            },
+            "release": release
+        })
+
+    except StateBoxException as e:
+        logger.error(f"Failed to get issues: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "release": release,
+            "count": 0,
+            "issues": []
+        })
+    except Exception as e:
+        logger.error(f"Unexpected error getting issues: {e}")
+        return json.dumps({
+            "success": False,
+            "error": f"Unexpected error: {str(e)}",
+            "release": release,
+            "count": 0,
+            "issues": []
+        })
+
+
+@mcp.tool()
+async def oar_get_task_blocker(
+    release: str,
+    task_name: str
+) -> str:
+    """
+    Get unresolved blocking issue for a specific task.
+
+    This is a READ-ONLY operation - checks if task is blocked.
+
+    Use this tool to:
+    - Check if task has a blocker before starting work
+    - Understand why task is blocked
+    - Validate that blocker was resolved before retrying task
+
+    Note: Only returns ONE blocker per task (enforced by StateBox constraint).
+    If task has no blocker, returns None.
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+        task_name: Task name (e.g., "check-cve-tracker-bug", "image-consistency-check")
+
+    Returns:
+        JSON string with blocker details or None if task not blocked
+
+    Examples:
+        # Check if task is blocked
+        oar_get_task_blocker("4.19.1", "check-cve-tracker-bug")
+
+        # Returns:
+        # {
+        #   "success": true,
+        #   "blocked": true,
+        #   "blocker": {
+        #     "issue": "CVE-2024-12345 not covered in advisory",
+        #     "reported_at": "2025-01-15T10:00:00Z",
+        #     "resolved": false,
+        #     "blocker": true,
+        #     "related_tasks": ["check-cve-tracker-bug"]
+        #   }
+        # }
+
+        # If not blocked:
+        # {
+        #   "success": true,
+        #   "blocked": false,
+        #   "blocker": null
+        # }
+    """
+    try:
+        cs = get_cached_configstore(release)
+        statebox = StateBox(cs)
+
+        # Get task blocker
+        blocker = statebox.get_task_blocker(task_name)
+
+        if blocker:
+            logger.info(f"Task '{task_name}' is blocked (release: {release})")
+        else:
+            logger.info(f"Task '{task_name}' has no blocker (release: {release})")
+
+        return json.dumps({
+            "success": True,
+            "blocked": blocker is not None,
+            "blocker": blocker,
+            "task_name": task_name,
+            "release": release
+        })
+
+    except StateBoxException as e:
+        logger.error(f"Failed to get task blocker: {e}")
+        return json.dumps({
+            "success": False,
+            "error": str(e),
+            "release": release,
+            "task_name": task_name,
+            "blocked": False,
+            "blocker": None
+        })
+    except Exception as e:
+        logger.error(f"Unexpected error getting task blocker: {e}")
+        return json.dumps({
+            "success": False,
+            "error": f"Unexpected error: {str(e)}",
+            "release": release,
+            "task_name": task_name,
+            "blocked": False,
+            "blocker": None
+        })
+
+
+# ============================================================================
 # Server Entry Point
 # ============================================================================
 
@@ -1407,8 +1758,9 @@ if __name__ == "__main__":
     logger.info(f"✓ All required credentials configured")
     logger.info(f"✓ Performance: 100% optimized (NO subprocess)")
     logger.info(f"✓ ConfigStore caching: Enabled (TTL=7 days)")
-    logger.info(f"✓ Total tools: 27 (20 CLI + 7 direct API)")
+    logger.info(f"✓ Total tools: 31 (20 CLI + 11 direct API)")
     logger.info(f"✓ CLI tools: 11 OAR + 2 oarctl + 6 jobctl + 1 job")
+    logger.info(f"✓ Direct API tools: 4 config + 4 issue + 3 cache")
     logger.info(f"✓ Thread pool: {CLI_THREAD_POOL_SIZE} workers")
     logger.info("=" * 60)
 

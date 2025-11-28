@@ -442,6 +442,30 @@ class TestStateBox(unittest.TestCase):
             self.statebox.resolve_issue("Non-existent bug", "Fixed")
         self.assertIn("Issue not found", str(context.exception))
 
+    def test_resolve_issue_multiple_partial_matches(self):
+        """Test resolve_issue() rejects ambiguous partial matches"""
+        # Create state with multiple issues containing same keyword
+        state = self.statebox._get_default_state()
+        self.statebox.save(state, message="Test: Initial state")
+        self.statebox.add_issue("CVE-2024-12345 not covered in advisory", blocker=True, related_tasks=["task1"])
+        self.statebox.add_issue("CVE-2024-67890 not covered in advisory", blocker=True, related_tasks=["task2"])
+
+        # Try to resolve with ambiguous substring
+        with self.assertRaises(StateBoxException) as context:
+            self.statebox.resolve_issue("CVE-2024", "Fixed")
+
+        # Verify error message lists all matches
+        error_msg = str(context.exception)
+        self.assertIn("Multiple issues match", error_msg)
+        self.assertIn("CVE-2024-12345", error_msg)
+        self.assertIn("CVE-2024-67890", error_msg)
+        self.assertIn("more specific", error_msg)
+
+        # Verify resolving with more specific text works
+        resolved = self.statebox.resolve_issue("CVE-2024-12345", "Fixed CVE-12345")
+        self.assertTrue(resolved["resolved"])
+        self.assertEqual(resolved["issue"], "CVE-2024-12345 not covered in advisory")
+
     def test_get_task_blocker(self):
         """Test get_task_blocker() finds blocker for task"""
         # Create state with task blocker

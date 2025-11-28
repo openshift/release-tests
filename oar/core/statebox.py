@@ -1035,25 +1035,40 @@ class StateBox:
         # Try exact match first (normalized)
         normalized_input = issue.strip().lower()
 
+        # Collect matches (exact match is always unique due to add_issue deduplication)
         matched_issue = None
+        partial_matches = []
+
         for issue_entry in state.get("issues", []):
             if issue_entry["resolved"]:
                 continue
 
             normalized_existing = issue_entry["issue"].strip().lower()
 
-            # Exact match
+            # Exact match (always unique - add_issue prevents duplicates)
             if normalized_existing == normalized_input:
                 matched_issue = issue_entry
                 break
 
             # Partial match (input is substring of existing)
             if normalized_input in normalized_existing:
-                matched_issue = issue_entry
-                break
+                partial_matches.append(issue_entry)
 
-        if not matched_issue:
-            # List available unresolved issues for user
+        # If exact match found, use it (no ambiguity)
+        if matched_issue:
+            pass  # matched_issue already set
+        elif partial_matches:
+            if len(partial_matches) > 1:
+                # Multiple partial matches - ask user to be more specific
+                match_list = [m["issue"] for m in partial_matches]
+                raise StateBoxException(
+                    f"Multiple issues match '{issue}':\n" +
+                    "\n".join(f"  - {m}" for m in match_list) +
+                    "\nPlease provide more specific text to uniquely identify the issue."
+                )
+            matched_issue = partial_matches[0]
+        else:
+            # No matches - show all unresolved issues for user
             unresolved = [e["issue"] for e in state.get("issues", []) if not e["resolved"]]
             raise StateBoxException(
                 f"Issue not found: '{issue}'\n"
