@@ -333,6 +333,53 @@ INITIAL_BACKOFF = 0.5  # seconds
 MAX_BACKOFF = 10.0  # seconds
 
 
+def extract_start_timestamp(text: Optional[str]) -> Optional[str]:
+    """
+    Extract the first timestamp from CLI command output.
+
+    Searches for ISO 8601 timestamps matching StateBox's datetime.now(timezone.utc).isoformat() format.
+    Typical format: 2025-11-27T21:54:22.123456+00:00 or 2025-11-27T21:54:22Z
+
+    Args:
+        text: CLI command output containing timestamps
+
+    Returns:
+        First ISO 8601 timestamp found, or None if no timestamp found
+    """
+    if not text:
+        return None
+
+    # Match ISO 8601 format: YYYY-MM-DDTHH:MM:SS with optional microseconds and timezone
+    # Handles both +00:00 and Z timezone formats
+    pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})'
+    match = re.search(pattern, text)
+
+    return match.group(0) if match else None
+
+
+def extract_end_timestamp(text: Optional[str]) -> Optional[str]:
+    """
+    Extract the last timestamp from CLI command output.
+
+    Searches for ISO 8601 timestamps and returns the LAST occurrence,
+    which typically represents when the task completed.
+
+    Args:
+        text: CLI command output containing timestamps
+
+    Returns:
+        Last ISO 8601 timestamp found, or None if no timestamp found
+    """
+    if not text:
+        return None
+
+    # Match ISO 8601 format: YYYY-MM-DDTHH:MM:SS with optional microseconds and timezone
+    pattern = r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})'
+    matches = re.findall(pattern, text)
+
+    return matches[-1] if matches else None
+
+
 def mask_sensitive_data(text: Optional[str]) -> Optional[str]:
     """
     Mask sensitive data in text before storing in public StateBox repository.
@@ -872,12 +919,20 @@ class StateBox:
                 # Always update started_at when task starts (handles re-runs)
                 task["started_at"] = now
             elif status in ["Pass", "Fail"]:
-                # Set completed_at when task completes
-                task["completed_at"] = now
-                # If started_at is None, set it to same time as completed_at
+                # Try to extract actual completion timestamp from result text
+                extracted_end = extract_end_timestamp(result) if result else None
+                task["completed_at"] = extracted_end or now
+                if extracted_end:
+                    logger.debug(f"Extracted end timestamp from result: {extracted_end}")
+
+                # If started_at is None, try to extract from result, otherwise use extracted_end or now
                 # (handles case where task completed without going through "In Progress")
                 if task["started_at"] is None:
-                    task["started_at"] = now
+                    # Try to extract actual start timestamp from result text
+                    extracted_start = extract_start_timestamp(result) if result else None
+                    task["started_at"] = extracted_start or extracted_end or now
+                    if extracted_start:
+                        logger.debug(f"Extracted start timestamp from result: {extracted_start}")
 
             logger.info(f"Updated task '{task_name}' status: {old_status} -> {status}")
 
