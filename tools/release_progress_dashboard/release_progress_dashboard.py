@@ -138,6 +138,65 @@ def load_release_data(releases: List[str], cached_data: Dict[str, Any] = None) -
     return data
 
 
+def format_timestamp(timestamp_str: str) -> str:
+    """
+    Format ISO timestamp to human-readable format
+
+    Args:
+        timestamp_str: ISO format timestamp
+
+    Returns:
+        Formatted timestamp string
+    """
+    if not timestamp_str:
+        return "N/A"
+    try:
+        dt = datetime.fromisoformat(timestamp_str.replace('Z', '+00:00'))
+        return dt.strftime("%Y-%m-%d %H:%M UTC")
+    except Exception:
+        return timestamp_str
+
+
+def calculate_duration(started_at: str, completed_at: str) -> str:
+    """
+    Calculate duration between two timestamps
+
+    Args:
+        started_at: Start timestamp
+        completed_at: End timestamp
+
+    Returns:
+        Human-readable duration string
+    """
+    if not started_at or not completed_at:
+        return "N/A"
+    try:
+        start = datetime.fromisoformat(started_at.replace('Z', '+00:00'))
+        end = datetime.fromisoformat(completed_at.replace('Z', '+00:00'))
+        duration = end - start
+
+        total_seconds = duration.total_seconds()
+
+        # Handle different time scales
+        if total_seconds < 60:
+            # Less than 1 minute - show seconds
+            return f"{int(total_seconds)} sec"
+        elif total_seconds < 3600:
+            # Less than 1 hour - show minutes
+            minutes = total_seconds / 60
+            return f"{round(minutes)} min"
+        elif total_seconds < 86400:
+            # Less than 1 day - show hours
+            hours = total_seconds / 3600
+            return f"{hours:.1f} hours"
+        else:
+            # 1 day or more - show days
+            days = total_seconds / 86400
+            return f"{days:.1f} days"
+    except Exception:
+        return "N/A"
+
+
 def create_progress_heatmap(all_release_data: Dict[str, Any], theme: str = 'plotly_white') -> go.Figure:
     """
     Create heatmap showing task-by-task status for each release
@@ -188,16 +247,60 @@ def create_progress_heatmap(all_release_data: Dict[str, Any], theme: str = 'plot
 
     for release in releases:
         data = all_release_data[release]
-        tasks = data['status'].get('tasks', {})
+        status_data = data['status']
+
+        # Build task lookup by name (StateBox returns list of task dicts)
+        tasks_list = status_data.get('tasks', [])
+        tasks_by_name = {}
+
+        # Handle both dict and list formats
+        if isinstance(tasks_list, dict):
+            # Old format: task_name -> status string
+            tasks_by_name = {name: {"status": status, "started_at": None, "completed_at": None}
+                            for name, status in tasks_list.items()}
+        elif isinstance(tasks_list, list):
+            # New StateBox format: list of task objects
+            tasks_by_name = {task['name']: task for task in tasks_list}
 
         row_data = []
         hover_row = []
         text_row = []
 
-        for task in task_order:
-            status = tasks.get(task, "Not Started")
+        for task_name in task_order:
+            task_info = tasks_by_name.get(task_name, {})
+            status = task_info.get('status', 'Not Started')
+            started_at = task_info.get('started_at')
+            completed_at = task_info.get('completed_at')
+
             row_data.append(status_map.get(status, 1))
-            hover_row.append(f"<b>{release}</b><br>{task.replace('-', ' ').title()}<br>Status: <b>{status}</b>")
+
+            # Enhanced hover text with timestamps and duration
+            hover_parts = [
+                f"<b>{release}</b>",
+                f"{task_name.replace('-', ' ').title()}",
+                f"Status: <b>{status}</b>"
+            ]
+
+            if started_at:
+                hover_parts.append(f"Started: {format_timestamp(started_at)}")
+            if completed_at:
+                hover_parts.append(f"Completed: {format_timestamp(completed_at)}")
+            if started_at and completed_at:
+                duration = calculate_duration(started_at, completed_at)
+                hover_parts.append(f"Duration: {duration}")
+
+            # Check for blockers
+            issues = status_data.get('issues', [])
+            has_blocker = any(
+                issue.get('blocker', False) and
+                not issue['resolved'] and
+                task_name in issue.get('related_tasks', [])
+                for issue in issues
+            )
+            if has_blocker:
+                hover_parts.append("⚠️ <b>Has blocker</b>")
+
+            hover_row.append("<br>".join(hover_parts))
             text_row.append(status_abbrev.get(status, "○"))
 
         z_data.append(row_data)
@@ -250,7 +353,105 @@ def create_progress_heatmap(all_release_data: Dict[str, Any], theme: str = 'plot
     return fig
 
 
-def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: Dict[str, Any]):
+def render_issues_section(release: str, status_data: Dict[str, Any]):
+    """
+    Render issues section with blockers and non-blocking issues
+
+    Args:
+        release: Release version
+        status_data: Status data containing issues
+    """
+    st.header("🚨 Issues & Blockers")
+
+    issues = status_data.get('issues', [])
+
+    if not issues:
+        st.success("✅ No issues reported for this release")
+        return
+
+    # Filter issues by type and resolution status
+    active_blockers = [i for i in issues if i.get('blocker', False) and not i['resolved']]
+    active_non_blockers = [i for i in issues if not i.get('blocker', False) and not i['resolved']]
+    resolved_issues = [i for i in issues if i['resolved']]
+
+    # Show issue statistics
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        if active_blockers:
+            st.metric("🛑 Active Blockers", len(active_blockers), delta=None, delta_color="inverse")
+        else:
+            st.metric("🛑 Active Blockers", 0)
+
+    with col2:
+        if active_non_blockers:
+            st.metric("⚠️ Non-blocking Issues", len(active_non_blockers))
+        else:
+            st.metric("⚠️ Non-blocking Issues", 0)
+
+    with col3:
+        st.metric("✅ Resolved Issues", len(resolved_issues))
+
+    with col4:
+        st.metric("📊 Total Issues", len(issues))
+
+    st.divider()
+
+    # Active Blockers Section (Critical - Always Expanded)
+    if active_blockers:
+        st.error(f"🛑 **{len(active_blockers)} Active Blocker(s)** - Release is blocked!")
+        for idx, issue in enumerate(active_blockers):
+            with st.expander(f"🛑 Blocker #{idx + 1}: {issue['issue'][:80]}...", expanded=True):
+                st.markdown(f"**Issue Description:**")
+                st.markdown(f"> {issue['issue']}")
+
+                st.markdown(f"**Reported:** {format_timestamp(issue['reported_at'])}")
+
+                if issue.get('related_tasks'):
+                    tasks_str = ', '.join([f"`{t}`" for t in issue['related_tasks']])
+                    st.markdown(f"**Affects Tasks:** {tasks_str}")
+                else:
+                    st.warning("**Scope:** General (affects entire release)")
+    else:
+        st.success("✅ No active blockers - Release can proceed")
+
+    # Non-blocking Issues Section
+    if active_non_blockers:
+        st.divider()
+        st.warning(f"⚠️ **{len(active_non_blockers)} Non-blocking Issue(s)**")
+        for idx, issue in enumerate(active_non_blockers):
+            with st.expander(f"⚠️ Issue #{idx + 1}: {issue['issue'][:80]}...", expanded=False):
+                st.markdown(f"**Issue Description:**")
+                st.markdown(f"> {issue['issue']}")
+
+                st.markdown(f"**Reported:** {format_timestamp(issue['reported_at'])}")
+
+                if issue.get('related_tasks'):
+                    tasks_str = ', '.join([f"`{t}`" for t in issue['related_tasks']])
+                    st.markdown(f"**Affects Tasks:** {tasks_str}")
+                else:
+                    st.info("**Scope:** General (tracked for visibility)")
+
+    # Resolved Issues Section (Collapsed by default)
+    if resolved_issues:
+        st.divider()
+        with st.expander(f"✅ {len(resolved_issues)} Resolved Issue(s) - Click to expand", expanded=False):
+            for idx, issue in enumerate(resolved_issues):
+                st.markdown(f"**{idx + 1}. {issue['issue']}**")
+
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.caption(f"Reported: {format_timestamp(issue['reported_at'])}")
+                with col2:
+                    st.caption(f"Resolved: {format_timestamp(issue.get('resolved_at', 'N/A'))}")
+
+                if issue.get('resolution'):
+                    st.info(f"**Resolution:** {issue['resolution']}")
+
+                if idx < len(resolved_issues) - 1:
+                    st.markdown("---")
+
+
+def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: Dict[str, Any], status_data: Dict[str, Any]):
     """
     Render tabbed pane with release metadata
 
@@ -258,13 +459,15 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
         release: Release version
         metadata: Release metadata dictionary
         shipped_data: Shipment status dictionary
+        status_data: Status data containing tasks and issues
     """
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📋 Advisories",
         "📦 Candidate Builds",
         "🎫 Jira Ticket",
         "🚢 Shipment Data",
-        "📅 Release Info"
+        "📅 Release Info",
+        "🔍 Task Details"
     ])
 
     with tab1:
@@ -370,6 +573,95 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
         ])
 
         st.dataframe(release_info_df, use_container_width=True, hide_index=True)
+
+    with tab6:
+        # Task Details Tab - Show detailed task execution information
+        tasks_list = status_data.get('tasks', [])
+
+        if not tasks_list:
+            st.info("No task execution data available yet")
+        else:
+            # Handle both dict and list formats
+            if isinstance(tasks_list, dict):
+                # Old format: Convert to list for consistent handling
+                tasks = [{"name": name, "status": status, "started_at": None, "completed_at": None, "result": None}
+                        for name, status in tasks_list.items()]
+            else:
+                # New StateBox format: Already a list
+                tasks = tasks_list
+
+            # Sort tasks by workflow order
+            task_order = [
+                "take-ownership",
+                "image-consistency-check",
+                "analyze-candidate-build",
+                "analyze-promoted-build",
+                "check-cve-tracker-bug",
+                "push-to-cdn-staging",
+                "stage-testing",
+                "image-signed-check",
+                "change-advisory-status"
+            ]
+
+            # Create ordered task list
+            ordered_tasks = []
+            task_by_name = {t['name']: t for t in tasks}
+            for task_name in task_order:
+                if task_name in task_by_name:
+                    ordered_tasks.append(task_by_name[task_name])
+
+            if not ordered_tasks:
+                st.info("No task details available")
+            else:
+                for task in ordered_tasks:
+                    task_name = task['name']
+                    status = task.get('status', 'Not Started')
+                    started_at = task.get('started_at')
+                    completed_at = task.get('completed_at')
+                    result = task.get('result')
+
+                    # Status emoji
+                    status_emoji = {
+                        "Pass": "✅",
+                        "Fail": "❌",
+                        "In Progress": "🔄",
+                        "Not Started": "⭕"
+                    }.get(status, "❓")
+
+                    # Expandable task section
+                    with st.expander(f"{status_emoji} {task_name.replace('-', ' ').title()} - {status}", expanded=(status == "Fail")):
+                        # Task metadata - use consistent info boxes
+                        col1, col2, col3 = st.columns(3)
+
+                        with col1:
+                            if status == "Pass":
+                                st.success(f"**Status:** {status}")
+                            elif status == "Fail":
+                                st.error(f"**Status:** {status}")
+                            elif status == "In Progress":
+                                st.warning(f"**Status:** {status}")
+                            else:
+                                st.info(f"**Status:** {status}")
+
+                        with col2:
+                            st.info(f"**Started:** {format_timestamp(started_at)}")
+
+                        with col3:
+                            st.info(f"**Completed:** {format_timestamp(completed_at)}")
+
+                        # Duration
+                        if started_at and completed_at:
+                            duration = calculate_duration(started_at, completed_at)
+                            st.info(f"**Duration:** {duration}")
+
+                        st.divider()
+
+                        # Task result (CLI output)
+                        if result:
+                            st.caption("**Execution Result:**")
+                            st.code(result, language="text")
+                        else:
+                            st.caption("*No execution result recorded*")
 
 
 def main():
@@ -502,10 +794,10 @@ def main():
 
     st.divider()
 
-    # Section 2: Release Metadata Tabs
-    st.header("📋 Release Details")
+    # Section 2: Issues & Blockers (New - Phase 1)
+    st.divider()
 
-    # Select release to view
+    # Select release to view details
     selected_release = st.selectbox(
         "Select a release to view details:",
         options=list(valid_releases.keys()),
@@ -514,9 +806,18 @@ def main():
 
     if selected_release:
         release_data = valid_releases[selected_release]
+        status_data = release_data['status']
+
+        # Render Issues Section
+        render_issues_section(selected_release, status_data)
+
+        st.divider()
+
+        # Section 3: Release Metadata Tabs
+        st.header("📋 Release Details")
 
         # Show overall status and shipment status
-        overall_status = release_data['status'].get('overall_status', 'Unknown')
+        overall_status = status_data.get('overall_status', 'Unknown')
         shipped_status = release_data['shipped'].get('shipped', False)
 
         # Build status badges HTML
@@ -538,11 +839,12 @@ def main():
 
         st.markdown("---")
 
-        # Render metadata tabs
+        # Render metadata tabs (including new Task Details tab)
         render_metadata_tabs(
             selected_release,
             release_data['metadata'],
-            release_data['shipped']
+            release_data['shipped'],
+            status_data
         )
 
     # Footer
