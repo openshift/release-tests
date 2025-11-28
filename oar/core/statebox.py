@@ -911,8 +911,10 @@ class StateBox:
         now = datetime.now(timezone.utc).isoformat()
 
         # Extract timestamps from result text (before status-specific logic to avoid duplication)
-        extracted_start = extract_start_timestamp(result) if result else None
-        extracted_end = extract_end_timestamp(result) if result else None
+        # Use the provided result parameter, or fall back to existing task result if available
+        result_to_parse = result if result is not None else task.get("result")
+        extracted_start = extract_start_timestamp(result_to_parse) if result_to_parse else None
+        extracted_end = extract_end_timestamp(result_to_parse) if result_to_parse else None
         if extracted_start:
             logger.debug(f"Extracted start timestamp from result: {extracted_start}")
         if extracted_end:
