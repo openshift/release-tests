@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.20
 created_at: '2025-11-28T04:02:24.436841+00:00'
-updated_at: '2025-11-28T04:02:24.436931+00:00'
+updated_at: '2025-11-28T05:45:48.749257+00:00'
 metadata:
   jira_ticket: ART-14297
   advisory_ids:
@@ -14,5 +14,18 @@ metadata:
     s390x: 4.19.0-0.nightly-s390x-2025-11-27-015107
     x86_64: 4.19.0-0.nightly-2025-11-27-015126
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/259
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2025-11-28T05:45:48.749162+00:00'
+  completed_at: '2025-11-28T05:45:48.749162+00:00'
+  result: |-
+    2025-11-28T00:45:21Z: INFO: task [Take ownership of advisories] status is changed to [In Progress]
+    2025-11-28T00:45:24Z: WARNING: advisory state is not QE, it is NEW_FILES
+    2025-11-28T00:45:25Z: INFO: QA Owner of advisory 156647 is updated to [EMAIL_REDACTED]
+    2025-11-28T00:45:26Z: INFO: QA Owner of advisory 156648 is updated to [EMAIL_REDACTED]
+    2025-11-28T00:45:27Z: INFO: Added QE release lead comment to MR 259
+    2025-11-28T00:45:41Z: INFO: sent slack message to <#team-qe-release>
+    2025-11-28T00:45:43Z: INFO: sent slack message to <#forum-ocp-release>
+    2025-11-28T00:45:44Z: INFO: task [Take ownership of advisories] status is changed to [Pass]
 issues: []
