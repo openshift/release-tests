@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.45
 created_at: '2025-11-27T18:02:25.777726+00:00'
-updated_at: '2025-11-28T10:10:14.067712+00:00'
+updated_at: '2025-11-28T10:11:30.563460+00:00'
 metadata:
   qe_owner: null
   jira_ticket: ART-14295
@@ -134,6 +134,16 @@ tasks:
     2025-11-28T05:09:48Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4f7b8774832b0928a98ffc519637a6e1e4fe085754a0e9d240104993f7ce940b/signature-1
     2025-11-28T05:10:10Z: INFO: Signature check PASSED
     2025-11-28T05:10:10Z: INFO: task [Payload image is well signed] status is changed to [Pass]
+- name: update-bug-list
+  status: Pass
+  started_at: '2025-11-28T05:10:47Z'
+  completed_at: '2025-11-28T05:11:27Z'
+  result: |-
+    2025-11-28T05:10:47Z: INFO: task [Bug to be verified] status is changed to [In Progress]
+    2025-11-28T05:10:56Z: INFO: Processing MR 257 for Jira issues
+    2025-11-28T05:11:27Z: INFO: checking all bugs are verified
+    2025-11-28T05:11:27Z: INFO: result is: yes
+    2025-11-28T05:11:27Z: INFO: task [Bug to be verified] status is changed to [Pass]
 issues:
 - issue: GitLab stage release pipeline 13760245 failed - downstream pipeline 13760261
     has 'unknown_failure' status. Stage testing cannot proceed until this is resolved.
