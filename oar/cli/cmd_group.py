@@ -104,10 +104,34 @@ def cli_result_callback(result, release, debug):
     else:
         output = None
 
-    # Determine task status based on command exit
-    # Commands that raise exceptions are caught by Click and don't reach here
-    # So if we're here, the command succeeded (unless it set explicit status)
-    status = ctx.obj.get('statebox_status', 'Pass')
+    # Determine task status by parsing command output
+    # For async tasks (push-to-cdn, image-consistency-check, stage-testing),
+    # the last line determines the status:
+    # - Contains [Pass] → Pass
+    # - Contains [Fail] → Fail
+    # - Contains [In Progress] → In Progress
+    # - Contains error logs (: ERROR:) → Fail
+    # - Otherwise (no status marker) → In Progress (async job triggered)
+    explicit_status = ctx.obj.get('statebox_status')
+    if explicit_status:
+        status = explicit_status
+    elif output:
+        last_line = output.strip().split('\n')[-1] if output.strip() else ''
+        if '[Fail]' in last_line:
+            status = 'Fail'
+        elif '[Pass]' in last_line:
+            status = 'Pass'
+        elif '[In Progress]' in last_line:
+            status = 'In Progress'
+        elif ': ERROR:' in output:
+            # Check for error logs in output (handles exceptions before update_task_status)
+            status = 'Fail'
+        else:
+            # No status marker in last line → async job triggered but not completed
+            status = 'In Progress'
+    else:
+        # No output captured - default to Pass for backward compatibility
+        status = 'Pass'
 
     try:
         # Get ConfigStore from context (cached in MCP server)
