@@ -3,7 +3,7 @@ import unittest
 import logging
 from datetime import datetime
 
-from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES, mask_sensitive_data
+from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES, mask_sensitive_data, extract_start_timestamp, extract_end_timestamp
 from oar.core.exceptions import StateBoxException, ConfigStoreException
 from oar.core.configstore import ConfigStore
 
@@ -246,6 +246,48 @@ class TestStateBox(unittest.TestCase):
         self.assertEqual(task["result"], "Completed successfully")
         self.assertIsNotNone(task["started_at"])
         self.assertIsNotNone(task["completed_at"])
+
+    def test_update_task_extracts_start_timestamp_from_result(self):
+        """Test update_task() extracts actual start time from result text"""
+        # Create initial state
+        state = self.statebox._get_default_state()
+        self.statebox.save(state, message="Test: Initial state")
+
+        # Simulate real take-ownership command output with timestamps
+        result_text = """2025-11-27T21:54:22Z: INFO: Starting take-ownership
+2025-11-27T21:55:00Z: INFO: QA Owner of advisory 156635 is updated to [EMAIL_REDACTED]
+2025-11-27T21:55:13Z: INFO: QA Owner of advisory 156636 is updated to [EMAIL_REDACTED]
+2025-11-27T21:56:00Z: INFO: Task completed successfully"""
+
+        # Update task directly to Pass (without going through In Progress)
+        self.statebox.update_task("take-ownership", status="Pass", result=result_text)
+
+        # Load and verify
+        state = self.statebox.load(force_refresh=True)
+        task = state["tasks"][0]
+
+        # Verify task created correctly
+        self.assertEqual(task["name"], "take-ownership")
+        self.assertEqual(task["status"], "Pass")
+        self.assertIsNotNone(task["started_at"])
+        self.assertIsNotNone(task["completed_at"])
+
+        # Verify started_at was extracted from result (first timestamp)
+        self.assertEqual(task["started_at"], "2025-11-27T21:54:22Z")
+
+        # Verify completed_at is different from started_at (should be current time)
+        self.assertNotEqual(task["started_at"], task["completed_at"])
+
+        # Verify duration is not zero
+        from datetime import datetime
+        start = datetime.fromisoformat(task["started_at"].replace('Z', '+00:00'))
+        end = datetime.fromisoformat(task["completed_at"].replace('Z', '+00:00'))
+        duration_seconds = (end - start).total_seconds()
+
+        # Duration should be either the actual time difference (if completed_at is from result)
+        # or the time it took to run the test (if completed_at is now)
+        # In this case, started_at is extracted but completed_at is "now", so duration > 0
+        self.assertGreater(duration_seconds, 0)
 
     def test_update_task_invalid_status(self):
         """Test update_task() rejects invalid status"""
@@ -712,6 +754,151 @@ class TestStateBox(unittest.TestCase):
         issue_texts = [issue["issue"] for issue in final_state["issues"]]
         self.assertIn("Issue from instance 1", issue_texts)
         self.assertIn("Issue from instance 2", issue_texts)
+
+
+class TestExtractStartTimestamp(unittest.TestCase):
+    """Unit tests for extract_start_timestamp() function"""
+
+    def test_extract_iso8601_with_z(self):
+        """Test extracting ISO 8601 timestamp with Z timezone"""
+        text = "2025-11-27T21:54:22Z: Starting task"
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22Z")
+
+    def test_extract_iso8601_with_microseconds_z(self):
+        """Test extracting ISO 8601 timestamp with microseconds and Z"""
+        text = "INFO: 2025-11-27T21:54:22.123456Z - Process started"
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22.123456Z")
+
+    def test_extract_iso8601_with_timezone_offset(self):
+        """Test extracting ISO 8601 timestamp with +HH:MM timezone"""
+        text = "Started at 2025-11-27T21:54:22+00:00"
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22+00:00")
+
+    def test_extract_iso8601_with_microseconds_offset(self):
+        """Test extracting ISO 8601 with microseconds and timezone offset"""
+        text = "2025-11-27T21:54:22.654321+00:00: Task execution started"
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22.654321+00:00")
+
+    def test_extract_first_timestamp_from_multiple(self):
+        """Test that only the first timestamp is extracted"""
+        text = """2025-11-27T21:54:22Z: Task started
+2025-11-27T21:55:00Z: Step 1 completed
+2025-11-27T21:56:00Z: Task finished"""
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22Z")
+
+    def test_extract_from_real_take_ownership_output(self):
+        """Test extracting from actual take-ownership command output"""
+        text = """2025-11-27T21:54:22Z: INFO: Starting take-ownership
+2025-11-27T21:55:00Z: INFO: QA Owner of advisory 156635 is updated to [EMAIL_REDACTED]
+2025-11-27T21:55:13Z: INFO: QA Owner of advisory 156636 is updated to [EMAIL_REDACTED]
+2025-11-27T21:56:00Z: INFO: Task completed successfully"""
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22Z")
+
+    def test_extract_with_negative_timezone(self):
+        """Test extracting timestamp with negative timezone offset"""
+        text = "Process started: 2025-11-27T21:54:22-05:00"
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22-05:00")
+
+    def test_extract_none_input(self):
+        """Test extract_start_timestamp() with None input"""
+        result = extract_start_timestamp(None)
+        self.assertIsNone(result)
+
+    def test_extract_empty_string(self):
+        """Test extract_start_timestamp() with empty string"""
+        result = extract_start_timestamp("")
+        self.assertIsNone(result)
+
+    def test_extract_no_timestamp(self):
+        """Test extract_start_timestamp() when no timestamp present"""
+        text = "This is some log output without timestamps"
+        result = extract_start_timestamp(text)
+        self.assertIsNone(result)
+
+    def test_extract_partial_timestamp_not_matched(self):
+        """Test that partial/invalid timestamps are not matched"""
+        # Missing timezone
+        text1 = "2025-11-27T21:54:22"
+        result1 = extract_start_timestamp(text1)
+        self.assertIsNone(result1)
+
+        # Wrong format
+        text2 = "2025-11-27 21:54:22Z"
+        result2 = extract_start_timestamp(text2)
+        self.assertIsNone(result2)
+
+    def test_extract_timestamp_mid_line(self):
+        """Test extracting timestamp from middle of line"""
+        text = "INFO: Process started at 2025-11-27T21:54:22Z with config X"
+        result = extract_start_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22Z")
+
+    def test_extract_various_microsecond_precision(self):
+        """Test timestamps with different microsecond precisions"""
+        # 1 digit
+        text1 = "2025-11-27T21:54:22.1Z"
+        result1 = extract_start_timestamp(text1)
+        self.assertEqual(result1, "2025-11-27T21:54:22.1Z")
+
+        # 3 digits (milliseconds)
+        text2 = "2025-11-27T21:54:22.123Z"
+        result2 = extract_start_timestamp(text2)
+        self.assertEqual(result2, "2025-11-27T21:54:22.123Z")
+
+        # 6 digits (microseconds)
+        text3 = "2025-11-27T21:54:22.123456Z"
+        result3 = extract_start_timestamp(text3)
+        self.assertEqual(result3, "2025-11-27T21:54:22.123456Z")
+
+
+class TestExtractEndTimestamp(unittest.TestCase):
+    """Unit tests for extract_end_timestamp() function"""
+
+    def test_extract_last_timestamp_from_multiple(self):
+        """Test that only the last timestamp is extracted"""
+        text = """2025-11-27T21:54:22Z: Task started
+2025-11-27T21:55:00Z: Step 1 completed
+2025-11-27T21:56:00Z: Task finished"""
+        result = extract_end_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:56:00Z")
+
+    def test_extract_end_from_real_take_ownership_output(self):
+        """Test extracting end timestamp from actual take-ownership command output"""
+        text = """2025-11-27T21:54:22Z: INFO: Starting take-ownership
+2025-11-27T21:55:00Z: INFO: QA Owner of advisory 156635 is updated to [EMAIL_REDACTED]
+2025-11-27T21:55:13Z: INFO: QA Owner of advisory 156636 is updated to [EMAIL_REDACTED]
+2025-11-27T21:56:00Z: INFO: Task completed successfully"""
+        result = extract_end_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:56:00Z")
+
+    def test_extract_single_timestamp(self):
+        """Test extracting when only one timestamp present"""
+        text = "2025-11-27T21:54:22Z: Single timestamp"
+        result = extract_end_timestamp(text)
+        self.assertEqual(result, "2025-11-27T21:54:22Z")
+
+    def test_extract_end_none_input(self):
+        """Test extract_end_timestamp() with None input"""
+        result = extract_end_timestamp(None)
+        self.assertIsNone(result)
+
+    def test_extract_end_empty_string(self):
+        """Test extract_end_timestamp() with empty string"""
+        result = extract_end_timestamp("")
+        self.assertIsNone(result)
+
+    def test_extract_end_no_timestamp(self):
+        """Test extract_end_timestamp() when no timestamp present"""
+        text = "This is some log output without timestamps"
+        result = extract_end_timestamp(text)
+        self.assertIsNone(result)
 
 
 class TestMaskSensitiveData(unittest.TestCase):
