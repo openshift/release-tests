@@ -3,7 +3,7 @@ import unittest
 import logging
 from datetime import datetime
 
-from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES
+from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES, mask_sensitive_data
 from oar.core.exceptions import StateBoxException, ConfigStoreException
 from oar.core.configstore import ConfigStore
 
@@ -688,6 +688,154 @@ class TestStateBox(unittest.TestCase):
         issue_texts = [issue["issue"] for issue in final_state["issues"]]
         self.assertIn("Issue from instance 1", issue_texts)
         self.assertIn("Issue from instance 2", issue_texts)
+
+
+class TestMaskSensitiveData(unittest.TestCase):
+    """Unit tests for mask_sensitive_data() function"""
+
+    def test_mask_single_email(self):
+        """Test masking a single email address"""
+        text = "Owner updated to user@redhat.com"
+        result = mask_sensitive_data(text)
+        self.assertEqual(result, "Owner updated to [EMAIL_REDACTED]")
+
+    def test_mask_multiple_emails(self):
+        """Test masking multiple email addresses"""
+        text = "Contact alice@example.com or bob@test.org for help"
+        result = mask_sensitive_data(text)
+        self.assertEqual(result, "Contact [EMAIL_REDACTED] or [EMAIL_REDACTED] for help")
+
+    def test_mask_email_with_plus_sign(self):
+        """Test masking email with plus sign (gmail-style tags)"""
+        text = "Send to user+tag@gmail.com"
+        result = mask_sensitive_data(text)
+        self.assertEqual(result, "Send to [EMAIL_REDACTED]")
+
+    def test_mask_email_with_subdomain(self):
+        """Test masking email with subdomain"""
+        text = "Contact admin@mail.example.com"
+        result = mask_sensitive_data(text)
+        self.assertEqual(result, "Contact [EMAIL_REDACTED]")
+
+    def test_mask_email_in_multiline_text(self):
+        """Test masking emails in multiline log output"""
+        text = """2025-11-27T21:55:00Z: INFO: QA Owner of advisory 156635 is updated to user@redhat.com
+2025-11-27T21:55:13Z: INFO: QA Owner of advisory 156636 is updated to john.doe@example.org"""
+        result = mask_sensitive_data(text)
+        expected = """2025-11-27T21:55:00Z: INFO: QA Owner of advisory 156635 is updated to [EMAIL_REDACTED]
+2025-11-27T21:55:13Z: INFO: QA Owner of advisory 156636 is updated to [EMAIL_REDACTED]"""
+        self.assertEqual(result, expected)
+
+    def test_no_email_to_mask(self):
+        """Test text with no email addresses"""
+        text = "No sensitive data here"
+        result = mask_sensitive_data(text)
+        self.assertEqual(result, "No sensitive data here")
+
+    def test_mask_none_input(self):
+        """Test mask_sensitive_data() with None input"""
+        result = mask_sensitive_data(None)
+        self.assertIsNone(result)
+
+    def test_mask_empty_string(self):
+        """Test mask_sensitive_data() with empty string"""
+        result = mask_sensitive_data("")
+        self.assertEqual(result, "")
+
+    def test_mask_real_command_output(self):
+        """Test masking real-world take-ownership command output"""
+        text = """INFO: QA Owner of advisory 156635 is updated to user@redhat.com
+INFO: QA Owner of advisory 156636 is updated to user@redhat.com
+INFO: Updated assignee of JIRA-123 to user@redhat.com"""
+        result = mask_sensitive_data(text)
+
+        # Verify all emails are masked
+        self.assertNotIn("@redhat.com", result)
+        self.assertNotIn("user@", result)
+        self.assertIn("[EMAIL_REDACTED]", result)
+
+        # Verify structure is preserved
+        self.assertIn("INFO: QA Owner of advisory 156635 is updated to", result)
+        self.assertIn("INFO: Updated assignee of JIRA-123 to", result)
+
+    def test_mask_email_not_partial_match(self):
+        """Test that @ symbol alone doesn't trigger masking"""
+        text = "Price is $10 @ store"
+        result = mask_sensitive_data(text)
+        self.assertEqual(result, "Price is $10 @ store")
+
+    def test_mask_preserves_formatting(self):
+        """Test that masking preserves text formatting"""
+        text = "User: alice@example.com\nDate: 2025-01-15\nStatus: Success"
+        result = mask_sensitive_data(text)
+        expected = "User: [EMAIL_REDACTED]\nDate: 2025-01-15\nStatus: Success"
+        self.assertEqual(result, expected)
+
+    def test_retroactive_masking_integration(self):
+        """Test retroactive masking of existing StateBox data with emails"""
+        # Create a state that simulates an old StateBox file with exposed emails
+        old_state = {
+            "schema_version": "1.0",
+            "release": "4.19.1",
+            "created_at": "2025-01-15T10:00:00Z",
+            "updated_at": "2025-01-15T10:30:00Z",
+            "metadata": {
+                "jira_ticket": "ART-12345",
+                "advisory_ids": {"rpm": 111111},
+                "release_date": "2025-02-01",
+                "candidate_builds": {},
+                "shipment_mr": None
+            },
+            "tasks": [
+                {
+                    "name": "take-ownership",
+                    "status": "Pass",
+                    "started_at": "2025-01-15T10:00:00Z",
+                    "completed_at": "2025-01-15T10:05:00Z",
+                    "result": "INFO: QA Owner of advisory 156635 is updated to user1@redhat.com\nINFO: QA Owner of advisory 156636 is updated to user2@example.com"
+                },
+                {
+                    "name": "update-bug-list",
+                    "status": "Pass",
+                    "started_at": "2025-01-15T10:10:00Z",
+                    "completed_at": "2025-01-15T10:20:00Z",
+                    "result": "Synced bugs. Contact admin@redhat.com for issues."
+                },
+                {
+                    "name": "image-consistency-check",
+                    "status": "Pass",
+                    "started_at": "2025-01-15T10:25:00Z",
+                    "completed_at": "2025-01-15T10:30:00Z",
+                    "result": "All images verified. No sensitive data here."
+                }
+            ],
+            "issues": []
+        }
+
+        # Apply retroactive masking (simulate what the script does)
+        for task in old_state["tasks"]:
+            if task.get("result"):
+                task["result"] = mask_sensitive_data(task["result"])
+
+        # Verify all emails are masked
+        take_ownership_result = old_state["tasks"][0]["result"]
+        self.assertNotIn("user1@redhat.com", take_ownership_result)
+        self.assertNotIn("user2@example.com", take_ownership_result)
+        self.assertIn("[EMAIL_REDACTED]", take_ownership_result)
+
+        update_bug_result = old_state["tasks"][1]["result"]
+        self.assertNotIn("admin@redhat.com", update_bug_result)
+        self.assertIn("[EMAIL_REDACTED]", update_bug_result)
+
+        # Verify task without emails is unchanged
+        consistency_result = old_state["tasks"][2]["result"]
+        self.assertEqual(consistency_result, "All images verified. No sensitive data here.")
+
+        # Verify structure is preserved
+        self.assertEqual(len(old_state["tasks"]), 3)
+        self.assertEqual(old_state["tasks"][0]["status"], "Pass")
+        self.assertIn("QA Owner of advisory 156635 is updated to", take_ownership_result)
+        self.assertIn("Synced bugs. Contact", update_bug_result)
 
 
 if __name__ == '__main__':
