@@ -8,6 +8,25 @@ You are helping the user **drive** an OpenShift z-stream release through the com
 
 The user has provided a release version: {{args}}
 
+## CRITICAL: Validate Release Version
+
+**BEFORE doing anything else, you MUST validate that a release version was provided:**
+
+```python
+release_version = "{{args}}".strip()
+
+if not release_version:
+    # No release version provided - ASK THE USER
+    print("Error: No release version provided.")
+    print("Usage: /release:drive <release-version>")
+    print("Example: /release:drive 4.20.1")
+    print()
+    print("Please specify which z-stream release you want to drive.")
+    STOP - Do not proceed, wait for user input
+```
+
+**IMPORTANT**: Never default to a hardcoded release version like 4.20.1. Always require explicit user input.
+
 ## Complete Workflow Specification
 
 **IMPORTANT**: The complete, authoritative workflow specification is defined in:
