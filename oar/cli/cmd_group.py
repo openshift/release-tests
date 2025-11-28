@@ -117,11 +117,11 @@ def cli_result_callback(result, release, debug):
         status = explicit_status
     elif output:
         last_line = output.strip().split('\n')[-1] if output.strip() else ''
-        if '[Fail]' in last_line:
+        if f'[{TASK_STATUS_FAIL}]' in last_line:
             status = TASK_STATUS_FAIL
-        elif '[Pass]' in last_line:
+        elif f'[{TASK_STATUS_PASS}]' in last_line:
             status = TASK_STATUS_PASS
-        elif '[In Progress]' in last_line:
+        elif f'[{TASK_STATUS_INPROGRESS}]' in last_line:
             status = TASK_STATUS_INPROGRESS
         elif ': ERROR:' in output:
             # Check for error logs in output (handles exceptions before update_task_status)
