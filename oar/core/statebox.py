@@ -286,7 +286,7 @@ from github.GithubException import UnknownObjectException, GithubException
 from oar.core.configstore import ConfigStore
 from oar.core.const import SUPPORTED_TASK_NAMES, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS, TASK_STATUS_NOT_STARTED
 from oar.core.exceptions import StateBoxException
-from oar.core.util import validate_release_version
+from oar.core.util import validate_release_version, get_current_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -501,7 +501,7 @@ class StateBox:
         Returns:
             dict: Default state dictionary
         """
-        now = datetime.now(timezone.utc).isoformat()
+        now = get_current_timestamp()
         return {
             "schema_version": SCHEMA_VERSION,
             "release": self.release,
@@ -604,7 +604,7 @@ class StateBox:
                 attempt += 1
 
                 # Update timestamp on each attempt
-                state["updated_at"] = datetime.now(timezone.utc).isoformat()
+                state["updated_at"] = get_current_timestamp()
 
                 # Try to fetch current content (optimization: skip exists() check)
                 try:
@@ -627,7 +627,7 @@ class StateBox:
                             remote_state = yaml.safe_load(content.decoded_content.decode('utf-8'))
                             state = self._merge_states(state, remote_state)
                             # Update timestamp after merge
-                            state["updated_at"] = datetime.now(timezone.utc).isoformat()
+                            state["updated_at"] = get_current_timestamp()
                         else:
                             raise StateBoxException(
                                 f"Concurrent modification detected. "
@@ -908,7 +908,18 @@ class StateBox:
             logger.info(f"Created new task: {task_name}")
 
         # Update task fields
-        now = datetime.now(timezone.utc).isoformat()
+        # Use get_current_timestamp() for consistent format: YYYY-MM-DDTHH:MM:SSZ
+        now = get_current_timestamp()
+
+        # Extract timestamps from result text (before status-specific logic to avoid duplication)
+        # Use the provided result parameter, or fall back to existing task result if available
+        result_to_parse = result if result is not None else task.get("result")
+        extracted_start = extract_start_timestamp(result_to_parse) if result_to_parse else None
+        extracted_end = extract_end_timestamp(result_to_parse) if result_to_parse else None
+        if extracted_start:
+            logger.debug(f"Extracted start timestamp from result: {extracted_start}")
+        if extracted_end:
+            logger.debug(f"Extracted end timestamp from result: {extracted_end}")
 
         # Extract timestamps from result text (before status-specific logic to avoid duplication)
         extracted_start = extract_start_timestamp(result) if result else None
@@ -1046,7 +1057,7 @@ class StateBox:
         # Create new issue
         issue_entry = {
             "issue": issue,
-            "reported_at": datetime.now(timezone.utc).isoformat(),
+            "reported_at": get_current_timestamp(),
             "resolved": False,
             "resolution": None,
             "blocker": blocker,
@@ -1135,7 +1146,7 @@ class StateBox:
 
         matched_issue["resolved"] = True
         matched_issue["resolution"] = resolution
-        matched_issue["resolved_at"] = datetime.now(timezone.utc).isoformat()
+        matched_issue["resolved_at"] = get_current_timestamp()
 
         logger.info(f"Resolved issue: {matched_issue['issue']}")
 
