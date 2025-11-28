@@ -284,7 +284,7 @@ from github import Auth, Github
 from github.GithubException import UnknownObjectException, GithubException
 
 from oar.core.configstore import ConfigStore
-from oar.core.const import SUPPORTED_TASK_NAMES
+from oar.core.const import SUPPORTED_TASK_NAMES, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS, TASK_STATUS_NOT_STARTED
 from oar.core.exceptions import StateBoxException
 from oar.core.util import validate_release_version
 
@@ -319,8 +319,8 @@ StateBoxDumper.add_representer(str, str_representer)
 
 # YAML Schema Constants
 SCHEMA_VERSION = "1.0"
-DEFAULT_TASK_STATUS = "Not Started"
-VALID_TASK_STATUSES = ["Not Started", "In Progress", "Pass", "Fail"]
+DEFAULT_TASK_STATUS = TASK_STATUS_NOT_STARTED
+VALID_TASK_STATUSES = [TASK_STATUS_NOT_STARTED, TASK_STATUS_INPROGRESS, TASK_STATUS_PASS, TASK_STATUS_FAIL]
 
 # GitHub Repository Configuration
 DEFAULT_REPO_NAME = "openshift/release-tests"
@@ -915,10 +915,10 @@ class StateBox:
             task["status"] = status
 
             # Update timestamps based on status transition
-            if status == "In Progress":
+            if status == TASK_STATUS_INPROGRESS:
                 # Always update started_at when task starts (handles re-runs)
                 task["started_at"] = now
-            elif status in ["Pass", "Fail"]:
+            elif status in [TASK_STATUS_PASS, TASK_STATUS_FAIL]:
                 # Try to extract actual completion timestamp from result text
                 extracted_end = extract_end_timestamp(result) if result else None
                 task["completed_at"] = extracted_end or now

@@ -18,7 +18,7 @@ from oar.cli.cmd_stage_testing import stage_testing
 from oar.cli.cmd_take_ownership import take_ownership
 from oar.cli.cmd_update_bug_list import update_bug_list
 from oar.core.configstore import ConfigStore
-from oar.core.const import CONTEXT_SETTINGS
+from oar.core.const import CONTEXT_SETTINGS, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS
 from oar.core.log_capture import capture_logs, merge_output
 from oar.core.statebox import StateBox
 from oar.core.exceptions import StateBoxException
@@ -104,10 +104,34 @@ def cli_result_callback(result, release, debug):
     else:
         output = None
 
-    # Determine task status based on command exit
-    # Commands that raise exceptions are caught by Click and don't reach here
-    # So if we're here, the command succeeded (unless it set explicit status)
-    status = ctx.obj.get('statebox_status', 'Pass')
+    # Determine task status by parsing command output
+    # For async tasks (push-to-cdn, image-consistency-check, stage-testing),
+    # the last line determines the status:
+    # - Contains [Pass] → Pass
+    # - Contains [Fail] → Fail
+    # - Contains [In Progress] → In Progress
+    # - Contains error logs (: ERROR:) → Fail
+    # - Otherwise (no status marker) → In Progress (async job triggered)
+    explicit_status = ctx.obj.get('statebox_status')
+    if explicit_status:
+        status = explicit_status
+    elif output:
+        last_line = output.strip().split('\n')[-1] if output.strip() else ''
+        if f'[{TASK_STATUS_FAIL}]' in last_line:
+            status = TASK_STATUS_FAIL
+        elif f'[{TASK_STATUS_PASS}]' in last_line:
+            status = TASK_STATUS_PASS
+        elif f'[{TASK_STATUS_INPROGRESS}]' in last_line:
+            status = TASK_STATUS_INPROGRESS
+        elif ': ERROR:' in output:
+            # Check for error logs in output (handles exceptions before update_task_status)
+            status = TASK_STATUS_FAIL
+        else:
+            # No status marker in last line → async job triggered but not completed
+            status = TASK_STATUS_INPROGRESS
+    else:
+        # No output captured - default to Pass for backward compatibility
+        status = TASK_STATUS_PASS
 
     try:
         # Get ConfigStore from context (cached in MCP server)

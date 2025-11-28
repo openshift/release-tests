@@ -97,6 +97,7 @@ from oar.core.const import (
     LABEL_TASK_STAGE_TEST,
     LABEL_TASK_PAYLOAD_IMAGE_VERIFY,
     LABEL_TASK_CHANGE_AD_STATUS,
+    TASK_STATUS_NOT_STARTED,
     TASK_STATUS_INPROGRESS,
     TASK_STATUS_PASS,
     TASK_STATUS_FAIL,
@@ -1124,7 +1125,7 @@ async def oar_get_release_status(release: str) -> str:
         tasks = {}
         for label, task_name in task_mapping.items():
             status = report.get_task_status(label)
-            tasks[task_name] = status if status else "Not Started"
+            tasks[task_name] = status if status else TASK_STATUS_NOT_STARTED
 
         result = {
             "source": "worksheet",
