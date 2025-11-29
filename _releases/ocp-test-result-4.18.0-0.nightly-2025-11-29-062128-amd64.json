@@ -74,7 +74,34 @@
           "jobStartTime": "2025-11-29T16:26:30Z",
           "jobID": "df7df3ba-4a80-4bf4-a274-a3f27bead59d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/1994805177072226304",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-29T20:04:22Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 21,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -115,13 +142,61 @@
           "jobStartTime": "2025-11-29T16:26:40Z",
           "jobID": "7781ab60-4a72-419a-a9ed-112cb6360dbd",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1994805220990783488",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-29T19:36:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 29
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-29T16:26:46Z",
           "jobID": "3a435477-0a4d-4964-a227-f79c5e2244fe",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/1994805242218156032",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-29T19:33:00Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 29
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -277,5 +352,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2025-11-29-062128",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2025-11-29-062128"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
