@@ -135,13 +135,61 @@
           "jobStartTime": "2025-11-28T22:32:51Z",
           "jobID": "368aca11-7363-4db2-940e-7ff8e8482f3c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1994534983842140160",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-29T01:25:53Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-28T22:32:56Z",
           "jobID": "4c1ffed1-1d03-41b8-8087-5eec8f0114f3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/1994535005056929792",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-29T01:27:47Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -214,5 +262,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-11-27-202311",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-11-27-202311"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
