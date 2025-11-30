@@ -47,7 +47,34 @@
           "jobStartTime": "2025-11-30T02:22:55Z",
           "jobID": "a39164af-f86c-429c-b766-eb12c920e615",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-f999/1994955270685462528",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T06:51:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 103,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -91,13 +118,67 @@
           "jobStartTime": "2025-11-30T02:23:05Z",
           "jobID": "e95b8f4f-f308-40d8-81ab-9de38d838feb",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1994955313744187392",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T06:47:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 103,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-30T02:23:10Z",
           "jobID": "86fdb161-426e-4aa6-b8f8-b171a74fe1d6",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/1994955334958977024",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T07:03:53Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 103,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-68292-Limit the value of GOMAXPROCS on node-exporter to 4"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -252,5 +333,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-11-29-144239",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-11-29-144239"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
