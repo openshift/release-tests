@@ -40,13 +40,68 @@
           "jobStartTime": "2025-11-30T09:43:19Z",
           "jobID": "6607c5c0-404b-481a-b447-081c809af0d9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1995066102509473792",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T14:13:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 108,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-19717:UserInterface Check configmap on console",
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-30T09:43:25Z",
           "jobID": "fff6a365-2430-474e-a35f-80cf4f5d237c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-f999/1995066123774595072",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T14:07:46Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 108,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -250,5 +305,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2025-11-30-001629",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2025-11-30-001629"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
