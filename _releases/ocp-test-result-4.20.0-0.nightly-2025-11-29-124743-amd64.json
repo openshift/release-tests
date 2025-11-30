@@ -141,7 +141,31 @@
           "jobStartTime": "2025-11-30T00:26:00Z",
           "jobID": "63e5015d-d408-4c9d-b70f-58c1a293dd08",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/1994925846208450560",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T04:37:12Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 116,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 34
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-30T00:26:05Z",
@@ -326,5 +350,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2025-11-29-124743",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2025-11-29-124743"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
