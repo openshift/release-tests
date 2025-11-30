@@ -40,7 +40,35 @@
           "jobStartTime": "2025-11-30T02:24:39Z",
           "jobID": "49202a0f-34fe-458e-93c1-da59f95e388c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1994955707207651328",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T07:15:47Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-64296-disable CORS headers on Thanos querier [Serial]",
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-11-30T02:24:44Z",
@@ -95,7 +123,31 @@
           "jobStartTime": "2025-11-30T01:25:30Z",
           "jobID": "df9f29dc-2b04-45a0-8f96-f9c88ba20b5c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1994940818938400768",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-11-30T06:28:05Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -250,5 +302,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-11-29-153534",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-11-29-153534"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
