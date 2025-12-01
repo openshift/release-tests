@@ -56,9 +56,49 @@
         "jobStartTime": "2025-12-01T06:20:13Z",
         "jobID": "7a034451-5835-423b-a78c-3946e3170b6b",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1995377377852526592",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2025-12-01T09:41:39Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 101,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2025-12-01T10:25:38Z",
+          "jobID": "ba0537f2-014e-4270-afef-a2acb21b7964",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1995439138601439232",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2025-12-01T10:25:43Z",
+          "jobID": "68dbbc42-8da3-4de6-bdb0-c830d42dfab5",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1995439157228343296",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999",
