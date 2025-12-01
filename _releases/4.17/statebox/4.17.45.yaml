@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.45
 created_at: '2025-11-27T18:02:25.777726+00:00'
-updated_at: '2025-11-28T13:31:29Z'
+updated_at: '2025-12-01T10:49:58Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14295
@@ -48,13 +48,20 @@ tasks:
     2025-11-28T03:51:48Z: INFO: advisory 156643 has blocking advisory []
     2025-11-28T03:51:49Z: INFO: push job for advisory 156643 is triggered
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2025-11-28T06:19:44Z'
-  completed_at: null
+  completed_at: '2025-12-01T05:49:56Z'
   result: |-
-    2025-11-28T06:19:44Z: INFO: Checking image-consistency-check job status with job id: 3453
-    2025-11-28T06:19:44Z: INFO: build status of image-consistency-check/3453 is In Progress
-    2025-11-28T06:19:44Z: INFO: task [Payload-Images Consistency Testing] status is changed to [In Progress]
+    2025-12-01T05:44:19Z: INFO: Checking image-consistency-check job status with job id: 3453
+    2025-12-01T05:44:19Z: INFO: build status of image-consistency-check/3453 is SUCCESS
+    2025-12-01T05:44:19Z: INFO: Starting image health check for shipment MR 257
+    2025-12-01T05:44:26Z: INFO: Found pipeline 13786698 with status manual
+    2025-12-01T05:44:26Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44004197>}
+    2025-12-01T05:44:26Z: INFO: Processing MR 257
+    2025-12-01T05:44:29Z: INFO: Found 863 images to check
+    2025-12-01T05:49:11Z: INFO: Completed image health check. Scanned 863 images, found 0 unhealthy
+    2025-12-01T05:49:11Z: INFO: Added image health summary to MR 257
+    2025-12-01T05:49:56Z: INFO: task [Payload-Images Consistency Testing] status is changed to [Pass]
 - name: check-greenwave-cvp-tests
   status: Pass
   started_at: '2025-11-28T05:06:17Z'
