@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.62
 created_at: '2025-11-27T17:00:56.350495+00:00'
-updated_at: '2025-11-28T13:59:37Z'
+updated_at: '2025-12-01T07:34:44Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14298
@@ -34,9 +34,18 @@ tasks:
     2025-11-27T13:56:12Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2025-11-27T13:56:12Z: INFO: task [Check CVE tracker bugs] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2025-11-28T13:59:37Z'
-  completed_at: null
-  result: '2025-11-28T08:45:06Z: INFO: Image consistency check already In Progress,
-    skipping'
+  completed_at: '2025-12-01T02:34:39Z'
+  result: |-
+    2025-12-01T02:33:11Z: INFO: Checking image-consistency-check job status with job id: 3454
+    2025-12-01T02:33:11Z: INFO: build status of image-consistency-check/3454 is SUCCESS
+    2025-12-01T02:33:11Z: INFO: Starting image health check for shipment MR 260
+    2025-12-01T02:33:14Z: INFO: Found pipeline 13785212 with status manual
+    2025-12-01T02:33:14Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:43991658>}
+    2025-12-01T02:33:14Z: INFO: Processing MR 260
+    2025-12-01T02:33:16Z: INFO: Found 239 images to check
+    2025-12-01T02:34:38Z: INFO: Completed image health check. Scanned 239 images, found 0 unhealthy
+    2025-12-01T02:34:38Z: INFO: Added image health summary to MR 260
+    2025-12-01T02:34:39Z: INFO: task [Payload-Images Consistency Testing] status is changed to [Pass]
 issues: []
