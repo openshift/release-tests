@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.45
 created_at: '2025-11-27T18:02:25.777726+00:00'
-updated_at: '2025-12-01T13:17:24Z'
+updated_at: '2025-12-01T15:31:48Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14295
@@ -71,16 +71,13 @@ tasks:
     2025-11-28T05:06:32Z: INFO: advisory 156643 does not have Greenwave CVP tests
     2025-11-28T05:06:32Z: INFO: task [Check CVE tracker bugs] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2025-12-01T08:17:18Z'
-  completed_at: null
+  completed_at: '2025-12-01T10:31:44Z'
   result: |-
-    2025-12-01T08:17:18Z: INFO: job id is not set, will trigger stage testing
-    2025-12-01T08:17:19Z: INFO: Found pipeline 13786698 with status manual
-    2025-12-01T08:17:20Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44004197>}
-    2025-12-01T08:17:20Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1449/>
-    2025-12-01T08:17:22Z: INFO: sent slack message to <#team-qe-release>
-    2025-12-01T08:17:23Z: INFO: task [Stage testing] status is changed to [In Progress]
+    2025-12-01T10:31:43Z: INFO: check stage job status according to job id: 1449
+    2025-12-01T10:31:43Z: INFO: build status of zstreams/Stage-Pipeline/1449 is SUCCESS
+    2025-12-01T10:31:44Z: INFO: task [Stage testing] status is changed to [Pass]
 - name: image-signed-check
   status: Pass
   started_at: '2025-11-28T05:09:46Z'
