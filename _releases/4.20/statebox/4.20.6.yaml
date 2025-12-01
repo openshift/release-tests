@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-01T09:43:42Z'
+updated_at: '2025-12-01T09:46:10Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -51,13 +51,12 @@ tasks:
 - name: stage-testing
   status: Fail
   started_at: '2025-12-01T17:25:50Z'
-  completed_at: '2025-12-01T17:26:08Z'
-  result: "2025-12-01T17:25:50Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN\n\
-    2025-12-01T17:26:00Z: INFO: job id is not set, will trigger stage testing\n2025-12-01T17:26:07Z:\
-    \ INFO: Found pipeline 13783757 with status running\n2025-12-01T17:26:08Z: INFO:\
-    \ Stage 'stage-release-triggers' status: {'status': 'pending', 'job': <ProjectPipelineBridge\
-    \ id:43987813>}\n2025-12-01T17:26:08Z: ERROR: Stage release failed with status\
-    \ pending\n2025-12-01T17:26:08Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
+  completed_at: '2025-12-01T04:46:08Z'
+  result: "2025-12-01T04:46:06Z: INFO: job id is not set, will trigger stage testing\n\
+    2025-12-01T04:46:08Z: INFO: Found pipeline 13783757 with status canceled\n2025-12-01T04:46:08Z:\
+    \ INFO: Stage 'stage-release-triggers' status: {'status': 'canceled', 'job': <ProjectPipelineBridge\
+    \ id:43987813>}\n2025-12-01T04:46:08Z: ERROR: Stage release failed with status\
+    \ canceled\n2025-12-01T04:46:08Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
     \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
     \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2025-11-28T03:03:38.000+00:00',\n\
     \            'committed_date': '2025-11-28T03:03:38.000+00:00',\n            'committer_email':\
@@ -79,30 +78,30 @@ tasks:
     \ 116177,\n                         'ref': 'refs/merge-requests/256/merge',\n\
     \                         'sha': 'bc775c43a1f72dbac939712b6dccf49ad2e8d5f0',\n\
     \                         'source': 'parent_pipeline',\n                     \
-    \    'status': 'running',\n                         'updated_at': '2025-12-01T09:10:44.466Z',\n\
+    \    'status': 'canceled',\n                         'updated_at': '2025-12-01T09:44:16.915Z',\n\
     \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13785063'},\n\
-    \ 'duration': 8173.25723,\n 'erased_at': None,\n 'finished_at': '2025-12-01T09:10:41.673Z',\n\
+    \ 'duration': 10188.712079,\n 'erased_at': None,\n 'finished_at': '2025-12-01T09:44:17.128Z',\n\
     \ 'id': 43987813,\n 'name': 'stage-job',\n 'pipeline': {'created_at': '2025-12-01T03:34:21.635Z',\n\
     \              'id': 13783757,\n              'iid': 2515,\n              'project_id':\
     \ 116177,\n              'ref': 'refs/merge-requests/256/merge',\n           \
     \   'sha': 'bc775c43a1f72dbac939712b6dccf49ad2e8d5f0',\n              'source':\
-    \ 'merge_request_event',\n              'status': 'running',\n              'updated_at':\
-    \ '2025-12-01T09:10:44.716Z',\n              'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13783757'},\n\
+    \ 'merge_request_event',\n              'status': 'canceled',\n              'updated_at':\
+    \ '2025-12-01T09:44:17.247Z',\n              'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13783757'},\n\
     \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': -8176.252697,\n\
     \ 'ref': 'refs/merge-requests/256/merge',\n 'stage': 'stage-release-triggers',\n\
-    \ 'started_at': '2025-12-01T06:54:28.416Z',\n 'status': 'pending',\n 'tag': False,\n\
+    \ 'started_at': '2025-12-01T06:54:28.416Z',\n 'status': 'canceled',\n 'tag': False,\n\
     \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/6c3a253c197db67d48401fba0a8b8e0c16b6ea9d0b1dca6a21679c55d3bdd51b?s=80&d=identicon',\n\
     \          'bio': '',\n          'bot': False,\n          'created_at': '2020-05-25T07:29:59.406Z',\n\
     \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
     \          'github': '',\n          'id': 8390,\n          'job_title': '',\n\
-    \          'linkedin': '',\n          'local_time': '9:26 AM',\n          'location':\
+    \          'linkedin': '',\n          'local_time': '9:47 AM',\n          'location':\
     \ '',\n          'locked': False,\n          'name': 'Ximin Han',\n          'organization':\
     \ '',\n          'pronouns': None,\n          'public_email': '[EMAIL_REDACTED]',\n\
     \          'state': 'active',\n          'twitter': '',\n          'username':\
     \ 'ximhan',\n          'web_url': 'https://gitlab.cee.redhat.com/ximhan',\n  \
     \        'website_url': '',\n          'work_information': None},\n 'web_url':\
     \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/43987813'}\n\
-    2025-12-01T17:26:08Z: INFO: stage release pipeline is not success, will not trigger\
+    2025-12-01T04:46:08Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
 - name: image-consistency-check
   status: In Progress
