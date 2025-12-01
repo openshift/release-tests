@@ -65,7 +65,35 @@
           "jobStartTime": "2025-12-01T01:36:05Z",
           "jobID": "62322ada-3be9-4f97-b57b-a2e7ac51bea5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/1995305872846229504",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-01T05:01:35Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-12-01T01:36:10Z",
