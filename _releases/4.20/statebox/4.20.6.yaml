@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-01T09:56:41Z'
+updated_at: '2025-12-01T11:13:33Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -38,16 +38,16 @@ tasks:
     2025-12-01T04:56:36Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2025-12-01T04:56:37Z: INFO: task [Check CVE tracker bugs] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2025-12-01T17:35:38Z'
-  completed_at: null
+  completed_at: '2025-12-01T06:13:28Z'
   result: |-
-    2025-12-01T17:35:38Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
-    2025-12-01T17:35:43Z: INFO: task [Pushing to CDN staging] status is changed to [In Progress]
-    2025-12-01T17:36:08Z: INFO: checking push job status for advisory 156635 ...
-    2025-12-01T17:36:08Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
-    2025-12-01T17:36:09Z: INFO: checking push job status for advisory 156636 ...
-    2025-12-01T17:36:09Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-01T06:13:23Z: INFO: task [Pushing to CDN staging] status is changed to [In Progress]
+    2025-12-01T06:13:27Z: INFO: checking push job status for advisory 156635 ...
+    2025-12-01T06:13:27Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-01T06:13:27Z: INFO: checking push job status for advisory 156636 ...
+    2025-12-01T06:13:27Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-01T06:13:28Z: INFO: task [Pushing to CDN staging] status is changed to [Pass]
 - name: stage-testing
   status: Fail
   started_at: '2025-12-01T17:25:50Z'
