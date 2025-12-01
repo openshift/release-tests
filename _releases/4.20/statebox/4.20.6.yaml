@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-01T09:36:12Z'
+updated_at: '2025-12-01T09:43:42Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -104,6 +104,15 @@ tasks:
     \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/43987813'}\n\
     2025-12-01T17:26:08Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2025-12-01T04:43:38Z'
+  completed_at: null
+  result: |-
+    2025-12-01T04:43:38Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.20.6-x86_64
+    2025-12-01T04:43:38Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3455/
+    2025-12-01T04:43:39Z: INFO: sent slack message to <#team-qe-release>
+    2025-12-01T04:43:40Z: INFO: task [Payload-Images Consistency Testing] status is changed to [In Progress]
 issues:
 - issue: 'Advisory 156635 (rpm) stuck in NEW_FILES state - BLOCKED ON SECALERT: rpminspect
     found a potential security issue'
