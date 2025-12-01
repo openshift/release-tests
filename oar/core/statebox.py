@@ -921,14 +921,6 @@ class StateBox:
         if extracted_end:
             logger.debug(f"Extracted end timestamp from result: {extracted_end}")
 
-        # Extract timestamps from result text (before status-specific logic to avoid duplication)
-        extracted_start = extract_start_timestamp(result) if result else None
-        extracted_end = extract_end_timestamp(result) if result else None
-        if extracted_start:
-            logger.debug(f"Extracted start timestamp from result: {extracted_start}")
-        if extracted_end:
-            logger.debug(f"Extracted end timestamp from result: {extracted_end}")
-
         if status:
             old_status = task["status"]
             task["status"] = status
