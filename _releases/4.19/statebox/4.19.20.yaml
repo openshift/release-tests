@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.20
 created_at: '2025-11-28T04:02:24.436841+00:00'
-updated_at: '2025-12-02T10:27:00Z'
+updated_at: '2025-12-02T10:41:59Z'
 metadata:
   jira_ticket: ART-14297
   advisory_ids:
@@ -38,15 +38,16 @@ tasks:
     2025-11-28T00:47:18Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2025-11-28T00:47:18Z: INFO: task [Check CVE tracker bugs] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2025-12-02T04:26:42Z'
-  completed_at: null
+  completed_at: '2025-12-02T05:41:57Z'
   result: |-
-    2025-12-02T04:26:42Z: INFO: task [Pushing to CDN staging] status is changed to [In Progress]
-    2025-12-02T04:26:46Z: INFO: checking push job status for advisory 156647 ...
-    2025-12-02T04:26:46Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
-    2025-12-02T04:26:46Z: INFO: checking push job status for advisory 156648 ...
-    2025-12-02T04:26:46Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
+    2025-12-02T05:41:53Z: INFO: task [Pushing to CDN staging] status is changed to [In Progress]
+    2025-12-02T05:41:56Z: INFO: checking push job status for advisory 156647 ...
+    2025-12-02T05:41:56Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-02T05:41:56Z: INFO: checking push job status for advisory 156648 ...
+    2025-12-02T05:41:56Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-02T05:41:57Z: INFO: task [Pushing to CDN staging] status is changed to [Pass]
 - name: image-consistency-check
   status: Pass
   started_at: '2025-12-01T06:13:28Z'
