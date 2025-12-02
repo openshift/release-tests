@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-02T05:46:31Z'
+updated_at: '2025-12-02T05:47:45Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -132,8 +132,28 @@ tasks:
 - name: analyze-promoted-build
   status: Pass
   started_at: '2025-12-02T02:54:38Z'
-  completed_at: '2025-12-02T02:54:38Z'
-  result: null
+  completed_at: '2025-12-02T05:47:45Z'
+  result: |-
+    **Promoted Build: 4.20.6**
+
+    **Status**: ACCEPTED (accepted: true)
+
+    **Test Results**:
+    - 3 jobs triggered, all 3 PASSED
+    - Jobs: aws-ipi-f999, azure-ipi-fips-f999, gcp-ipi-f999
+    - No retries needed, all first runs succeeded
+
+    **Test Coverage**:
+    1. periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.19-aws-ipi-f999: SUCCESS
+    2. periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-azure-ipi-fips-f999: SUCCESS
+    3. periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-gcp-ipi-f999: SUCCESS
+
+    **Failures**: None detected
+
+    **Recommendation**: ACCEPT promoted build
+    - All automated tests passed successfully
+    - Build phase: Accepted
+    - Ready for release approval
 issues:
 - issue: 'Advisory 156635 (rpm) stuck in NEW_FILES state - BLOCKED ON SECALERT: rpminspect
     found a potential security issue'
