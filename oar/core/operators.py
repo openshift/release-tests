@@ -14,6 +14,7 @@ from oar.core.configstore import ConfigStore
 from oar.core.jira import JiraManager
 from oar.core.notification import NotificationManager
 from oar.core.shipment import ShipmentData
+from oar.core.statebox import StateBox
 from oar.core.worksheet import WorksheetManager
 from oar.core.const import *
 from oar.core.exceptions import ShipmentDataException
@@ -194,7 +195,10 @@ class ApprovalOperator:
         
         # Get test report for current release
         report = WorksheetManager(self._am._cs).get_test_report()
-        
+
+        # Initialize StateBox for task status updates
+        statebox = StateBox(self._am._cs)
+
         try:
             # Check if scheduler is already running using file lock
             if self._is_scheduler_running(minor_release):
@@ -265,10 +269,21 @@ class ApprovalOperator:
                         logger.info("Test report status updated to PASS")
                     except Exception as e:
                         logger.error(f"Failed to update test report status: {str(e)}")
-                    
+
                     # Log success summary (will be captured by LogCaptureHandler)
                     logger.info("Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.")
-                    
+
+                    # Update StateBox
+                    try:
+                        statebox.update_task(
+                            "change-advisory-status",
+                            status=TASK_STATUS_PASS,
+                            result="\n".join(capture_handler.get_log_messages())
+                        )
+                        logger.info("StateBox updated to PASS")
+                    except Exception as e:
+                        logger.error(f"Failed to update StateBox: {str(e)}")
+
                     # Send completion notification with full logs including summary
                     self._send_completion_notification(minor_release, success=True, log_messages=capture_handler.get_log_messages())
                 else:
@@ -280,10 +295,21 @@ class ApprovalOperator:
                         logger.info("Test report status updated to FAIL due to timeout")
                     except Exception as e:
                         logger.error(f"Failed to update test report status: {str(e)}")
-                    
+
                     # Log timeout summary (will be captured by LogCaptureHandler)
                     logger.warning(f"Release approval timeout. Payload metadata URL still not accessible after {TIMEOUT_DAYS} days.")
-                    
+
+                    # Update StateBox
+                    try:
+                        statebox.update_task(
+                            "change-advisory-status",
+                            status=TASK_STATUS_FAIL,
+                            result="\n".join(capture_handler.get_log_messages())
+                        )
+                        logger.info("StateBox updated to FAIL")
+                    except Exception as e:
+                        logger.error(f"Failed to update StateBox: {str(e)}")
+
                     # Send timeout notification with full logs including summary
                     self._send_completion_notification(minor_release, success=False, log_messages=capture_handler.get_log_messages())
             finally:
@@ -301,10 +327,21 @@ class ApprovalOperator:
                 logger.info("Test report status updated to FAIL due to error")
             except Exception as update_error:
                 logger.error(f"Failed to update test report status: {str(update_error)}")
-            
+
             # Log error summary (will be captured by LogCaptureHandler)
             logger.error(f"Release approval failed with error: {str(e)}")
-            
+
+            # Update StateBox
+            try:
+                statebox.update_task(
+                    "change-advisory-status",
+                    status=TASK_STATUS_FAIL,
+                    result="\n".join(capture_handler.get_log_messages())
+                )
+                logger.info("StateBox updated to FAIL")
+            except Exception as statebox_error:
+                logger.error(f"Failed to update StateBox: {str(statebox_error)}")
+
             # Send error notification with full logs including summary
             self._send_completion_notification(minor_release, success=False, error=str(e), log_messages=capture_handler.get_log_messages())
         finally:
