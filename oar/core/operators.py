@@ -182,7 +182,10 @@ class ApprovalOperator:
         accessibility with proper timeout and notification handling.
         """
         TIMEOUT_DAYS = 2
-        
+
+        # Initialize logging for subprocess FIRST (required for LogCaptureHandler to capture logs)
+        util.init_logging(logging.DEBUG)
+
         # Add the capture handler to the logger
         capture_handler = LogCaptureHandler()
         capture_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
