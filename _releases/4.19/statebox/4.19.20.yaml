@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.20
 created_at: '2025-11-28T04:02:24.436841+00:00'
-updated_at: '2025-12-02T11:05:53Z'
+updated_at: '2025-12-02T13:53:21Z'
 metadata:
   jira_ticket: ART-14297
   advisory_ids:
@@ -64,16 +64,13 @@ tasks:
     2025-12-02T03:25:41Z: INFO: Added image health summary to MR 259
     2025-12-02T03:25:54Z: INFO: task [Payload-Images Consistency Testing] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2025-12-02T04:27:13Z'
-  completed_at: null
+  completed_at: '2025-12-02T08:53:17Z'
   result: |-
-    2025-12-02T04:27:13Z: INFO: job id is not set, will trigger stage testing
-    2025-12-02T04:27:14Z: INFO: Found pipeline 13789544 with status manual
-    2025-12-02T04:27:14Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44017929>}
-    2025-12-02T04:27:15Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1452/>
-    2025-12-02T04:27:16Z: INFO: sent slack message to <#team-qe-release>
-    2025-12-02T04:27:17Z: INFO: task [Stage testing] status is changed to [In Progress]
+    2025-12-02T08:53:16Z: INFO: check stage job status according to job id: 1454
+    2025-12-02T08:53:16Z: INFO: build status of zstreams/Stage-Pipeline/1454 is SUCCESS
+    2025-12-02T08:53:17Z: INFO: task [Stage testing] status is changed to [Pass]
 - name: analyze-candidate-build
   status: Pass
   started_at: '2025-12-01T11:06:52Z'
