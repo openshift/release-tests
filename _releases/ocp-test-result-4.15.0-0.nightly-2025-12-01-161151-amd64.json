@@ -63,13 +63,64 @@
           "jobStartTime": "2025-12-02T00:28:01Z",
           "jobID": "e37f4534-2b45-4735-bbb5-b7ab7ebd4400",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1995651131648249856",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-02T03:31:49Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 86,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-12-02T00:28:06Z",
           "jobID": "02e0d9c5-2ceb-4058-91b0-91587041a861",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/1995651152800124928",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-02T03:40:52Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 86,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 28
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -170,5 +221,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2025-12-01-161151",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2025-12-01-161151"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
