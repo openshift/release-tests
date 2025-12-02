@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.45
 created_at: '2025-11-27T18:02:25.777726+00:00'
-updated_at: '2025-12-02T06:25:55Z'
+updated_at: '2025-12-02T08:28:06Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14295
@@ -114,6 +114,26 @@ tasks:
   result: 'Promoted build 4.17.45 analysis: accepted=true, aggregated=true. All 3
     blocking test jobs (upgrade tests) passed BO3 verification on first attempt. No
     retries needed. Build ready for release.'
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2025-12-02T03:27:04Z'
+  completed_at: null
+  result: |-
+    2025-12-02T03:27:04Z: INFO: task [Approve MR and change advisory status] status is changed to [In Progress]
+    2025-12-02T03:27:24Z: INFO: Processing MR 257 for Jira issues
+    2025-12-02T03:27:50Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2025-12-02T03:27:51Z: INFO: RHCOS nvr is rhcos-x86_64-417.94.202511260612-0
+    2025-12-02T03:27:51Z: INFO: The commit metadata is kernel-5.14.0-427.101.1.el9_4
+    2025-12-02T03:27:51Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176953, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2025:22264-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2025-12-02T03:27:52Z: INFO: Successfully approved MR 257
+    2025-12-02T03:27:52Z: INFO: Successfully added QE approval to MR 257
+    2025-12-02T03:27:54Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2025:22266
+    2025-12-02T03:27:58Z: INFO: The metadata url is not accessible
+    2025-12-02T03:27:58Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2025-12-02T03:27:58Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: C07HMSFE7N2, OAR_SLACK_THREAD: 1764664070.434589
+    2025-12-02T03:27:58Z: INFO: Background metadata checker process started (PID: 953452) - running independently after parent exit
+    2025-12-02T03:27:58Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.17_20251202_032758.log
+    2025-12-02T03:28:05Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: GitLab stage release pipeline 13760245 failed - downstream pipeline 13760261
     has 'unknown_failure' status. Stage testing cannot proceed until this is resolved.
