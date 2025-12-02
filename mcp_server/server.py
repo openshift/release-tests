@@ -1219,7 +1219,10 @@ async def oar_update_task_status(release: str, task_name: str, status: str, resu
             if statebox.exists():
                 # StateBox exists, update it
                 # Only pass result if it has actual content
-                statebox.update_task(task_name, status=status, result=result)
+                if result is not None:
+                    statebox.update_task(task_name, status=status, result=result)
+                else:
+                    statebox.update_task(task_name, status=status)
                 updated_systems.append("statebox")
                 logger.info(f"Updated StateBox for task '{task_name}' to '{status}'" +
                           (f" with result summary ({len(result)} chars)" if result else ""))
