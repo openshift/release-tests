@@ -56,7 +56,6 @@ check-rhcos-security-alerts (Konflux only - checks blocking security alerts)
     └─→ [WAIT FOR BUILD PROMOTION - check API until phase == "Accepted"]
             ↓
             ├─→ image-consistency-check (async - triggered immediately after promotion)
-            ├─→ stage-testing (async - triggered immediately after promotion)
             └─→ [WAIT FOR TEST RESULT FILE - check GitHub until file exists]
                     ↓
                 [WAIT FOR AGGREGATION - check until aggregated == true]
@@ -64,6 +63,10 @@ check-rhcos-security-alerts (Konflux only - checks blocking security alerts)
                 analyze-promoted-build (conditionally - only if accepted == false)
                     ↓
                 [GATE CHECK - promoted build must be acceptable]
+                    ↓
+                [WAIT FOR push-to-cdn-staging TO COMPLETE (status == "Pass")]
+                    ↓
+                stage-testing (async - triggered ONLY after push-to-cdn-staging passes)
                     ↓
                 [WAIT FOR ALL 3 ASYNC TASKS TO COMPLETE]
                 (push-to-cdn-staging, image-consistency-check, stage-testing)
@@ -81,11 +84,15 @@ analyze-candidate-build (conditionally - only if accepted == false)
 - **Parallel Execution:**
   - `analyze-candidate-build` runs independently (tests already completed when flow starts)
   - `push-to-cdn-staging` starts immediately after check-rhcos-security-alerts (runs while waiting for build promotion)
-  - **ENHANCED:** 2 async tasks (image-consistency-check, stage-testing) triggered immediately after build promotion is detected, running in parallel with test result analysis
-- **Build Promotion Checkpoint:** Critical decision point - once detected, async tasks trigger immediately
+  - `image-consistency-check` triggered immediately after build promotion is detected
+  - `stage-testing` triggered ONLY after push-to-cdn-staging completes (status == "Pass")
+- **Build Promotion Checkpoint:** Critical decision point - once detected, image-consistency-check triggers immediately
 - **Test Result Checkpoints:** Must wait for file existence and aggregation (runs in parallel with async tasks)
-- **Gate Check:** Promoted build must have acceptable test results before proceeding to final approval
-- **Final Sync Point:** image-signed-check waits for BOTH:
+- **Gate Check:** Promoted build must have acceptable test results before stage-testing can be triggered
+- **CDN Push Dependency:** stage-testing MUST wait for push-to-cdn-staging to complete successfully
+  - Rationale: Test environment pulls images from CDN staging, not intermediate locations
+  - Testing before push completes would validate incorrect artifacts
+- **Final Sync Point:** image-signed-check waits for:
   1. All 3 async tasks complete (push-to-cdn-staging, image-consistency-check, stage-testing)
   2. Gate check passes (promoted build analysis acceptable)
 - **Default Architecture:** amd64 (x86_64) unless specified otherwise
@@ -740,6 +747,11 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 **Prerequisites:**
 - Build promotion detected (phase == "Accepted")
 - **CRITICAL (Konflux flow only):** Shipment MR stage-release pipeline must succeed first
+- **CRITICAL:** push-to-cdn-staging task must be in "Pass" status
+  - Rationale: stage-testing validates the release artifacts pushed to CDN staging
+  - The test environment pulls images from CDN staging, not from intermediate locations
+  - Testing before push completes would validate incorrect/incomplete artifacts
+  - AI MUST check push-to-cdn-staging status before triggering stage-testing
 
 **Execution Phases:**
 

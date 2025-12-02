@@ -105,14 +105,26 @@ Based on StateBox task status, identify which phase the release is in:
 - Report to user and ask them to re-invoke `/release:drive` later
 
 **Phase 3: Async Task Triggering and Test Evaluation** (ENHANCED - if promoted)
-- **TRIGGER async tasks immediately** after promotion detected:
-  - image-consistency-check
-  - stage-testing
+- **TRIGGER async tasks after promotion detected:**
+  - image-consistency-check (trigger immediately after promotion + stage-release success)
+  - stage-testing (trigger ONLY after push-to-cdn-staging is Pass)
 - In parallel with async tasks:
   - Wait for test result file creation
   - Wait for test aggregation
   - Analyze test results (if accepted == false)
   - Perform gate check
+
+**CRITICAL DEPENDENCY CHECK for stage-testing:**
+```python
+# Before triggering stage-testing, MUST verify push-to-cdn-staging is Pass
+push_status = state.tasks["push-to-cdn-staging"].status
+
+if push_status != "Pass":
+    Log: "⚠️ Cannot trigger stage-testing yet - push-to-cdn-staging status: {push_status}"
+    Log: "stage-testing depends on push-to-cdn-staging completing first"
+    # Skip stage-testing trigger, will retry on next /release:drive invocation
+    RETURN
+```
 
 **Phase 4: Final Sync Point** (if gate passed and async tasks complete)
 - Wait for all 3 async tasks to complete:
