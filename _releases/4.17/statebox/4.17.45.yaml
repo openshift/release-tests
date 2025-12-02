@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.45
 created_at: '2025-11-27T18:02:25.777726+00:00'
-updated_at: '2025-12-02T06:20:45Z'
+updated_at: '2025-12-02T06:25:28Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14295
@@ -99,6 +99,14 @@ tasks:
     2025-11-28T05:11:27Z: INFO: checking all bugs are verified
     2025-11-28T05:11:27Z: INFO: result is: yes
     2025-11-28T05:11:27Z: INFO: task [Bug to be verified] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2025-12-02T06:25:28Z'
+  completed_at: '2025-12-02T06:25:28Z'
+  result: 'Candidate build 4.17.0-0.nightly-2025-11-26-232633 analysis: accepted=false
+    (3/6 jobs failed BO3 on OCP-28633 test). Failure is waivable - known test automation
+    issue tracked in OCPQE-31199 (qe_level0_automation_issue). Test has history of
+    flakiness across multiple releases. Recommend ACCEPT.'
 issues:
 - issue: GitLab stage release pipeline 13760245 failed - downstream pipeline 13760261
     has 'unknown_failure' status. Stage testing cannot proceed until this is resolved.
