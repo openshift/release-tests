@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.62
 created_at: '2025-11-27T17:00:56.350495+00:00'
-updated_at: '2025-12-02T11:51:02Z'
+updated_at: '2025-12-02T12:13:35Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14298
@@ -60,13 +60,16 @@ tasks:
     2025-12-01T03:27:27Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-01T03:27:28Z: INFO: task [Pushing to CDN staging] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2025-12-02T01:21:49Z'
-  completed_at: '2025-12-02T06:50:59Z'
+  status: In Progress
+  started_at: '2025-12-02T07:13:29Z'
+  completed_at: null
   result: |-
-    2025-12-02T06:50:58Z: INFO: check stage job status according to job id: 1451
-    2025-12-02T06:50:58Z: INFO: build status of zstreams/Stage-Pipeline/1451 is FAILURE
-    2025-12-02T06:50:59Z: INFO: task [Stage testing] status is changed to [Fail]
+    2025-12-02T07:13:29Z: INFO: job id is not set, will trigger stage testing
+    2025-12-02T07:13:31Z: INFO: Found pipeline 13785212 with status manual
+    2025-12-02T07:13:31Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:43991658>}
+    2025-12-02T07:13:31Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1455/>
+    2025-12-02T07:13:33Z: INFO: sent slack message to <#team-qe-release>
+    2025-12-02T07:13:34Z: INFO: task [Stage testing] status is changed to [In Progress]
 - name: analyze-candidate-build
   status: Pass
   started_at: '2025-12-02T06:33:34Z'
