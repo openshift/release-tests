@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-02T02:08:30Z'
+updated_at: '2025-12-02T02:18:36Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -49,16 +49,13 @@ tasks:
     2025-12-01T06:13:27Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-01T06:13:28Z: INFO: task [Pushing to CDN staging] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2025-12-01T19:10:25Z'
-  completed_at: null
+  completed_at: '2025-12-01T21:18:31Z'
   result: |-
-    2025-12-01T19:10:25Z: INFO: job id is not set, will trigger stage testing
-    2025-12-01T19:10:27Z: INFO: Found pipeline 13789640 with status manual
-    2025-12-01T19:10:28Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44018487>}
-    2025-12-01T19:10:28Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1450/>
-    2025-12-01T19:10:29Z: INFO: sent slack message to <#team-qe-release>
-    2025-12-01T19:10:30Z: INFO: task [Stage testing] status is changed to [In Progress]
+    2025-12-01T21:18:30Z: INFO: check stage job status according to job id: 1450
+    2025-12-01T21:18:30Z: INFO: build status of zstreams/Stage-Pipeline/1450 is SUCCESS
+    2025-12-01T21:18:31Z: INFO: task [Stage testing] status is changed to [Pass]
 - name: image-consistency-check
   status: Pass
   started_at: '2025-12-01T04:43:38Z'
