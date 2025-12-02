@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-02T00:04:02Z'
+updated_at: '2025-12-02T00:10:31Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -49,60 +49,16 @@ tasks:
     2025-12-01T06:13:27Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-01T06:13:28Z: INFO: task [Pushing to CDN staging] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2025-12-01T17:25:50Z'
-  completed_at: '2025-12-01T04:46:08Z'
-  result: "2025-12-01T04:46:06Z: INFO: job id is not set, will trigger stage testing\n\
-    2025-12-01T04:46:08Z: INFO: Found pipeline 13783757 with status canceled\n2025-12-01T04:46:08Z:\
-    \ INFO: Stage 'stage-release-triggers' status: {'status': 'canceled', 'job': <ProjectPipelineBridge\
-    \ id:43987813>}\n2025-12-01T04:46:08Z: ERROR: Stage release failed with status\
-    \ canceled\n2025-12-01T04:46:08Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
-    \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
-    \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2025-11-28T03:03:38.000+00:00',\n\
-    \            'committed_date': '2025-11-28T03:03:38.000+00:00',\n            'committer_email':\
-    \ '[EMAIL_REDACTED]',\n            'committer_name': 'art-bot-jenkins',\n    \
-    \        'created_at': '2025-11-28T03:03:38.000+00:00',\n            'extended_trailers':\
-    \ {},\n            'id': 'bc775c43a1f72dbac939712b6dccf49ad2e8d5f0',\n       \
-    \     'message': \"Merge branch 'prepare-shipment-4.20.6-20251127065612' \"\n\
-    \                       \"into 'main'\\n\"\n                       '\\n'\n   \
-    \                    'Shipment for 4.20.6 (ship date: 2025-Dec-02)\\n'\n     \
-    \                  '\\n'\n                       'See merge request '\n      \
-    \                 'hybrid-platforms/art/ocp-shipment-data!256',\n            'parent_ids':\
-    \ ['63875dda08779f19963067d7d9b2f6edb9e28273',\n                           'c50c2b3f6bb34584d0803dfc416debdba3ec5273'],\n\
-    \            'short_id': 'bc775c43',\n            'title': \"Merge branch 'prepare-shipment-4.20.6-20251127065612'\
-    \ \"\n                     \"into 'main'\",\n            'trailers': {},\n   \
-    \         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/commit/bc775c43a1f72dbac939712b6dccf49ad2e8d5f0'},\n\
-    \ 'coverage': None,\n 'created_at': '2025-12-01T06:54:27.869Z',\n 'downstream_pipeline':\
-    \ {'created_at': '2025-12-01T06:54:29.119Z',\n                         'id': 13785063,\n\
-    \                         'iid': 2521,\n                         'project_id':\
-    \ 116177,\n                         'ref': 'refs/merge-requests/256/merge',\n\
-    \                         'sha': 'bc775c43a1f72dbac939712b6dccf49ad2e8d5f0',\n\
-    \                         'source': 'parent_pipeline',\n                     \
-    \    'status': 'canceled',\n                         'updated_at': '2025-12-01T09:44:16.915Z',\n\
-    \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13785063'},\n\
-    \ 'duration': 10188.712079,\n 'erased_at': None,\n 'finished_at': '2025-12-01T09:44:17.128Z',\n\
-    \ 'id': 43987813,\n 'name': 'stage-job',\n 'pipeline': {'created_at': '2025-12-01T03:34:21.635Z',\n\
-    \              'id': 13783757,\n              'iid': 2515,\n              'project_id':\
-    \ 116177,\n              'ref': 'refs/merge-requests/256/merge',\n           \
-    \   'sha': 'bc775c43a1f72dbac939712b6dccf49ad2e8d5f0',\n              'source':\
-    \ 'merge_request_event',\n              'status': 'canceled',\n              'updated_at':\
-    \ '2025-12-01T09:44:17.247Z',\n              'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13783757'},\n\
-    \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': -8176.252697,\n\
-    \ 'ref': 'refs/merge-requests/256/merge',\n 'stage': 'stage-release-triggers',\n\
-    \ 'started_at': '2025-12-01T06:54:28.416Z',\n 'status': 'canceled',\n 'tag': False,\n\
-    \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/6c3a253c197db67d48401fba0a8b8e0c16b6ea9d0b1dca6a21679c55d3bdd51b?s=80&d=identicon',\n\
-    \          'bio': '',\n          'bot': False,\n          'created_at': '2020-05-25T07:29:59.406Z',\n\
-    \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
-    \          'github': '',\n          'id': 8390,\n          'job_title': '',\n\
-    \          'linkedin': '',\n          'local_time': '9:47 AM',\n          'location':\
-    \ '',\n          'locked': False,\n          'name': 'Ximin Han',\n          'organization':\
-    \ '',\n          'pronouns': None,\n          'public_email': '[EMAIL_REDACTED]',\n\
-    \          'state': 'active',\n          'twitter': '',\n          'username':\
-    \ 'ximhan',\n          'web_url': 'https://gitlab.cee.redhat.com/ximhan',\n  \
-    \        'website_url': '',\n          'work_information': None},\n 'web_url':\
-    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/43987813'}\n\
-    2025-12-01T04:46:08Z: INFO: stage release pipeline is not success, will not trigger\
-    \ stage test"
+  status: In Progress
+  started_at: '2025-12-01T19:10:25Z'
+  completed_at: null
+  result: |-
+    2025-12-01T19:10:25Z: INFO: job id is not set, will trigger stage testing
+    2025-12-01T19:10:27Z: INFO: Found pipeline 13789640 with status manual
+    2025-12-01T19:10:28Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44018487>}
+    2025-12-01T19:10:28Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1450/>
+    2025-12-01T19:10:29Z: INFO: sent slack message to <#team-qe-release>
+    2025-12-01T19:10:30Z: INFO: task [Stage testing] status is changed to [In Progress]
 - name: image-consistency-check
   status: Pass
   started_at: '2025-12-01T04:43:38Z'
