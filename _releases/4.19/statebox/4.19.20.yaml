@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.20
 created_at: '2025-11-28T04:02:24.436841+00:00'
-updated_at: '2025-12-02T08:12:45Z'
+updated_at: '2025-12-02T08:25:58Z'
 metadata:
   jira_ticket: ART-14297
   advisory_ids:
@@ -54,11 +54,20 @@ tasks:
     2025-12-02T03:12:43Z: INFO: advisory 156648 has blocking advisory []
     2025-12-02T03:12:44Z: INFO: push job for advisory 156648 is triggered
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2025-12-01T06:13:28Z'
-  completed_at: null
-  result: '2025-12-01T06:13:28Z: INFO: Image consistency check already In Progress,
-    skipping'
+  completed_at: '2025-12-02T03:25:54Z'
+  result: |-
+    2025-12-02T03:18:40Z: INFO: Checking image-consistency-check job status with job id: 3456
+    2025-12-02T03:18:40Z: INFO: build status of image-consistency-check/3456 is SUCCESS
+    2025-12-02T03:18:40Z: INFO: Starting image health check for shipment MR 259
+    2025-12-02T03:18:41Z: INFO: Found pipeline 13789544 with status manual
+    2025-12-02T03:18:42Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44017929>}
+    2025-12-02T03:18:42Z: INFO: Processing MR 259
+    2025-12-02T03:18:44Z: INFO: Found 858 images to check
+    2025-12-02T03:25:41Z: INFO: Completed image health check. Scanned 858 images, found 0 unhealthy
+    2025-12-02T03:25:41Z: INFO: Added image health summary to MR 259
+    2025-12-02T03:25:54Z: INFO: task [Payload-Images Consistency Testing] status is changed to [Pass]
 - name: stage-testing
   status: Fail
   started_at: '2025-12-01T04:54:10Z'
