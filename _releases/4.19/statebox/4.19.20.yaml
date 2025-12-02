@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.20
 created_at: '2025-11-28T04:02:24.436841+00:00'
-updated_at: '2025-12-02T08:25:58Z'
+updated_at: '2025-12-02T08:28:23Z'
 metadata:
   jira_ticket: ART-14297
   advisory_ids:
@@ -134,4 +134,15 @@ tasks:
   started_at: '2025-12-01T11:08:05Z'
   completed_at: '2025-12-01T11:08:05Z'
   result: null
+- name: image-signed-check
+  status: Pass
+  started_at: '2025-12-02T03:27:53Z'
+  completed_at: '2025-12-02T03:28:19Z'
+  result: |-
+    2025-12-02T03:27:53Z: INFO: task [Payload image is well signed] status is changed to [In Progress]
+    2025-12-02T03:27:53Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.20
+    2025-12-02T03:27:55Z: INFO: Image Digest: sha256:90a6c7e4e570bd1914578a2b5b6c9847a2b877c466e29c97e75f28de73228a3b
+    2025-12-02T03:27:55Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=90a6c7e4e570bd1914578a2b5b6c9847a2b877c466e29c97e75f28de73228a3b/signature-1
+    2025-12-02T03:28:19Z: INFO: Signature check PASSED
+    2025-12-02T03:28:19Z: INFO: task [Payload image is well signed] status is changed to [Pass]
 issues: []
