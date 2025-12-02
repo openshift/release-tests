@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.6
 created_at: '2025-11-27T11:02:55.266929+00:00'
-updated_at: '2025-12-01T11:13:33Z'
+updated_at: '2025-12-02T00:04:02Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14294
@@ -104,14 +104,20 @@ tasks:
     2025-12-01T04:46:08Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2025-12-01T04:43:38Z'
-  completed_at: null
+  completed_at: '2025-12-01T19:03:58Z'
   result: |-
-    2025-12-01T04:43:38Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.20.6-x86_64
-    2025-12-01T04:43:38Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3455/
-    2025-12-01T04:43:39Z: INFO: sent slack message to <#team-qe-release>
-    2025-12-01T04:43:40Z: INFO: task [Payload-Images Consistency Testing] status is changed to [In Progress]
+    2025-12-01T18:58:19Z: INFO: Checking image-consistency-check job status with job id: 3455
+    2025-12-01T18:58:19Z: INFO: build status of image-consistency-check/3455 is SUCCESS
+    2025-12-01T18:58:19Z: INFO: Starting image health check for shipment MR 256
+    2025-12-01T18:58:21Z: INFO: Found pipeline 13789640 with status manual
+    2025-12-01T18:58:21Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44018487>}
+    2025-12-01T18:58:21Z: INFO: Processing MR 256
+    2025-12-01T18:58:24Z: INFO: Found 860 images to check
+    2025-12-01T19:03:30Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
+    2025-12-01T19:03:30Z: INFO: Added image health summary to MR 256
+    2025-12-01T19:03:58Z: INFO: task [Payload-Images Consistency Testing] status is changed to [Pass]
 - name: image-signed-check
   status: Pass
   started_at: '2025-12-01T04:52:48Z'
