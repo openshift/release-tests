@@ -1148,7 +1148,7 @@ async def oar_get_release_status(release: str) -> str:
 
 
 @mcp.tool()
-async def oar_update_task_status(release: str, task_name: str, status: str) -> str:
+async def oar_update_task_status(release: str, task_name: str, status: str, result: Optional[str] = None) -> str:
     """
     Update specific task status in StateBox (primary) or Google Sheets (fallback).
 
@@ -1165,6 +1165,7 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         release: Z-stream release version (e.g., "4.19.1")
         task_name: Task name (e.g., "analyze-candidate-build", "analyze-promoted-build", "image-consistency-check")
         status: Task status - must be one of: "Pass", "Fail", "In Progress"
+        result: Optional task execution result summary (AI-readable text, stored in StateBox only)
 
     Returns:
         JSON string with update confirmation including which systems were updated
@@ -1208,14 +1209,23 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         cs = get_cached_configstore(release)
         updated_systems = []
 
+        # Normalize empty/whitespace result to None (treat as not provided)
+        if result is not None and not result.strip():
+            result = None
+
         # Try to update StateBox first
         try:
             statebox = StateBox(cs)
             if statebox.exists():
                 # StateBox exists, update it
-                statebox.update_task(task_name, status=status)
+                # Only pass result if it has actual content
+                if result is not None:
+                    statebox.update_task(task_name, status=status, result=result)
+                else:
+                    statebox.update_task(task_name, status=status)
                 updated_systems.append("statebox")
-                logger.info(f"Updated StateBox for task '{task_name}' to '{status}'")
+                logger.info(f"Updated StateBox for task '{task_name}' to '{status}'" +
+                          (f" with result summary ({len(result)} chars)" if result else ""))
         except StateBoxException as e:
             logger.warning(f"StateBox update failed (will update Google Sheets): {e}")
 
@@ -1227,13 +1237,21 @@ async def oar_update_task_status(release: str, task_name: str, status: str) -> s
         updated_systems.append("worksheet")
         logger.info(f"Updated Google Sheets for task '{task_name}' to '{status}'")
 
+        result_info = {}
+        if result:
+            result_info = {
+                "result_length": len(result),
+                "result_preview": result[:200] + "..." if len(result) > 200 else result
+            }
+
         return json.dumps({
             "success": True,
             "release": release,
             "task": task_name,
             "status": status,
             "updated_systems": updated_systems,
-            "message": f"Successfully updated task '{task_name}' to '{status}' in {', '.join(updated_systems)}"
+            "message": f"Successfully updated task '{task_name}' to '{status}' in {', '.join(updated_systems)}",
+            **result_info
         })
 
     except Exception as e:
