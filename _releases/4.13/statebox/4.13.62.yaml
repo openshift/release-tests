@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.62
 created_at: '2025-11-27T17:00:56.350495+00:00'
-updated_at: '2025-12-03T09:30:52Z'
+updated_at: '2025-12-03T10:29:55Z'
 metadata:
   qe_owner: null
   jira_ticket: ART-14298
@@ -81,4 +81,15 @@ tasks:
   completed_at: '2025-12-02T06:34:29Z'
   result: 'Promoted build 4.13.62: accepted=true, aggregated=true. All 3 upgrade test
     jobs passed BO3 on first attempt. No retries needed. Build ready for release.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2025-12-03T05:29:28Z'
+  completed_at: '2025-12-03T05:29:52Z'
+  result: |-
+    2025-12-03T05:29:28Z: INFO: task [Payload image is well signed] status is changed to [In Progress]
+    2025-12-03T05:29:28Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.13.62
+    2025-12-03T05:29:29Z: INFO: Image Digest: sha256:384dcc2b7dde97674e4197b6e4130268adc2b00a94908aa9220a4061aa1030ac
+    2025-12-03T05:29:29Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=384dcc2b7dde97674e4197b6e4130268adc2b00a94908aa9220a4061aa1030ac/signature-1
+    2025-12-03T05:29:51Z: INFO: Signature check PASSED
+    2025-12-03T05:29:52Z: INFO: task [Payload image is well signed] status is changed to [Pass]
 issues: []
