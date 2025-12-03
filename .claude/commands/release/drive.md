@@ -47,11 +47,25 @@ Before executing ANY tasks, you MUST:
 
 ### 1. Retrieve Release State from StateBox
 
-**ALWAYS start by retrieving release state:**
+**ALWAYS start by retrieving release state (contains ALL data you need):**
 
 ```python
-# Get release state (StateBox primary, Google Sheets fallback)
+# Get complete release context (StateBox primary, Google Sheets fallback)
 state = oar_get_release_status(release="4.20.1")
+state_data = json.loads(state)
+
+# StateBox contains EVERYTHING for workflow resumption:
+# - metadata: advisories, jira_ticket, builds, shipment_mr, release_date
+# - tasks: status, results, timestamps
+# - issues: blockers, resolutions
+
+# Extract metadata from StateBox (NO separate call to oar_get_release_metadata needed!)
+metadata = state_data.get("metadata", {})
+advisory_ids = metadata.get("advisory_ids", {})
+jira_ticket = metadata.get("jira_ticket", "")
+release_date = metadata.get("release_date", "")
+candidate_builds = metadata.get("candidate_builds", {})
+shipment_mr = metadata.get("shipment_mr", "")
 ```
 
 **Data Source Priority:**
@@ -65,7 +79,7 @@ state = oar_get_release_status(release="4.20.1")
 - ✅ Task status updates via `oar_update_task_status` work (updates Google Sheets)
 - ❌ No access to task execution results (can't extract Jenkins build numbers)
 - ❌ No issue tracking (can't use `oar_add_issue`, `oar_resolve_issue`)
-- ❌ No metadata access from StateBox (use `oar_get_release_metadata` instead)
+- ❌ No metadata access from StateBox
 
 **How to handle limited mode:**
 
@@ -79,15 +93,19 @@ if state_data.get("source") == "worksheet":
     Log: "  - Cannot resume async tasks (no build numbers in results)"
     Log: "  - Cannot track blocking issues"
     Log: "  - Task results not available for context"
+    Log: "  - No metadata in StateBox"
 
-    # Get metadata separately
-    metadata = oar_get_release_metadata(release="4.20.1")
+    # Get metadata separately (ONLY in limited mode)
+    metadata_result = oar_get_release_metadata(release="4.20.1")
+    metadata = json.loads(metadata_result)
 
     # Continue workflow with limitations
     # - Skip async task resumption (treat as "Not Started")
     # - Skip blocker checks (no issue tracking)
     # - Execute tasks normally, status updates still work
 ```
+
+**Key Point**: When StateBox exists (normal case), you have ALL data in one call. DO NOT call `oar_get_release_metadata` separately - it's redundant and slower!
 
 ### 2. Determine Current Phase
 
