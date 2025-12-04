@@ -4,10 +4,12 @@ import re
 import subprocess
 
 
+logger = logging.getLogger(__name__)
+
 class OpenshiftImage:
 
     def __init__(self, pull_spec, **kwargs):
-        logging.debug(f'OpenshiftImage: initial image {pull_spec}')
+        logger.debug(f'OpenshiftImage: initial image {pull_spec}')
         self.pull_spec = pull_spec
         self.digest = ""
         self.listdigest = ""
@@ -96,15 +98,15 @@ class OpenshiftImage:
                 "registry-proxy.engineering.redhat.com/rh-osbs/openshift-"
             )
 
-        logging.debug(f"OpenshiftImage: oc image info {image_url}")
+        logger.debug(f"OpenshiftImage: oc image info {image_url}")
         (status, output) = subprocess.getstatusoutput(
             f"oc image info --filter-by-os linux/amd64 -o json --insecure=true {image_url} 2>/tmp/stderr.out"
         )
         if status == 0:
             self.metadata = json.loads(output)
         else:
-            logging.warning(f"OpenshiftImage: oc image info {self.pull_spec} Return code: {status}")
-            logging.warning(f"Stderr: {subprocess.getoutput('cat /tmp/stderr.out')}")
+            logger.warning(f"OpenshiftImage: oc image info {self.pull_spec} Return code: {status}")
+            logger.warning(f"Stderr: {subprocess.getoutput('cat /tmp/stderr.out')}")
             return None
 
     def __eq__(self, other):

@@ -30,8 +30,8 @@ class Payload:
         Args:
             payload_url (str): The URL of the OpenShift release payload.
         """
-        self.url = payload_url
-        self.images = self._fetch_images()
+        self._url = payload_url
+        self._images = self._fetch_images()
 
     def _fetch_images(self) -> list[str]:
         """

@@ -83,17 +83,17 @@ class ImageConsistencyChecker:
                         # reference is like registry.redhat.io/openshift4/ose-cluster-baremetal-operator-rhel9:v4.15.0-202407080939.p0.gfdce2d0.assembly.stream.el9
                         ref = item["reference"]
                         if release in ref:
-                            logging.info(
+                            logger.info(
                                 f"image {image_to_check} is already shipped: {ref}"
                             )
                             status = "PASS"
                             reason += f" {ref.split('/')[0]} "
                 else:
-                    logging.error(
+                    logger.error(
                         f"cannot find image {image_to_check} in redhat ecosystem catalog"
                     )
             else:
-                logging.error(f"access pyxis failed: {resp.status_code}:{resp.reason}")
+                logger.error(f"access pyxis failed: {resp.status_code}:{resp.reason}")
                 
             if status == "FAIL":
                 # if status FAIL, report reason
@@ -144,16 +144,16 @@ def image_consistency_check(payload_url: str, mr_id: int) -> None:
     shipment_images = shipment.get_image_pullspecs()
 
     payload_results = []
-    for payload_image in payload.images:
-        logging.info(f"Checking {payload_image}")
+    for payload_image in payload.get_images():
+        logger.info(f"Checking {payload_image}")
         result = checker.is_image_exist_in_list(payload_image, shipment_images)
         payload_results.append(result)
 
     for result in payload_results:
         if result['status'] == 'FAIL':
-            logging.error(f"There are images that are not found in the shipment.")
+            logger.error(f"There are images that are not found in the shipment, result: {result}")
             sys.exit(1)
-    logging.info("All images are found in the shipment.")
+    logger.info("All images are found in the shipment.")
     sys.exit(0)
 
 if __name__ == "__main__":
