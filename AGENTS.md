@@ -286,7 +286,7 @@ pip3 install -e .
 **OAR CLI:**
 - **OAR_JWK** - Encryption key for config_store.json (stored in Bitwarden: *openshift-qe-trt-env-vars*)
 - **JIRA_TOKEN** - Jira personal access token for API access
-- **GCP_SA_FILE** - Google Cloud Platform service account credentials file path for Google Sheets API access
+- **GCP_SA_FILE** - Google Cloud Platform service account credentials file path (optional for new releases using StateBox; required for old releases with Google Sheets)
 - **SLACK_BOT_TOKEN** - Slack bot token for sending notifications
 - **JENKINS_USER** - Jenkins username (email)
 - **JENKINS_TOKEN** - Jenkins API token
@@ -342,18 +342,22 @@ oar -r <release-version> [OPTIONS] COMMAND [ARGS]
 
 **Command:** `oar -r <release> create-test-report`
 
-**Purpose:** Creates a comprehensive test report in Google Sheets for a new z-stream release.
+**Purpose:** Initializes release state tracking for a new z-stream release.
 
 **What it does:**
-- Creates a new Google Sheets document
-- Populates advisory information
-- Lists candidate nightly builds
-- Includes ART JIRA ticket references
-- Generates QE checklist
-- Lists ONQA bugs
-- Sets up tracking structure for the release
+- **For new releases:** Creates StateBox at `_releases/{y-stream}/statebox/{release}.yaml` with:
+  - Metadata from ConfigStore (advisories, JIRA ticket, candidate builds, shipment MR)
+  - Initial task status (all "Not Started")
+  - Empty issues list for tracking blocking problems
+  - Sends Slack notification to QE release team
+- **For old releases:** Detects existing Google Sheets test report (backward compatibility)
+- Automatically determines whether to use StateBox or Google Sheets
 
-**Output:** Returns the URL of the newly created test report spreadsheet.
+**Output:**
+- New releases: StateBox GitHub URL
+- Old releases: Google Sheets URL (if exists)
+
+**Note:** StateBox is the primary system for new releases. Google Sheets only used for legacy releases created before StateBox migration.
 
 ---
 
@@ -379,6 +383,8 @@ oar -r <release-version> [OPTIONS] COMMAND [ARGS]
 
 **Purpose:** Synchronizes bug status between Bugzilla/Jira and the test report, and sends notifications.
 
+**⚠️ DEPRECATED:** This command is not needed in Konflux release flow. Kept for backward compatibility with Errata flow releases only.
+
 **What it does:**
 - Fetches latest bug status from Bugzilla/Jira
 - Updates test report with current bug states (Verified/Closed)
@@ -386,7 +392,9 @@ oar -r <release-version> [OPTIONS] COMMAND [ARGS]
 - Sends Slack notifications to QA Contacts for bugs needing attention
 - Should be run multiple times throughout the release cycle
 
-**Use Case:** Run periodically to keep bug tracking up-to-date.
+**Use Case:** Run periodically to keep bug tracking up-to-date (Errata flow only).
+
+**Note:** Will raise error if executed for Konflux flow releases.
 
 ---
 
@@ -565,11 +573,20 @@ The ConfigStore class manages release-specific configuration:
 
 ### Task Status Tracking
 
-Every OAR command integrates with the Google Sheets test report:
-- Task status updated to "In Progress" when execution starts
-- Task status updated to "Pass" or "Fail" when execution completes
-- If any task fails, "Overall Status" is updated to "Red"
-- Provides real-time visibility into release progress
+**StateBox (Primary for New Releases):**
+All OAR commands use `util.log_task_status()` to output status markers:
+- Logs format: `"task [{Display Name}] status is changed to [{Status}]"`
+- `cli_result_callback` automatically parses last line of command output
+- Auto-updates StateBox task status without explicit StateBox calls
+- Task states: "Not Started" → "In Progress" → "Pass" / "Fail"
+- Task results and timestamps recorded in StateBox YAML
+- Issues tracked with blocker/non-blocker classification
+
+**Google Sheets (Legacy Releases Only):**
+- Old releases use `WorksheetManager` for test report tracking
+- Task status updated via explicit `report.update_task_status()` calls
+- Overall status tracked as "Green" / "Red"
+- Provides backward compatibility for releases before StateBox migration
 
 ### Integration with Automated Agents
 
@@ -707,7 +724,8 @@ All core modules follow a consistent pattern:
 - Message template system for consistent formatting
 
 **Notification Types:**
-- New test report creation
+- New StateBox creation (new releases)
+- New test report creation (legacy releases)
 - Ownership changes (advisories/subtasks)
 - Bug verification requests
 - High severity bug confirmations
@@ -718,7 +736,8 @@ All core modules follow a consistent pattern:
 - Release approval completion
 
 **Key Methods:**
-- `share_new_report()` - Notify about new test report
+- `share_new_statebox()` - Notify about new StateBox creation (new releases)
+- `share_new_report()` - Notify about new test report (legacy releases)
 - `share_bugs_to_be_verified()` - Remind QA contacts to verify bugs
 - `share_high_severity_bugs()` - Confirm dropping high-severity bugs
 - `share_new_cve_tracker_bugs()` - Alert about missing CVE trackers
@@ -922,6 +941,7 @@ External APIs:
 
 Custom exception types in `oar/core/exceptions.py`:
 - `AdvisoryException` - Errata Tool errors
+- `StateBoxException` - StateBox YAML state management errors
 - `WorksheetException` - Google Sheets errors
 - `JiraException` / `JiraUnauthorizedException` - Jira errors
 - `NotificationException` - Slack/email errors

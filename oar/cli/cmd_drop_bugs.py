@@ -6,6 +6,7 @@ from oar.core.const import *
 from oar.core.notification import NotificationManager
 from oar.core.operators import BugOperator
 from oar.core.worksheet import WorksheetManager
+from oar.core import util
 
 logger = logging.getLogger(__name__)
 
@@ -18,16 +19,25 @@ def drop_bugs(ctx):
 
     If new pre-merge verification method is active, we only pick up verified bugs to shipment resource
     QE leads don't have to drop bugs
+
+    NOTE: This command is not needed in Konflux release flow.
+    Kept for backward compatibility with Errata flow releases.
     """
     # get config store from context
     cs = ctx.obj["cs"]
+
+    # Prevent execution in Konflux flow
+    if cs.is_konflux_flow():
+        raise click.UsageError("This command is not supported in Konflux release flow. Skipping.")
+
     try:
+        # Log in-progress status for cli_result_callback parsing
+        util.log_task_status(TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
+
         # get existing report
         report = WorksheetManager(cs).get_test_report()
         # init bug operator
         operator = BugOperator(cs)
-        # update task status to in progress
-        report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_INPROGRESS)
         # check doc and product security approval advisories
         # TODO: need to confirm how to collabrate with doc and prodsec team
         approved_doc_ads, approved_prodsec_ads = operator._am.get_doc_prodsec_approved_ads()
@@ -56,9 +66,10 @@ def drop_bugs(ctx):
                 f"request doc and prodsec advisories are: {requested_doc_ads} and {requested_prodsec_ads}")
         nm.share_doc_prodsec_approval_result(
             requested_doc_ads, requested_prodsec_ads)
-        report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_PASS)
-        report.update_task_status(LABEL_TASK_BUGS_TO_VERIFY, TASK_STATUS_PASS)
+        # Log pass status for cli_result_callback parsing
+        util.log_task_status(TASK_DROP_BUGS, TASK_STATUS_PASS)
     except Exception as e:
         logger.exception("Drop bugs from advisories failed")
-        report.update_task_status(LABEL_TASK_DROP_BUGS, TASK_STATUS_FAIL)
+        # Log fail status for cli_result_callback parsing
+        util.log_task_status(TASK_DROP_BUGS, TASK_STATUS_FAIL)
         raise

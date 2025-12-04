@@ -5,8 +5,9 @@ from oar.core.const import *
 from oar.core.exceptions import JenkinsException
 from oar.core.jenkins import JenkinsHelper
 from oar.core.notification import NotificationManager
-from oar.core.worksheet import WorksheetManager
 from oar.core.operators import ImageHealthOperator
+from oar.core.statebox import StateBox
+from oar.core import util
 
 logger = logging.getLogger(__name__)
 
@@ -15,17 +16,18 @@ class ImageConsistencyChecker:
         self.cs = cs
         self.jh = JenkinsHelper(cs)
         self.nm = NotificationManager(cs)
-        self.report = WorksheetManager(cs).get_test_report()
         self.io = ImageHealthOperator(cs)
+        self.statebox = StateBox(cs)
 
     def trigger_job(self, for_nightly):
         """
         Trigger image consistency check job if needed
-        
+
         Args:
             for_nightly (bool): Whether to use nightly build or stable build
         """
-        task_status = self.report.get_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST)
+        # Check task status from StateBox
+        task_status = self.statebox.get_task_status(TASK_IMAGE_CONSISTENCY_CHECK)
         if task_status in [TASK_STATUS_PASS, TASK_STATUS_INPROGRESS]:
             logger.info(f"Image consistency check already {task_status}, skipping")
             return
@@ -35,14 +37,18 @@ class ImageConsistencyChecker:
             return
 
         try:
+            # Log in-progress status for cli_result_callback parsing
+            util.log_task_status(TASK_IMAGE_CONSISTENCY_CHECK, TASK_STATUS_INPROGRESS)
+
             pull_spec = self._get_pull_spec(for_nightly)
             build_info = self.jh.call_image_consistency_job(pull_spec)
             logger.info(f"Triggered image consistency check job: {build_info}")
-            
+
             self.nm.share_jenkins_build_url(JENKINS_JOB_IMAGE_CONSISTENCY_CHECK, build_info)
-            self.report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, TASK_STATUS_INPROGRESS)
         except JenkinsException as je:
             logger.error(f"Failed to trigger image-consistency-check job: {str(je)}")
+            # Log fail status for cli_result_callback parsing
+            util.log_task_status(TASK_IMAGE_CONSISTENCY_CHECK, TASK_STATUS_FAIL)
             raise
 
     def _get_pull_spec(self, for_nightly):
@@ -67,7 +73,8 @@ class ImageConsistencyChecker:
         else:
             task_status = TASK_STATUS_FAIL
 
-        self.report.update_task_status(LABEL_TASK_IMAGE_CONSISTENCY_TEST, task_status)
+        # Log status for cli_result_callback parsing
+        util.log_task_status(TASK_IMAGE_CONSISTENCY_CHECK, task_status)
 
 @click.command()
 @click.pass_context
