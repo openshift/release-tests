@@ -18,7 +18,7 @@ from oar.cli.cmd_stage_testing import stage_testing
 from oar.cli.cmd_take_ownership import take_ownership
 from oar.cli.cmd_update_bug_list import update_bug_list
 from oar.core.configstore import ConfigStore
-from oar.core.const import CONTEXT_SETTINGS, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS
+from oar.core.const import CONTEXT_SETTINGS, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS, WORKFLOW_TASK_NAMES
 from oar.core.log_capture import capture_logs, merge_output
 from oar.core.statebox import StateBox
 from oar.core.exceptions import StateBoxException
@@ -84,6 +84,11 @@ def cli_result_callback(result, release, debug):
     # Get command name from invoked subcommand
     command_name = ctx.invoked_subcommand
     if not command_name:
+        return
+
+    # Skip StateBox update if command is not a workflow task
+    # Only tasks in WORKFLOW_TASK_NAMES should be tracked in StateBox
+    if command_name not in WORKFLOW_TASK_NAMES:
         return
 
     # Get captured logs from buffer (set by __main__.py or MCP server)
