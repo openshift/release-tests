@@ -5,14 +5,13 @@ import click
 from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.operators import NotificationOperator, ReleaseOwnershipOperator
-from oar.core.util import is_valid_email
-from oar.core.worksheet import WorksheetManager
+from oar.core import util
 
 logger = logging.getLogger(__name__)
 
 def validate_email_for_cli(ctx, param, value):
-    """Validate email address using util.validate_email and raise click exception if invalid"""
-    if not is_valid_email(value):
+    """Validate email address using util.is_valid_email and raise click exception if invalid"""
+    if not util.is_valid_email(value):
         raise click.BadParameter(f"{value} is not a valid email")
     return value
 
@@ -35,11 +34,9 @@ def take_ownership(ctx, email):
     cs.set_owner(email)
 
     try:
-        # get existing report
-        wm = WorksheetManager(cs)
-        report = wm.get_test_report()
-        # update task status to in progress
-        report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_INPROGRESS)
+        # Log in-progress status for cli_result_callback parsing
+        util.log_task_status(TASK_TAKE_OWNERSHIP, TASK_STATUS_INPROGRESS)
+
         # update ownership across advisories and shipments
         ro = ReleaseOwnershipOperator(cs)
         updated_ads, abnormal_ads = ro.update_owners(email)
@@ -53,9 +50,11 @@ def take_ownership(ctx, email):
             updated_subtasks,
             email
         )
-        # update task status to pass
-        report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_PASS)
+
+        # Log pass status for cli_result_callback parsing
+        util.log_task_status(TASK_TAKE_OWNERSHIP, TASK_STATUS_PASS)
     except Exception as e:
         logger.exception("take ownership of advisory and jira subtasks failed")
-        report.update_task_status(LABEL_TASK_OWNERSHIP, TASK_STATUS_FAIL)
+        # Log fail status for cli_result_callback parsing
+        util.log_task_status(TASK_TAKE_OWNERSHIP, TASK_STATUS_FAIL)
         raise

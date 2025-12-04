@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from subprocess import CalledProcessError
 from requests.exceptions import RequestException
 
-from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT
+from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT, TASK_DISPLAY_NAMES
 
 logger = logging.getLogger(__name__)
 
@@ -52,6 +52,25 @@ def get_current_timestamp() -> str:
         Timestamp string in LOG_DATE_FORMAT (e.g., "2025-11-28T06:19:44Z")
     """
     return datetime.now(timezone.utc).strftime(LOG_DATE_FORMAT)
+
+def log_task_status(task: str, status: str):
+    """
+    Log task status change in format expected by cli_result_callback.
+
+    The cli_result_callback parses the last line of command output looking for
+    status markers ([Pass], [Fail], [In Progress]) to automatically update StateBox.
+
+    Args:
+        task: Task constant (e.g., TASK_CHECK_CVE_TRACKER_BUG from const.py)
+        status: Task status - must be one of: "Pass", "Fail", "In Progress"
+
+    Example:
+        >>> from oar.core.const import TASK_CHECK_CVE_TRACKER_BUG, TASK_STATUS_PASS
+        >>> log_task_status(TASK_CHECK_CVE_TRACKER_BUG, TASK_STATUS_PASS)
+        # Logs: "task [Check CVE Tracker Bug] status is changed to [Pass]"
+    """
+    display_name = TASK_DISPLAY_NAMES.get(task, task)  # Fallback to task itself if not in mapping
+    logger.info(f"task [{display_name}] status is changed to [{status}]")
 
 def get_release_key(version):
     version_info = Version.parse(version)

@@ -96,6 +96,34 @@ TASK_STATUS_PASS = "Pass"
 TASK_STATUS_FAIL = "Fail"
 TASK_STATUS_NOT_STARTED = "Not Started"
 
+# Task constants (CLI command names)
+TASK_CREATE_TEST_REPORT = "create-test-report"
+TASK_TAKE_OWNERSHIP = "take-ownership"
+TASK_UPDATE_BUG_LIST = "update-bug-list"
+TASK_IMAGE_CONSISTENCY_CHECK = "image-consistency-check"
+TASK_CHECK_GREENWAVE_CVP_TESTS = "check-greenwave-cvp-tests"
+TASK_CHECK_CVE_TRACKER_BUG = "check-cve-tracker-bug"
+TASK_PUSH_TO_CDN_STAGING = "push-to-cdn-staging"
+TASK_STAGE_TESTING = "stage-testing"
+TASK_IMAGE_SIGNED_CHECK = "image-signed-check"
+TASK_DROP_BUGS = "drop-bugs"
+TASK_CHANGE_ADVISORY_STATUS = "change-advisory-status"
+
+# Task to human-readable display name mapping
+TASK_DISPLAY_NAMES = {
+    TASK_CREATE_TEST_REPORT: "Create Test Report",
+    TASK_TAKE_OWNERSHIP: "Take Ownership",
+    TASK_UPDATE_BUG_LIST: "Update Bug List",
+    TASK_IMAGE_CONSISTENCY_CHECK: "Image Consistency Check",
+    TASK_CHECK_GREENWAVE_CVP_TESTS: "Check Greenwave CVP Tests",
+    TASK_CHECK_CVE_TRACKER_BUG: "Check CVE Tracker Bug",
+    TASK_PUSH_TO_CDN_STAGING: "Push to CDN Staging",
+    TASK_STAGE_TESTING: "Stage Testing",
+    TASK_IMAGE_SIGNED_CHECK: "Image Signed Check",
+    TASK_DROP_BUGS: "Drop Bugs",
+    TASK_CHANGE_ADVISORY_STATUS: "Change Advisory Status",
+}
+
 # env variables
 ENV_VAR_OAR_JWK = "OAR_JWK"
 ENV_VAR_JIRA_TOKEN = "JIRA_TOKEN"

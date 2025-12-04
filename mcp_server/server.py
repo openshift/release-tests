@@ -684,15 +684,18 @@ async def oar_stage_testing(release: str, build_number: str = None) -> str:
 @mcp.tool()
 async def oar_create_test_report(release: str) -> str:
     """
-    Create new Google Sheets test report for z-stream release.
+    Create StateBox for new z-stream release (or detect existing Google Sheets for old releases).
 
-    ⚠️ WRITE OPERATION: Creates new Google Sheet and sends notifications.
+    ⚠️ WRITE OPERATION: Creates StateBox in GitHub and sends notifications.
+
+    For new releases: Creates StateBox at _releases/{y-stream}/statebox/{release}.yaml
+    For old releases: Detects existing Google Sheets (backward compatibility)
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
 
     Returns:
-        URL of created test report
+        StateBox creation confirmation or existing test report URL
     """
     result = await invoke_oar_command_async(release, "create-test-report", [])
     return format_result(result)
@@ -703,7 +706,9 @@ async def oar_take_ownership(release: str, email: str) -> str:
     """
     Assign release ownership to a QE team member.
 
-    ⚠️ WRITE OPERATION: Updates Google Sheets and sends notifications.
+    ⚠️ WRITE OPERATION: Updates StateBox and sends notifications.
+
+    Task status is automatically tracked in StateBox via cli_result_callback.
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
@@ -722,6 +727,10 @@ async def oar_update_bug_list(release: str, notify: bool = True) -> str:
     Synchronize bug list from advisory to Jira and Google Sheets.
 
     ⚠️ WRITE OPERATION: Updates Jira issues and Google Sheets.
+
+    NOTE: This command is not needed in Konflux release flow.
+    Kept for backward compatibility with Errata flow releases.
+    Task status is automatically tracked in StateBox via cli_result_callback.
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")

@@ -9,7 +9,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Key Technologies:**
 - Python 3.11+
 - Click framework (CLI)
-- Google Sheets API (test report tracking)
+- StateBox (GitHub-backed YAML for release state tracking)
+- Google Sheets API (backward compatibility for old releases)
 - Errata Tool, Jira, GitLab, Jenkins, Slack integrations
 - Prow/Gangway (CI test orchestration)
 - Kerberos authentication (for Red Hat internal services)
@@ -148,7 +149,8 @@ The OAR system is built on a layered architecture where all modules depend on `C
 **External Service Integrations:**
 - `advisory.py` - Errata Tool interactions (requires Kerberos)
 - `jira.py` - Jira API client for issue tracking
-- `worksheet.py` - Google Sheets test reports (requires GCP service account)
+- `statebox.py` - GitHub-backed YAML state management (primary for new releases)
+- `worksheet.py` - Google Sheets test reports (backward compatibility for old releases)
 - `notification.py` - Slack notifications
 - `shipment.py` - GitLab MR management for Konflux workflow
 - `jenkins.py` - Jenkins job triggering and monitoring
@@ -251,7 +253,7 @@ python3 server.py
 **Critical for OAR CLI:**
 - `OAR_JWK` - Encryption key for config_store.json (from Bitwarden: *openshift-qe-trt-env-vars*)
 - `JIRA_TOKEN` - Jira personal access token
-- `GCP_SA_FILE` - Google Cloud service account credentials file path
+- `GCP_SA_FILE` - Google Cloud service account credentials file path (optional for new releases using StateBox; required for old releases with Google Sheets)
 - `SLACK_BOT_TOKEN` - Slack bot token
 - `JENKINS_USER` / `JENKINS_TOKEN` - Jenkins credentials
 - `GITLAB_TOKEN` - GitLab personal access token
@@ -324,12 +326,25 @@ Rarely needed since ConfigStore data is immutable. Only required if ART updates 
 
 **Note:** Caching is **only used in MCP server**, not in CLI commands (which are short-lived processes where caching provides no benefit).
 
-### Test Report Workflow
+### StateBox and Release State Tracking
 
-Every OAR command integrates with Google Sheets test report:
-- Task status auto-updated: "In Progress" → "Pass" / "Fail"
-- Overall status tracked: "Green" / "Red"
-- Provides real-time visibility into release progress
+**StateBox** is the primary state management system for new releases:
+- GitHub-backed YAML storage at `_releases/{y-stream}/statebox/{release}.yaml`
+- Tracks task status: "Not Started" → "In Progress" → "Pass" / "Fail"
+- Records task execution results and timestamps
+- Manages blocking/non-blocking issues with resolution tracking
+- Automatic updates via `cli_result_callback` parsing command output
+
+**Backward Compatibility:**
+- Old releases (before StateBox migration) use Google Sheets test reports
+- Commands automatically detect and use appropriate system
+- Google Sheets still supported via `WorksheetManager` for legacy releases
+
+**Task Status Logging:**
+All CLI commands use `util.log_task_status()` to output status markers:
+- Logs format: `"task [{Display Name}] status is changed to [{Status}]"`
+- `cli_result_callback` parses last line to auto-update StateBox
+- Ensures consistent status tracking without explicit StateBox calls
 
 ### State Persistence
 
@@ -447,8 +462,9 @@ These are installed automatically from `openshift-eng/art-tools` repository.
 1. Commands are defined in `oar/cli/`
 2. Business logic should be in `oar/core/` modules
 3. Complex multi-module operations belong in `oar/core/operators.py`
-4. Always update task status in Google Sheets test report
+4. Always use `util.log_task_status()` for status tracking (auto-updates StateBox via cli_result_callback)
 5. Add proper exception handling using custom exceptions from `oar/core/exceptions.py`
+6. Use StateBox for explicit issue tracking when tasks detect blocking problems
 
 **When adding new integrations:**
 1. Create new module in `oar/core/`

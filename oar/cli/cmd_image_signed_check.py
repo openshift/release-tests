@@ -7,7 +7,7 @@ from requests.exceptions import InvalidJSONError
 from requests.exceptions import RequestException
 
 from oar.core.const import *
-from oar.core.worksheet import WorksheetManager
+from oar.core import util
 
 logger = logging.getLogger(__name__)
 
@@ -56,36 +56,29 @@ def image_signed_check(ctx):
     Check payload image is well signed
     """
     cs = ctx.obj["cs"]
-    report = WorksheetManager(cs).get_test_report()
-    image_signed_check_result = report.get_task_status(
-        LABEL_TASK_PAYLOAD_IMAGE_VERIFY)
-    if image_signed_check_result == TASK_STATUS_PASS:
-        logger.info(
-            "image signed check already pass, no need to trigger again")
-    else:
-        report.update_task_status(
-            LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_INPROGRESS
+
+    try:
+        # Log in-progress status for cli_result_callback parsing
+        util.log_task_status(TASK_IMAGE_SIGNED_CHECK, TASK_STATUS_INPROGRESS)
+
+        release_url = (
+            cs.get_release_url()
+            + "api/v1/releasestream/4-stable/release/"
+            + cs.release
         )
-        try:
-            release_url = (
-                cs.get_release_url()
-                + "api/v1/releasestream/4-stable/release/"
-                + cs.release
-            )
-            digest_sha = get_image_digest(release_url)
-            reformatted_digest = digest_sha.replace(":", "=")
-            # 2. query the mirror location
-            mirror_url = f"{cs.get_signature_url()}{reformatted_digest}/signature-1"
-            logger.info(f"Comparing digest from url: {mirror_url}")
-            rest = requests.get(mirror_url)
-            rest.raise_for_status()
-            if rest.status_code == 200:
-                logger.info("Signature check PASSED")
-                report.update_task_status(
-                    LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_PASS
-                )
-        except RequestException:
-            logger.exception("Visit release/mirror url failed")
-            report.update_task_status(
-                LABEL_TASK_PAYLOAD_IMAGE_VERIFY, TASK_STATUS_FAIL)
-            raise
+        digest_sha = get_image_digest(release_url)
+        reformatted_digest = digest_sha.replace(":", "=")
+        # 2. query the mirror location
+        mirror_url = f"{cs.get_signature_url()}{reformatted_digest}/signature-1"
+        logger.info(f"Comparing digest from url: {mirror_url}")
+        rest = requests.get(mirror_url)
+        rest.raise_for_status()
+        if rest.status_code == 200:
+            logger.info("Signature check PASSED")
+            # Log pass status for cli_result_callback parsing
+            util.log_task_status(TASK_IMAGE_SIGNED_CHECK, TASK_STATUS_PASS)
+    except RequestException:
+        logger.exception("Visit release/mirror url failed")
+        # Log fail status for cli_result_callback parsing
+        util.log_task_status(TASK_IMAGE_SIGNED_CHECK, TASK_STATUS_FAIL)
+        raise

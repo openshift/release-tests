@@ -59,6 +59,25 @@ class NotificationManager:
         except Exception as e:
             raise NotificationException("share new report failed") from e
 
+    def share_new_statebox(self, statebox_url: str, release: str):
+        """
+        Send Slack message for newly created StateBox
+
+        Args:
+            statebox_url (str): GitHub URL to StateBox file
+            release (str): Release version
+
+        Raises:
+            NotificationException: error when share this info
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_new_statebox(statebox_url, release)
+            self.sc.post_message(
+                self.cs.get_slack_channel_from_contact("qe-release"), slack_msg
+            )
+        except Exception as e:
+            raise NotificationException("share new statebox failed") from e
+
     def share_ownership_change_result(
         self, updated_ads, abnormal_ads, updated_subtasks, new_owner
     ):
@@ -602,6 +621,25 @@ class MessageHelper:
         )
         linked_text = self._to_link(report.get_url(), "test report")
         return f"Hello {gid}, new {linked_text} is generated for {self.cs.release}"
+
+    def get_slack_message_for_new_statebox(self, statebox_url: str, release: str):
+        """
+        Generate Slack message for newly created StateBox
+
+        Args:
+            statebox_url (str): GitHub URL to StateBox file
+            release (str): Release version
+
+        Returns:
+            str: Slack message for new StateBox
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(release)
+            )
+        )
+        linked_text = self._to_link(statebox_url, "StateBox")
+        return f"Hello {gid}, new {linked_text} is created for {release} release tracking"
 
     def get_slack_message_for_ownership_change(
         self, updated_ads, abnormal_ads, updated_subtasks, new_owner
