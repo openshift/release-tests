@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.30
 created_at: '2025-12-05T08:02:34Z'
-updated_at: '2025-12-05T13:49:11Z'
+updated_at: '2025-12-05T14:02:08Z'
 metadata:
   jira_ticket: ART-14312
   advisory_ids:
@@ -72,4 +72,12 @@ tasks:
     2025-12-05T08:49:09Z: INFO: check stage job status according to job id: 1456
     2025-12-05T08:49:10Z: INFO: build status of zstreams/Stage-Pipeline/1456 is SUCCESS
     2025-12-05T08:49:10Z: INFO: task [Stage Testing] status is changed to [Pass]
-issues: []
+issues:
+- issue: QE job controller needs to renew API token for triggering Prow job runs
+  reported_at: '2025-12-05T14:02:08Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-candidate-build
+  - analyze-promoted-build
