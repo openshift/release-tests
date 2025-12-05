@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-05T13:12:32Z'
+updated_at: '2025-12-05T13:14:03Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -27,6 +27,17 @@ tasks:
     2025-12-05T14:12:25Z: INFO: Added QE release lead comment to MR 268
     2025-12-05T14:12:31Z: INFO: sent slack message to <#team-qe-release>
     2025-12-05T14:12:31Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2025-12-05T14:12:59Z'
+  completed_at: '2025-12-05T14:14:02Z'
+  result: |-
+    2025-12-05T14:12:59Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2025-12-05T14:13:02Z: INFO: Initialized StateBox for release 4.19.21 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.21.yaml
+    2025-12-05T14:13:02Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2025-12-05T14:13:59Z: INFO: Processing MR 268 for Jira issues
+    2025-12-05T14:14:02Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2025-12-05T14:14:02Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues:
 - issue: 'take-ownership failed: ConfigStore shipment data missing ''url'' key - shipment
     MR configuration issue'
