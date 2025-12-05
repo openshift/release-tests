@@ -5,6 +5,7 @@ import click
 from oar.core.const import *
 from oar.core.jira import JiraManager
 from oar.core.operators import NotificationOperator, ReleaseOwnershipOperator
+from oar.core.statebox import StateBox
 from oar.core import util
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,11 @@ def take_ownership(ctx, email):
         # update ownership across advisories and shipments
         ro = ReleaseOwnershipOperator(cs)
         updated_ads, abnormal_ads = ro.update_owners(email)
+
+        # Create StateBox blocker issue if abnormal advisories detected
+        if abnormal_ads:
+            _create_abnormal_advisory_blocker(cs, abnormal_ads)
+
         # update assignee of QE subtasks
         updated_subtasks = JiraManager(cs).change_assignee_of_qe_subtasks()
         # send notification about ownership change and shipment MRs
@@ -58,3 +64,36 @@ def take_ownership(ctx, email):
         # Log fail status for cli_result_callback parsing
         util.log_task_status(TASK_TAKE_OWNERSHIP, TASK_STATUS_FAIL)
         raise
+
+
+def _create_abnormal_advisory_blocker(cs, abnormal_ads: list) -> None:
+    """Create StateBox blocker issue for abnormal advisory states
+
+    Args:
+        cs: ConfigStore instance
+        abnormal_ads (list): List of advisory IDs with abnormal states
+    """
+    try:
+        statebox = StateBox(cs)
+
+        # Check if StateBox exists (only create blocker for new releases using StateBox)
+        if not statebox.exists():
+            logger.info("StateBox does not exist, skipping blocker issue creation")
+            return
+
+        # Create issue description with advisory IDs
+        advisory_ids = ", ".join(str(ad_id) for ad_id in abnormal_ads)
+        issue_description = f"Advisories in abnormal state (NEW_FILES instead of QE): {advisory_ids}"
+
+        # Add blocker issue linked to push-to-cdn-staging task
+        statebox.add_issue(
+            issue=issue_description,
+            blocker=True,
+            related_tasks=[TASK_PUSH_TO_CDN_STAGING]
+        )
+
+        logger.info(f"Created StateBox blocker issue for abnormal advisories: {issue_description}")
+
+    except Exception as e:
+        # Log error but don't fail the entire operation
+        logger.error(f"Failed to create StateBox blocker issue: {str(e)}")
