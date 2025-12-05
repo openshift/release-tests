@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-05T14:39:57Z'
+updated_at: '2025-12-05T14:41:51Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -49,6 +49,17 @@ tasks:
     2025-12-05T09:39:56Z: INFO: checking push job status for advisory 156937 ...
     2025-12-05T09:39:56Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-05T09:39:56Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2025-12-05T09:41:47Z'
+  completed_at: null
+  result: |-
+    2025-12-05T09:41:47Z: INFO: Initialized StateBox for release 4.19.21 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.21.yaml
+    2025-12-05T09:41:48Z: INFO: Loaded state from _releases/4.19/statebox/4.19.21.yaml (SHA: ad7c20dc)
+    2025-12-05T09:41:48Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2025-12-05T09:41:48Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.19.21-x86_64
+    2025-12-05T09:41:48Z: INFO: Triggered image consistency check job: a new job triggered by you is pending, you can check queue item link: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/queue/item/1750/api/json
+    2025-12-05T09:41:50Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'take-ownership failed: ConfigStore shipment data missing ''url'' key - shipment
     MR configuration issue'
