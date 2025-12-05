@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-05T13:14:03Z'
+updated_at: '2025-12-05T13:16:02Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -38,6 +38,21 @@ tasks:
     2025-12-05T14:13:59Z: INFO: Processing MR 268 for Jira issues
     2025-12-05T14:14:02Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2025-12-05T14:14:02Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2025-12-05T14:15:45Z'
+  completed_at: null
+  result: |-
+    2025-12-05T14:15:45Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2025-12-05T14:15:46Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2025-12-05T14:15:55Z: INFO: checking push job status for advisory 156936 ...
+    2025-12-05T14:15:55Z: INFO: no push job found for advisory 156936
+    2025-12-05T14:15:55Z: INFO: advisory 156936 has blocking advisory []
+    2025-12-05T14:15:56Z: INFO: push job for advisory 156936 is triggered
+    2025-12-05T14:15:57Z: INFO: checking push job status for advisory 156937 ...
+    2025-12-05T14:15:57Z: INFO: no push job found for advisory 156937
+    2025-12-05T14:15:57Z: INFO: advisory 156937 has blocking advisory []
+    2025-12-05T14:16:01Z: INFO: push job for advisory 156937 is triggered
 issues:
 - issue: 'take-ownership failed: ConfigStore shipment data missing ''url'' key - shipment
     MR configuration issue'
