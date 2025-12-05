@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-05T14:41:51Z'
+updated_at: '2025-12-05T14:42:32Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -60,6 +60,66 @@ tasks:
     2025-12-05T09:41:48Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.19.21-x86_64
     2025-12-05T09:41:48Z: INFO: Triggered image consistency check job: a new job triggered by you is pending, you can check queue item link: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/queue/item/1750/api/json
     2025-12-05T09:41:50Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: Fail
+  started_at: '2025-12-05T09:42:29Z'
+  completed_at: '2025-12-05T09:42:31Z'
+  result: "2025-12-05T09:42:29Z: INFO: Initialized StateBox for release 4.19.21 at\
+    \ openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.21.yaml\n2025-12-05T09:42:29Z:\
+    \ INFO: job id is not set, will trigger stage testing\n2025-12-05T09:42:29Z: INFO:\
+    \ Loaded state from _releases/4.19/statebox/4.19.21.yaml (SHA: e145f480)\n2025-12-05T09:42:30Z:\
+    \ INFO: Found pipeline 13834834 with status failed\n2025-12-05T09:42:31Z: INFO:\
+    \ Stage 'stage-release-triggers' status: {'status': 'failed', 'job': <ProjectPipelineBridge\
+    \ id:44271180>}\n2025-12-05T09:42:31Z: ERROR: Stage release failed with status\
+    \ failed\n2025-12-05T09:42:31Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
+    \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
+    \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2025-12-05T07:02:27.000+00:00',\n\
+    \            'committed_date': '2025-12-05T07:02:27.000+00:00',\n            'committer_email':\
+    \ '[EMAIL_REDACTED]',\n            'committer_name': 'art-bot-jenkins',\n    \
+    \        'created_at': '2025-12-05T07:02:27.000+00:00',\n            'extended_trailers':\
+    \ {},\n            'id': '6a3b9252d11fc26bcb2b67b4357441c2101fb1f1',\n       \
+    \     'message': \"Merge branch 'prepare-shipment-4.19.21-20251205032955' \"\n\
+    \                       \"into 'main'\\n\"\n                       '\\n'\n   \
+    \                    'Shipment for 4.19.21 (ship date: 2025-Dec-10)\\n'\n    \
+    \                   '\\n'\n                       'See merge request '\n     \
+    \                  'hybrid-platforms/art/ocp-shipment-data!268',\n           \
+    \ 'parent_ids': ['06347119c292e732f003a5f8dcd815157420fdcb',\n               \
+    \            '302a419b3a7f8a184f4cf1a55220ced58527483a'],\n            'short_id':\
+    \ '6a3b9252',\n            'title': \"Merge branch 'prepare-shipment-4.19.21-20251205032955'\
+    \ \"\n                     \"into 'main'\",\n            'trailers': {},\n   \
+    \         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/commit/6a3b9252d11fc26bcb2b67b4357441c2101fb1f1'},\n\
+    \ 'coverage': None,\n 'created_at': '2025-12-05T13:18:24.044Z',\n 'downstream_pipeline':\
+    \ {'created_at': '2025-12-05T13:18:25.318Z',\n                         'id': 13838009,\n\
+    \                         'iid': 2664,\n                         'project_id':\
+    \ 116177,\n                         'ref': 'refs/merge-requests/268/merge',\n\
+    \                         'sha': '6a3b9252d11fc26bcb2b67b4357441c2101fb1f1',\n\
+    \                         'source': 'parent_pipeline',\n                     \
+    \    'status': 'failed',\n                         'updated_at': '2025-12-05T13:31:37.217Z',\n\
+    \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13838009'},\n\
+    \ 'duration': 792.865607,\n 'erased_at': None,\n 'failure_reason': 'unknown_failure',\n\
+    \ 'finished_at': '2025-12-05T13:31:37.447Z',\n 'id': 44271180,\n 'name': 'stage-job',\n\
+    \ 'pipeline': {'created_at': '2025-12-05T07:02:28.596Z',\n              'id':\
+    \ 13834834,\n              'iid': 2654,\n              'project_id': 116177,\n\
+    \              'ref': 'refs/merge-requests/268/merge',\n              'sha': '6a3b9252d11fc26bcb2b67b4357441c2101fb1f1',\n\
+    \              'source': 'merge_request_event',\n              'status': 'failed',\n\
+    \              'updated_at': '2025-12-05T13:31:37.571Z',\n              'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13834834'},\n\
+    \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': 0.346541,\n\
+    \ 'ref': 'refs/merge-requests/268/merge',\n 'stage': 'stage-release-triggers',\n\
+    \ 'started_at': '2025-12-05T13:18:24.581Z',\n 'status': 'failed',\n 'tag': False,\n\
+    \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/eea877851cf59c77d47ad7384964a44e5e53597b1318da0e64fcca5f74ed17d4?s=80&d=identicon',\n\
+    \          'bio': '',\n          'bot': False,\n          'created_at': '2021-01-28T13:32:40.985Z',\n\
+    \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
+    \          'github': '',\n          'id': 9568,\n          'job_title': '',\n\
+    \          'linkedin': '',\n          'local_time': '2:43 PM',\n          'location':\
+    \ '',\n          'locked': False,\n          'name': 'Luis Garcia Acosta',\n \
+    \         'organization': '',\n          'pronouns': None,\n          'public_email':\
+    \ '[EMAIL_REDACTED]',\n          'state': 'active',\n          'twitter': '',\n\
+    \          'username': 'lgarciaa',\n          'web_url': 'https://gitlab.cee.redhat.com/lgarciaa',\n\
+    \          'website_url': '',\n          'work_information': None},\n 'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/44271180'}\n\
+    2025-12-05T09:42:31Z: INFO: stage release pipeline is not success, will not trigger\
+    \ stage test"
 issues:
 - issue: 'take-ownership failed: ConfigStore shipment data missing ''url'' key - shipment
     MR configuration issue'
