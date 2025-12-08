@@ -621,7 +621,7 @@ class NotificationService:
 
         base_filter = (
             "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
-            "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z, 4.20.z, 4.21.z)"
+            "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z, 4.20.z)"
         )
 
         date_suffix = f" AND status changed to ON_QA after {from_date.strftime('%Y-%m-%d')}" if from_date else ""
