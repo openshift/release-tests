@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.60
 created_at: '2025-12-05T06:01:24Z'
-updated_at: '2025-12-08T07:12:58Z'
+updated_at: '2025-12-08T08:33:43Z'
 metadata:
   jira_ticket: ART-14315
   advisory_ids:
@@ -53,19 +53,16 @@ tasks:
     2025-12-05T10:18:47Z: INFO: Added image health summary to MR 265
     2025-12-05T10:18:47Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2025-12-08T02:12:13Z'
-  completed_at: null
+  completed_at: '2025-12-08T03:33:42Z'
   result: |-
-    2025-12-08T02:12:13Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2025-12-08T02:12:55Z: INFO: checking push job status for advisory 156907 ...
-    2025-12-08T02:12:55Z: INFO: no push job found for advisory 156907
-    2025-12-08T02:12:55Z: INFO: advisory 156907 has blocking advisory []
-    2025-12-08T02:12:56Z: INFO: push job for advisory 156907 is triggered
-    2025-12-08T02:12:56Z: INFO: checking push job status for advisory 156908 ...
-    2025-12-08T02:12:56Z: INFO: no push job found for advisory 156908
-    2025-12-08T02:12:56Z: INFO: advisory 156908 has blocking advisory []
-    2025-12-08T02:12:57Z: INFO: push job for advisory 156908 is triggered
+    2025-12-08T03:32:15Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2025-12-08T03:33:41Z: INFO: checking push job status for advisory 156907 ...
+    2025-12-08T03:33:41Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-08T03:33:42Z: INFO: checking push job status for advisory 156908 ...
+    2025-12-08T03:33:42Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2025-12-08T03:33:42Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: QE job controller needs to renew API token for triggering Prow job runs
   reported_at: '2025-12-05T14:02:24Z'
