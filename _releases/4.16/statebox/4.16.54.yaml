@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.54
 created_at: '2025-12-05T01:02:22Z'
-updated_at: '2025-12-08T10:37:50Z'
+updated_at: '2025-12-08T11:00:22Z'
 metadata:
   jira_ticket: ART-14314
   advisory_ids:
@@ -64,15 +64,15 @@ tasks:
 - name: stage-testing
   status: Fail
   started_at: '2025-12-05T02:28:44Z'
-  completed_at: '2025-12-08T05:37:49Z'
-  result: "2025-12-08T05:36:29Z: INFO: Initialized StateBox for release 4.16.54 at\
-    \ openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.54.yaml\n2025-12-08T05:36:29Z:\
-    \ INFO: job id is not set, will trigger stage testing\n2025-12-08T05:36:30Z: INFO:\
-    \ Loaded state from _releases/4.16/statebox/4.16.54.yaml (SHA: bb78d534)\n2025-12-08T05:37:00Z:\
-    \ INFO: Found pipeline 13859601 with status running\n2025-12-08T05:37:49Z: INFO:\
-    \ Stage 'stage-release-triggers' status: {'status': 'running', 'job': <ProjectPipelineBridge\
-    \ id:44361816>}\n2025-12-08T05:37:49Z: ERROR: Stage release failed with status\
-    \ running\n2025-12-08T05:37:49Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
+  completed_at: '2025-12-08T06:00:21Z'
+  result: "2025-12-08T06:00:18Z: INFO: Initialized StateBox for release 4.16.54 at\
+    \ openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.54.yaml\n2025-12-08T06:00:18Z:\
+    \ INFO: job id is not set, will trigger stage testing\n2025-12-08T06:00:19Z: INFO:\
+    \ Loaded state from _releases/4.16/statebox/4.16.54.yaml (SHA: b4ca5d40)\n2025-12-08T06:00:21Z:\
+    \ INFO: Found pipeline 13859601 with status failed\n2025-12-08T06:00:21Z: INFO:\
+    \ Stage 'stage-release-triggers' status: {'status': 'failed', 'job': <ProjectPipelineBridge\
+    \ id:44361816>}\n2025-12-08T06:00:21Z: ERROR: Stage release failed with status\
+    \ failed\n2025-12-08T06:00:21Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
     \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
     \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2025-12-08T06:48:51.000+00:00',\n\
     \            'committed_date': '2025-12-08T06:48:51.000+00:00',\n            'committer_email':\
@@ -95,18 +95,19 @@ tasks:
     \ 116177,\n                         'ref': 'refs/merge-requests/264/merge',\n\
     \                         'sha': 'e26fd17c7a6d10df220cd6683a45a86b8bcfbb2e',\n\
     \                         'source': 'parent_pipeline',\n                     \
-    \    'status': 'running',\n                         'updated_at': '2025-12-08T10:25:50.368Z',\n\
+    \    'status': 'failed',\n                         'updated_at': '2025-12-08T10:44:58.755Z',\n\
     \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13859640'},\n\
-    \ 'duration': 790.359757631,\n 'erased_at': None,\n 'finished_at': None,\n 'id':\
-    \ 44361816,\n 'name': 'stage-job',\n 'pipeline': {'created_at': '2025-12-08T10:20:01.009Z',\n\
-    \              'id': 13859601,\n              'iid': 2688,\n              'project_id':\
-    \ 116177,\n              'ref': 'refs/merge-requests/264/merge',\n           \
-    \   'sha': 'e26fd17c7a6d10df220cd6683a45a86b8bcfbb2e',\n              'source':\
-    \ 'merge_request_event',\n              'status': 'running',\n              'updated_at':\
-    \ '2025-12-08T10:25:21.228Z',\n              'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13859601'},\n\
+    \ 'duration': 1177.803625,\n 'erased_at': None,\n 'failure_reason': 'unknown_failure',\n\
+    \ 'finished_at': '2025-12-08T10:44:59.271Z',\n 'id': 44361816,\n 'name': 'stage-job',\n\
+    \ 'pipeline': {'created_at': '2025-12-08T10:20:01.009Z',\n              'id':\
+    \ 13859601,\n              'iid': 2688,\n              'project_id': 116177,\n\
+    \              'ref': 'refs/merge-requests/264/merge',\n              'sha': 'e26fd17c7a6d10df220cd6683a45a86b8bcfbb2e',\n\
+    \              'source': 'merge_request_event',\n              'status': 'failed',\n\
+    \              'updated_at': '2025-12-08T10:44:59.493Z',\n              'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/13859601'},\n\
     \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': 0.478885,\n\
     \ 'ref': 'refs/merge-requests/264/merge',\n 'stage': 'stage-release-triggers',\n\
-    \ 'started_at': '2025-12-08T10:25:21.468Z',\n 'status': 'running',\n 'tag': False,\n\
+    \ 'started_at': '2025-12-08T10:25:21.468Z',\n 'status': 'failed',\n 'tag': False,\n\
     \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/0e67d50dbe856eb11b7dbc79f47870caf1d72d4319cfce18a40ebd81a621680b?s=80&d=identicon',\n\
     \          'bio': '',\n          'bot': False,\n          'created_at': '2025-03-11T10:09:51.138Z',\n\
     \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
@@ -118,7 +119,7 @@ tasks:
     \ 'dmalone',\n          'web_url': 'https://gitlab.cee.redhat.com/dmalone',\n\
     \          'website_url': '',\n          'work_information': None},\n 'web_url':\
     \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/44361816'}\n\
-    2025-12-08T05:37:49Z: INFO: stage release pipeline is not success, will not trigger\
+    2025-12-08T06:00:21Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
 issues:
 - issue: GitLab stage release pipeline 13833423 failed in 'stage-release-triggers'
