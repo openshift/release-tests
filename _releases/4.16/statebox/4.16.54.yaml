@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.54
 created_at: '2025-12-05T01:02:22Z'
-updated_at: '2025-12-08T09:43:30Z'
+updated_at: '2025-12-08T10:05:11Z'
 metadata:
   jira_ticket: ART-14314
   advisory_ids:
@@ -48,13 +48,19 @@ tasks:
     2025-12-08T02:37:11Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-08T02:37:11Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2025-12-08T04:43:28Z'
-  completed_at: null
+  completed_at: '2025-12-08T10:05:11Z'
   result: |-
-    2025-12-08T04:43:28Z: INFO: Initialized StateBox for release 4.16.54 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.54.yaml
-    2025-12-08T04:43:29Z: INFO: Loaded state from _releases/4.16/statebox/4.16.54.yaml (SHA: 913689e6)
-    2025-12-08T04:43:29Z: INFO: Image consistency check already In Progress, skipping
+    Jenkins job #3457 completed successfully on 2025-12-05 09:00 UTC. All image consistency checks passed:
+    - No mismatches between payload and shipment data (MR #264)
+    - All 191 components verified in shipment
+    - No metadata images missing
+    - All operator metadata found in stage registry
+    - CVE bug tracker check passed
+    - Job URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3457/
+    - Duration: ~1.5 hours
+    - Payload: quay.io/openshift-release-dev/ocp-release:4.16.54-x86_64
 - name: stage-testing
   status: Fail
   started_at: '2025-12-05T02:28:44Z'
