@@ -67,6 +67,7 @@ import time
 import threading
 import io
 import asyncio
+import traceback
 from typing import Optional
 from threading import RLock
 from dataclasses import dataclass, field
@@ -446,38 +447,110 @@ def invoke_oar_command(release: str, command_name: str, args: list[str]) -> dict
         - Command name is derived from ctx.invoked_subcommand
         - Result and timestamps are captured and saved to StateBox
 
+    Exception Handling:
+        - Catches unhandled exceptions that escape Click's error handling
+        - Click's standalone_mode=False only prevents sys.exit(), not all exceptions
+        - Returns error dict instead of propagating exception to async layers
+
     Note:
         This function is specifically for OAR commands that require ConfigStore.
         For oarctl/job/jobctl commands, use CliRunner directly without ConfigStore injection.
     """
-    runner = CliRunner()
+    try:
+        runner = CliRunner()
 
-    # Get cached ConfigStore (10ms after first call)
-    cs = get_cached_configstore(release)
+        # Get cached ConfigStore (10ms after first call)
+        cs = get_cached_configstore(release)
 
-    # Use shared capture_logs with thread safety for concurrent MCP requests
-    # ThreadFilter isolates logs between concurrent thread pool workers
-    with capture_logs(thread_safe=True) as log_buffer:
-        # Build command arguments: -r <release> <command> [args...]
-        # This invokes through the CLI group so result_callback gets triggered
-        cli_args = ['-r', release, command_name] + args
+        # Use shared capture_logs with thread safety for concurrent MCP requests
+        # ThreadFilter isolates logs between concurrent thread pool workers
+        with capture_logs(thread_safe=True) as log_buffer:
+            # Build command arguments: -r <release> <command> [args...]
+            # This invokes through the CLI group so result_callback gets triggered
+            cli_args = ['-r', release, command_name] + args
 
-        # Invoke Click command through CLI group with cached ConfigStore and log buffer
-        # The CLI layer's result_callback will handle StateBox updates automatically
-        # CRITICAL: We pass standalone_mode=False to prevent Click from calling sys.exit()
-        # on errors, which would crash the MCP server thread
-        result = runner.invoke(oar_cli_group, cli_args, obj={
-            "cs": cs,
-            "_log_buffer": log_buffer,
-        }, standalone_mode=False)
+            # Wrap Click invocation in try-except to catch exceptions that escape Click's exception handling
+            # Even with catch_exceptions=True, some exceptions still propagate
+            try:
+                # Invoke Click command through CLI group with cached ConfigStore and log buffer
+                # The CLI layer's result_callback will handle StateBox updates automatically
+                #
+                # Exception Handling Strategy (Triple-Layer Protection):
+                # 1. catch_exceptions=True: Click captures exceptions in result.exception
+                # 2. result.exception check: Handle Click-captured exceptions (sync context)
+                # 3. except (Exception, BaseExceptionGroup): Catch exceptions that escape Click
+                #    in async/ThreadPoolExecutor context (wrapped by anyio task groups)
+                #
+                # CRITICAL: standalone_mode=False prevents sys.exit() which would crash MCP server
+                result = runner.invoke(oar_cli_group, cli_args, obj={
+                    "cs": cs,
+                    "_log_buffer": log_buffer,
+                }, standalone_mode=False, catch_exceptions=True)
 
-        # Combine Click output with captured logs using shared utility
-        combined_output = merge_output(result.output, log_buffer.getvalue())
+                # Layer 1: Check if Click captured an exception during command execution
+                if result.exception is not None:
+                    # Exception occurred - format error message with traceback
+                    logger.error(f"Command raised exception (release={release}, command={command_name}): {result.exception}", exc_info=result.exception)
 
+                    # Extract traceback from the exception
+                    exc_traceback = ''.join(traceback.format_exception(
+                        type(result.exception),
+                        result.exception,
+                        result.exception.__traceback__
+                    ))
+
+                    error_msg = f"✗ Command execution failed\n\nCommand: oar -r {release} {command_name} {' '.join(args)}\n\nError: {str(result.exception)}\n\nTraceback:\n{exc_traceback}"
+
+                    # Combine with any output that was captured before the exception
+                    combined_output = merge_output(result.output, log_buffer.getvalue())
+                    if combined_output.strip():
+                        error_msg = f"{combined_output}\n\n{error_msg}"
+
+                    return {
+                        "success": False,
+                        "output": error_msg,
+                        "exit_code": 1
+                    }
+
+                # No exception - combine Click output with captured logs using shared utility
+                combined_output = merge_output(result.output, log_buffer.getvalue())
+
+                return {
+                    "success": result.exit_code == 0,
+                    "output": combined_output,
+                    "exit_code": result.exit_code
+                }
+
+            except (Exception, BaseExceptionGroup) as e:
+                # Layer 2: Catch exceptions that escape Click's exception handling
+                # BaseExceptionGroup is raised by anyio/asyncio task groups when exceptions occur
+                # in async contexts (ThreadPoolExecutor + FastMCP)
+                logger.error(f"Exception escaped Click runner (release={release}, command={command_name}): {e}", exc_info=True)
+
+                # Format error with traceback and captured logs
+                exc_traceback = traceback.format_exc()
+                combined_output = merge_output("", log_buffer.getvalue())
+
+                error_msg = f"✗ Command execution failed\n\nCommand: oar -r {release} {command_name} {' '.join(args)}\n\nError: {str(e)}\n\nTraceback:\n{exc_traceback}"
+
+                if combined_output.strip():
+                    error_msg = f"{combined_output}\n\n{error_msg}"
+
+                return {
+                    "success": False,
+                    "output": error_msg,
+                    "exit_code": 1
+                }
+    except (Exception, BaseExceptionGroup) as e:
+        # Catch regular exceptions AND BaseExceptionGroup that occur OUTSIDE of Click command execution
+        # (e.g., ConfigStore initialization, log capture setup, etc.)
+        # BaseExceptionGroup is raised by anyio/asyncio task groups in async contexts
+        logger.error(f"Exception in invoke_oar_command (release={release}, command={command_name}): {e}", exc_info=True)
+        error_msg = f"✗ Command execution failed with unhandled exception\n\nCommand: oar -r {release} {command_name} {' '.join(args)}\n\nError: {str(e)}\n\nTraceback:\n{traceback.format_exc()}"
         return {
-            "success": result.exit_code == 0,
-            "output": combined_output,
-            "exit_code": result.exit_code
+            "success": False,
+            "output": error_msg,
+            "exit_code": 1
         }
 
 
