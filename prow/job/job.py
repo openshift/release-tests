@@ -364,6 +364,7 @@ class Jobs:
                     print(f"get job result error: {e}")
             else:
                 print(f"Error code: {res.status_code}, reason: {res.reason}")
+                raise Exception(f"Job run failed. Error code: {res.status_code}, reason: {res.reason}")
         else:
             print(f"Warning! Couldn't find job: {job_name}")
 
