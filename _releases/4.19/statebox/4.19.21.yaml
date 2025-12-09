@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-09T09:04:19Z'
+updated_at: '2025-12-09T09:06:52Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -66,6 +66,13 @@ tasks:
     2025-12-09T04:04:17Z: INFO: job id is not set, will trigger stage testing
     2025-12-09T04:04:18Z: INFO: Loaded state from _releases/4.19/statebox/4.19.21.yaml (SHA: c7de34be)
     2025-12-09T04:04:18Z: INFO: stage testing already triggered and in progress, no need to trigger again
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2025-12-09T09:06:52Z'
+  completed_at: '2025-12-09T09:06:52Z'
+  result: 'All blocking tests passed BO3 verification. Test results: 3/3 jobs successful
+    (AWS upgrade from 4.18: success, Azure FIPS upgrade from 4.19: success, GCP upgrade
+    from 4.19: success). Build phase: Accepted, accepted: true, aggregated: true.'
 issues:
 - issue: 'take-ownership failed: ConfigStore shipment data missing ''url'' key - shipment
     MR configuration issue'
