@@ -17,7 +17,8 @@ from oar.core.shipment import ShipmentData
 from oar.core.statebox import StateBox
 from oar.core.worksheet import WorksheetManager
 from oar.core.const import *
-from oar.core.exceptions import ShipmentDataException
+from oar.core.exceptions import ShipmentDataException, WorksheetException
+from gspread.exceptions import WorksheetNotFound
 
 logger = logging.getLogger(__name__)
 
@@ -193,11 +194,20 @@ class ApprovalOperator:
         capture_handler.setLevel(logging.DEBUG)  # Capture all log levels
         logger.addHandler(capture_handler)
         
-        # Get test report for current release
-        report = WorksheetManager(self._am._cs).get_test_report()
-
         # Initialize StateBox for task status updates
         statebox = StateBox(self._am._cs)
+
+        # Get test report (Google Sheets) if available for backward compatibility
+        report = None
+        try:
+            report = WorksheetManager(self._am._cs).get_test_report()
+        except WorksheetException as e:
+            # Check if root cause is specifically WorksheetNotFound (expected for StateBox releases)
+            if isinstance(e.__cause__, WorksheetNotFound):
+                logger.info(f"Google Sheets worksheet not found (expected for StateBox releases): {e}")
+            else:
+                # Other worksheet errors (API failures, network issues) should fail
+                raise
 
         try:
             # Check if scheduler is already running using file lock
@@ -261,14 +271,15 @@ class ApprovalOperator:
                     # Move advisories to REL_PREP
                     self._am.change_advisory_status()
                     
-                    # Update test report status to PASS
-                    try:
-                        report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
-                        report.update_task_status(LABEL_TASK_NIGHTLY_BUILD_TEST, TASK_STATUS_PASS)
-                        report.update_task_status(LABEL_TASK_SIGNED_BUILD_TEST, TASK_STATUS_PASS)
-                        logger.info("Test report status updated to PASS")
-                    except Exception as e:
-                        logger.error(f"Failed to update test report status: {str(e)}")
+                    # Update test report status to PASS (Google Sheets - backward compatibility)
+                    if report is not None:
+                        try:
+                            report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_PASS)
+                            report.update_task_status(LABEL_TASK_NIGHTLY_BUILD_TEST, TASK_STATUS_PASS)
+                            report.update_task_status(LABEL_TASK_SIGNED_BUILD_TEST, TASK_STATUS_PASS)
+                            logger.info("Google Sheets test report status updated to PASS")
+                        except Exception as e:
+                            logger.error(f"Failed to update Google Sheets test report status: {str(e)}")
 
                     # Log success summary (will be captured by LogCaptureHandler)
                     logger.info("Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.")
@@ -289,12 +300,13 @@ class ApprovalOperator:
                 else:
                     logger.warning(f"Timeout reached after {TIMEOUT_DAYS} days, payload metadata URL still not accessible")
                     
-                    # Update test report status to FAIL for timeout
-                    try:
-                        report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_FAIL)
-                        logger.info("Test report status updated to FAIL due to timeout")
-                    except Exception as e:
-                        logger.error(f"Failed to update test report status: {str(e)}")
+                    # Update test report status to FAIL for timeout (Google Sheets - backward compatibility)
+                    if report is not None:
+                        try:
+                            report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_FAIL)
+                            logger.info("Google Sheets test report status updated to FAIL due to timeout")
+                        except Exception as e:
+                            logger.error(f"Failed to update Google Sheets test report status: {str(e)}")
 
                     # Log timeout summary (will be captured by LogCaptureHandler)
                     logger.warning(f"Release approval timeout. Payload metadata URL still not accessible after {TIMEOUT_DAYS} days.")
@@ -321,12 +333,13 @@ class ApprovalOperator:
         except Exception as e:
             logger.error(f"Background metadata checker failed: {str(e)}")
             
-            # Update test report status to FAIL for error
-            try:
-                report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_FAIL)
-                logger.info("Test report status updated to FAIL due to error")
-            except Exception as update_error:
-                logger.error(f"Failed to update test report status: {str(update_error)}")
+            # Update test report status to FAIL for error (Google Sheets - backward compatibility)
+            if report is not None:
+                try:
+                    report.update_task_status(LABEL_TASK_CHANGE_AD_STATUS, TASK_STATUS_FAIL)
+                    logger.info("Google Sheets test report status updated to FAIL due to error")
+                except Exception as update_error:
+                    logger.error(f"Failed to update Google Sheets test report status: {str(update_error)}")
 
             # Log error summary (will be captured by LogCaptureHandler)
             logger.error(f"Release approval failed with error: {str(e)}")
