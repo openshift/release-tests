@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.54
 created_at: '2025-12-05T01:02:22Z'
-updated_at: '2025-12-09T13:22:58Z'
+updated_at: '2025-12-09T14:05:11Z'
 metadata:
   jira_ticket: ART-14314
   advisory_ids:
@@ -62,18 +62,14 @@ tasks:
     - Duration: ~1.5 hours
     - Payload: quay.io/openshift-release-dev/ocp-release:4.16.54-x86_64
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2025-12-09T06:22:52Z'
-  completed_at: null
+  completed_at: '2025-12-09T09:05:10Z'
   result: |-
-    2025-12-09T06:22:52Z: INFO: Initialized StateBox for release 4.16.54 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.54.yaml
-    2025-12-09T06:22:52Z: INFO: job id is not set, will trigger stage testing
-    2025-12-09T06:22:52Z: INFO: Loaded state from _releases/4.16/statebox/4.16.54.yaml (SHA: dbedafe7)
-    2025-12-09T06:22:54Z: INFO: Found pipeline 13864108 with status failed
-    2025-12-09T06:22:55Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44384886>}
-    2025-12-09T06:22:55Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2025-12-09T06:22:55Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1461/>
-    2025-12-09T06:22:56Z: INFO: sent slack message to <#team-qe-release>
+    2025-12-09T09:05:10Z: INFO: Initialized StateBox for release 4.16.54 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.54.yaml
+    2025-12-09T09:05:10Z: INFO: check stage job status according to job id: 1461
+    2025-12-09T09:05:10Z: INFO: build status of zstreams/Stage-Pipeline/1461 is SUCCESS
+    2025-12-09T09:05:10Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2025-12-08T11:08:48Z'
