@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-09T09:44:51Z'
+updated_at: '2025-12-09T09:49:15Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -50,13 +50,22 @@ tasks:
     2025-12-05T09:39:56Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-05T09:39:56Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2025-12-09T04:04:01Z'
-  completed_at: null
+  completed_at: '2025-12-09T10:49:14Z'
   result: |-
-    2025-12-09T04:04:01Z: INFO: Initialized StateBox for release 4.19.21 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.21.yaml
-    2025-12-09T04:04:01Z: INFO: Loaded state from _releases/4.19/statebox/4.19.21.yaml (SHA: 76327503)
-    2025-12-09T04:04:01Z: INFO: Image consistency check already In Progress, skipping
+    2025-12-09T10:42:40Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2025-12-09T10:42:44Z: INFO: Initialized StateBox for release 4.19.21 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.21.yaml
+    2025-12-09T10:42:44Z: INFO: Checking image-consistency-check job status with job id: 3462
+    2025-12-09T10:42:46Z: INFO: build status of image-consistency-check/3462 is SUCCESS
+    2025-12-09T10:42:46Z: INFO: Starting image health check for shipment MR 268
+    2025-12-09T10:42:48Z: INFO: Found pipeline 13868431 with status manual
+    2025-12-09T10:42:49Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44413233>}
+    2025-12-09T10:42:49Z: INFO: Processing MR 268
+    2025-12-09T10:42:54Z: INFO: Found 857 images to check
+    2025-12-09T10:49:14Z: INFO: Completed image health check. Scanned 857 images, found 0 unhealthy
+    2025-12-09T10:49:14Z: INFO: Added image health summary to MR 268
+    2025-12-09T10:49:14Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2025-12-09T10:44:45Z'
