@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.54
 created_at: '2025-12-05T01:02:22Z'
-updated_at: '2025-12-09T14:05:11Z'
+updated_at: '2025-12-09T14:06:11Z'
 metadata:
   jira_ticket: ART-14314
   advisory_ids:
@@ -101,6 +101,17 @@ tasks:
     - Build can proceed to next phase
 
     Recommendation: Build accepted for promotion to release candidate.
+- name: image-signed-check
+  status: Pass
+  started_at: '2025-12-09T09:05:27Z'
+  completed_at: '2025-12-09T09:06:10Z'
+  result: |-
+    2025-12-09T09:05:27Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2025-12-09T09:05:27Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.54
+    2025-12-09T09:05:29Z: INFO: Image Digest: sha256:5efb10e511ff6623fee08dd8cfa8915b9be5cc3b7f7501731ddc13fa0d2ea988
+    2025-12-09T09:05:29Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=5efb10e511ff6623fee08dd8cfa8915b9be5cc3b7f7501731ddc13fa0d2ea988/signature-1
+    2025-12-09T09:06:10Z: INFO: Signature check PASSED
+    2025-12-09T09:06:10Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: GitLab stage release pipeline 13833423 failed in 'stage-release-triggers'
     stage with unknown_failure. Downstream pipeline 13833441 also failed. This blocks
