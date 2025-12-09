@@ -67,7 +67,31 @@
           "jobStartTime": "2025-12-09T03:25:00Z",
           "jobID": "ce9c22b1-5019-419f-97c5-d6e05a976c2b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/1998232384255823872",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-09T06:44:40Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -207,7 +231,31 @@
           "jobStartTime": "2025-12-09T03:25:15Z",
           "jobID": "10a422d2-b969-4b73-90ae-7c41d3cf55e3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/1998232449179455488",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-09T06:35:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 101,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-High-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -258,5 +306,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2025-12-08-195929",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2025-12-08-195929"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
