@@ -160,20 +160,96 @@ elif "status is changed to [In Progress]" in result:
     Report to user, ask to check back later
 ```
 
-### 4. Special Cases (M1 Limitations)
+### 4. Build Test Analysis Tasks (Special Handling)
 
-**Candidate/Promoted Build Analysis:**
-- These tasks (B11/B12 in Google Sheets) always show "In Progress" by default
-- You MUST use `/ci:analyze-build-test-results {build}` to determine actual status
-  - The command will automatically find the correct remote, fetch the record branch, and analyze test results
-  - It handles both `accepted == true` (quick summary) and `accepted == false` (detailed analysis)
-- Based on the command's recommendation:
-  - If AI recommends ACCEPT:
-    - Mark task as "Pass" using `oar_update_task_status(release, task_name, "Pass")`
-    - Continue pipeline
-  - If AI recommends REJECT:
-    - Mark task as "Fail" using `oar_update_task_status(release, task_name, "Fail")`
-    - Report blocking issues, STOP pipeline, ask user to manually add bugs to Critical Issues table
+**Why These Tasks Are Different:**
+
+Tasks `analyze-candidate-build` and `analyze-promoted-build` have **NO dedicated OAR commands**. They require AI-driven analysis because:
+- Test results stored externally in GitHub (`_releases/ocp-test-result-*.json` on `record` branch)
+- Complex decision logic needed (BO3 verification, failure categorization, waiver assessment)
+- Only AI can evaluate whether `accepted: false` should be waived or rejected
+
+**CRITICAL: Read Full Execution Steps**
+
+For complete step-by-step logic, read **`docs/KONFLUX_RELEASE_FLOW.md`**:
+- **Section 6: analyze-candidate-build** (lines 471-548)
+- **Section 7: analyze-promoted-build** (lines 550-643)
+
+**Decision Flow:**
+
+```
+1. Fetch test result JSON from GitHub record branch (see KONFLUX_RELEASE_FLOW.md)
+2. Check "aggregated": true (tests completed)
+3. Check "accepted" field:
+
+   IF accepted == true:
+       → All tests passed BO3 verification
+       → oar_update_task_status(release, task_name, "Pass",
+             result="All blocking tests passed BO3 verification")
+       → Continue pipeline
+
+   IF accepted == false:
+       → Trigger: /ci:analyze-build-test-results {build}
+       → Present AI analysis to user
+
+       IF AI recommendation == "RECOMMEND ACCEPT":
+           → Present: "AI Analysis: Failures appear waivable (flaky, infra, known issues)"
+           → Present: "Details: {AI summary}"
+           → Ask user: "Accept this build? (y/n)"
+
+           IF user accepts:
+               → oar_update_task_status(release, task_name, "Pass",
+                     result="Waivable failures accepted: {AI summary}")
+               → Continue pipeline
+
+           IF user rejects:
+               → oar_add_issue(release,
+                     issue="Test failures rejected by release lead: {summary}",
+                     blocker=True,
+                     related_tasks=[task_name])
+               → oar_update_task_status(release, task_name, "Fail",
+                     result="Rejected by release lead: {AI summary}")
+               → STOP pipeline
+
+       IF AI recommendation == "RECOMMEND REJECT":
+           → Present: "⚠️ AI Analysis: Critical blockers detected"
+           → Present: "Details: {AI summary}"
+           → Ask user: "Override AI recommendation and accept anyway? (y/n)"
+
+           IF user overrides (accepts):
+               → Ask user: "Please provide justification for override:"
+               → User provides: {justification}
+               → oar_update_task_status(release, task_name, "Pass",
+                     result="OVERRIDE: {justification}\n\nAI Analysis: {AI summary}")
+               → Continue pipeline
+
+           IF user confirms rejection:
+               → oar_add_issue(release,
+                     issue="Release blocker: {AI summary}",
+                     blocker=True,
+                     related_tasks=[task_name])
+               → oar_update_task_status(release, task_name, "Fail",
+                     result="Release blocker confirmed: {AI summary}")
+               → STOP pipeline
+```
+
+**Evaluation Criteria (from /ci:analyze-build-test-results):**
+
+**CAN WAIVE if:**
+✅ Flaky tests, ✅ Infrastructure issues, ✅ Test automation bugs, ✅ Known OCPBUGS, ✅ Platform-specific non-critical
+
+**CANNOT WAIVE if:**
+❌ Product bugs, ❌ Cross-platform failures, ❌ Critical features affected, ❌ New unknown failures
+
+**Important:**
+- AI recommendation is **advisory only** - release lead makes final decision
+- Release lead may have additional context not visible to AI
+- **Only create issues for actual blockers** (user confirms rejection)
+- Store all analysis + decisions in `task.result` for audit trail
+
+**StateBox Integration:**
+- Task status + result: `oar_update_task_status(release, task_name, status, result)`
+- Blocking issues: `oar_add_issue(blocker=True)` only when build rejected
 
 **Async Task Monitoring:**
 - Re-execute the same MCP tool to check status
@@ -182,15 +258,28 @@ elif "status is changed to [In Progress]" in result:
 ## Key Decision Points
 
 ### Build Promotion Checkpoint
-```python
-response = WebFetch(
-    url=f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/{release}",
-    prompt="Extract the 'phase' field from the JSON response"
-)
 
-if phase != "Accepted":
-    Report: "Build not yet promoted (current: {phase}), check again in 30 min"
+**IMPORTANT**: WebFetch tool doesn't work with OpenShift Release Dashboard API. Use Bash tool with `curl` command instead.
+
+**Check promotion status:**
+```bash
+curl -s "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/{release}" | jq -r '.phase'
+```
+
+**Expected output:**
+- `"Accepted"` → Build is promoted, proceed to Phase 3 (trigger async tasks)
+- Other values (e.g., `"Pending"`, `"Rejected"`) → Build not yet promoted
+
+**Decision logic:**
+```
+IF phase != "Accepted":
+    Report: "Build not yet promoted (current phase: {phase}), check again in 30 minutes"
+    Ask user to re-invoke /release:drive later
     RETURN
+
+IF phase == "Accepted":
+    Report: "Build promoted successfully (phase: Accepted)"
+    Proceed to Phase 3: Trigger async tasks (image-consistency-check, stage-testing)
 ```
 
 ### Gate Check (Critical - ENHANCED)
