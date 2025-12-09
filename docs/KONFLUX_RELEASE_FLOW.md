@@ -1165,7 +1165,7 @@ ELSE:
 **Step 6: Check Build Promotion and Trigger Async Tasks (ENHANCED)**
 ```bash
 # Use Bash tool with curl to check build promotion status
-phase=$(curl -s "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.1" | jq -r '.phase')
+phase=$(curl -s "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/{release}" | jq -r '.phase')
 
 IF phase != "Accepted":
     Report to user: "Build not yet promoted (current phase: {phase}), check again in 30 minutes"
