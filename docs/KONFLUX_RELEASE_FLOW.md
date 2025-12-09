@@ -534,12 +534,10 @@ OR
 (accepted == false AND AI recommendation == ACCEPT)
 ```
 
-**Google Sheets Behavior (M1 with oar_update_task_status):**
-- B11 (Nightly build test) can now be updated by AI using `oar_update_task_status` MCP tool
-- AI marks as "Pass" when tests pass or waivable failures detected
-- AI marks as "Fail" when blocking failures detected
-- If REJECT: Overall status → "Red" (automatically updated), critical bugs added manually
-- Analysis results tracked via `oar_update_task_status` updates to Google Sheets
+**StateBox Integration:**
+- Task status + result stored: `oar_update_task_status(release, task_name, status, result)`
+- The `result` parameter stores AI analysis summary + user decision (if override)
+- Blocking issues: `oar_add_issue(blocker=True)` only when build rejected by user
 
 **Expected Duration:** 2-5 minutes (if analysis needed)
 
@@ -631,15 +629,10 @@ OR
 (accepted == false AND AI recommendation == ACCEPT)
 ```
 
-**Google Sheets Behavior (M1 with oar_update_task_status):**
-- B12 (Signed build test) can now be updated by AI using `oar_update_task_status` MCP tool
-- AI marks as "Pass" when tests pass or waivable failures detected
-- AI marks as "Fail" when blocking failures detected
-- If REJECT:
-  - Overall status → "Red" (automatically updated)
-  - QE manually adds critical bugs to Critical Issues table
-  - Pipeline stops
-- Analysis results tracked via `oar_update_task_status` updates to Google Sheets
+**StateBox Integration:**
+- Task status + result stored: `oar_update_task_status(release, task_name, status, result)`
+- The `result` parameter stores AI analysis summary + user decision (if override)
+- Blocking issues: `oar_add_issue(blocker=True)` only when build rejected by user
 
 **Expected Duration:**
 - File creation: 10-120 minutes after promotion (user re-invokes /release:drive to check)
@@ -1170,10 +1163,12 @@ ELSE:
 ```
 
 **Step 6: Check Build Promotion and Trigger Async Tasks (ENHANCED)**
-```python
-response = fetch("https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.1")
-IF response.phase != "Accepted":
-    Report to user: "Build not yet promoted (current phase: {response.phase}), check again in 30 minutes"
+```bash
+# Use Bash tool with curl to check build promotion status
+phase=$(curl -s "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.1" | jq -r '.phase')
+
+IF phase != "Accepted":
+    Report to user: "Build not yet promoted (current phase: {phase}), check again in 30 minutes"
     RETURN
 
 # Build promoted! Trigger async tasks immediately
