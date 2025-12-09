@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.60
 created_at: '2025-12-05T06:01:24Z'
-updated_at: '2025-12-08T11:29:07Z'
+updated_at: '2025-12-09T05:41:50Z'
 metadata:
   jira_ticket: ART-14315
   advisory_ids:
@@ -64,18 +64,14 @@ tasks:
     2025-12-08T03:33:42Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-08T03:33:42Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2025-12-08T06:28:52Z'
-  completed_at: null
+  completed_at: '2025-12-09T00:41:49Z'
   result: |-
-    2025-12-08T06:28:52Z: INFO: Initialized StateBox for release 4.14.60 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.60.yaml
-    2025-12-08T06:28:52Z: INFO: job id is not set, will trigger stage testing
-    2025-12-08T06:28:53Z: INFO: Loaded state from _releases/4.14/statebox/4.14.60.yaml (SHA: e497b887)
-    2025-12-08T06:29:03Z: INFO: Found pipeline 13857815 with status manual
-    2025-12-08T06:29:05Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44352320>}
-    2025-12-08T06:29:05Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2025-12-08T06:29:05Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1457/>
-    2025-12-08T06:29:06Z: INFO: sent slack message to <#team-qe-release>
+    2025-12-09T00:41:49Z: INFO: Initialized StateBox for release 4.14.60 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.60.yaml
+    2025-12-09T00:41:49Z: INFO: check stage job status according to job id: 1459
+    2025-12-09T00:41:49Z: INFO: build status of zstreams/Stage-Pipeline/1459 is SUCCESS
+    2025-12-09T00:41:49Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: QE job controller needs to renew API token for triggering Prow job runs
   reported_at: '2025-12-05T14:02:24Z'
