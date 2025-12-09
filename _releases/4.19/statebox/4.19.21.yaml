@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.21
 created_at: '2025-12-05T07:03:05Z'
-updated_at: '2025-12-09T09:49:15Z'
+updated_at: '2025-12-09T09:57:02Z'
 metadata:
   jira_ticket: ART-14318
   advisory_ids:
@@ -83,6 +83,18 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Test results: 3/3 jobs successful
     (AWS upgrade from 4.18: success, Azure FIPS upgrade from 4.19: success, GCP upgrade
     from 4.19: success). Build phase: Accepted, accepted: true, aggregated: true.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2025-12-09T10:56:58Z'
+  completed_at: '2025-12-09T10:57:01Z'
+  result: |-
+    2025-12-09T10:56:58Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2025-12-09T10:56:58Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2025-12-09T10:56:58Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.21
+    2025-12-09T10:57:00Z: INFO: Image Digest: sha256:7c2001c24aa550aa228cd2d0fc0b5d9ac6656cd4267cd7c156ec758d0687758e
+    2025-12-09T10:57:00Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7c2001c24aa550aa228cd2d0fc0b5d9ac6656cd4267cd7c156ec758d0687758e/signature-1
+    2025-12-09T10:57:01Z: INFO: Signature check PASSED
+    2025-12-09T10:57:01Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'take-ownership failed: ConfigStore shipment data missing ''url'' key - shipment
     MR configuration issue'
