@@ -67,7 +67,31 @@
           "jobStartTime": "2025-12-10T10:29:56Z",
           "jobID": "9d8cfe31-2ffb-43b6-8524-29da914a54fc",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-f999/1998701708594647040",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-10T13:35:44Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 81,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 17,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-Critical-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -169,7 +193,31 @@
           "jobStartTime": "2025-12-10T10:30:11Z",
           "jobID": "87a0f700-6895-42d0-9542-328672ec4dab",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/1998701775405715456",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-10T13:35:12Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 81,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-Critical-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -235,5 +283,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.14.0-0.nightly-2025-12-10-031509",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.14.0-0.nightly-2025-12-10-031509"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
