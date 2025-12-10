@@ -364,6 +364,8 @@ class Jobs:
                     print(f"get job result error: {e}")
             else:
                 print(f"Error code: {res.status_code}, reason: {res.reason}")
+                if res.status_code == 403:
+                    raise Exception(f"Please check the Prow token. Error code: {res.status_code}, reason: {res.reason}")
         else:
             print(f"Warning! Couldn't find job: {job_name}")
 
