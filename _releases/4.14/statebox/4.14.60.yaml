@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.60
 created_at: '2025-12-05T06:01:24Z'
-updated_at: '2025-12-10T05:16:18Z'
+updated_at: '2025-12-10T08:44:25Z'
 metadata:
   jira_ticket: ART-14315
   advisory_ids:
@@ -94,6 +94,26 @@ tasks:
     2025-12-10T00:15:53Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=c551518a35fb3fb5c9887d251194f2aa20564a8bc95d2720bedbd4a0dbca3865/signature-1
     2025-12-10T00:16:17Z: INFO: Signature check PASSED
     2025-12-10T00:16:17Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2025-12-10T03:43:50Z'
+  completed_at: null
+  result: |-
+    2025-12-10T03:43:50Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2025-12-10T03:44:00Z: INFO: Processing MR 265 for Jira issues
+    2025-12-10T03:44:08Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2025-12-10T03:44:10Z: INFO: RHCOS nvr is rhcos-x86_64-414.92.202512031525-0
+    2025-12-10T03:44:10Z: INFO: The commit metadata is kernel-5.14.0-284.149.1.el9_2
+    2025-12-10T03:44:10Z: INFO: Tags of this build is [{'arches': '', 'id': 107797, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.2.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 107800, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.2.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 114085, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.13-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 114086, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.13-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 119081, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.14-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121788, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.15-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176946, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2025:22274-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 177255, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2025:22996-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 177406, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2025:22731-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2025-12-10T03:44:11Z: INFO: Successfully approved MR 265
+    2025-12-10T03:44:11Z: INFO: Successfully added QE approval to MR 265
+    2025-12-10T03:44:13Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2025:22733
+    2025-12-10T03:44:18Z: INFO: The metadata url is not accessible
+    2025-12-10T03:44:18Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2025-12-10T03:44:18Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: C07HMSFE7N2, OAR_SLACK_THREAD: 1765356275.040219
+    2025-12-10T03:44:18Z: INFO: Background metadata checker process started (PID: 2194857) - running independently after parent exit
+    2025-12-10T03:44:18Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.14_20251210_034418.log
+    2025-12-10T03:44:24Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: QE job controller needs to renew API token for triggering Prow job runs
   reported_at: '2025-12-05T14:02:24Z'
