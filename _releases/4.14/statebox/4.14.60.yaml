@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.60
 created_at: '2025-12-05T06:01:24Z'
-updated_at: '2025-12-10T05:13:55Z'
+updated_at: '2025-12-10T05:16:18Z'
 metadata:
   jira_ticket: ART-14315
   advisory_ids:
@@ -83,6 +83,17 @@ tasks:
   started_at: '2025-12-10T05:13:55Z'
   completed_at: '2025-12-10T05:13:55Z'
   result: null
+- name: image-signed-check
+  status: Pass
+  started_at: '2025-12-10T00:15:50Z'
+  completed_at: '2025-12-10T00:16:17Z'
+  result: |-
+    2025-12-10T00:15:50Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2025-12-10T00:15:50Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.14.60
+    2025-12-10T00:15:53Z: INFO: Image Digest: sha256:c551518a35fb3fb5c9887d251194f2aa20564a8bc95d2720bedbd4a0dbca3865
+    2025-12-10T00:15:53Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=c551518a35fb3fb5c9887d251194f2aa20564a8bc95d2720bedbd4a0dbca3865/signature-1
+    2025-12-10T00:16:17Z: INFO: Signature check PASSED
+    2025-12-10T00:16:17Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: QE job controller needs to renew API token for triggering Prow job runs
   reported_at: '2025-12-05T14:02:24Z'
