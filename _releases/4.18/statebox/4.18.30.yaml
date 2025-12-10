@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.30
 created_at: '2025-12-05T08:02:34Z'
-updated_at: '2025-12-10T01:55:35Z'
+updated_at: '2025-12-10T02:16:37Z'
 metadata:
   jira_ticket: ART-14312
   advisory_ids:
@@ -103,6 +103,26 @@ tasks:
     2025-12-09T19:51:29Z: INFO: Background metadata checker process started (PID: 2143957) - running independently after parent exit
     2025-12-09T19:51:29Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.18_20251209_195129.log
     2025-12-09T19:51:35Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2025-12-10T02:16:37Z'
+  completed_at: '2025-12-10T02:16:37Z'
+  result: |-
+    Build 4.18.0-0.nightly-2025-12-03-213720 analysis completed.
+
+    RECOMMENDATION: ACCEPT (Waivable failures)
+
+    Test Results: 126 total, 104 passed, 1 failed, 21 skipped
+    Failed: OCP-55957 SRIOV operator subscription (AWS, GCP all 3 BO3 attempts)
+
+    Root Cause: Known infrastructure issue - SRIOV operator missing from brew/qe-app-registry
+    - OCPQE-31219 (Closed 2025-12-10): Exact same failure documented
+    - Not a product bug - registry/catalog availability issue
+    - Azure job: Infrastructure failure (0 test failures)
+
+    Assessment: WAIVABLE - Infrastructure/registry issue, already resolved upstream but fix not backported to release-4.18
+
+    Confidence: HIGH
 issues:
 - issue: QE job controller needs to renew API token for triggering Prow job runs
   reported_at: '2025-12-05T14:02:08Z'
