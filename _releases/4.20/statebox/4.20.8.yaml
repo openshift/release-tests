@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.8
 created_at: '2025-12-11T13:02:54Z'
-updated_at: '2025-12-11T13:58:30Z'
+updated_at: '2025-12-11T14:00:09Z'
 metadata:
   jira_ticket: ART-14325
   advisory_ids:
@@ -26,4 +26,14 @@ tasks:
     2025-12-11T08:58:01Z: INFO: Added QE release lead comment to MR 273
     2025-12-11T08:58:30Z: INFO: sent slack message to <#team-qe-release>
     2025-12-11T08:58:30Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2025-12-11T08:59:34Z'
+  completed_at: '2025-12-11T09:00:09Z'
+  result: |-
+    2025-12-11T08:59:34Z: INFO: Initialized StateBox for release 4.20.8 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.8.yaml
+    2025-12-11T08:59:34Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2025-12-11T09:00:07Z: INFO: Processing MR 273 for Jira issues
+    2025-12-11T09:00:09Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2025-12-11T09:00:09Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues: []
