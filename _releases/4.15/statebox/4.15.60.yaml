@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.60
 created_at: '2025-12-12T02:01:55Z'
-updated_at: '2025-12-12T04:02:27Z'
+updated_at: '2025-12-12T04:06:37Z'
 metadata:
   jira_ticket: ART-14326
   advisory_ids:
@@ -36,4 +36,15 @@ tasks:
     2025-12-11T23:02:25Z: INFO: Processing MR 274 for Jira issues
     2025-12-11T23:02:27Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2025-12-11T23:02:27Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2025-12-11T23:06:35Z'
+  completed_at: null
+  result: |-
+    2025-12-11T23:06:35Z: INFO: Initialized StateBox for release 4.15.60 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.60.yaml
+    2025-12-11T23:06:35Z: INFO: Loaded state from _releases/4.15/statebox/4.15.60.yaml (SHA: 73ec297a)
+    2025-12-11T23:06:35Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2025-12-11T23:06:35Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.15.60-x86_64
+    2025-12-11T23:06:35Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3463/
+    2025-12-11T23:06:37Z: INFO: sent slack message to <#team-qe-release>
 issues: []
