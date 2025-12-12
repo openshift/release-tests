@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.46
 created_at: '2025-12-12T01:01:47Z'
-updated_at: '2025-12-12T13:26:26Z'
+updated_at: '2025-12-12T13:27:12Z'
 metadata:
   jira_ticket: ART-14328
   advisory_ids:
@@ -48,16 +48,14 @@ tasks:
     2025-12-12T08:26:25Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-12T08:26:25Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Fail
   started_at: '2025-12-12T02:08:29Z'
-  completed_at: null
+  completed_at: '2025-12-12T08:27:11Z'
   result: |-
-    2025-12-12T02:08:29Z: INFO: Initialized StateBox for release 4.17.46 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.46.yaml
-    2025-12-12T02:08:30Z: INFO: Loaded state from _releases/4.17/statebox/4.17.46.yaml (SHA: 1906e09b)
-    2025-12-12T02:08:30Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2025-12-12T02:08:30Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.17.46-x86_64
-    2025-12-12T02:08:30Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3464/
-    2025-12-12T02:08:31Z: INFO: sent slack message to <#team-qe-release>
+    2025-12-12T08:27:11Z: INFO: Initialized StateBox for release 4.17.46 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.46.yaml
+    2025-12-12T08:27:11Z: INFO: Checking image-consistency-check job status with job id: 3464
+    2025-12-12T08:27:11Z: INFO: build status of image-consistency-check/3464 is FAILURE
+    2025-12-12T08:27:11Z: INFO: task [Image Consistency Check] status is changed to [Fail]
 - name: stage-testing
   status: In Progress
   started_at: '2025-12-12T02:08:51Z'
