@@ -8,94 +8,90 @@ logger = logging.getLogger(__name__)
 
 
 class Shipment:
+    """
+    Handles loading and parsing shipment data from a GitLab Merge Request.
+    """
+
     def __init__(self, mr_id: int, project_path: str = 'hybrid-platforms/art/ocp-shipment-data',
                  gitlab_url: str = 'https://gitlab.cee.redhat.com') -> None:
         """
-        Initialize with merge request ID
+        Initialize Shipment and authenticate with GitLab.
 
         Args:
-            mr_id: Merge request ID
-            project_path: GitLab project path (default: 'hybrid-platforms/art/ocp-shipment-data')
-            gitlab_url: GitLab instance URL (default: 'https://gitlab.cee.redhat.com')
+            mr_id (int): GitLab merge request ID
+            project_path (str): GitLab project path. Defaults to 'hybrid-platforms/art/ocp-shipment-data'
+            gitlab_url (str): GitLab instance URL. Defaults to 'https://gitlab.cee.redhat.com'
         """
-        self.project_path = project_path
-        self.mr_id = mr_id
-        self.gitlab_url = gitlab_url
-        logger.info(f"Initializing Shipment for MR {mr_id} in project {project_path}")
-        self.gl = Gitlab(gitlab_url, private_token=self._get_gitlab_token())
-        self.shipment_data_list = []  # Initialize empty list for shipment data
-        self._fetch_mr_data()
+        self._mr_id = mr_id
+        self._project_path = project_path
+        self._gitlab_url = gitlab_url
+
+        self._gl = Gitlab(self._gitlab_url, private_token=self._get_gitlab_token(), retry_transient_errors=True)
+        self._gl.auth()
 
     def _get_gitlab_token(self) -> str:
         """
-        Get GitLab token from GITLAB_TOKEN environment variable
+        Get GitLab token from GITLAB_TOKEN environment variable.
 
         Returns:
-            GitLab API token as string
+            str: GitLab API token
 
         Raises:
             ValueError: If GITLAB_TOKEN environment variable is not set
         """
         token = os.getenv('GITLAB_TOKEN')
         if not token:
-            raise ValueError("GITLAB_TOKEN environment variable not set")
+            raise ValueError("GITLAB_TOKEN environment variable is not set")
         return token
 
-    def _fetch_mr_data(self) -> None:
+    def _get_shipment_data_list(self) -> list:
         """
-        Fetch MR changes and shipment data from GitLab
-
-        Populates self.shipment_data_list with parsed YAML content from all YAML files found in MR changes
-
-        Raises:
-            Exception: If any error occurs during GitLab API operations
+        Get the list of shipment data from the merge request.
+        
+        Returns:
+            list: List of shipment data
         """
-        try:
-            self.shipment_data_list = []  # Initialize list to store all YAML data
-            logger.info(
-                f"Fetching MR {self.mr_id} data from project {self.project_path}")
-            project = self.gl.projects.get(self.project_path)
-            mr = project.mergerequests.get(self.mr_id)
-            changes = mr.changes()
-            change_list = changes.get('changes', [])
-            logger.debug(f"Found {len(change_list)} changes in MR")
 
-            # Process all YAML files in MR changes
-            for change in change_list:
-                if not change['new_path'].endswith('.yaml'):
-                    logger.debug(
-                        f"Skipping non-YAML file: {change['new_path']}")
-                    continue
+        shipment_data_list = []
 
-                logger.info(f"Processing YAML file: {change['new_path']}")
-                # Get shipment file content
-                file_content = project.files.get(
-                    file_path=change['new_path'],
-                    ref=mr.source_branch
-                ).decode().decode('utf-8')
-                shipment_data = yaml.safe_load(file_content)
-                self.shipment_data_list.append(shipment_data)
-                logger.debug(
-                    f"Successfully loaded shipment data from {change['new_path']}")
+        logger.info(f"Fetching MR {self._mr_id} data from project {self._project_path}")
+        project = self._gl.projects.get(self._project_path)
+        mr = project.mergerequests.get(self._mr_id)
+        changes = mr.changes()
+        change_list = changes.get('changes', [])
+        logger.debug(f"Found {len(change_list)} changes in MR")
 
-        except Exception as e:
-            logger.error(
-                f"Error fetching MR {self.mr_id} data from {self.project_path}: {str(e)}", exc_info=True)
+        for change in change_list:
+            if not change['new_path'].endswith('.yaml'):
+                logger.debug(f"Skipping non-YAML file: {change['new_path']}")
+                continue
+
+            logger.info(f"Processing YAML file: {change['new_path']}")
+            file_content = project.files.get(
+                file_path=change['new_path'],
+                ref=mr.source_branch
+            ).decode().decode('utf-8')
+            shipment_data = yaml.safe_load(file_content)
+            shipment_data_list.append(shipment_data)
+            logger.debug(f"Successfully loaded shipment data from {change['new_path']}")
+        return shipment_data_list
 
     def get_image_pullspecs(self) -> list[str]:
         """
-        Get all component pullspecs from shipment data
-
+        Get the list of image pullspecs from the shipment data.
+        
         Returns:
-            List of pullspec strings from shipment components
+            list[str]: List of image pullspecs
         """
-        if not self.shipment_data_list:
+        shipment_data_list = self._get_shipment_data_list()
+
+        if not shipment_data_list:
             logger.warning("No shipment data available - cannot fetch pullspecs")
             return []
 
         all_pullspecs = []
         try:
-            for shipment_data in self.shipment_data_list:
+            for shipment_data in shipment_data_list:
                 logger.info("Retrieving pullspecs from shipment components")
                 components = glom(shipment_data, 'shipment.snapshot.spec.components', default=[])
                 if not components:
@@ -113,17 +109,17 @@ class Shipment:
             return all_pullspecs
 
         except Exception as e:
-            logger.error(
-                f"Error retrieving pullspecs from shipment: {str(e)}", exc_info=True)
+            logger.error(f"Error retrieving pullspecs from shipment: {str(e)}", exc_info=True)
             return []
 
     def get_mr_url(self) -> str:
         """
-        Get the GitLab URL for the current merge request
+        Get the GitLab URL for the current merge request.
 
         Returns:
-            String containing the full GitLab URL for the merge request
+            str: Full GitLab URL for the merge request
+
+        Example:
+            'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/123'
         """
-        mr_url = f"{self.gitlab_url}/{self.project_path}/-/merge_requests/{self.mr_id}"
-        logger.debug(f"Generated MR URL: {mr_url}")
-        return mr_url
+        return f"{self._gitlab_url}/{self._project_path}/-/merge_requests/{self._mr_id}"
