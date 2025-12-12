@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.46
 created_at: '2025-12-12T01:01:47Z'
-updated_at: '2025-12-12T07:07:13Z'
+updated_at: '2025-12-12T07:08:32Z'
 metadata:
   jira_ticket: ART-14328
   advisory_ids:
@@ -50,4 +50,15 @@ tasks:
     2025-12-12T02:07:12Z: INFO: no push job found for advisory 157179
     2025-12-12T02:07:12Z: INFO: advisory 157179 has blocking advisory []
     2025-12-12T02:07:12Z: INFO: push job for advisory 157179 is triggered
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2025-12-12T02:08:29Z'
+  completed_at: null
+  result: |-
+    2025-12-12T02:08:29Z: INFO: Initialized StateBox for release 4.17.46 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.46.yaml
+    2025-12-12T02:08:30Z: INFO: Loaded state from _releases/4.17/statebox/4.17.46.yaml (SHA: 1906e09b)
+    2025-12-12T02:08:30Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2025-12-12T02:08:30Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.17.46-x86_64
+    2025-12-12T02:08:30Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3464/
+    2025-12-12T02:08:31Z: INFO: sent slack message to <#team-qe-release>
 issues: []
