@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.46
 created_at: '2025-12-12T01:01:47Z'
-updated_at: '2025-12-12T07:08:32Z'
+updated_at: '2025-12-12T07:08:56Z'
 metadata:
   jira_ticket: ART-14328
   advisory_ids:
@@ -61,4 +61,17 @@ tasks:
     2025-12-12T02:08:30Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.17.46-x86_64
     2025-12-12T02:08:30Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3464/
     2025-12-12T02:08:31Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2025-12-12T02:08:51Z'
+  completed_at: null
+  result: |-
+    2025-12-12T02:08:51Z: INFO: Initialized StateBox for release 4.17.46 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.46.yaml
+    2025-12-12T02:08:51Z: INFO: job id is not set, will trigger stage testing
+    2025-12-12T02:08:51Z: INFO: Loaded state from _releases/4.17/statebox/4.17.46.yaml (SHA: ea6b9966)
+    2025-12-12T02:08:53Z: INFO: Found pipeline 13904415 with status manual
+    2025-12-12T02:08:53Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44601738>}
+    2025-12-12T02:08:53Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2025-12-12T02:08:53Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1462/>
+    2025-12-12T02:08:55Z: INFO: sent slack message to <#team-qe-release>
 issues: []
