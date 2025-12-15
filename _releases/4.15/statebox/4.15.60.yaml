@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.60
 created_at: '2025-12-12T02:01:55Z'
-updated_at: '2025-12-12T13:04:09Z'
+updated_at: '2025-12-15T06:21:57Z'
 metadata:
   jira_ticket: ART-14326
   advisory_ids:
@@ -63,4 +63,17 @@ tasks:
     2025-12-12T08:04:08Z: INFO: checking push job status for advisory 157174 ...
     2025-12-12T08:04:08Z: INFO: push job for target <cdn_stage> is COMPLETE
     2025-12-12T08:04:08Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: stage-testing
+  status: In Progress
+  started_at: '2025-12-15T01:21:53Z'
+  completed_at: null
+  result: |-
+    2025-12-15T01:21:53Z: INFO: Initialized StateBox for release 4.15.60 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.60.yaml
+    2025-12-15T01:21:53Z: INFO: job id is not set, will trigger stage testing
+    2025-12-15T01:21:54Z: INFO: Loaded state from _releases/4.15/statebox/4.15.60.yaml (SHA: 6e74fd4c)
+    2025-12-15T01:21:55Z: INFO: Found pipeline 13905400 with status manual
+    2025-12-15T01:21:56Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:44605767>}
+    2025-12-15T01:21:56Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2025-12-15T01:21:56Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1464/>
+    2025-12-15T01:21:57Z: INFO: sent slack message to <#team-qe-release>
 issues: []
