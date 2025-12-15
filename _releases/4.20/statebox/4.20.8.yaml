@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.8
 created_at: '2025-12-11T13:02:54Z'
-updated_at: '2025-12-15T09:03:12Z'
+updated_at: '2025-12-15T15:45:19Z'
 metadata:
   jira_ticket: ART-14325
   advisory_ids:
@@ -96,3 +96,16 @@ issues:
   related_tasks:
   - stage-testing
   resolved_at: '2025-12-12T20:33:14Z'
+- issue: 'Stage-testing pipeline #1463 fails with LSO (Local Storage Operator) test
+    failures. Root causes: (1) Race condition - catalogsource not ready before operator
+    deployment (use_stage_index_catalogsource.sh doesn''t wait for qe-app-registry
+    to be READY), (2) Silent failure - deploy_lso_stage.sh prints error but exits
+    with success code. Flexy-install #364202 incorrectly reports SUCCESS while Runner
+    jobs #1117078/#1117079 fail with missing storageclasses ''local-storage-sc'' and
+    ''local-storage-set-sc''. Issue affects all versions (4.6-4.22).'
+  reported_at: '2025-12-15T15:45:19Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - stage-testing
