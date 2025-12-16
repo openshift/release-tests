@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.8
 created_at: '2025-12-11T13:02:54Z'
-updated_at: '2025-12-16T01:03:34Z'
+updated_at: '2025-12-16T01:04:55Z'
 metadata:
   jira_ticket: ART-14325
   advisory_ids:
@@ -85,6 +85,17 @@ tasks:
   completed_at: '2025-12-12T08:31:16Z'
   result: 'All blocking tests passed BO3 verification. Build: 4.20.8. 3/3 jobs successful
     (upgrade-from-stable-4.19-aws-ipi, upgrade-from-stable-4.20-azure-ipi-fips, upgrade-from-stable-4.20-gcp-ipi)'
+- name: image-signed-check
+  status: Pass
+  started_at: '2025-12-15T20:04:29Z'
+  completed_at: '2025-12-15T20:04:55Z'
+  result: |-
+    2025-12-15T20:04:29Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2025-12-15T20:04:29Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.8
+    2025-12-15T20:04:32Z: INFO: Image Digest: sha256:91606a5f04331ed3293f71034d4f480e38645560534805fe5a821e6b64a3f203
+    2025-12-15T20:04:32Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=91606a5f04331ed3293f71034d4f480e38645560534805fe5a821e6b64a3f203/signature-1
+    2025-12-15T20:04:55Z: INFO: Signature check PASSED
+    2025-12-15T20:04:55Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'GitLab pipeline timeout: Konflux API (api.kflux-ocp-p01.7ayg.p1.openshiftapps.com)
     unreachable - blocking stage release'
