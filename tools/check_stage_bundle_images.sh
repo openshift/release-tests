@@ -111,7 +111,7 @@ fi
 
 # Step 1: Render FBC catalog and extract latest bundle images from each channel
 echo "[1/4] Extracting latest bundle images from FBC catalog..."
-if ! opm render "$INDEX_IMAGE" > "$OUTPUT_DIR/catalog.json" 2>"$OUTPUT_DIR/opm_error.log"; then
+if ! opm render --skip-tls-verify "$INDEX_IMAGE" > "$OUTPUT_DIR/catalog.json" 2>"$OUTPUT_DIR/opm_error.log"; then
   echo "Error: Failed to render FBC catalog"
   echo "Details:"
   cat "$OUTPUT_DIR/opm_error.log"
