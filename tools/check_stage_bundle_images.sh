@@ -120,7 +120,8 @@ fi
 
 # Extract channel heads (latest bundles) from FBC catalog
 # For each channel, find the head bundle (not replaced by any other)
-cat "$OUTPUT_DIR/catalog.json" | jq -r '
+# Note: opm render outputs JSON Lines (one object per line), so use -s to slurp into array
+cat "$OUTPUT_DIR/catalog.json" | jq -s -r '
   # First pass: collect all bundles with their images
   [.[] | select(.schema == "olm.bundle") | {name: .name, image: .image}] as $bundles |
 
