@@ -393,7 +393,65 @@ PULL_SPEC=quay.io/openshift-release-dev/ocp-release:4.15.59-x86_64
 
 When stage-pipeline fails, follow these steps:
 
-1. **Identify Failed Child Job**:
+1. **Check Bundle Image Availability** (ALWAYS RUN THIS FIRST):
+
+   Stage testing failures may be caused by missing operator bundle images in registry.stage.redhat.io.
+
+   **Extract OCP version from job parameters**:
+   ```bash
+   # Get PULL_SPEC or PAYLOAD_URL parameter (e.g., "quay.io/openshift-release-dev/ocp-release:4.20.1-x86_64")
+   # Extract major.minor version (e.g., "4.20")
+   VERSION=$(curl -s "{api_url}" | jq -r '.actions[] | select(._class=="hudson.model.ParametersAction") | .parameters[] | select(.name=="PULL_SPEC" or .name=="PAYLOAD_URL") | .value' | grep -oE '[0-9]+\.[0-9]+' | head -1)
+   ```
+
+   **Run bundle availability check**:
+   ```bash
+   # From release-tests repository root
+   ./tools/check_stage_bundle_images.sh ${VERSION}
+   ```
+
+   **Include in analysis output**:
+
+   If bundles are missing (exit code 1):
+   ```markdown
+   ## Bundle Image Availability Check
+
+   **Version**: {version}
+   **Status**: ❌ Missing bundles detected
+
+   **Missing Operator Bundles** ({count}):
+   - {operator-name-1}
+   - {operator-name-2}
+   - {operator-name-3}
+   ...
+
+   **Report**: {/tmp/stage-bundle-check-YYYYMMDD-HHMMSS/MISSING_REPORT.txt}
+
+   **Impact**: These operator bundle images are missing from registry.stage.redhat.io.
+   This may cause operator installation failures if tests require these operators.
+
+   **Action Required**:
+   - Share MISSING_REPORT.txt with ART team
+   - File ticket to mirror missing bundles to stage registry
+   ```
+
+   If all bundles available (exit code 0):
+   ```markdown
+   ## Bundle Image Availability Check
+
+   **Version**: {version}
+   **Status**: ✅ All latest bundles available
+
+   All {count} operator bundle images are properly mirrored to stage registry.
+   ```
+
+   **IMPORTANT**:
+   - Do NOT attempt automatic correlation between missing bundles and test failures
+   - Report missing bundles as a separate finding
+   - Continue with normal test failure analysis below
+   - Let user determine if missing bundles are related to specific test failures
+
+2. **Identify Failed Child Job**:
    - Search for `completed: FAILURE` or `completed: UNSTABLE`
    - Example: `Build ocp-common » Runner #1116884 completed: FAILURE`
    - Note the child job name and build number
