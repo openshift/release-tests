@@ -31,13 +31,49 @@
           "jobStartTime": "2025-12-16T22:21:12Z",
           "jobID": "561dd41d-1eb7-4b6e-8d77-7eac0b624f21",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-aws-ipi-f999/2001055035269582848",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-17T00:45:41Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 55,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 6,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-Critical-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-12-16T22:21:17Z",
           "jobID": "0f6ae0e6-f930-45f7-8493-783b1e5d5515",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-aws-ipi-f999/2001055056501149696",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-17T00:36:21Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 55,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-networking] SDN sriov installation LEVEL0-Author:zzhao-Critical-55957-Sriov operator can be setup "
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -152,5 +188,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2025-12-16-134647",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2025-12-16-134647"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
