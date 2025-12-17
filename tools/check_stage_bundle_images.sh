@@ -2,8 +2,11 @@
 #
 # check_stage_bundle_images.sh - Troubleshooting tool for stage testing failures
 #
-# This script verifies that all operator bundle images from the FBC catalog
-# are available in registry.stage.redhat.io
+# This script verifies that the latest operator bundle images (channel heads)
+# from the FBC catalog are available in registry.stage.redhat.io
+#
+# NOTE: Only checks the latest bundle for each operator channel, not all
+#       historical versions, as OLM only installs the latest bundles.
 #
 # WHEN TO USE:
 #   Run this script when stage testing job fails to check if missing bundle
@@ -106,8 +109,8 @@ if [ ${#MISSING_TOOLS[@]} -gt 0 ]; then
   exit 1
 fi
 
-# Step 1: Render FBC catalog and extract bundle images
-echo "[1/4] Extracting bundle images from FBC catalog..."
+# Step 1: Render FBC catalog and extract latest bundle images from each channel
+echo "[1/4] Extracting latest bundle images from FBC catalog..."
 if ! opm render "$INDEX_IMAGE" > "$OUTPUT_DIR/catalog.json" 2>"$OUTPUT_DIR/opm_error.log"; then
   echo "Error: Failed to render FBC catalog"
   echo "Details:"
@@ -115,17 +118,30 @@ if ! opm render "$INDEX_IMAGE" > "$OUTPUT_DIR/catalog.json" 2>"$OUTPUT_DIR/opm_e
   exit 1
 fi
 
-cat "$OUTPUT_DIR/catalog.json" | \
-  jq -r 'select(.image != null) | .image' | \
-  grep 'registry.redhat.io' | \
-  sort -u > "$OUTPUT_DIR/all_bundles.txt"
+# Extract channel heads (latest bundles) from FBC catalog
+# For each channel, find the head bundle (not replaced by any other)
+cat "$OUTPUT_DIR/catalog.json" | jq -r '
+  # First pass: collect all bundles with their images
+  [.[] | select(.schema == "olm.bundle") | {name: .name, image: .image}] as $bundles |
+
+  # Second pass: for each channel, find head bundles
+  [.[] | select(.schema == "olm.channel") |
+    # Get all bundle names that replace others
+    (.entries // [] | map(.replaces // empty)) as $replaced |
+    # Find bundles not in the replaced list (these are heads)
+    .entries // [] | map(select(.name as $n | $replaced | index($n) | not)) | .[].name
+  ] as $heads |
+
+  # Map head bundle names to images
+  $bundles[] | select(.name as $n | $heads | index($n)) | .image
+' | grep 'registry.redhat.io' | sort -u > "$OUTPUT_DIR/all_bundles.txt"
 
 TOTAL_BUNDLES=$(wc -l < "$OUTPUT_DIR/all_bundles.txt")
-echo "✓ Found $TOTAL_BUNDLES unique bundle images"
+echo "✓ Found $TOTAL_BUNDLES latest bundle images (channel heads)"
 echo ""
 
 if [ "$TOTAL_BUNDLES" -eq 0 ]; then
-  echo "Warning: No bundle images found in FBC catalog"
+  echo "Warning: No latest bundle images found in FBC catalog"
   echo "This might indicate an issue with the index image or FBC catalog"
   exit 0
 fi
@@ -136,6 +152,7 @@ echo ""
 
 MISSING_FILE="$OUTPUT_DIR/missing_bundles.txt"
 AVAILABLE_FILE="$OUTPUT_DIR/available_bundles.txt"
+ALL_BUNDLES_FILE="$OUTPUT_DIR/all_bundles.txt"
 > "$MISSING_FILE"
 > "$AVAILABLE_FILE"
 
@@ -167,7 +184,7 @@ while IFS= read -r original_image; do
     MISSING_COUNT=$((MISSING_COUNT + 1))
   fi
   echo ""
-done < "$OUTPUT_DIR/all_bundles.txt"
+done < "$ALL_BUNDLES_FILE"
 
 # Step 3: Generate summary
 echo "[3/4] Summary"
@@ -193,9 +210,9 @@ if [ "$MISSING_COUNT" -gt 0 ]; then
 
   echo ""
   echo "Detailed report saved to:"
-  echo "  All bundles:      $OUTPUT_DIR/all_bundles.txt"
-  echo "  Available:        $OUTPUT_DIR/available_bundles.txt"
-  echo "  Missing:          $OUTPUT_DIR/missing_bundles.txt"
+  echo "  Latest bundles:   $ALL_BUNDLES_FILE"
+  echo "  Available:        $AVAILABLE_FILE"
+  echo "  Missing:          $MISSING_FILE"
   echo ""
 
   # Create human-readable missing report
