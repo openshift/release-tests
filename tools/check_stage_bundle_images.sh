@@ -119,21 +119,19 @@ if ! opm render "$INDEX_IMAGE" > "$OUTPUT_DIR/catalog.json" 2>"$OUTPUT_DIR/opm_e
 fi
 
 # Extract channel heads (latest bundles) from FBC catalog
-# For each channel, find the head bundle (not replaced by any other)
+# For each package/channel combination, get the last entry (latest bundle)
 # Note: opm render outputs JSON Lines (one object per line), so use -s to slurp into array
 cat "$OUTPUT_DIR/catalog.json" | jq -s -r '
-  # First pass: collect all bundles with their images
+  # Collect bundle name to image mapping
   [.[] | select(.schema == "olm.bundle") | {name: .name, image: .image}] as $bundles |
 
-  # Second pass: for each channel, find head bundles
+  # For each channel, get the last entry (head of the channel)
+  # In FBC, entries are ordered and the last one is the latest
   [.[] | select(.schema == "olm.channel") |
-    # Get all bundle names that replace others
-    (.entries // [] | map(.replaces // empty)) as $replaced |
-    # Find bundles not in the replaced list (these are heads)
-    .entries // [] | map(select(.name as $n | $replaced | index($n) | not)) | .[].name
+    .entries[-1].name  # Get the last entry in the channel
   ] as $heads |
 
-  # Map head bundle names to images
+  # Map head bundle names to their images
   $bundles[] | select(.name as $n | $heads | index($n)) | .image
 ' | grep 'registry.redhat.io' | sort -u > "$OUTPUT_DIR/all_bundles.txt"
 
