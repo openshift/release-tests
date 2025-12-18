@@ -85,13 +85,12 @@ class ImageConsistencyChecker:
         resp = requests.get(url)
         if resp.ok:
             resp_data = resp.json()
-            if resp_data["total"] == 1:
+            if resp_data["total"] > 0:
                 logger.info(f"Image {payload_pullspec} found in Red Hat catalog.")
+                for data in resp_data["data"]:
+                    for repo in data["repositories"]:
+                        logger.info(f"Repository: {repo["registry"]}/{repo["repository"]}")
                 return True
-            elif resp_data["total"] > 1:
-                # FIXME: If multiple images are found, should we fail the check?
-                logger.error(f"Multiple images found in Red Hat catalog. Please check manually.")
-                return False
             else:
                 logger.error(f"No image found in Red Hat catalog.")
                 return False
