@@ -41,7 +41,7 @@ Log Isolation:
 - Each request gets isolated log output even under high load
 
 Tools exposed:
-- 11 OAR CLI commands (create-test-report, take-ownership, update-bug-list, etc.)
+- 8 OAR CLI commands (create-test-report, take-ownership, image-consistency-check, etc.)
 - 2 oarctl commands (start-release-detector, jira-notificator)
 - 6 jobctl commands (start-controller, trigger-jobs-for-build, start-aggregator, etc.)
 - 1 job command (run)
@@ -49,7 +49,7 @@ Tools exposed:
 - 4 issue management tools (add-issue, resolve-issue, get-issues, get-task-blocker)
 - 3 cache management tools (mcp_cache_stats, mcp_cache_invalidate, mcp_cache_warm)
 
-Total: 31 tools (100% optimized - all CLI commands use direct Click invocation)
+Total: 28 tools (100% optimized - all CLI commands use direct Click invocation)
 
 Performance Characteristics:
 - ConfigStore cache hit: <10ms (3x-100x faster than miss)
@@ -649,23 +649,6 @@ async def invoke_cli_command_async(command_func, args: list[str]) -> dict:
 # ============================================================================
 
 @mcp.tool()
-async def oar_check_greenwave_cvp_tests(release: str) -> str:
-    """
-    Check Greenwave CVP test status for a z-stream release.
-
-    This is a READ-ONLY operation - it only queries test status.
-
-    Args:
-        release: Z-stream release version (e.g., "4.19.1")
-
-    Returns:
-        Test status information from Greenwave
-    """
-    result = await invoke_oar_command_async(release, "check-greenwave-cvp-tests", [])
-    return format_result(result)
-
-
-@mcp.tool()
 async def oar_check_cve_tracker_bug(release: str, notify: bool = False) -> str:
     """
     Check CVE tracker bug coverage for a z-stream release.
@@ -796,29 +779,6 @@ async def oar_take_ownership(release: str, email: str) -> str:
 
 
 @mcp.tool()
-async def oar_update_bug_list(release: str, notify: bool = True) -> str:
-    """
-    Synchronize bug list from advisory to Jira and Google Sheets.
-
-    ⚠️ WRITE OPERATION: Updates Jira issues and Google Sheets.
-
-    NOTE: This command is not needed in Konflux release flow.
-    Kept for backward compatibility with Errata flow releases.
-    Task status is automatically tracked in StateBox via cli_result_callback.
-
-    Args:
-        release: Z-stream release version (e.g., "4.19.1")
-        notify: Send notifications to bug owners (default: True)
-
-    Returns:
-        Bug synchronization results
-    """
-    args = [] if notify else ["--no-notify"]
-    result = await invoke_oar_command_async(release, "update-bug-list", args)
-    return format_result(result)
-
-
-@mcp.tool()
 async def oar_push_to_cdn_staging(release: str) -> str:
     """
     Push release to CDN staging environment.
@@ -833,23 +793,6 @@ async def oar_push_to_cdn_staging(release: str) -> str:
         CDN push operation results
     """
     result = await invoke_oar_command_async(release, "push-to-cdn-staging", [])
-    return format_result(result)
-
-
-@mcp.tool()
-async def oar_drop_bugs(release: str) -> str:
-    """
-    Remove unverified bugs from advisory.
-
-    ⚠️ WRITE OPERATION: Modifies advisory bug list.
-
-    Args:
-        release: Z-stream release version (e.g., "4.19.1")
-
-    Returns:
-        List of dropped bugs
-    """
-    result = await invoke_oar_command_async(release, "drop-bugs", [])
     return format_result(result)
 
 
@@ -1868,8 +1811,8 @@ if __name__ == "__main__":
     logger.info(f"✓ All required credentials configured")
     logger.info(f"✓ Performance: 100% optimized (NO subprocess)")
     logger.info(f"✓ ConfigStore caching: Enabled (TTL=7 days)")
-    logger.info(f"✓ Total tools: 31 (20 CLI + 11 direct API)")
-    logger.info(f"✓ CLI tools: 11 OAR + 2 oarctl + 6 jobctl + 1 job")
+    logger.info(f"✓ Total tools: 28 (17 CLI + 11 direct API)")
+    logger.info(f"✓ CLI tools: 8 OAR + 2 oarctl + 6 jobctl + 1 job")
     logger.info(f"✓ Direct API tools: 4 config + 4 issue + 3 cache")
     logger.info(f"✓ Thread pool: {CLI_THREAD_POOL_SIZE} workers")
     logger.info("=" * 60)
