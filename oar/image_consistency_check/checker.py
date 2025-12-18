@@ -146,8 +146,8 @@ def image_consistency_check(payload_url: str, mr_id: int) -> None:
     Check if images in payload are consistent with images in shipment.
 
     Args:
-        payload-url (str): The URL of the payload
-        mr-id (int): The ID of the merge request
+        payload_url (str): The URL of the payload
+        mr_id (int): The ID of the merge request
     """
     payload = Payload(payload_url)
     shipment = Shipment(mr_id)
