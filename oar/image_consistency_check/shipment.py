@@ -100,11 +100,11 @@ class Shipment:
 
                 logger.info(f"Found {len(components)} components in shipment")
                 for component in components:
-                    container_image = component.get('containerImage')
+                    pullspec = component.get('containerImage')
                     name = component.get('name')
-                    if container_image:
-                        logger.info(f"Found pullspec for component {name}: {container_image}")
-                        all_pullspecs.append(container_image)
+                    if pullspec:
+                        logger.info(f"Found pullspec for component {name}: {pullspec}")
+                        all_pullspecs.append(pullspec)
 
             return all_pullspecs
 
