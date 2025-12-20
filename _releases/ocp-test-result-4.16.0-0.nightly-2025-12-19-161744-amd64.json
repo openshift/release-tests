@@ -68,7 +68,31 @@
           "jobStartTime": "2025-12-20T00:23:12Z",
           "jobID": "76c8aa22-ef67-4053-a3f0-9ef5eba01f2b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2002172898738966528",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-20T03:36:44Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 103,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_Router Author:aiyengar-ROSA-OSD_CCS-ARO-LEVEL0-High-41042-The Power-of-two balancing features defaults to random LB algorithm instead of leastconn for REEN/Edge/insecure routes"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-12-20T00:23:17Z",
@@ -177,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2025-12-19-161744",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2025-12-19-161744"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
