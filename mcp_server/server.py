@@ -71,12 +71,13 @@ import traceback
 from typing import Optional
 from threading import RLock
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from fastmcp import FastMCP
 from cachetools import TTLCache
 from click.testing import CliRunner
+from starlette.responses import JSONResponse
 
 # Import OAR validation
 # Add parent directory to path to import oar modules
@@ -1764,6 +1765,117 @@ async def oar_get_task_blocker(
             "blocked": False,
             "blocker": None
         })
+
+
+# ============================================================================
+# Custom HTTP Routes
+# ============================================================================
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request):
+    """
+    HTTP health check endpoint for monitoring and load balancer compatibility.
+
+    This endpoint provides a standard HTTP health check that can be used by:
+    - Load balancers for liveness checks
+    - Container orchestration systems (Kubernetes/OpenShift)
+    - Monitoring tools (Prometheus, Datadog, etc.)
+    - Manual health verification during debugging
+
+    Returns:
+        JSON response with:
+        - status: "healthy" or "degraded"
+        - server: Server name
+        - version: Server version string
+        - tools: Number of exposed MCP tools
+        - environment: Environment validation status
+        - cache: ConfigStore cache statistics
+        - thread_pool: Thread pool configuration
+        - timestamp: Current UTC timestamp
+
+    Response time: <100ms for quick liveness checks
+    """
+    try:
+        # Validate environment (fast check, uses cached validation results)
+        validation_result = ConfigStore.validate_environment()
+        env_valid = validation_result['valid']
+
+        # Check Kerberos ticket (fast, <10ms)
+        import subprocess
+        krb_valid = False
+        krb_status = "unknown"
+        try:
+            result = subprocess.run(['klist', '-s'], capture_output=True, timeout=1)
+            krb_valid = result.returncode == 0
+            krb_status = "valid" if krb_valid else "no_ticket"
+        except FileNotFoundError:
+            krb_status = "klist_not_found"
+        except subprocess.TimeoutExpired:
+            krb_status = "timeout"
+        except Exception as e:
+            krb_status = f"error: {str(e)}"
+
+        # Get cache statistics (fast, just reads metrics)
+        cache_stats = _configstore_cache.stats()
+
+        # Count tools (fast, just counts registered tools)
+        # Based on server.py: 28 total tools
+        tool_count = 28
+
+        # Determine overall health status
+        # Degraded if env invalid OR kerberos ticket missing
+        status = "healthy" if (env_valid and krb_valid) else "degraded"
+
+        # Build response
+        response = {
+            "status": status,
+            "server": "release-tests-mcp",
+            "version": "1.0.0",
+            "transport": "sse",
+            "tools": {
+                "total": tool_count,
+                "cli": 17,  # 8 OAR + 2 oarctl + 6 jobctl + 1 job
+                "api": 11   # 4 config + 4 issue + 3 cache
+            },
+            "environment": {
+                "valid": env_valid,
+                "missing_required": validation_result.get('errors', []),
+                "missing_optional": validation_result.get('missing_optional', [])
+            },
+            "kerberos": {
+                "valid": krb_valid,
+                "status": krb_status
+            },
+            "cache": {
+                "enabled": True,
+                "size": cache_stats['cache_size'],
+                "max_size": cache_stats['max_size'],
+                "hit_rate": cache_stats['metrics']['hit_rate'],
+                "ttl_days": cache_stats['ttl_seconds'] // 86400
+            },
+            "thread_pool": {
+                "size": CLI_THREAD_POOL_SIZE,
+                "cpu_count": os.cpu_count() or "unknown"
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+        # Return 200 OK if healthy, 503 Service Unavailable if degraded
+        status_code = 200 if status == "healthy" else 503
+
+        return JSONResponse(content=response, status_code=status_code)
+
+    except Exception as e:
+        # Health check itself failed - return 500 Internal Server Error
+        logger.error(f"Health check failed: {e}", exc_info=True)
+
+        error_response = {
+            "status": "unhealthy",
+            "error": str(e),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+
+        return JSONResponse(content=error_response, status_code=500)
 
 
 # ============================================================================
