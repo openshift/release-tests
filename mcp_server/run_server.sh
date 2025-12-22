@@ -22,7 +22,7 @@ echo "Release Tests MCP Server"
 echo "==============================================="
 echo "Host: $HOST"
 echo "Port: $PORT"
-echo "URL:  http://$HOST:$PORT/sse"
+echo "URL:  http://$HOST:$PORT/mcp"
 echo "==============================================="
 echo
 
@@ -62,5 +62,5 @@ host = os.environ.get('MCP_HOST', '127.0.0.1')
 port = int(os.environ.get('MCP_PORT', '8000'))
 
 print(f'Server starting on http://{host}:{port}')
-mcp.run(transport='sse', host=host, port=port)
+mcp.run(transport='http', host=host, port=port)
 "

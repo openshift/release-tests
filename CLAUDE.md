@@ -195,7 +195,7 @@ The MCP (Model Context Protocol) server (`mcp_server/server.py`) exposes OAR com
 - Provides structured input/output for AI agent interaction
 - Categorizes operations by safety (read-only, write, critical)
 - Validates environment on startup
-- Runs as HTTP server (SSE transport) for remote access
+- Runs as HTTP server (standard MCP transport protocol) for remote access
 - Uses **direct Click invocation** (70-90% faster than subprocess)
 - Implements **async concurrency** via ThreadPoolExecutor for handling multiple AI agent requests simultaneously
 
@@ -222,8 +222,11 @@ cd mcp_server
 # Start server (default: localhost:8000)
 python3 server.py
 
-# For remote access
-# Edit server.py line 759: mcp.run(transport="sse", host="0.0.0.0", port=8080)
+# For remote access (using run_server.sh)
+./run_server.sh 0.0.0.0 8080
+
+# Or edit server.py line 1936 directly:
+# mcp.run(transport="http", host="0.0.0.0", port=8080)
 ```
 
 **Health check endpoint:**
@@ -239,7 +242,7 @@ curl http://localhost:8000/health
   "status": "healthy",
   "server": "release-tests-mcp",
   "version": "1.0.0",
-  "transport": "sse",
+  "transport": "http",
   "tools": {
     "total": 28,
     "cli": 17,
@@ -295,6 +298,37 @@ curl http://localhost:8000/health
 - Read-only operations for safe exploration
 - Timeout handling (default 10 minutes)
 - Structured error reporting
+
+**Client configuration:**
+
+For Claude Code CLI, configure the MCP server in `~/.claude.json`:
+
+```json
+{
+  "mcpServers": {
+    "release-tests": {
+      "transport": {
+        "type": "http",
+        "url": "http://localhost:8000/mcp"
+      }
+    }
+  }
+}
+```
+
+For remote servers:
+```json
+{
+  "mcpServers": {
+    "release-tests": {
+      "transport": {
+        "type": "http",
+        "url": "http://your-server-hostname:8000/mcp"
+      }
+    }
+  }
+}
+```
 
 **Development notes:**
 - Built with FastMCP framework
