@@ -76,13 +76,58 @@
           "jobStartTime": "2025-12-22T16:21:28Z",
           "jobID": "a05bd3e4-fe6b-45fe-8eed-8e5655e6e74b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2003138830521077760",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2025-12-22T19:11:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 81,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-operators] OLM should ConnectedOnly-Author:jiazha-LEVEL0-Critical-22070-support grpc sourcetype [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2025-12-22T16:21:33Z",
           "jobID": "04c2488f-471e-4e89-8bd4-12f41a6e89f9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2003138852155297792",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2025-12-22T18:40:00Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 81,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 23
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -148,5 +193,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.14.0-0.nightly-2025-12-22-025502",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.14.0-0.nightly-2025-12-22-025502"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
