@@ -226,6 +226,60 @@ python3 server.py
 # Edit server.py line 759: mcp.run(transport="sse", host="0.0.0.0", port=8080)
 ```
 
+**Health check endpoint:**
+
+The server exposes an HTTP health check endpoint at `/health` for monitoring and load balancer compatibility:
+
+```bash
+# Check server health
+curl http://localhost:8000/health
+
+# Example response (200 OK if healthy, 503 if degraded):
+{
+  "status": "healthy",
+  "server": "release-tests-mcp",
+  "version": "1.0.0",
+  "transport": "sse",
+  "tools": {
+    "total": 28,
+    "cli": 17,
+    "api": 11
+  },
+  "environment": {
+    "valid": true,
+    "missing_required": [],
+    "missing_optional": []
+  },
+  "kerberos": {
+    "valid": true,
+    "status": "valid"
+  },
+  "cache": {
+    "enabled": true,
+    "size": 0,
+    "max_size": 50,
+    "hit_rate": "0.00%",
+    "ttl_days": 7
+  },
+  "thread_pool": {
+    "size": 20,
+    "cpu_count": 10
+  },
+  "timestamp": "2025-12-22T10:30:00Z"
+}
+```
+
+**Use cases:**
+- Load balancer liveness checks
+- Container orchestration health probes (Kubernetes/OpenShift)
+- Monitoring tools (Prometheus, Datadog, etc.)
+- Manual health verification during debugging
+
+**Response codes:**
+- `200 OK` - Server is healthy (all required environment variables configured AND valid Kerberos ticket)
+- `503 Service Unavailable` - Server is degraded (missing required environment variables OR no Kerberos ticket)
+- `500 Internal Server Error` - Health check itself failed (unexpected error)
+
 **Environment requirements:**
 - All OAR CLI environment variables (OAR_JWK, JIRA_TOKEN, GCP_SA_FILE, etc.)
 - Server validates environment on startup and exits if critical vars missing
