@@ -3,7 +3,7 @@
 Release Tests MCP Server
 
 Exposes OAR, oarctl, job, and jobctl commands as MCP tools for use by AI agents.
-Runs in SSE mode - accessible as HTTP server for remote access.
+Runs in HTTP mode - standard MCP transport protocol for remote access.
 
 Performance: Direct Click invocation (NO subprocess overhead)
 - 70-90% faster than subprocess-based approach
@@ -1831,7 +1831,7 @@ async def health_check(request):
             "status": status,
             "server": "release-tests-mcp",
             "version": "1.0.0",
-            "transport": "sse",
+            "transport": "http",
             "tools": {
                 "total": tool_count,
                 "cli": 17,  # 8 OAR + 2 oarctl + 6 jobctl + 1 job
@@ -1919,7 +1919,7 @@ if __name__ == "__main__":
     logger.info("Starting Release Tests MCP Server (Optimized)")
     logger.info("=" * 60)
     logger.info(f"✓ Environment validation: PASSED")
-    logger.info(f"✓ Transport: SSE (HTTP)")
+    logger.info(f"✓ Transport: HTTP (Streamable)")
     logger.info(f"✓ All required credentials configured")
     logger.info(f"✓ Performance: 100% optimized (NO subprocess)")
     logger.info(f"✓ ConfigStore caching: Enabled (TTL=7 days)")
@@ -1930,10 +1930,10 @@ if __name__ == "__main__":
     logger.info("=" * 60)
 
     # Run MCP server with graceful shutdown handling
-    # Default: host=127.0.0.1, port=8000
-    # For remote access, override with: mcp.run(transport="sse", host="0.0.0.0", port=8080)
+    # Default: host=127.0.0.1, port=8000, path=/mcp
+    # For remote access, override with: mcp.run(transport="http", host="0.0.0.0", port=8080)
     try:
-        mcp.run(transport="sse")
+        mcp.run(transport="http")
     except KeyboardInterrupt:
         logger.info("Received shutdown signal (Ctrl+C)")
     finally:
