@@ -1035,20 +1035,29 @@ async def oar_get_release_metadata(release: str) -> str:
     try:
         cs = get_cached_configstore(release)
 
+        # Build metadata dict with safe fallbacks for optional fields
         metadata = {
             "release": release,
             "advisories": cs.get_advisories() or {},
             "jira_ticket": cs.get_jira_ticket() or "",
             "candidate_builds": cs.get_candidate_builds() or {},
             "shipment_mr": cs.get_shipment_mr() or "",
-            "release_date": cs.get_release_date(),
         }
+
+        # release_date is optional and may not exist for all releases
+        try:
+            metadata["release_date"] = cs.get_release_date()
+        except BaseException:
+            metadata["release_date"] = ""
 
         return json.dumps(metadata)
 
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to get release metadata: {e}")
-        return f"Error: {str(e)}"
+        return json.dumps({
+            "error": str(e),
+            "release": release
+        })
 
 
 @mcp.tool()
@@ -1086,7 +1095,7 @@ async def oar_is_release_shipped(release: str) -> str:
 
         return json.dumps(result)
 
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to check release shipment status: {e}")
         return json.dumps({
             "error": str(e),
@@ -1163,7 +1172,7 @@ async def oar_get_release_status(release: str) -> str:
 
         return json.dumps(result)
 
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to get release status: {e}")
         return json.dumps({
             "source": "error",
@@ -1289,7 +1298,7 @@ async def oar_update_task_status(release: str, task_name: str, status: str, resu
             **result_info
         })
 
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to update task status: {e}")
         return json.dumps({
             "success": False,
@@ -1324,7 +1333,7 @@ async def mcp_cache_stats() -> str:
     try:
         stats = _configstore_cache.stats()
         return json.dumps(stats)
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to get cache stats: {e}")
         return json.dumps({"error": str(e)})
 
@@ -1361,7 +1370,7 @@ async def mcp_cache_invalidate(release: Optional[str] = None) -> str:
             "message": message,
             "release": release if release else "all"
         })
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to invalidate cache: {e}")
         return json.dumps({
             "success": False,
@@ -1408,7 +1417,7 @@ async def mcp_cache_warm(releases: str) -> str:
             "message": f"Cache warmed with {len(release_list)} releases",
             "releases": release_list
         })
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Failed to warm cache: {e}")
         return json.dumps({
             "success": False,
@@ -1506,7 +1515,7 @@ async def oar_add_issue(
             "error": str(e),
             "release": release
         })
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Unexpected error adding issue: {e}")
         return json.dumps({
             "success": False,
@@ -1578,7 +1587,7 @@ async def oar_resolve_issue(
             "error": str(e),
             "release": release
         })
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Unexpected error resolving issue: {e}")
         return json.dumps({
             "success": False,
@@ -1665,7 +1674,7 @@ async def oar_get_issues(
             "count": 0,
             "issues": []
         })
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Unexpected error getting issues: {e}")
         return json.dumps({
             "success": False,
@@ -1755,7 +1764,7 @@ async def oar_get_task_blocker(
             "blocked": False,
             "blocker": None
         })
-    except Exception as e:
+    except BaseException as e:
         logger.error(f"Unexpected error getting task blocker: {e}")
         return json.dumps({
             "success": False,
@@ -1919,7 +1928,7 @@ if __name__ == "__main__":
     logger.info("Starting Release Tests MCP Server (Optimized)")
     logger.info("=" * 60)
     logger.info(f"✓ Environment validation: PASSED")
-    logger.info(f"✓ Transport: HTTP (Streamable)")
+    logger.info(f"✓ Transport: Streamable HTTP")
     logger.info(f"✓ All required credentials configured")
     logger.info(f"✓ Performance: 100% optimized (NO subprocess)")
     logger.info(f"✓ ConfigStore caching: Enabled (TTL=7 days)")
