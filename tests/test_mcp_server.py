@@ -28,7 +28,7 @@ import warnings
 
 try:
     from mcp import ClientSession
-    from mcp.client.streamable_http import streamablehttp_client
+    from mcp.client.streamable_http import streamable_http_client
     import httpx
 except ImportError:
     print("ERROR: MCP client library not installed")
@@ -245,7 +245,7 @@ class TestMCPServer(unittest.IsolatedAsyncioTestCase):
             self.skipTest("MCP server is not running")
 
         # Connect to server using HTTP transport
-        self.http_context = streamablehttp_client(url=self.server_url)
+        self.http_context = streamable_http_client(url=self.server_url)
         self.read, self.write, _ = await self.http_context.__aenter__()
 
         # Create session
@@ -385,7 +385,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
 
         async def connect_client(client_id):
             """Connect a single client and call cache_stats"""
-            async with streamablehttp_client(url=self.server_url) as (read, write, _):
+            async with streamable_http_client(url=self.server_url) as (read, write, _):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
 
@@ -420,7 +420,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
 
         async def client_workflow(client_id, tool_name):
             """Single client making a tool call"""
-            async with streamablehttp_client(url=self.server_url) as (read, write, _):
+            async with streamable_http_client(url=self.server_url) as (read, write, _):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
 
@@ -463,7 +463,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
 
         async def get_cache_stats(_client_id):
             """Get cache stats from single client"""
-            async with streamablehttp_client(url=self.server_url) as (read, write, _):
+            async with streamable_http_client(url=self.server_url) as (read, write, _):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     result = await session.call_tool('mcp_cache_stats', arguments={})
@@ -495,7 +495,7 @@ class TestMCPServerErrorHandling(unittest.IsolatedAsyncioTestCase):
         if _server_process is None and not os.getenv("MCP_SERVER_URL"):
             self.skipTest("MCP server is not running")
 
-        async with streamablehttp_client(url=self.server_url) as (read, write, _):
+        async with streamable_http_client(url=self.server_url) as (read, write, _):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
@@ -544,7 +544,7 @@ class TestMCPServerStateBoxIntegration(unittest.IsolatedAsyncioTestCase):
         from oar.core.statebox import StateBox
         from datetime import datetime, timezone
 
-        async with streamablehttp_client(url=self.server_url) as (read, write, _):
+        async with streamable_http_client(url=self.server_url) as (read, write, _):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
