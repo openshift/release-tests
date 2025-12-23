@@ -1931,9 +1931,9 @@ if __name__ == "__main__":
 
     # Run MCP server with graceful shutdown handling
     # Default: host=127.0.0.1, port=8000, path=/mcp
-    # For remote access, override with: mcp.run(transport="http", host="0.0.0.0", port=8080)
+    # For remote access, override with: mcp.run(transport="streamable-http", host="0.0.0.0", port=8080)
     try:
-        mcp.run(transport="http")
+        mcp.run(transport="streamable-http")
     except KeyboardInterrupt:
         logger.info("Received shutdown signal (Ctrl+C)")
     finally:

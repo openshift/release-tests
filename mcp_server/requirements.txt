@@ -1,10 +1,13 @@
 # MCP Server Dependencies
 
-# FastMCP - MCP protocol implementation with SSE support
-fastmcp>=0.1.0
+# FastMCP - MCP protocol implementation with HTTP transport support
+# Version 2.14.1+ required for proper task group initialization with streamable-http
+fastmcp>=2.14.1
 
-# MCP client library (for testing)
-mcp>=0.1.0
+# MCP client library (for HTTP transport client)
+# Version 1.25.0+ includes fixes for streamable-http task group issues (PR #841)
+mcp>=1.25.0
 
 # ConfigStore caching for performance optimization
-cachetools>=5.0.0
+# Pin to <6.0 for compatibility with google-auth and streamlit
+cachetools>=5.0.0,<6.0
