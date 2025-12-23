@@ -12,7 +12,7 @@ This guide covers deploying the Release Progress Dashboard as a systemd service 
 2. **Environment Variables** (in `~/.bash_profile` or `~/.bashrc`):
    ```bash
    # Optional: MCP server URL (defaults to localhost:8000)
-   export MCP_SERVER_URL="http://localhost:8000/sse"  # Or remote MCP server URL
+   export MCP_SERVER_URL="http://localhost:8000/mcp"  # Or remote MCP server URL
    ```
 
 3. **Dependencies**:
@@ -25,7 +25,7 @@ This guide covers deploying the Release Progress Dashboard as a systemd service 
 4. **MCP Server**:
    - The dashboard requires the MCP server to be running
    - See `MCP_SERVER_DEPLOYMENT.md` for MCP server deployment
-   - Default MCP server URL: `http://localhost:8000/sse`
+   - Default MCP server URL: `http://localhost:8000/mcp`
 
 ## Installation Steps
 
@@ -55,7 +55,7 @@ WorkingDirectory=/home/your-username/release-tests
 ExecStart=/bin/bash -l -c 'cd /home/your-username/release-tests && ...'
 
 # Optional: Customize MCP server URL if using remote server
-Environment="MCP_SERVER_URL=http://your-mcp-server:8000/sse"
+Environment="MCP_SERVER_URL=http://your-mcp-server:8000/mcp"
 
 # Optional: Change dashboard port (default: 8501)
 Environment="STREAMLIT_SERVER_PORT=8501"
@@ -164,7 +164,7 @@ The service can optionally use environment variables from the user's `.bash_prof
 # ~/.bash_profile or ~/.bashrc
 
 # MCP server URL (optional, defaults to localhost:8000)
-export MCP_SERVER_URL="http://localhost:8000/sse"
+export MCP_SERVER_URL="http://localhost:8000/mcp"
 ```
 
 After modifying environment variables, restart the service:
@@ -227,13 +227,13 @@ sudo journalctl -u release-progress-dashboard.service -n 50
 sudo systemctl status release-tests-mcp.service
 
 # Test MCP server endpoint
-curl http://localhost:8000/sse
+curl http://localhost:8000/mcp
 ```
 
 **Check network connectivity**:
 ```bash
 # If using remote MCP server
-curl http://your-mcp-server:8000/sse
+curl http://your-mcp-server:8000/mcp
 ```
 
 **Review dashboard logs**:

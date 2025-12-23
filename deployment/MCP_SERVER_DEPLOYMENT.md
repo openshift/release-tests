@@ -5,7 +5,7 @@ This guide explains how to deploy the Release Tests MCP server on your VM for re
 ## Architecture
 
 ```
-┌─────────────────┐         HTTP/SSE          ┌─────────────────┐
+┌─────────────────┐           HTTP            ┌─────────────────┐
 │  Your Laptop    │◄─────────────────────────►│   VM Server     │
 │  - Claude Code  │   http://vm-hostname:8000  │  - OAR CLI      │
 │  - Other AI     │                            │  - Credentials  │
@@ -71,7 +71,7 @@ python3 -m mcp.server
 You should see:
 ```
 INFO - Starting Release Tests MCP Server
-INFO - Transport: SSE (HTTP)
+INFO - Transport: streamable-http
 INFO - Running on http://127.0.0.1:8000
 ```
 
@@ -81,10 +81,10 @@ Edit `mcp_server/server.py` and change the last line:
 
 ```python
 # Change from:
-mcp.run(transport="sse")
+mcp.run(transport="streamable-http")
 
 # To (listen on all interfaces):
-mcp.run(transport="sse", sse_params={"host": "0.0.0.0", "port": 8080})
+mcp.run(transport="streamable-http", host="0.0.0.0", port=8080)
 ```
 
 ### 5. Configure Firewall (If Needed)
@@ -190,8 +190,8 @@ Add to your Claude Code MCP settings:
 {
   "mcpServers": {
     "release-tests": {
-      "transport": "sse",
-      "url": "http://your-vm-hostname.redhat.com:8080/sse"
+      "type": "http",
+      "url": "http://your-vm-hostname.redhat.com:8080/mcp"
     }
   }
 }
@@ -203,11 +203,11 @@ Add to your Claude Code MCP settings:
 
 ```python
 from mcp import ClientSession
-from mcp.client.sse import sse_client
+from mcp.client.streamable_http import streamable_http_client
 
-async with sse_client(
-    url="http://your-vm-hostname.redhat.com:8080/sse"
-) as (read, write):
+async with streamable_http_client(
+    url="http://your-vm-hostname.redhat.com:8080/mcp"
+) as (read, write, _):
     async with ClientSession(read, write) as session:
         # List available tools
         tools = await session.list_tools()
@@ -227,16 +227,16 @@ async with sse_client(
 
 ```bash
 # On the VM
-curl http://localhost:8080/sse
+curl http://localhost:8080/mcp
 ```
 
-Should return SSE stream or connection info.
+Should return MCP connection info or server metadata.
 
 ### 2. Test from Your Laptop (Remote)
 
 ```bash
 # On your laptop
-curl http://your-vm-hostname.redhat.com:8080/sse
+curl http://your-vm-hostname.redhat.com:8080/mcp
 ```
 
 Should also connect successfully.
