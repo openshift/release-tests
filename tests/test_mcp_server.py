@@ -13,7 +13,7 @@ Usage:
     python3 tests/test_mcp_server.py TestMCPServer.test_server_connection
 
     # Run with custom server URL (skips auto-start)
-    MCP_SERVER_URL=http://vm-hostname:8080/sse python3 tests/test_mcp_server.py
+    MCP_SERVER_URL=http://vm-hostname:8080/mcp python3 tests/test_mcp_server.py
 """
 
 import asyncio
@@ -28,10 +28,11 @@ import warnings
 
 try:
     from mcp import ClientSession
-    from mcp.client.sse import sse_client
+    from mcp.client.streamable_http import streamablehttp_client
+    import httpx
 except ImportError:
     print("ERROR: MCP client library not installed")
-    print("Install with: pip3 install mcp")
+    print("Install with: pip3 install mcp httpx")
     sys.exit(1)
 
 # Suppress async generator cleanup warnings from MCP client library
@@ -39,11 +40,6 @@ except ImportError:
 warnings.filterwarnings("ignore", category=ResourceWarning)
 warnings.filterwarnings("ignore", message=".*asynchronous generator.*")
 warnings.filterwarnings("ignore", message=".*coroutine.*was never awaited.*")
-
-# Also suppress logging from MCP client SSE reader
-# The "Error in sse_reader" messages are expected when server closes connection
-import logging
-logging.getLogger("mcp.client.sse").setLevel(logging.CRITICAL)
 
 
 # Global server process handle
@@ -238,7 +234,7 @@ class TestMCPServer(unittest.IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test fixtures once for all tests"""
-        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/sse")
+        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/mcp")
         cls.test_release = "4.19.1"
 
     async def asyncSetUp(self):
@@ -248,9 +244,9 @@ class TestMCPServer(unittest.IsolatedAsyncioTestCase):
         if _server_process is None and not os.getenv("MCP_SERVER_URL"):
             self.skipTest("MCP server is not running")
 
-        # Connect to server
-        self.sse_context = sse_client(url=self.server_url)
-        self.read, self.write = await self.sse_context.__aenter__()
+        # Connect to server using HTTP transport
+        self.http_context = streamablehttp_client(url=self.server_url)
+        self.read, self.write, _ = await self.http_context.__aenter__()
 
         # Create session
         self.session_context = ClientSession(self.read, self.write)
@@ -270,7 +266,7 @@ class TestMCPServer(unittest.IsolatedAsyncioTestCase):
                 raise
 
         try:
-            await self.sse_context.__aexit__(None, None, None)
+            await self.http_context.__aexit__(None, None, None)
         except RuntimeError as e:
             if "cancel scope" not in str(e):
                 raise
@@ -296,7 +292,6 @@ class TestMCPServer(unittest.IsolatedAsyncioTestCase):
         expected_tools = [
             'oar_get_release_metadata',
             'mcp_cache_stats',
-            'oar_check_greenwave_cvp_tests',
             'oar_is_release_shipped',
             'oar_get_release_status',
         ]
@@ -379,7 +374,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test fixtures"""
-        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/sse")
+        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/mcp")
 
     async def test_concurrent_client_connections(self):
         """Test that multiple clients can connect simultaneously"""
@@ -390,7 +385,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
 
         async def connect_client(client_id):
             """Connect a single client and call cache_stats"""
-            async with sse_client(url=self.server_url) as (read, write):
+            async with streamablehttp_client(url=self.server_url) as (read, write, _):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
 
@@ -425,7 +420,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
 
         async def client_workflow(client_id, tool_name):
             """Single client making a tool call"""
-            async with sse_client(url=self.server_url) as (read, write):
+            async with streamablehttp_client(url=self.server_url) as (read, write, _):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
 
@@ -468,7 +463,7 @@ class TestMCPServerConcurrency(unittest.IsolatedAsyncioTestCase):
 
         async def get_cache_stats(_client_id):
             """Get cache stats from single client"""
-            async with sse_client(url=self.server_url) as (read, write):
+            async with streamablehttp_client(url=self.server_url) as (read, write, _):
                 async with ClientSession(read, write) as session:
                     await session.initialize()
                     result = await session.call_tool('mcp_cache_stats', arguments={})
@@ -491,7 +486,7 @@ class TestMCPServerErrorHandling(unittest.IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test fixtures"""
-        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/sse")
+        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/mcp")
 
     async def test_invalid_release_version(self):
         """Test handling of invalid release version"""
@@ -500,7 +495,7 @@ class TestMCPServerErrorHandling(unittest.IsolatedAsyncioTestCase):
         if _server_process is None and not os.getenv("MCP_SERVER_URL"):
             self.skipTest("MCP server is not running")
 
-        async with sse_client(url=self.server_url) as (read, write):
+        async with streamablehttp_client(url=self.server_url) as (read, write, _):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
@@ -533,7 +528,7 @@ class TestMCPServerStateBoxIntegration(unittest.IsolatedAsyncioTestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test fixtures"""
-        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/sse")
+        cls.server_url = os.getenv("MCP_SERVER_URL", "http://localhost:8000/mcp")
         # Use a test release version
         cls.test_release = "4.20.5"
 
@@ -549,7 +544,7 @@ class TestMCPServerStateBoxIntegration(unittest.IsolatedAsyncioTestCase):
         from oar.core.statebox import StateBox
         from datetime import datetime, timezone
 
-        async with sse_client(url=self.server_url) as (read, write):
+        async with streamablehttp_client(url=self.server_url) as (read, write, _):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
