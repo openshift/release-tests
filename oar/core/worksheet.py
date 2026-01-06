@@ -58,7 +58,7 @@ class WorksheetManager:
         try:
             self._doc = self._gs.open_by_key(self._cs.get_report_template())
             self._template = self._doc.worksheet("template")
-        except Exception as we:
+        except (Exception, BaseException) as we:
             raise WorksheetException("cannot find template worksheet") from we
 
     def create_test_report(self):

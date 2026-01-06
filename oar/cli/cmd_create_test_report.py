@@ -39,19 +39,18 @@ def create_test_report(ctx):
         logger.warning(f"Unexpected error checking StateBox: {e}")
 
     # StateBox doesn't exist - check if this is old release with existing worksheet
+    # Try to get existing worksheet (will raise exception if doesn't exist)
     try:
         wm = WorksheetManager(cs)
-        # Try to get existing worksheet (will raise exception if doesn't exist)
-        try:
-            existing_report = wm.get_test_report()
-            # Worksheet exists - this is old release, already created before
-            logger.info(f"Found existing worksheet for {cs.release} (old release): {existing_report.get_url()}")
-            return
-        except WorksheetException:
-            # Worksheet doesn't exist - this is new release, will create StateBox
-            logger.info(f"No existing worksheet found, will create StateBox for new release {cs.release}")
-            pass
-
+        existing_report = wm.get_test_report()
+        # Worksheet exists - this is old release, already created before
+        logger.info(f"Found existing worksheet for {cs.release} (old release): {existing_report.get_url()}")
+        return
+    except WorksheetException:
+        # WorksheetManager init failed (no template) or worksheet doesn't exist
+        # This is expected for new releases - will create StateBox
+        logger.info(f"No existing worksheet found, will create StateBox for new release {cs.release}")
+        pass
     except Exception as e:
         logger.warning(f"Failed to check worksheet existence: {e}")
 
