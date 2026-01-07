@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.60
 created_at: '2025-12-12T02:01:55Z'
-updated_at: '2026-01-07T01:50:56Z'
+updated_at: '2026-01-07T01:53:40Z'
 metadata:
   jira_ticket: ART-14326
   advisory_ids:
@@ -106,4 +106,15 @@ tasks:
       2. upgrade-from-stable-4.15-azure-ipi-fips-f999: success
       3. upgrade-from-stable-4.15-gcp-ipi-f999: success
     - No test failures detected
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-01-07T01:53:40Z'
+  completed_at: '2026-01-07T01:53:40Z'
+  result: |-
+    Build 4.15.60 promoted (phase: Accepted) test results verified:
+    - All blocking tests passed BO3 verification (accepted: true)
+    - Test result file: _releases/ocp-test-result-4.15.60-amd64.json
+    - Build promotion confirmed via Release Controller
+    - Same test results as candidate build (no re-triggering needed)
+    - Gate check: PASSED - proceeding to async tasks (image-consistency-check, stage-testing)
 issues: []
