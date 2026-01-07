@@ -21,6 +21,10 @@ from urllib3.util import Retry
 class Jobs:
     """Class Jobs handle Prow job by calling the API"""
 
+     # Polling configuration for job readiness checks
+    POLL_MAX_ATTEMPTS = 5
+    POLL_INTERVAL_SECONDS = 5
+
     def __init__(self):
         self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
@@ -352,14 +356,11 @@ class Jobs:
                 headers=self.get_prow_headers(),
             )
             if res.status_code == 200:
-                # print(res.text)
                 job_id = json.loads(res.text)["id"]
                 print(f"Returned job id: {job_id}")
-                # wait 1s for the job startup
-                time.sleep(5)
+
                 try:
-                    self.get_job_results(
-                        job_id, job_name, payload, upgrade_from, upgrade_to)
+                    self.get_job_results(job_id, payload, upgrade_from, upgrade_to, poll=True)
                 except Exception as e:
                     print(f"get job result error: {e}")
             else:
@@ -411,47 +412,90 @@ class Jobs:
                         return periodics_job["name"]
         return None
 
-    def get_job_results(self, job_id, job_name=None, payload=None, upgrade_from=None, upgrade_to=None):
-        """Function get job results"""
-        if job_id:
-            resp = self._get_session().get(url=self.prow_job_url.format(job_id.strip()))
-            if resp.status_code == 200 and resp.text:
-                job_result = yaml.safe_load(resp.text)
-                if job_result:
-                    status = job_result["status"]
-                    spec = job_result["spec"]
-                    job_name = spec["job"]
-                    # it is possible that any of the follow attributes is not in response
-                    # use func `get` to avoid key error
-                    job_url = status.get("url")
-                    job_state = status.get("state")
-                    job_start_time = status.get("startTime")
-                    print(job_name, payload, job_id,
-                          job_start_time, job_url, job_state)
-                    job_dict = {
-                        "jobName": job_name,
-                        "payload": payload,
-                        "upgrade_from": upgrade_from,
-                        "upgrade_to": upgrade_to,
-                        "jobStartTime": job_start_time,
-                        "jobID": job_id,
-                        "jobURL": job_url,
-                        "jobState": job_state,
-                    }
-                    if "completionTime" in status:
-                        job_dict["jobCompletionTime"] = status["completionTime"]
-                    self.save_job_data(job_dict)
-                    print("Done.\n")
-                    return job_dict
-                else:
-                    print("Not found the url link or creationTimestamp...")
-            else:
-                print(
-                    f"return status code:{resp.status_code} reason:{resp.reason}")
-        else:
-            print("No job ID input, exit...")
+    def get_job_results(self, job_id, payload=None, upgrade_from=None, upgrade_to=None, poll=False):
+        """
+        Function get job results from the Prow job API.
+
+        Args:
+            job_id: The ID of the Prow job.
+            payload: The payload of the Prow job.
+            upgrade_from: The original payload of the Prow job.
+            upgrade_to: The target payload of the Prow job.
+            poll: Whether to poll the job results.
+        
+        Returns:
+            A dictionary containing the job info.
+            If poll=False, returns None if job not ready.
+            If poll=True, raises TimeoutError if job not ready after polling.
+        """
+        if not job_id:
+            print(f"No job ID provided. Exiting...")
             sys.exit(0)
 
+        if not poll:
+            return self._fetch_job_info(job_id, payload, upgrade_from, upgrade_to)
+
+        attempt = 0
+
+        while attempt < self.POLL_MAX_ATTEMPTS:
+            attempt += 1
+            result = self._fetch_job_info(job_id, payload, upgrade_from, upgrade_to)
+            if result is not None:
+                return result
+            print(f"Job {job_id} not ready yet, polling... (attempt {attempt})")
+            time.sleep(self.POLL_INTERVAL_SECONDS)
+        
+        timeout_seconds = self.POLL_MAX_ATTEMPTS * self.POLL_INTERVAL_SECONDS
+        raise TimeoutError(f"Job {job_id} not ready after {self.POLL_MAX_ATTEMPTS} attempts ({timeout_seconds}s).")
+
+    def _fetch_job_info(self, job_id, payload=None, upgrade_from=None, upgrade_to=None):
+        """
+        Function fetch job info from the Prow job API.
+
+        Args:
+            job_id: The ID of the Prow job.
+            payload: The payload of the Prow job.
+            upgrade_from: The original payload of the Prow job.
+            upgrade_to: The target payload of the Prow job.
+
+        Returns:
+            A dictionary containing the job info. None if the job info is not found.
+        """
+ 
+        resp = self._get_session().get(url=self.prow_job_url.format(job_id.strip()))
+        if resp.status_code == 200 and resp.text:
+            job_result = yaml.safe_load(resp.text)
+            if job_result:
+                status = job_result["status"]
+                spec = job_result["spec"]
+                job_name = spec["job"]
+                
+                # optional attributes
+                job_url = status.get("url")
+                job_state = status.get("state")
+                job_start_time = status.get("startTime")
+
+                job_info_dict = {
+                    "jobName": job_name,
+                    "payload": payload,
+                    "upgrade_from": upgrade_from,
+                    "upgrade_to": upgrade_to,
+                    "jobStartTime": job_start_time,
+                    "jobID": job_id,
+                    "jobURL": job_url,
+                    "jobState": job_state,
+                }
+                
+                if "completionTime" in status:
+                    job_info_dict["jobCompletionTime"] = status["completionTime"]
+                
+                self.save_job_data(job_info_dict)
+                print(f"Job {job_id} results: {job_info_dict}")
+                return job_info_dict
+            else:
+                print(f"Could not get job results for job ID: {job_id}. Job result is empty.")
+        else:
+            print(f"Could not get job results for job ID: {job_id}. Return status code: {resp.status_code}, reason: {resp.reason}")
         return None
 
     def list_jobs(self, component, branch):
@@ -571,10 +615,11 @@ def cli(debug):
 
 @cli.command("get_results")
 @click.argument("job_id")
+@click.option("--poll/--no-poll", default=False, help="whether to poll the job results.")
 # @click.option('--job_id', help="The Prow job ID.")
-def get_cmd(job_id):
+def get_cmd(job_id, poll):
     """Return the Prow job executed info."""
-    JOB.get_job_results(job_id)
+    JOB.get_job_results(job_id, poll=poll)
 
 
 @cli.command("run")
