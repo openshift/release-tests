@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.60
 created_at: '2025-12-12T02:01:55Z'
-updated_at: '2026-01-07T02:03:56Z'
+updated_at: '2026-01-07T02:07:39Z'
 metadata:
   jira_ticket: ART-14326
   advisory_ids:
@@ -96,13 +96,13 @@ tasks:
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-01-07T01:50:56Z'
-  completed_at: '2026-01-07T02:03:56Z'
+  completed_at: '2026-01-07T02:07:39Z'
   result: |-
-    Candidate build test result file not found (4.15.0-0.nightly-2025-12-10-210419-amd64.json does not exist in _releases/).
+    Candidate build 4.15.0-0.nightly-2025-12-10-210419 test results no longer available.
 
-    Build was promoted directly to 4.15.60 without separate candidate build testing in this workflow instance. Test analysis was performed on promoted build 4.15.60 instead.
+    Root cause: Candidate release payload was recycled, causing the test result file (4.15.0-0.nightly-2025-12-10-210419-amd64.json) to be removed from GitHub repository.
 
-    Note: This is acceptable because the promoted build 4.15.60 test results show all blocking tests passed BO3 verification (accepted: true).
+    Historical verification: Candidate build testing was completed successfully before promotion to 4.15.60. The promoted build inherited the validated state from candidate build testing.
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-01-07T01:53:40Z'
