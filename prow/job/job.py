@@ -505,7 +505,7 @@ class Jobs:
         while attempt < self.POLL_MAX_ATTEMPTS:
             attempt += 1
             result = self._fetch_job_info(job_id, payload, upgrade_from, upgrade_to)
-            if result is not None:
+            if result is not None and result["jobURL"] is not None:
                 return result
             print(f"Job {job_id} not ready yet, polling... (attempt {attempt})")
             time.sleep(self.POLL_INTERVAL_SECONDS)
