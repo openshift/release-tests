@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.60
 created_at: '2025-12-12T02:01:55Z'
-updated_at: '2026-01-07T01:27:58Z'
+updated_at: '2026-01-07T01:50:56Z'
 metadata:
   jira_ticket: ART-14326
   advisory_ids:
@@ -93,4 +93,17 @@ tasks:
     - rhcos advisory 157174: REL_PREP
     - QE approval added to MR 274
     - Kernel tag verification passed
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-01-07T01:50:56Z'
+  completed_at: '2026-01-07T01:50:56Z'
+  result: |-
+    Build 4.15.60 candidate test results verified:
+    - All blocking tests passed BO3 verification (accepted: true)
+    - Test result file: _releases/ocp-test-result-4.15.60-amd64.json
+    - Jobs executed: 3 (all success)
+      1. upgrade-from-stable-4.14-aws-ipi-f999: success
+      2. upgrade-from-stable-4.15-azure-ipi-fips-f999: success
+      3. upgrade-from-stable-4.15-gcp-ipi-f999: success
+    - No test failures detected
 issues: []
