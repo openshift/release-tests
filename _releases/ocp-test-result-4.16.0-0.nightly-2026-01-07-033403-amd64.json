@@ -37,9 +37,44 @@
         "jobStartTime": "2026-01-07T08:20:36Z",
         "jobID": "3b38ddea-05b5-4367-b1b7-e37679ba0c5b",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2008816024958275584",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-01-07T11:40:28Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 103,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-60351-Critical-60352-Install Run Once Duration Override operator via a deployment and verify that it works fine"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-01-07T12:22:51Z",
+          "jobID": "e3658d62-c732-481b-83c4-6d872308e35b",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2026-01-07T12:22:51Z",
+          "jobID": "569016b2-632e-4b46-a7c2-4497286fed15",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
