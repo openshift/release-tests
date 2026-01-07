@@ -21,6 +21,10 @@ from urllib3.util import Retry
 class Jobs:
     """Class Jobs handle Prow job by calling the API"""
 
+     # Polling configuration for job readiness checks
+    POLL_MAX_ATTEMPTS = 5
+    POLL_INTERVAL_SECONDS = 5
+
     def __init__(self):
         self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
@@ -420,7 +424,9 @@ class Jobs:
             poll: Whether to poll the job results.
         
         Returns:
-            A dictionary containing the job info. None if the job info is not found.
+            A dictionary containing the job info.
+            If poll=False, returns None if job not ready.
+            If poll=True, raises TimeoutError if job not ready after polling.
         """
         if not job_id:
             print(f"No job ID provided. Exiting...")
@@ -430,17 +436,17 @@ class Jobs:
             return self._fetch_job_info(job_id, payload, upgrade_from, upgrade_to)
 
         attempt = 0
-        MAX_ATTEMPTS = 5
-        POLL_INTERVAL = 5
-        while attempt <= MAX_ATTEMPTS:
+
+        while attempt < self.POLL_MAX_ATTEMPTS:
             attempt += 1
             result = self._fetch_job_info(job_id, payload, upgrade_from, upgrade_to)
             if result is not None:
                 return result
             print(f"Job {job_id} not ready yet, polling... (attempt {attempt})")
-            time.sleep(POLL_INTERVAL)
+            time.sleep(self.POLL_INTERVAL_SECONDS)
         
-        raise TimeoutError(f"Job {job_id} not ready after {MAX_ATTEMPTS} attempts.")
+        timeout_seconds = self.POLL_MAX_ATTEMPTS * self.POLL_INTERVAL_SECONDS
+        raise TimeoutError(f"Job {job_id} not ready after {self.POLL_MAX_ATTEMPTS} attempts ({timeout_seconds}s).")
 
     def _fetch_job_info(self, job_id, payload=None, upgrade_from=None, upgrade_to=None):
         """
