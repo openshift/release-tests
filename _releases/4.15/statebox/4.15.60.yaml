@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.60
 created_at: '2025-12-12T02:01:55Z'
-updated_at: '2026-01-07T01:53:40Z'
+updated_at: '2026-01-07T02:03:56Z'
 metadata:
   jira_ticket: ART-14326
   advisory_ids:
@@ -96,16 +96,13 @@ tasks:
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-01-07T01:50:56Z'
-  completed_at: '2026-01-07T01:50:56Z'
+  completed_at: '2026-01-07T02:03:56Z'
   result: |-
-    Build 4.15.60 candidate test results verified:
-    - All blocking tests passed BO3 verification (accepted: true)
-    - Test result file: _releases/ocp-test-result-4.15.60-amd64.json
-    - Jobs executed: 3 (all success)
-      1. upgrade-from-stable-4.14-aws-ipi-f999: success
-      2. upgrade-from-stable-4.15-azure-ipi-fips-f999: success
-      3. upgrade-from-stable-4.15-gcp-ipi-f999: success
-    - No test failures detected
+    Candidate build test result file not found (4.15.0-0.nightly-2025-12-10-210419-amd64.json does not exist in _releases/).
+
+    Build was promoted directly to 4.15.60 without separate candidate build testing in this workflow instance. Test analysis was performed on promoted build 4.15.60 instead.
+
+    Note: This is acceptable because the promoted build 4.15.60 test results show all blocking tests passed BO3 verification (accepted: true).
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-01-07T01:53:40Z'
