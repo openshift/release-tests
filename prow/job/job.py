@@ -25,6 +25,8 @@ class Jobs:
     POLL_MAX_ATTEMPTS = 5
     POLL_INTERVAL_SECONDS = 5
 
+    IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-master-image-consistency-check"
+
     def __init__(self):
         self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
@@ -333,17 +335,38 @@ class Jobs:
                         # as default
                         else:
                             self.run_job(prow_job, None, None, None)
-    
-    def run_image_consistency_check(self, payload_url: str, mr_id: int) -> None:
+
+    def _is_valid_payload_url(self, payload_url: str) -> bool:
+        """
+        Validate the payload URL.
+
+        Args:
+            payload_url: The URL of the release payload to check
+
+        Returns:
+            True if the payload URL is valid, False otherwise.
+        """
+
+        pattern = r"^quay\.io/openshift-release-dev/ocp-release:\d+\.\d+\.\d+.*-x86_64$"
+        return re.match(pattern, payload_url) is not None
+
+        
+    def run_image_consistency_check(self, payload_url: str, mr_id: int) -> dict:
         """
         Run image consistency check Prow job.
 
         Args:
             payload_url: The URL of the release payload to check
             mr_id: The GitLab merge request ID
+
+        Returns:
+            A dictionary containing the job info.
         """
-        job_name = "periodic-ci-openshift-release-tests-master-image-consistency-check"
-        url = self.gangway_url + job_name
+
+        if not self._is_valid_payload_url(payload_url):
+            raise Exception(f"Invalid payload URL: {payload_url}")
+
+        url = self.gangway_url + Jobs.IMAGE_CONSISTENCY_CHECK_JOB_NAME
         data = {
             "job_execution_type": "1",
             "pod_spec_options": {
@@ -370,23 +393,11 @@ class Jobs:
         job_id = json.loads(job_run_res.text)["id"]
         print(f"Image consistency check job id: {job_id}")
 
-        # wait for job to initialize before fetching info
-        time.sleep(5)
+        # get job url from job results
+        job_status = self.get_job_results(job_id, poll=True)
+        print(f"Image consistency check job url: {job_status['jobURL']}")
 
-        # get job info from job id
-        job_info_res = self._get_session().get(
-            url=self.prow_job_url.format(job_id.strip())
-        )
-        if job_info_res.status_code != 200:
-            raise Exception(
-                f"Failed to get image consistency check job info. "
-                f"Error code: {job_info_res.status_code}, reason: {job_info_res.reason}"
-            )
-
-        # get job url from job info
-        job_info = yaml.safe_load(job_info_res.text)
-        job_info_url = job_info["status"]["url"]
-        print(f"Image consistency check job url: {job_info_url}")
+        return job_status
 
     def run_job(self, job_name, payload, upgrade_from, upgrade_to):
         """Function run Prow job by calling the API"""
