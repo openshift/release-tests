@@ -2,7 +2,7 @@ import logging
 
 import click
 
-from oar.core.operators import ApprovalOperator, BugOperator
+from oar.core.operators import ApprovalOperator
 from oar.core.const import *
 from oar.core.exceptions import AdvisoryException
 from oar.core.jira import JiraManager
@@ -31,10 +31,6 @@ def change_advisory_status(ctx, status):
 
         # init approval operator
         ao = ApprovalOperator(cs)
-        # check all jira issues (advisory and shipment) are finished or dropped before moving the status
-        bo = BugOperator(cs)
-        if not bo.has_finished_all_jiras():
-            raise AdvisoryException(f"there are unfinished jiras, please check or drop them manually before moving the status")
         # check kernel tag before change advisories' status
         ads = ao._am.get_advisories()
         for ad in ads:
