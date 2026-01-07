@@ -72,7 +72,31 @@
           "jobStartTime": "2026-01-07T09:32:33Z",
           "jobID": "82ea546f-7101-4680-be77-9de5ff400f47",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2008834131424710656",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-01-07T12:44:17Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 86,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_Router Author:shudili-LEVEL0-Critical-41110-The threadCount ingresscontroller parameter controls the nbthread option for the haproxy router"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -154,5 +178,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2026-01-07-022916",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2026-01-07-022916"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
