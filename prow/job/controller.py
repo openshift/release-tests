@@ -274,16 +274,39 @@ class JobController:
 
         return build_obj
 
-    def trigger_prow_jobs(self, build: Build):
+    def trigger_prow_jobs(self, build: Build, skip_existing=False):
 
         test_jobs = self.job_registry.get_test_jobs(
             self._release, self._nightly)
         test_result = []
+
+        # Load existing test results if skip_existing is enabled
+        existing_jobs = {}
+        file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}-{self._arch}.json"
+        if skip_existing and self.release_test_record.file_exists(file_path):
+            logger.info(f"Found existing test result file for {build.name}, checking for already triggered jobs...")
+            existing_content = self.release_test_record.get_file_content(file_path)
+            existing_data = json.loads(existing_content)
+            # Create a map of existing jobs by job name
+            for job in existing_data.get("result", []):
+                job_name = job.get("jobName")
+                if job_name:
+                    existing_jobs[job_name] = job
+            logger.info(f"Found {len(existing_jobs)} existing job entries")
+
         if len(test_jobs):
             for test_job in test_jobs:
                 if test_job.disabled:
                     logger.info(
-                        f"Won't trigger prow job {test_job}, it is disabled")
+                        f"Won't trigger prow job {test_job.prow_job}, it is disabled")
+                    continue
+
+                # Check if job already exists
+                if skip_existing and test_job.prow_job in existing_jobs:
+                    logger.info(
+                        f"Skipping prow job {test_job.prow_job}, already triggered in existing test result")
+                    # Preserve existing job data
+                    test_result.append(existing_jobs[test_job.prow_job])
                     continue
 
                 prow_job_id = self.trigger_prow_job(test_job, build)
@@ -293,6 +316,7 @@ class JobController:
                     job_item["jobName"] = test_job.prow_job
                     job_item["firstJob"] = {"jobID": prow_job_id}
                     test_result.append(job_item)
+                    logger.info(f"Newly triggered job {test_job.prow_job}")
                 else:
                     logger.error(
                         f"Trigger prow job {test_job.prow_job} with build {build.name} failed, no prow job id returned")
@@ -301,7 +325,6 @@ class JobController:
                 data = json.dumps(
                     {"result": test_result, "build": build.to_dict()}, indent=2)
                 logger.debug(f"Test result file content {data}")
-                file_path = f"{DIR_RELEASE}/ocp-test-result-{build.name}-{self._arch}.json"
                 self.release_test_record.push_file(data=data, path=file_path)
                 logger.info(
                     f"Test result of {build.name} is saved to {file_path}")
@@ -936,7 +959,8 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 @click.command
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
 @click.option("--arch", help="architecture used to filter accepted build", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
-def trigger_jobs_for_build(build, arch):
+@click.option("--skip-existing/--no-skip-existing", help="skip jobs that are already triggered (default: enabled)", default=True)
+def trigger_jobs_for_build(build, arch, skip_existing):
     validate_environment(REQUIRED_ENV_VARS_FOR_CONTROLLER)
     release = build[:4]
     nightly = "nightly" in build
@@ -947,7 +971,11 @@ def trigger_jobs_for_build(build, arch):
             f"build {build} does not exist, please double check")
     logger.info(
         f"start to trigger prow jobs for build:\n{repr(build_obj)}")
-    controller.trigger_prow_jobs(build_obj)
+    if skip_existing:
+        logger.info("Duplicate detection enabled: will skip already triggered jobs")
+    else:
+        logger.warning("Duplicate detection disabled: will trigger ALL jobs including existing ones")
+    controller.trigger_prow_jobs(build_obj, skip_existing=skip_existing)
 
 
 @click.command
