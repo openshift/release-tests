@@ -461,12 +461,13 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
         shipped_data: Shipment status dictionary
         status_data: Status data containing tasks and issues
     """
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
         "📋 Advisories",
         "📦 Candidate Builds",
         "🎫 Jira Ticket",
         "🚢 Shipment Data",
         "📅 Release Info",
+        "🧪 QE Test Results",
         "🔍 Task Details"
     ])
 
@@ -575,6 +576,59 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
         st.dataframe(release_info_df, use_container_width=True, hide_index=True)
 
     with tab6:
+        # QE Test Results Tab - Show test result file links
+        st.info("ℹ️ **Note:** Blocking test jobs are only triggered for x86_64 (amd64) architecture. Test result files for some old releases may have been recycled and are no longer available.")
+
+        # GitHub blob URL for record branch (better for viewing in browser)
+        github_base_url = "https://github.com/openshift/release-tests/blob/record/_releases"
+
+        # Collect all test results in one table
+        test_results_data = []
+        builds = metadata.get('candidate_builds', {})
+
+        # Add candidate nightly build test results (x86_64 only)
+        # Check if builds dict exists and has non-empty amd64/x86_64 values
+        has_candidate_build = False
+        if builds:
+            # Only show x86_64 (amd64) since that's the only arch we test
+            for arch in ['amd64', 'x86_64']:  # Try both naming conventions
+                build = builds.get(arch)
+                if build and build.strip():  # Check for non-empty string
+                    # Use amd64 for file name (standard naming)
+                    test_result_file = f"ocp-test-result-{build}-amd64.json"
+                    test_result_url = f"{github_base_url}/{test_result_file}"
+
+                    test_results_data.append({
+                        "Build Type": "Candidate Nightly",
+                        "Build": build,
+                        "Test Result": f"[{test_result_file}]({test_result_url})"
+                    })
+                    has_candidate_build = True
+                    break  # Only need one entry
+
+        # Add promoted build test results (stable z-stream release)
+        promoted_build = release
+        test_result_file = f"ocp-test-result-{promoted_build}-amd64.json"
+        test_result_url = f"{github_base_url}/{test_result_file}"
+
+        test_results_data.append({
+            "Build Type": "Stable",
+            "Build": promoted_build,
+            "Test Result": f"[{test_result_file}]({test_result_url})"
+        })
+
+        # Display combined table or info message
+        if test_results_data:
+            # Show warning if no candidate build configured
+            if not has_candidate_build:
+                st.warning("⚠️ No candidate nightly build configured for this release. Only stable build test results are available.")
+
+            test_df = pd.DataFrame(test_results_data)
+            st.markdown(test_df.to_markdown(index=False))
+        else:
+            st.info("No test results available for this release")
+
+    with tab7:
         # Task Details Tab - Show detailed task execution information
         tasks_list = status_data.get('tasks', [])
 
