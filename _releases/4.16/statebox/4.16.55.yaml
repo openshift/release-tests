@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.55
 created_at: '2026-01-08T14:01:45Z'
-updated_at: '2026-01-08T14:29:32Z'
+updated_at: '2026-01-08T14:29:47Z'
 metadata:
   jira_ticket: ART-14366
   advisory_ids:
@@ -14,7 +14,26 @@ metadata:
     ppc64le: 4.16.0-0.nightly-ppc64le-2026-01-07-235645
     x86_64: 4.16.0-0.nightly-2026-01-07-235644
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/292
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-01-08T09:29:27Z'
+  completed_at: '2026-01-08T09:29:47Z'
+  result: |-
+    2026-01-08T09:29:27Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-01-08T09:29:29Z: WARNING: advisory state is not QE, it is NEW_FILES
+    2026-01-08T09:29:30Z: INFO: QA Owner of advisory 157797 is updated to [EMAIL_REDACTED]
+    2026-01-08T09:29:30Z: WARNING: advisory state is not QE, it is NEW_FILES
+    2026-01-08T09:29:31Z: INFO: QA Owner of advisory 157798 is updated to [EMAIL_REDACTED]
+    2026-01-08T09:29:31Z: INFO: Added QE release lead comment to MR 292
+    2026-01-08T09:29:31Z: INFO: Initialized StateBox for release 4.16.55 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.55.yaml
+    2026-01-08T09:29:32Z: INFO: Loaded state from _releases/4.16/statebox/4.16.55.yaml (SHA: 42614074)
+    2026-01-08T09:29:32Z: INFO: Added blocking (tasks: push-to-cdn-staging) issue: Advisories in abnormal state (NEW_FILES instead of QE): 157797, 157798
+    2026-01-08T09:29:32Z: INFO: Updated state file _releases/4.16/statebox/4.16.55.yaml (attempt 1)
+    2026-01-08T09:29:32Z: INFO: Created StateBox blocker issue for abnormal advisories: Advisories in abnormal state (NEW_FILES instead of QE): 157797, 157798
+    2026-01-08T09:29:45Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-08T09:29:47Z: INFO: sent slack message to <#forum-ocp-release>
+    2026-01-08T09:29:47Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 157797, 157798'
   reported_at: '2026-01-08T14:29:32Z'
