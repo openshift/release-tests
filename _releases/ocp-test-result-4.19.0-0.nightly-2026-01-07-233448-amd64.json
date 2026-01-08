@@ -30,9 +30,45 @@
         "jobStartTime": "2026-01-08T06:22:48Z",
         "jobID": "80fba55a-430c-4e42-8910-c210ad8ef09d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2009148767642587136",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-01-08T10:55:36Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 108,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 31
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-01-08T11:25:54Z",
+          "jobID": "c2196895-401f-4eb2-815f-6744caa68713",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2026-01-08T11:25:54Z",
+          "jobID": "b034855d-41cc-43a1-8a5c-1752fbbda995",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2009225041740304384",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999",
