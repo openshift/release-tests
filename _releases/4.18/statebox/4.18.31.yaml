@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.31
 created_at: '2026-01-08T16:03:11Z'
-updated_at: '2026-01-09T07:43:37Z'
+updated_at: '2026-01-09T10:52:24Z'
 metadata:
   jira_ticket: ART-14367
   advisory_ids:
@@ -87,18 +87,14 @@ tasks:
     2026-01-09T02:43:37Z: INFO: Added image health summary to MR 293
     2026-01-09T02:43:37Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-01-09T02:30:57Z'
-  completed_at: null
+  completed_at: '2026-01-09T05:52:23Z'
   result: |-
-    2026-01-09T02:30:57Z: INFO: Initialized StateBox for release 4.18.31 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.31.yaml
-    2026-01-09T02:30:57Z: INFO: job id is not set, will trigger stage testing
-    2026-01-09T02:30:57Z: INFO: Loaded state from _releases/4.18/statebox/4.18.31.yaml (SHA: a3a0a5a6)
-    2026-01-09T02:31:00Z: INFO: Found pipeline 14127904 with status manual
-    2026-01-09T02:31:01Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:45611598>}
-    2026-01-09T02:31:01Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-01-09T02:31:01Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1468/>
-    2026-01-09T02:31:03Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-09T05:52:23Z: INFO: Initialized StateBox for release 4.18.31 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.31.yaml
+    2026-01-09T05:52:23Z: INFO: check stage job status according to job id: 1468
+    2026-01-09T05:52:23Z: INFO: build status of zstreams/Stage-Pipeline/1468 is SUCCESS
+    2026-01-09T05:52:23Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: 'Stage-release pipeline failed (pipeline #14126935) - stage-testing cannot
     be triggered. Shipment MR #293 pipeline failure in stage-release-triggers stage.
