@@ -25,6 +25,8 @@ class Jobs:
     POLL_MAX_ATTEMPTS = 5
     POLL_INTERVAL_SECONDS = 5
 
+    IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-master-image-consistency-check"
+
     def __init__(self):
         self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
@@ -334,6 +336,69 @@ class Jobs:
                         else:
                             self.run_job(prow_job, None, None, None)
 
+    def _is_valid_payload_url(self, payload_url: str) -> bool:
+        """
+        Validate the payload URL.
+
+        Args:
+            payload_url: The URL of the release payload to check
+
+        Returns:
+            True if the payload URL is valid, False otherwise.
+        """
+
+        pattern = r"^quay\.io/openshift-release-dev/ocp-release:\d+\.\d+\.\d+.*-x86_64$"
+        return re.match(pattern, payload_url) is not None
+
+        
+    def run_image_consistency_check(self, payload_url: str, mr_id: int) -> dict:
+        """
+        Run image consistency check Prow job.
+
+        Args:
+            payload_url: The URL of the release payload to check
+            mr_id: The GitLab merge request ID
+
+        Returns:
+            A dictionary containing the job info.
+        """
+
+        if not self._is_valid_payload_url(payload_url):
+            raise Exception(f"Invalid payload URL: {payload_url}")
+
+        url = self.gangway_url + Jobs.IMAGE_CONSISTENCY_CHECK_JOB_NAME
+        data = {
+            "job_execution_type": "1",
+            "pod_spec_options": {
+                "envs": {
+                    "MULTISTAGE_PARAM_OVERRIDE_PAYLOAD_URL": payload_url,
+                    "MULTISTAGE_PARAM_OVERRIDE_MERGE_REQUEST_ID": str(mr_id),
+                }
+            }
+        }
+
+        # run image consistency check job
+        job_run_res = self._get_session().post(
+            url=url,
+            json=data,
+            headers=self.get_prow_headers()
+        )
+        if job_run_res.status_code != 200:
+            raise Exception(
+                f"Failed to run image consistency check job. "
+                f"Error code: {job_run_res.status_code}, reason: {job_run_res.reason}"
+            )
+
+        # get job id from job run response
+        job_id = json.loads(job_run_res.text)["id"]
+        print(f"Image consistency check job id: {job_id}")
+
+        # get job url from job results
+        job_status = self.get_job_results(job_id, poll=True)
+        print(f"Image consistency check job url: {job_status['jobURL']}")
+
+        return job_status
+
     def run_job(self, job_name, payload, upgrade_from, upgrade_to):
         """Function run Prow job by calling the API"""
 
@@ -440,7 +505,7 @@ class Jobs:
         while attempt < self.POLL_MAX_ATTEMPTS:
             attempt += 1
             result = self._fetch_job_info(job_id, payload, upgrade_from, upgrade_to)
-            if result is not None:
+            if result is not None and result["jobURL"] is not None:
                 return result
             print(f"Job {job_id} not ready yet, polling... (attempt {attempt})")
             time.sleep(self.POLL_INTERVAL_SECONDS)
@@ -688,6 +753,19 @@ def run_z_stream():
      It only used for periodic-ci-openshift-release-tests-master-stable-build-test prow job.
     """
     JOB.run_z_stream_test()
+
+@cli.command("run_image_consistency_check")
+@click.option("-p", "--payload-url", type=str, required=True, help="Payload URL")
+@click.option("-m", "--mr-id", type=int, required=True, help="Merge request ID")
+def run_image_consistency_check(payload_url: str, mr_id: int):
+    """
+    Run image consistency check job
+    
+    Args:
+        payload_url (str): The URL of the payload
+        mr_id (int): The ID of the merge request
+    """
+    JOB.run_image_consistency_check(payload_url, mr_id)
 
 # no need this program entry since this file won't be imported as a module.
 # if __name__ == "__main__":
