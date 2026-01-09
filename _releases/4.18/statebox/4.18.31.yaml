@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.31
 created_at: '2026-01-08T16:03:11Z'
-updated_at: '2026-01-09T05:06:49Z'
+updated_at: '2026-01-09T05:08:31Z'
 metadata:
   jira_ticket: ART-14367
   advisory_ids:
@@ -73,4 +73,15 @@ tasks:
 
     Recommendation: ACCEPT - Build is ready for promotion
     AI Analysis: /ci:analyze-build-test-results provided detailed failure analysis
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-01-09T00:08:29Z'
+  completed_at: null
+  result: |-
+    2026-01-09T00:08:29Z: INFO: Initialized StateBox for release 4.18.31 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.31.yaml
+    2026-01-09T00:08:29Z: INFO: Loaded state from _releases/4.18/statebox/4.18.31.yaml (SHA: 202868f7)
+    2026-01-09T00:08:29Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-01-09T00:08:29Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.18.31-x86_64
+    2026-01-09T00:08:29Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3468/
+    2026-01-09T00:08:31Z: INFO: sent slack message to <#team-qe-release>
 issues: []
