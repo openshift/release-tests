@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.9
 created_at: '2026-01-09T09:03:25Z'
-updated_at: '2026-01-10T12:22:53Z'
+updated_at: '2026-01-10T12:25:15Z'
 metadata:
   jira_ticket: ART-14369
   advisory_ids:
@@ -35,4 +35,16 @@ tasks:
     2026-01-10T20:22:34Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
     2026-01-10T20:22:35Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
     2026-01-10T20:22:51Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-10T20:25:08Z'
+  completed_at: '2026-01-10T20:25:13Z'
+  result: |-
+    2026-01-10T20:25:08Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2026-01-10T20:25:09Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-10T20:25:09Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.9
+    2026-01-10T20:25:11Z: INFO: Image Digest: sha256:4ca459a8eebc78d940682aaa5a57f6d72d8559259fba49f1ec25c2ae15931724
+    2026-01-10T20:25:11Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4ca459a8eebc78d940682aaa5a57f6d72d8559259fba49f1ec25c2ae15931724/signature-1
+    2026-01-10T20:25:13Z: INFO: Signature check PASSED
+    2026-01-10T20:25:13Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
