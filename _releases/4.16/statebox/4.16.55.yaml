@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.55
 created_at: '2026-01-08T14:01:45Z'
-updated_at: '2026-01-10T15:42:59Z'
+updated_at: '2026-01-10T15:44:14Z'
 metadata:
   jira_ticket: ART-14366
   advisory_ids:
@@ -86,6 +86,17 @@ tasks:
     with phase: Accepted. Test results: 3/3 blocking jobs succeeded (upgrade-from-stable-4.15-aws-ipi,
     upgrade-from-stable-4.16-azure-ipi-fips, upgrade-from-stable-4.16-gcp-ipi). No
     retries needed. aggregated: true, accepted: true.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-10T10:43:32Z'
+  completed_at: '2026-01-10T10:44:14Z'
+  result: |-
+    2026-01-10T10:43:32Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-10T10:43:32Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.55
+    2026-01-10T10:43:34Z: INFO: Image Digest: sha256:283a4968c61885c67fd17ea4d6920b665c98d53fa85fc897e067d3c4c131da3b
+    2026-01-10T10:43:34Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=283a4968c61885c67fd17ea4d6920b665c98d53fa85fc897e067d3c4c131da3b/signature-1
+    2026-01-10T10:44:14Z: INFO: Signature check PASSED
+    2026-01-10T10:44:14Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 157797, 157798'
   reported_at: '2026-01-08T14:29:32Z'
