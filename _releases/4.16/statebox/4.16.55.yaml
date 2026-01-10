@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.55
 created_at: '2026-01-08T14:01:45Z'
-updated_at: '2026-01-10T09:10:05Z'
+updated_at: '2026-01-10T09:11:03Z'
 metadata:
   jira_ticket: ART-14366
   advisory_ids:
@@ -82,6 +82,14 @@ tasks:
     2026-01-10T04:10:03Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-01-10T04:10:03Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1470/>
     2026-01-10T04:10:04Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-01-10T09:11:03Z'
+  completed_at: '2026-01-10T09:11:03Z'
+  result: 'All blocking tests passed BO3 verification. Build 4.16.55 promoted successfully
+    with phase: Accepted. Test results: 3/3 blocking jobs succeeded (upgrade-from-stable-4.15-aws-ipi,
+    upgrade-from-stable-4.16-azure-ipi-fips, upgrade-from-stable-4.16-gcp-ipi). No
+    retries needed. aggregated: true, accepted: true.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 157797, 157798'
   reported_at: '2026-01-08T14:29:32Z'
