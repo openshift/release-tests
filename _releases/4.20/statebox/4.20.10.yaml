@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.10
 created_at: '2026-01-10T11:08:53Z'
-updated_at: '2026-01-10T12:35:50Z'
+updated_at: '2026-01-12T03:39:21Z'
 metadata:
   jira_ticket: ART-14371
   advisory_ids:
@@ -34,6 +34,21 @@ tasks:
     2026-01-10T20:35:42Z: INFO: sent slack message to <#team-qe-release>
     2026-01-10T20:35:47Z: INFO: sent slack message to <#forum-ocp-release>
     2026-01-10T20:35:47Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-01-12T11:38:43Z'
+  completed_at: null
+  result: |-
+    2026-01-12T11:38:43Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2026-01-12T11:38:43Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-01-12T11:39:10Z: INFO: checking push job status for advisory 157897 ...
+    2026-01-12T11:39:10Z: INFO: no push job found for advisory 157897
+    2026-01-12T11:39:10Z: INFO: advisory 157897 has blocking advisory []
+    2026-01-12T11:39:13Z: INFO: push job for advisory 157897 is triggered
+    2026-01-12T11:39:15Z: INFO: checking push job status for advisory 157898 ...
+    2026-01-12T11:39:15Z: INFO: no push job found for advisory 157898
+    2026-01-12T11:39:15Z: INFO: advisory 157898 has blocking advisory []
+    2026-01-12T11:39:18Z: INFO: push job for advisory 157898 is triggered
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 157897'
   reported_at: '2026-01-10T12:35:26Z'
