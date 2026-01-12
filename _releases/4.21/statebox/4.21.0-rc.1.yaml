@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.1
 created_at: '2026-01-06T02:23:32Z'
-updated_at: '2026-01-09T11:44:41Z'
+updated_at: '2026-01-12T00:43:24Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -45,16 +45,21 @@ tasks:
     2026-01-08T01:51:42Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-01-08T01:51:42Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-01-09T06:44:39Z'
-  completed_at: null
+  completed_at: '2026-01-11T19:43:24Z'
   result: |-
-    2026-01-09T06:44:39Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
-    2026-01-09T06:44:39Z: INFO: Loaded state from _releases/4.21/statebox/4.21.0-rc.1.yaml (SHA: 7bc85cb1)
-    2026-01-09T06:44:39Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-01-09T06:44:39Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.21.0-rc.1-x86_64
-    2026-01-09T06:44:39Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3469/
-    2026-01-09T06:44:41Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-11T19:38:14Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
+    2026-01-11T19:38:14Z: INFO: Checking image-consistency-check job status with job id: 3469
+    2026-01-11T19:38:14Z: INFO: build status of image-consistency-check/3469 is SUCCESS
+    2026-01-11T19:38:14Z: INFO: Starting image health check for shipment MR 288
+    2026-01-11T19:38:16Z: INFO: Found pipeline 14128280 with status success
+    2026-01-11T19:38:16Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:45617698>}
+    2026-01-11T19:38:16Z: INFO: Processing MR 288
+    2026-01-11T19:38:19Z: INFO: Found 858 images to check
+    2026-01-11T19:43:23Z: INFO: Completed image health check. Scanned 858 images, found 0 unhealthy
+    2026-01-11T19:43:24Z: INFO: Added image health summary to MR 288
+    2026-01-11T19:43:24Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 154550, 157362'
   reported_at: '2026-01-07T18:12:41Z'
