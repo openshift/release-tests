@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.1
 created_at: '2026-01-06T02:23:32Z'
-updated_at: '2026-01-12T00:43:24Z'
+updated_at: '2026-01-12T00:46:35Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -60,6 +60,19 @@ tasks:
     2026-01-11T19:43:23Z: INFO: Completed image health check. Scanned 858 images, found 0 unhealthy
     2026-01-11T19:43:24Z: INFO: Added image health summary to MR 288
     2026-01-11T19:43:24Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-01-11T19:46:31Z'
+  completed_at: null
+  result: |-
+    2026-01-11T19:46:31Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
+    2026-01-11T19:46:31Z: INFO: job id is not set, will trigger stage testing
+    2026-01-11T19:46:31Z: INFO: Loaded state from _releases/4.21/statebox/4.21.0-rc.1.yaml (SHA: 661d3e67)
+    2026-01-11T19:46:33Z: INFO: Found pipeline 14128280 with status success
+    2026-01-11T19:46:33Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:45617698>}
+    2026-01-11T19:46:33Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-01-11T19:46:33Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1471/>
+    2026-01-11T19:46:34Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 154550, 157362'
   reported_at: '2026-01-07T18:12:41Z'
