@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.1
 created_at: '2026-01-06T02:23:32Z'
-updated_at: '2026-01-13T00:53:52Z'
+updated_at: '2026-01-13T01:21:25Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -61,14 +61,14 @@ tasks:
     2026-01-11T19:43:24Z: INFO: Added image health summary to MR 288
     2026-01-11T19:43:24Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-01-12T19:53:52Z'
-  completed_at: null
+  completed_at: '2026-01-12T20:21:24Z'
   result: |-
-    2026-01-12T19:53:52Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
-    2026-01-12T19:53:52Z: INFO: job id is not set, will trigger stage testing
-    2026-01-12T19:53:52Z: INFO: Loaded state from _releases/4.21/statebox/4.21.0-rc.1.yaml (SHA: 17ed927f)
-    2026-01-12T19:53:52Z: INFO: stage testing already triggered and in progress, no need to trigger again
+    2026-01-12T20:21:24Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
+    2026-01-12T20:21:24Z: INFO: check stage job status according to job id: 1471
+    2026-01-12T20:21:24Z: INFO: build status of zstreams/Stage-Pipeline/1471 is FAILURE
+    2026-01-12T20:21:24Z: INFO: task [Stage Testing] status is changed to [Fail]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 154550, 157362'
   reported_at: '2026-01-07T18:12:41Z'
