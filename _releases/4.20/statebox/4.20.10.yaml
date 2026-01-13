@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.10
 created_at: '2026-01-10T11:08:53Z'
-updated_at: '2026-01-13T02:34:44Z'
+updated_at: '2026-01-13T02:35:23Z'
 metadata:
   jira_ticket: ART-14371
   advisory_ids:
@@ -61,9 +61,19 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-01-12T14:37:22Z'
-  completed_at: '2026-01-13T02:34:16Z'
-  result: 'Jenkins job #3471 completed successfully (manually verified). Image consistency
-    check passed.'
+  completed_at: '2026-01-12T21:35:22Z'
+  result: |-
+    2026-01-12T21:29:29Z: INFO: Initialized StateBox for release 4.20.10 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.10.yaml
+    2026-01-12T21:29:29Z: INFO: Checking image-consistency-check job status with job id: 3471
+    2026-01-12T21:29:29Z: INFO: build status of image-consistency-check/3471 is SUCCESS
+    2026-01-12T21:29:29Z: INFO: Starting image health check for shipment MR 301
+    2026-01-12T21:29:31Z: INFO: Found pipeline 14153011 with status manual
+    2026-01-12T21:29:31Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:45707786>}
+    2026-01-12T21:29:31Z: INFO: Processing MR 301
+    2026-01-12T21:29:34Z: INFO: Found 860 images to check
+    2026-01-12T21:35:22Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
+    2026-01-12T21:35:22Z: INFO: Added image health summary to MR 301
+    2026-01-12T21:35:22Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-01-12T14:37:41Z'
