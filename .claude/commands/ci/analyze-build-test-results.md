@@ -255,14 +255,16 @@ For each unique failing test:
 - **Flaky**: Fails in some attempts but passes in retries on same platform
 - **Consistent**: Fails across all retry attempts
 
-## 7. Detailed Failure Analysis with /ci:analyze-failures (Only if `accepted == false`)
+## 7. Detailed Failure Analysis with /ci:analyze-prow-failures (Only if `accepted == false`)
 
 For EACH failed job attempt (where `jobState == "failure"`):
 
-**Invoke /ci:analyze-failures:**
+**Invoke /ci:analyze-prow-failures:**
 ```bash
-/ci:analyze-failures {jobURL}
+/ci:analyze-prow-failures {jobURL}
 ```
+
+**Note**: We call `/ci:analyze-prow-failures` directly (not `/ci:analyze-failures`) because all QE blocking test jobs are Prow-based. This provides better visibility into parallel analysis execution and removes unnecessary dispatcher layer.
 
 This provides:
 - Detailed error messages and stack traces from JUnit XML
@@ -273,7 +275,7 @@ This provides:
 - Recommended remediation actions
 
 **Integration approach:**
-- Run /ci:analyze-failures for ALL failed attempts (firstJob + failed retries)
+- Run /ci:analyze-prow-failures for ALL failed attempts (firstJob + failed retries)
 - Compare failure patterns across retries to identify:
   - **Consistent failures**: Same error across all attempts → likely product bug
   - **Flaky failures**: Different errors across attempts → likely test infrastructure or automation issue
@@ -285,13 +287,13 @@ This provides:
 ```markdown
 ### Root Cause Analysis (Attempt 1 - Failed)
 
-{Output from /ci:analyze-failures for firstJob.jobURL}
+{Output from /ci:analyze-prow-failures for firstJob.jobURL}
 
 ---
 
 ### Root Cause Analysis (Attempt 2 - Failed)
 
-{Output from /ci:analyze-failures for retriedJobs[0].jobURL}
+{Output from /ci:analyze-prow-failures for retriedJobs[0].jobURL}
 
 **Comparison**: {Same failure pattern | Different failure | Infrastructure issue}
 ```
