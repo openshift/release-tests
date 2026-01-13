@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.1
 created_at: '2026-01-06T02:23:32Z'
-updated_at: '2026-01-13T01:21:25Z'
+updated_at: '2026-01-13T01:23:17Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -61,14 +61,18 @@ tasks:
     2026-01-11T19:43:24Z: INFO: Added image health summary to MR 288
     2026-01-11T19:43:24Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2026-01-12T19:53:52Z'
-  completed_at: '2026-01-12T20:21:24Z'
+  status: In Progress
+  started_at: '2026-01-12T20:23:13Z'
+  completed_at: null
   result: |-
-    2026-01-12T20:21:24Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
-    2026-01-12T20:21:24Z: INFO: check stage job status according to job id: 1471
-    2026-01-12T20:21:24Z: INFO: build status of zstreams/Stage-Pipeline/1471 is FAILURE
-    2026-01-12T20:21:24Z: INFO: task [Stage Testing] status is changed to [Fail]
+    2026-01-12T20:23:13Z: INFO: Initialized StateBox for release 4.21.0-rc.1 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.1.yaml
+    2026-01-12T20:23:13Z: INFO: job id is not set, will trigger stage testing
+    2026-01-12T20:23:13Z: INFO: Loaded state from _releases/4.21/statebox/4.21.0-rc.1.yaml (SHA: df986a0a)
+    2026-01-12T20:23:15Z: INFO: Found pipeline 14128280 with status success
+    2026-01-12T20:23:15Z: INFO: Stage 'stage-release-triggers' status: {'status': 'success', 'job': <ProjectPipelineBridge id:45617698>}
+    2026-01-12T20:23:15Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-01-12T20:23:15Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1484/>
+    2026-01-12T20:23:17Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 154550, 157362'
   reported_at: '2026-01-07T18:12:41Z'
