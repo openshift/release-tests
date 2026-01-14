@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.10
 created_at: '2026-01-10T11:08:53Z'
-updated_at: '2026-01-13T08:44:08Z'
+updated_at: '2026-01-14T00:00:00Z'
 metadata:
   jira_ticket: ART-14371
   advisory_ids:
@@ -103,9 +103,9 @@ tasks:
     2026-01-13T10:34:42Z: INFO: Signature check PASSED
     2026-01-13T10:34:42Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-01-12T21:42:48Z'
-  completed_at: null
+  completed_at: '2026-01-14T00:00:00Z'
   result: |-
     2026-01-12T21:42:48Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
     2026-01-12T21:42:52Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
@@ -121,6 +121,7 @@ tasks:
     2026-01-12T21:43:01Z: INFO: Background metadata checker process started (PID: 20975) - running independently after parent exit
     2026-01-12T21:43:01Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260112_214301.log
     2026-01-12T21:43:04Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-01-14T00:00:00Z: INFO: Advisories 157897 and 157898 manually moved to REL_PREP due to ART tools bug. Background metadata checker unable to verify URL due to incorrect metadata URL in release payload. Task manually marked as Pass.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 157897'
   reported_at: '2026-01-10T12:35:26Z'
@@ -130,3 +131,11 @@ issues:
   related_tasks:
   - push-to-cdn-staging
   resolved_at: '2026-01-12T09:31:19Z'
+- issue: 'ART tools bug prevented automatic advisory status change; metadata URL incorrect in release payload'
+  reported_at: '2026-01-14T00:00:00Z'
+  resolved: true
+  resolution: 'RPM advisory 157897 and RHCOS advisory 157898 manually moved to REL_PREP state due to ART tools bug. Background metadata checker unable to complete automatic verification because release payload contains incorrect metadata URL (https://access.redhat.com/errata/RHBA-2026:370). Workaround: manual status change in Errata Tool completed successfully.'
+  blocker: false
+  related_tasks:
+  - change-advisory-status
+  resolved_at: '2026-01-14T00:00:00Z'
