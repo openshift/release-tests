@@ -300,11 +300,43 @@ class GitLabMergeRequest:
 
     def get_source_branch(self) -> str:
         """Get the source branch name of the merge request
-        
+
         Returns:
             str: Name of the source branch (typically a release branch)
         """
         return self.mr.source_branch
+
+    def get_labels(self) -> List[str]:
+        """Get all labels applied to the merge request
+
+        Returns:
+            List[str]: List of label names
+
+        Raises:
+            GitLabMergeRequestException: If unable to get labels
+        """
+        try:
+            return self.mr.labels
+        except Exception as e:
+            raise GitLabMergeRequestException(f"Failed to get labels: {str(e)}") from e
+
+    def has_label(self, label_name: str) -> bool:
+        """Check if merge request has a specific label
+
+        Args:
+            label_name: Name of label to check for
+
+        Returns:
+            bool: True if label exists, False otherwise
+
+        Raises:
+            GitLabMergeRequestException: If unable to check labels
+        """
+        try:
+            labels = self.get_labels()
+            return label_name in labels
+        except Exception as e:
+            raise GitLabMergeRequestException(f"Failed to check label '{label_name}': {str(e)}") from e
 
 
     def _get_latest_pipeline(self):
@@ -402,18 +434,29 @@ class GitLabMergeRequest:
 
     def is_stage_release_success(self) -> bool:
         """Check if the stage-release-triggers stage has succeeded
-        
+
+        Checks both:
+        1. Pipeline stage status is 'success', OR
+        2. MR has 'stage-release-success' label
+
         Returns:
-            bool: True if stage status is 'success', False otherwise
-            
+            bool: True if either pipeline succeeded or label exists, False otherwise
+
         Raises:
             GitLabMergeRequestException: If unable to get stage status
         """
         try:
+            # First check if label exists (faster and more reliable)
+            if self.has_label('stage-release-success'):
+                logger.info("Stage release succeeded (verified by label)")
+                return True
+
+            # Fall back to pipeline status check
             stage_info = self.get_stage_release_info()
             if stage_info['status'] == 'success':
+                logger.info("Stage release succeeded (verified by pipeline status)")
                 return True
-                
+
             logger.error(f"Stage release failed with status {stage_info['status']}")
             logger.error(f"Job details: {stage_info['job'].pformat()}")
             return False
@@ -422,18 +465,29 @@ class GitLabMergeRequest:
 
     def is_prod_release_success(self) -> bool:
         """Check if the prod-release-triggers stage has succeeded
-        
+
+        Checks both:
+        1. Pipeline stage status is 'success', OR
+        2. MR has 'prod-release-success' label
+
         Returns:
-            bool: True if stage status is 'success', False otherwise
-            
+            bool: True if either pipeline succeeded or label exists, False otherwise
+
         Raises:
             GitLabMergeRequestException: If unable to get stage status
         """
         try:
+            # First check if label exists (faster and more reliable)
+            if self.has_label('prod-release-success'):
+                logger.info("Prod release succeeded (verified by label)")
+                return True
+
+            # Fall back to pipeline status check
             stage_info = self.get_prod_release_info()
             if stage_info['status'] == 'success':
+                logger.info("Prod release succeeded (verified by pipeline status)")
                 return True
-                
+
             logger.error(f"Prod release failed with status {stage_info['status']}")
             logger.error(f"Job details: {stage_info['job'].pformat()}")
             return False
