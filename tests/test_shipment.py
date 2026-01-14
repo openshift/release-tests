@@ -400,7 +400,7 @@ class TestGitLabMergeRequest(unittest.TestCase):
         """Test getting stage-release-triggers status from real MR (requires GITLAB_TOKEN env var)"""
         if not os.getenv('GITLAB_TOKEN'):
             self.skipTest("GITLAB_TOKEN not set - skipping real API test")
-        
+
         valid_statuses = ['created', 'pending', 'running','success', 'failed', 'canceled', 'skipped', 'not_found']
 
         client = GitLabMergeRequest(
@@ -416,13 +416,93 @@ class TestGitLabMergeRequest(unittest.TestCase):
                 self.skipTest("Stage 'stage-release-triggers' not found in pipeline")
 
             self.assertIn(status, valid_statuses)
-                
+
         except Exception as e:
             if f"Merge request {client.merge_request_id} not found" in str(e):
                 self.skipTest(
                     f"Merge request {client.merge_request_id} not found - skipping real API test")
             else:
                 self.fail(f"Failed to test stage status: {str(e)}")
+
+    def _test_release_success_with_label(self, client, release_type):
+        """Helper method to test release success with label for both stage and prod
+
+        Args:
+            client: GitLabMergeRequest instance
+            release_type: 'stage' or 'prod'
+        """
+        label_name = f'{release_type}-release-success'
+        is_success_method = getattr(client, f'is_{release_type}_release_success')
+        get_info_method = getattr(client, f'get_{release_type}_release_info')
+
+        print(f"\n=== Testing {release_type.upper()} Release ===")
+
+        # Check if label exists
+        has_label = client.has_label(label_name)
+        print(f"Has '{label_name}' label: {has_label}")
+
+        # Get pipeline status
+        try:
+            info = get_info_method()
+            pipeline_status = info['status']
+            print(f"Pipeline {release_type}-release status: {pipeline_status}")
+        except Exception as e:
+            pipeline_status = 'error'
+            print(f"Pipeline {release_type}-release info error: {str(e)}")
+
+        # Test release success - should return True if label exists OR pipeline succeeded
+        result = is_success_method()
+        print(f"is_{release_type}_release_success() result: {result}")
+
+        # Verify the result
+        if has_label:
+            self.assertTrue(result, f"Expected True because MR has {label_name} label")
+            print(f"✅ {release_type.capitalize()} release verified via label")
+        elif pipeline_status == 'success':
+            self.assertTrue(result, f"Expected True because pipeline status is success")
+            print(f"✅ {release_type.capitalize()} release verified via pipeline")
+        else:
+            self.assertFalse(result, f"Expected False (no label, pipeline status: {pipeline_status})")
+            print(f"❌ {release_type.capitalize()} release check failed (no label, pipeline: {pipeline_status})")
+
+        return {
+            'has_label': has_label,
+            'pipeline_status': pipeline_status,
+            'result': result
+        }
+
+    def test_stage_and_prod_release_success_with_labels_real_mr(self):
+        """Test both stage and prod release success with labels (MR 301 has both labels but pipelines not success)"""
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        try:
+            client = GitLabMergeRequest(
+                "https://gitlab.cee.redhat.com",
+                "hybrid-platforms/art/ocp-shipment-data",
+                301
+            )
+
+            # Check all labels on the MR
+            labels = client.get_labels()
+            print(f"\nMR 301 labels: {labels}")
+
+            # Test stage release
+            stage_results = self._test_release_success_with_label(client, 'stage')
+
+            # Test prod release
+            prod_results = self._test_release_success_with_label(client, 'prod')
+
+            # Summary
+            print("\n=== Summary ===")
+            print(f"Stage: result={stage_results['result']}, label={stage_results['has_label']}, pipeline={stage_results['pipeline_status']}")
+            print(f"Prod: result={prod_results['result']}, label={prod_results['has_label']}, pipeline={prod_results['pipeline_status']}")
+
+        except Exception as e:
+            if "Merge request 301 not found" in str(e):
+                self.skipTest("Merge request 301 not found - skipping real API test")
+            else:
+                self.fail(f"Failed to test stage/prod release with labels: {str(e)}")
 
 
 class TestShipmentData(unittest.TestCase):
