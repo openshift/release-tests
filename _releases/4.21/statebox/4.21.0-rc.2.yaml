@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.2
 created_at: '2026-01-15T06:31:25Z'
-updated_at: '2026-01-15T06:31:25Z'
+updated_at: '2026-01-15T06:35:45Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -12,5 +12,15 @@ metadata:
   candidate_builds:
     x86_64: 4.21.0-0.nightly-2026-01-13-111112
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/308
-tasks: []
+tasks:
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-01-15T01:33:33Z'
+  completed_at: '2026-01-15T01:35:44Z'
+  result: |-
+    2026-01-15T01:33:33Z: INFO: Initialized StateBox for release 4.21.0-rc.2 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.2.yaml
+    2026-01-15T01:33:33Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-01-15T01:35:42Z: INFO: Processing MR 308 for Jira issues
+    2026-01-15T01:35:44Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2026-01-15T01:35:44Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues: []
