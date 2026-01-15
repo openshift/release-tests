@@ -11,7 +11,7 @@ class Payload:
     Represents an OpenShift release payload and provides methods to get the image pullspecs.
 
     Class Attributes:
-        SKIPPED_TAGS_REGEX (set[str]): Set of regex patterns to skip when extracting images.
+        SKIPPED_TAGS_REGEX (list[str]): List of regex patterns to skip when extracting images.
     """
 
     SKIPPED_TAGS_REGEX = [
