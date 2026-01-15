@@ -17,7 +17,7 @@ class Payload:
     SKIPPED_TAGS_REGEX = [
         r"machine-os-content",
         r"rhel-coreos(?:-\d+)?",
-        r"rhel-coreos-extensions(?:-\d+)?",
+        r"rhel-coreos(?:-\d+)?-extensions",
     ]
 
     # precompile the regex patterns
