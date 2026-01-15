@@ -1,4 +1,5 @@
 import logging
+import re
 import subprocess
 import json
 
@@ -10,14 +11,17 @@ class Payload:
     Represents an OpenShift release payload and provides methods to get the image pullspecs.
 
     Class Attributes:
-        SKIPPED_TAGS (set[str]): Set of tag names to skip when extracting images.
+        SKIPPED_TAGS_REGEX (set[str]): Set of regex patterns to skip when extracting images.
     """
 
-    SKIPPED_TAGS = {
-        "machine-os-content",
-        "rhel-coreos",
-        "rhel-coreos-extensions",
-    }
+    SKIPPED_TAGS_REGEX = [
+        r"machine-os-content",
+        r"rhel-coreos(?:-\d+)?",
+        r"rhel-coreos-extensions(?:-\d+)?",
+    ]
+
+    # precompile the regex patterns
+    _SKIPPED_TAGS_PATTERNS = [re.compile(r) for r in SKIPPED_TAGS_REGEX]
 
     def __init__(self, payload_url: str):
         """
@@ -27,6 +31,17 @@ class Payload:
             payload_url (str): The URL of the OpenShift release payload
         """
         self._url = payload_url
+
+    def _is_skipped_tag(self, tag_name: str) -> bool:
+        """
+        Check if the tag name matches any of the skipped tags regex patterns.
+
+        Args:
+            tag_name (str): The name of the tag
+        Returns:
+            bool: True if the tag name matches any of the skipped tags regex patterns, False otherwise
+        """
+        return any(pattern.fullmatch(tag_name) for pattern in self._SKIPPED_TAGS_PATTERNS)
 
     def get_image_pullspecs(self) -> list[str]:
         """
@@ -47,7 +62,7 @@ class Payload:
 
         for tag in tags:
             tag_name = tag['name']
-            if tag_name in self.SKIPPED_TAGS:
+            if self._is_skipped_tag(tag_name):
                 logger.debug(f"Skipping tag: {tag_name}")
                 continue
 
