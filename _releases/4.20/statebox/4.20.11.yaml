@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.11
 created_at: '2026-01-15T11:03:39Z'
-updated_at: '2026-01-15T12:38:25Z'
+updated_at: '2026-01-15T12:38:44Z'
 metadata:
   jira_ticket: ART-14394
   advisory_ids:
@@ -14,7 +14,26 @@ metadata:
     s390x: 4.20.0-0.nightly-s390x-2026-01-13-225320
     x86_64: 4.20.0-0.nightly-2026-01-13-225320
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/311
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-01-15T20:37:42Z'
+  completed_at: '2026-01-15T20:38:42Z'
+  result: |-
+    2026-01-15T20:37:42Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2026-01-15T20:37:43Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-01-15T20:38:01Z: WARNING: advisory state is not QE, it is NEW_FILES
+    2026-01-15T20:38:11Z: INFO: QA Owner of advisory 158014 is updated to [EMAIL_REDACTED]
+    2026-01-15T20:38:20Z: INFO: QA Owner of advisory 158015 is updated to [EMAIL_REDACTED]
+    2026-01-15T20:38:23Z: INFO: Added QE release lead comment to MR 311
+    2026-01-15T20:38:24Z: INFO: Initialized StateBox for release 4.20.11 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.11.yaml
+    2026-01-15T20:38:25Z: INFO: Loaded state from _releases/4.20/statebox/4.20.11.yaml (SHA: 2a8e6d82)
+    2026-01-15T20:38:25Z: INFO: Added blocking (tasks: push-to-cdn-staging) issue: Advisories in abnormal state (NEW_FILES instead of QE): 158014
+    2026-01-15T20:38:27Z: INFO: Updated state file _releases/4.20/statebox/4.20.11.yaml (attempt 1)
+    2026-01-15T20:38:28Z: INFO: Created StateBox blocker issue for abnormal advisories: Advisories in abnormal state (NEW_FILES instead of QE): 158014
+    2026-01-15T20:38:38Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-15T20:38:42Z: INFO: sent slack message to <#forum-ocp-release>
+    2026-01-15T20:38:42Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158014'
   reported_at: '2026-01-15T12:38:25Z'
