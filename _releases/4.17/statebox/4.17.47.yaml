@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.47
 created_at: '2026-01-16T00:02:32Z'
-updated_at: '2026-01-16T08:46:13Z'
+updated_at: '2026-01-16T08:59:23Z'
 metadata:
   jira_ticket: ART-14428
   advisory_ids:
@@ -34,19 +34,16 @@ tasks:
     2026-01-16T03:45:13Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-01-16T03:45:13Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-01-16T03:45:27Z'
-  completed_at: null
+  completed_at: '2026-01-16T03:59:23Z'
   result: |-
-    2026-01-16T03:45:27Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-01-16T03:45:31Z: INFO: checking push job status for advisory 158035 ...
-    2026-01-16T03:45:31Z: INFO: no push job found for advisory 158035
-    2026-01-16T03:45:31Z: INFO: advisory 158035 has blocking advisory []
-    2026-01-16T03:45:33Z: INFO: push job for advisory 158035 is triggered
-    2026-01-16T03:45:33Z: INFO: checking push job status for advisory 158036 ...
-    2026-01-16T03:45:33Z: INFO: no push job found for advisory 158036
-    2026-01-16T03:45:33Z: INFO: advisory 158036 has blocking advisory []
-    2026-01-16T03:45:34Z: INFO: push job for advisory 158036 is triggered
+    2026-01-16T03:59:17Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-01-16T03:59:22Z: INFO: checking push job status for advisory 158035 ...
+    2026-01-16T03:59:22Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-01-16T03:59:23Z: INFO: checking push job status for advisory 158036 ...
+    2026-01-16T03:59:23Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-01-16T03:59:23Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: analyze-candidate-build
   status: In Progress
   started_at: '2026-01-16T08:46:13Z'
