@@ -112,14 +112,3 @@ class Shipment:
             logger.error(f"Error retrieving pullspecs from shipment: {str(e)}", exc_info=True)
             return []
 
-    def get_mr_url(self) -> str:
-        """
-        Get the GitLab URL for the current merge request.
-
-        Returns:
-            str: Full GitLab URL for the merge request
-
-        Example:
-            'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/123'
-        """
-        return f"{self._gitlab_url}/{self._project_path}/-/merge_requests/{self._mr_id}"
