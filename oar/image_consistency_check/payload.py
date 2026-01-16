@@ -32,6 +32,18 @@ class Payload:
         """
         self._url = payload_url
 
+    def _fetch_payload_data(self) -> dict:
+        """
+        Get the payload data from the payload URL.
+
+        Returns:
+            dict: The payload data
+        """
+        cmd = ["oc", "adm", "release", "info", "--pullspecs", self._url, "-o", "json"]
+        logger.debug(f"Running command: {' '.join(cmd)}")
+        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        return json.loads(result.stdout)
+
     def _is_skipped_tag(self, tag_name: str) -> bool:
         """
         Check if the tag name matches any of the skipped tags regex patterns.
@@ -43,21 +55,18 @@ class Payload:
         """
         return any(pattern.fullmatch(tag_name) for pattern in self._SKIPPED_TAGS_PATTERNS)
 
-    def get_image_pullspecs(self) -> list[str]:
+    def _extract_image_pullspecs(self, payload_data: dict) -> list[str]:
         """
-        Fetch image pullspecs from the payload URL, skipping unwanted tags.
-        
+        Extract image pullspecs from the payload data.
+
+        Args:
+            payload_data (dict): The payload data
+
         Returns:
-            list[str]: List of container image pullspecs extracted from the payload
+            list[str]: List of image pullspecs
         """
-        cmd = ["oc", "adm", "release", "info", "--pullspecs", self._url, "-o", "json"]
-        logger.debug(f"Running command: {' '.join(cmd)}")
-
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        build_data = json.loads(result.stdout)
-
         pullspecs = []
-        tags = build_data['references']['spec']['tags']
+        tags = payload_data['references']['spec']['tags']
         logger.debug(f"Found {len(tags)} tags in payload")
 
         for tag in tags:
@@ -71,3 +80,13 @@ class Payload:
             pullspecs.append(pullspec_name)
 
         return pullspecs
+
+    def get_image_pullspecs(self) -> list[str]:
+        """
+        Fetch image pullspecs from the payload URL, skipping unwanted tags.
+        
+        Returns:
+            list[str]: List of container image pullspecs extracted from the payload
+        """
+        payload_data = self._fetch_payload_data()
+        return self._extract_image_pullspecs(payload_data)
