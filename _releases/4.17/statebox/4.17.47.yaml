@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.47
 created_at: '2026-01-16T00:02:32Z'
-updated_at: '2026-01-16T11:22:31Z'
+updated_at: '2026-01-16T11:23:27Z'
 metadata:
   jira_ticket: ART-14428
   advisory_ids:
@@ -82,4 +82,15 @@ tasks:
     image-consistency-check (Pass - 863 images scanned, 0 unhealthy) and stage-testing
     (Pass - Jenkins job #1492 SUCCESS). Test result file not available but release
     quality verified through other means.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-16T06:22:59Z'
+  completed_at: '2026-01-16T06:23:26Z'
+  result: |-
+    2026-01-16T06:22:59Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-16T06:22:59Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.17.47
+    2026-01-16T06:23:02Z: INFO: Image Digest: sha256:d49a4f1a4532e3822e8769a97d87f538f9101701d3997e6e883c8abff7b58a43
+    2026-01-16T06:23:02Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=d49a4f1a4532e3822e8769a97d87f538f9101701d3997e6e883c8abff7b58a43/signature-1
+    2026-01-16T06:23:26Z: INFO: Signature check PASSED
+    2026-01-16T06:23:26Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
