@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.11
 created_at: '2026-01-15T11:03:39Z'
-updated_at: '2026-01-16T11:24:53Z'
+updated_at: '2026-01-16T13:09:03Z'
 metadata:
   jira_ticket: ART-14394
   advisory_ids:
@@ -55,14 +55,14 @@ tasks:
     2026-01-16T06:24:29Z: INFO: checking push job status for advisory 158015 ...
     2026-01-16T06:24:29Z: INFO: push job for target <cdn_stage> is COMPLETE
 - name: image-consistency-check
-  status: In Progress
+  status: Fail
   started_at: '2026-01-16T06:24:42Z'
-  completed_at: null
+  completed_at: '2026-01-16T08:09:03Z'
   result: |-
-    2026-01-16T06:24:42Z: INFO: Initialized StateBox for release 4.20.11 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.11.yaml
-    2026-01-16T06:24:42Z: INFO: Checking image-consistency-check job status with job id: 3475
-    2026-01-16T06:24:42Z: INFO: build status of image-consistency-check/3475 is In Progress
-    2026-01-16T06:24:42Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-01-16T08:09:03Z: INFO: Initialized StateBox for release 4.20.11 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.11.yaml
+    2026-01-16T08:09:03Z: INFO: Checking image-consistency-check job status with job id: 3475
+    2026-01-16T08:09:03Z: INFO: build status of image-consistency-check/3475 is FAILURE
+    2026-01-16T08:09:03Z: INFO: task [Image Consistency Check] status is changed to [Fail]
 - name: stage-testing
   status: In Progress
   started_at: '2026-01-16T06:24:53Z'
