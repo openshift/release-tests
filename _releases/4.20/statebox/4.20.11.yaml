@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.11
 created_at: '2026-01-15T11:03:39Z'
-updated_at: '2026-01-19T01:38:57Z'
+updated_at: '2026-01-19T01:46:22Z'
 metadata:
   jira_ticket: ART-14394
   advisory_ids:
@@ -102,6 +102,25 @@ tasks:
     2026-01-18T20:38:16Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=bbe1ffd9b28cbe6814cb6cecef844733f38aba1a3d400b1bc5aff5865cfe665e/signature-1
     2026-01-18T20:38:56Z: INFO: Signature check PASSED
     2026-01-18T20:38:56Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-01-18T20:45:35Z'
+  completed_at: null
+  result: |-
+    2026-01-18T20:45:35Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-01-18T20:45:43Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-01-18T20:45:44Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202601130621-0
+    2026-01-18T20:45:44Z: INFO: The commit metadata is kernel-5.14.0-570.78.1.el9_6
+    2026-01-18T20:45:44Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 178473, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2025:15963-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179277, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:0661-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-01-18T20:45:45Z: INFO: Successfully approved MR 311
+    2026-01-18T20:45:45Z: INFO: Successfully added QE approval to MR 311
+    2026-01-18T20:45:47Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:0663
+    2026-01-18T20:46:08Z: INFO: The metadata url is not accessible
+    2026-01-18T20:46:08Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-01-18T20:46:08Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-01-18T20:46:08Z: INFO: Background metadata checker process started (PID: 55386) - running independently after parent exit
+    2026-01-18T20:46:08Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260118_204608.log
+    2026-01-18T20:46:21Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158014'
   reported_at: '2026-01-15T12:38:25Z'
