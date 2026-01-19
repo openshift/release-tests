@@ -104,13 +104,58 @@
           "jobStartTime": "2026-01-19T19:26:11Z",
           "jobID": "a1e97756-fc2b-4277-b775-650b927b5195",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2013332197859135488",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-01-19T23:01:38Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 116,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 34,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-01-19T19:26:21Z",
           "jobID": "9082c036-cd94-4fcc-b53f-66836e355e24",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2013332217543004160",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-01-19T22:32:22Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 116,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 34
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -192,5 +237,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2026-01-19-092932",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2026-01-19-092932"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
