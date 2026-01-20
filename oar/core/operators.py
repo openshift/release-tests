@@ -424,10 +424,10 @@ class ApprovalOperator:
                 if self._sd is not None:
                     self._sd.add_qe_approval()
                 else:
-                    logger.info("Shipment MR already merged, skipping QE approval step")
+                    logger.info(f"Shipment MR for {self._cs.release} already merged, skipping QE approval step")
 
                 # only move rpm advisory status when payload metadata url is accessible
-                minor_release = util.get_y_release(self._am._cs.release)
+                minor_release = util.get_y_release(self._cs.release)
                 
                 # Check if metadata URL is accessible immediately
                 if util.is_payload_metadata_url_accessible(minor_release):
