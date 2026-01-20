@@ -124,6 +124,7 @@ class Shipment:
                     else:
                         logger.warning(f"No pullspec found for shipment component {name}")
 
+            logger.info(f"Found {len(all_components)} shipment components in shipment data")
             return all_components
 
         except Exception as e:
