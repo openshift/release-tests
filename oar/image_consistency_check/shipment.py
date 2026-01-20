@@ -7,6 +7,22 @@ from glom import glom
 logger = logging.getLogger(__name__)
 
 
+class ShipmentComponent:
+    """
+    Represents a shipment component with its name and pullspec.
+    """
+
+    def __init__(self, name: str, pullspec: str):
+        """
+        Initialize the ShipmentComponent object.
+
+        Args:
+            name (str): The name of the shipment component
+            pullspec (str): The pullspec of the shipment component
+        """
+        self.name = name
+        self.pullspec = pullspec
+
 class Shipment:
     """
     Handles loading and parsing shipment data from a GitLab Merge Request.
@@ -113,19 +129,3 @@ class Shipment:
         except Exception as e:
             logger.error(f"Error retrieving components from shipment: {str(e)}", exc_info=True)
             return []
-
-class ShipmentComponent:
-    """
-    Represents a shipment component with its name and pullspec.
-    """
-
-    def __init__(self, name: str, pullspec: str):
-        """
-        Initialize the ShipmentComponent object.
-
-        Args:
-            name (str): The name of the shipment component
-            pullspec (str): The pullspec of the shipment component
-        """
-        self.name = name
-        self.pullspec = pullspec

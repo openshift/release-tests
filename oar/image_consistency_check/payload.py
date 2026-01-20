@@ -5,6 +5,17 @@ import json
 
 logger = logging.getLogger(__name__)
 
+class PayloadImage:
+    """
+    Represents an image in the payload with its name and pullspec.
+    """
+
+    def __init__(self, name: str, pullspec: str):
+        """
+        Initialize the PayloadImage object.
+        """
+        self.name = name
+        self.pullspec = pullspec
 
 class Payload:
     """
@@ -87,15 +98,3 @@ class Payload:
         """
         payload_data = self._fetch_payload_data()
         return self._extract_images(payload_data)
-
-class PayloadImage:
-    """
-    Represents an image in the payload with its name and pullspec.
-    """
-
-    def __init__(self, name: str, pullspec: str):
-        """
-        Initialize the PayloadImage object.
-        """
-        self.name = name
-        self.pullspec = pullspec
