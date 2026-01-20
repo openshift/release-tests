@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.63
 created_at: '2026-01-15T12:01:09Z'
-updated_at: '2026-01-19T15:10:19Z'
+updated_at: '2026-01-20T01:10:23Z'
 metadata:
   jira_ticket: ART-14397
   advisory_ids:
@@ -60,14 +60,12 @@ tasks:
     2026-01-19T10:09:27Z: INFO: Added image health summary to MR 312
     2026-01-19T10:09:27Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
+  status: Pass
   started_at: '2026-01-19T08:04:33Z'
-  completed_at: '2026-01-19T10:10:18Z'
-  result: |-
-    2026-01-19T10:10:18Z: INFO: Initialized StateBox for release 4.13.63 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.63.yaml
-    2026-01-19T10:10:18Z: INFO: check stage job status according to job id: 1494
-    2026-01-19T10:10:18Z: INFO: build status of zstreams/Stage-Pipeline/1494 is FAILURE
-    2026-01-19T10:10:18Z: INFO: task [Stage Testing] status is changed to [Fail]
+  completed_at: '2026-01-20T01:10:23Z'
+  result: 'Stage testing job #1495 waived. Known failure: OCP-31437 - Storage Stage
+    LocalVolume can be used by deployment. Ticket filed to migrate tests from cucushift
+    to Ginkgo. Not a release blocker.'
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-01-19T13:02:49Z'
