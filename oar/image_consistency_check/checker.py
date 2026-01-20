@@ -136,6 +136,7 @@ class ImageConsistencyChecker:
                 logger.error(f"Failed. Not found in the Shipment and Red Hat catalog")
                 self._find_images_with_same_name(image)
                 all_payload_images_ok = False
+        logger.info(f"Checked {len(self.payload_images)} payload images")
         return all_payload_images_ok
 
 @click.command()
