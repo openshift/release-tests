@@ -2,7 +2,7 @@ import os
 import unittest
 from unittest.mock import patch, MagicMock
 
-from oar.image_consistency_check.shipment import Shipment
+from oar.image_consistency_check.shipment import Shipment, ShipmentComponent
 
 
 class TestImageConsistencyCheckShipment(unittest.TestCase):
@@ -24,8 +24,8 @@ class TestImageConsistencyCheckShipment(unittest.TestCase):
 
     @patch.dict('os.environ', {'GITLAB_TOKEN': 'test-token'})
     @patch('oar.image_consistency_check.shipment.Gitlab')
-    def test_get_image_pullspecs_empty_shipment_data(self, mock_gitlab):
-        """Test that empty shipment data returns empty list."""
+    def test_get_components_empty_shipment_data(self, mock_gitlab):
+        """Test that empty shipment data returns empty list of shipment components."""
         mock_project = MagicMock()
         mock_mr = MagicMock()
         mock_mr.changes.return_value = {'changes': []}
@@ -33,14 +33,14 @@ class TestImageConsistencyCheckShipment(unittest.TestCase):
         mock_gitlab.return_value.projects.get.return_value = mock_project
 
         shipment = Shipment(123)
-        pullspecs = shipment.get_image_pullspecs()
+        shipment_components = shipment.get_components()
 
-        self.assertEqual(pullspecs, [])
+        self.assertEqual(shipment_components, [])
 
     @patch.dict('os.environ', {'GITLAB_TOKEN': 'test-token'})
     @patch('oar.image_consistency_check.shipment.Gitlab')
-    def test_get_image_pullspecs_with_components(self, mock_gitlab):
-        """Test that pullspecs are correctly extracted from shipment components."""
+    def test_get_components_with_components(self, mock_gitlab):
+        """Test that components are correctly extracted from shipment data."""
         mock_file = MagicMock()
         mock_file.decode.return_value.decode.return_value = """
 shipment:
@@ -65,16 +65,19 @@ shipment:
         mock_gitlab.return_value.projects.get.return_value = mock_project
 
         shipment = Shipment(123)
-        pullspecs = shipment.get_image_pullspecs()
+        shipment_components = shipment.get_components()
 
-        self.assertEqual(len(pullspecs), 3)
-        self.assertEqual(pullspecs[0], 'quay.io/openshift/image1@sha256:abc123')
-        self.assertEqual(pullspecs[1], 'quay.io/openshift/image2@sha256:def456')
-        self.assertEqual(pullspecs[2], 'quay.io/openshift/image3@sha256:ghi789')
+        self.assertEqual(len(shipment_components), 3)
+        self.assertEqual(shipment_components[0].name, 'component1')
+        self.assertEqual(shipment_components[0].pullspec, 'quay.io/openshift/image1@sha256:abc123')
+        self.assertEqual(shipment_components[1].name, 'component2')
+        self.assertEqual(shipment_components[1].pullspec, 'quay.io/openshift/image2@sha256:def456')
+        self.assertEqual(shipment_components[2].name, 'component3')
+        self.assertEqual(shipment_components[2].pullspec, 'quay.io/openshift/image3@sha256:ghi789')
 
     @patch.dict('os.environ', {'GITLAB_TOKEN': 'test-token'})
     @patch('oar.image_consistency_check.shipment.Gitlab')
-    def test_get_image_pullspecs_skips_non_yaml_files(self, mock_gitlab):
+    def test_get_components_skips_non_yaml_files(self, mock_gitlab):
         """Test that non-YAML files are skipped."""
         mock_file = MagicMock()
         mock_file.decode.return_value.decode.return_value = """
@@ -99,14 +102,14 @@ shipment:
         mock_gitlab.return_value.projects.get.return_value = mock_project
 
         shipment = Shipment(123)
-        pullspecs = shipment.get_image_pullspecs()
+        shipment_components = shipment.get_components()
 
-        self.assertEqual(len(pullspecs), 1)
+        self.assertEqual(len(shipment_components), 1)
         mock_project.files.get.assert_called_once()
 
     @patch.dict('os.environ', {'GITLAB_TOKEN': 'test-token'})
     @patch('oar.image_consistency_check.shipment.Gitlab')
-    def test_get_image_pullspecs_no_components(self, mock_gitlab):
+    def test_get_components_no_components(self, mock_gitlab):
         """Test that shipment with no components returns empty list."""
         mock_file = MagicMock()
         mock_file.decode.return_value.decode.return_value = """
@@ -126,14 +129,14 @@ shipment:
         mock_gitlab.return_value.projects.get.return_value = mock_project
 
         shipment = Shipment(123)
-        pullspecs = shipment.get_image_pullspecs()
+        shipment_components = shipment.get_components()
 
-        self.assertEqual(pullspecs, [])
+        self.assertEqual(shipment_components, [])
 
     @patch.dict('os.environ', {'GITLAB_TOKEN': 'test-token'})
     @patch('oar.image_consistency_check.shipment.Gitlab')
-    def test_get_image_pullspecs_multiple_yaml_files(self, mock_gitlab):
-        """Test that pullspecs are collected from multiple YAML files."""
+    def test_get_components_multiple_yaml_files(self, mock_gitlab):
+        """Test that components are collected from multiple YAML files."""
         mock_file1 = MagicMock()
         mock_file1.decode.return_value.decode.return_value = """
 shipment:
@@ -166,18 +169,22 @@ shipment:
         mock_gitlab.return_value.projects.get.return_value = mock_project
 
         shipment = Shipment(123)
-        pullspecs = shipment.get_image_pullspecs()
+        shipment_components = shipment.get_components()
 
-        self.assertEqual(len(pullspecs), 2)
-        self.assertEqual(pullspecs[0], 'quay.io/openshift/image1@sha256:abc123')
-        self.assertEqual(pullspecs[1], 'quay.io/openshift/image2@sha256:def456')
+        self.assertEqual(len(shipment_components), 2)
+        self.assertEqual(shipment_components[0].name, 'component1')
+        self.assertEqual(shipment_components[0].pullspec, 'quay.io/openshift/image1@sha256:abc123')
+        self.assertEqual(shipment_components[1].name, 'component2')
+        self.assertEqual(shipment_components[1].pullspec, 'quay.io/openshift/image2@sha256:def456')
 
     @unittest.skipUnless(os.getenv('GITLAB_TOKEN'), "GITLAB_TOKEN not set - skipping real GitLab test")
-    def test_get_image_pullspecs_real(self):
-        """Test get_image_pullspecs with a real MR from GitLab."""
+    def test_get_components_real(self):
+        """Test get_components with a real MR from GitLab."""
         shipment = Shipment(311)
-        pullspecs = shipment.get_image_pullspecs()
+        shipment_components = shipment.get_components()
 
-        self.assertEqual(len(pullspecs), 274)
-        for ps in pullspecs:
-            self.assertRegex(ps, r"^quay.io/redhat-user-workloads/ocp-art-tenant/.*@sha256:[a-f0-9]{64}$")
+        self.assertEqual(len(shipment_components), 274)
+        for component in shipment_components:
+            self.assertIsInstance(component, ShipmentComponent)
+            self.assertIsInstance(component.name, str)
+            self.assertRegex(component.pullspec, r"^quay.io/redhat-user-workloads/ocp-art-tenant/.*@sha256:[a-f0-9]{64}$")

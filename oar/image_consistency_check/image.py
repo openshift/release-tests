@@ -74,9 +74,9 @@ class ImageMetadata:
         """
         return self.name != "" and self.name == other.name
 
-    def log_pullspec_details(self) -> None:
+    def log_details(self) -> None:
         """
-        Log the details of the image pullspec.
+        Log the details of the image.
         """
         logger.debug(f"Digest: {self.digest}")
         logger.debug(f"Listdigest: {self.listdigest}")
