@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.2
 created_at: '2026-01-15T06:31:25Z'
-updated_at: '2026-01-15T06:48:31Z'
+updated_at: '2026-01-20T01:40:36Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -35,14 +35,18 @@ tasks:
     2026-01-15T01:45:04Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-01-15T01:45:04Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-01-15T01:48:29Z'
-  completed_at: null
+  completed_at: '2026-01-19T20:40:36Z'
   result: |-
-    2026-01-15T01:48:29Z: INFO: Initialized StateBox for release 4.21.0-rc.2 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.2.yaml
-    2026-01-15T01:48:29Z: INFO: Loaded state from _releases/4.21/statebox/4.21.0-rc.2.yaml (SHA: d927ba9c)
-    2026-01-15T01:48:29Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-01-15T01:48:29Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.21.0-rc.2-x86_64
-    2026-01-15T01:48:29Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3472/
-    2026-01-15T01:48:31Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-19T20:35:44Z: INFO: Initialized StateBox for release 4.21.0-rc.2 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0-rc.2.yaml
+    2026-01-19T20:35:44Z: INFO: Checking image-consistency-check job status with job id: 3472
+    2026-01-19T20:35:44Z: INFO: build status of image-consistency-check/3472 is SUCCESS
+    2026-01-19T20:35:44Z: INFO: Starting image health check for shipment MR 308
+    2026-01-19T20:35:44Z: INFO: Stage release succeeded (verified by label)
+    2026-01-19T20:35:44Z: INFO: Processing MR 308
+    2026-01-19T20:35:47Z: INFO: Found 860 images to check
+    2026-01-19T20:40:35Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
+    2026-01-19T20:40:36Z: INFO: Added image health summary to MR 308
+    2026-01-19T20:40:36Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 issues: []
