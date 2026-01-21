@@ -37,9 +37,47 @@
         "jobStartTime": "2026-01-20T23:19:49Z",
         "jobID": "2eada545-b8b6-49b0-9fe2-e6f5590add17",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2013753360129200128",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-01-21T02:24:36Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 103,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24524-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 19,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-01-21T03:22:49Z",
+          "jobID": "6d8416a6-8c97-4ba6-a883-960fe6d9063e",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2013814512137801728",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-01-21T03:22:54Z",
+          "jobID": "280a9c89-8c7d-4931-be12-7621d9bb0f04",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2013814533453254656",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
