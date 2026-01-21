@@ -1,5 +1,6 @@
 import os
 import logging
+import re
 import yaml
 from gitlab import Gitlab
 from glom import glom
@@ -44,6 +45,26 @@ class Shipment:
 
         self._gl = Gitlab(self._gitlab_url, private_token=self._get_gitlab_token(), retry_transient_errors=True)
         self._gl.auth()
+        self._project = self._gl.projects.get(self._project_path)
+        self._mr = self._project.mergerequests.get(self._mr_id)
+        self.version = self._get_version()
+
+    def _get_version(self) -> str:
+        """
+        Get the version from the merge request title.
+
+        Returns:
+            str: The version extracted from the MR title
+
+        Raises:
+            ValueError: If the version is not found in the merge request title
+        """
+        match = re.search(r"Shipment for (\d+\.\d+\.\d+(?:-\S+)?)", self._mr.title, re.IGNORECASE)
+        if match:
+            return match.group(1)
+        else:
+            logger.error(f"Invalid shipment MR title: {self._mr.title}")
+            raise ValueError(f"Invalid shipment MR title: {self._mr.title}")
 
     def _get_gitlab_token(self) -> str:
         """
@@ -71,9 +92,7 @@ class Shipment:
         shipment_data_list = []
 
         logger.info(f"Fetching MR {self._mr_id} data from project {self._project_path}")
-        project = self._gl.projects.get(self._project_path)
-        mr = project.mergerequests.get(self._mr_id)
-        changes = mr.changes()
+        changes = self._mr.changes()
         change_list = changes.get('changes', [])
         logger.debug(f"Found {len(change_list)} changes in MR")
 
@@ -83,9 +102,9 @@ class Shipment:
                 continue
 
             logger.info(f"Processing YAML file: {change['new_path']}")
-            file_content = project.files.get(
+            file_content = self._project.files.get(
                 file_path=change['new_path'],
-                ref=mr.source_branch
+                ref=self._mr.source_branch
             ).decode().decode('utf-8')
             shipment_data = yaml.safe_load(file_content)
             shipment_data_list.append(shipment_data)

@@ -19,6 +19,12 @@ class TestImageConsistencyCheckShipment(unittest.TestCase):
     @patch('oar.image_consistency_check.shipment.Gitlab')
     def test_get_gitlab_token_present(self, mock_gitlab):
         """Test that GITLAB_TOKEN is correctly retrieved."""
+        mock_project = MagicMock()
+        mock_mr = MagicMock()
+        mock_mr.title = "Shipment for 1.2.3"
+        mock_project.mergerequests.get.return_value = mock_mr
+        mock_gitlab.return_value.projects.get.return_value = mock_project
+
         shipment = Shipment(123)
         self.assertEqual(shipment._get_gitlab_token(), 'test-token')
 
@@ -29,6 +35,7 @@ class TestImageConsistencyCheckShipment(unittest.TestCase):
         mock_project = MagicMock()
         mock_mr = MagicMock()
         mock_mr.changes.return_value = {'changes': []}
+        mock_mr.title = "Shipment for 1.2.3"
         mock_project.mergerequests.get.return_value = mock_mr
         mock_gitlab.return_value.projects.get.return_value = mock_project
 
@@ -60,6 +67,7 @@ shipment:
         mock_mr.changes.return_value = {
             'changes': [{'new_path': 'shipments/4.16/shipment.yaml'}]
         }
+        mock_mr.title = "Shipment for 1.2.3"
         mock_project.mergerequests.get.return_value = mock_mr
         mock_project.files.get.return_value = mock_file
         mock_gitlab.return_value.projects.get.return_value = mock_project
@@ -97,6 +105,7 @@ shipment:
                 {'new_path': 'shipments/4.16/shipment.yaml'}
             ]
         }
+        mock_mr.title = "Shipment for 1.2.3"
         mock_project.mergerequests.get.return_value = mock_mr
         mock_project.files.get.return_value = mock_file
         mock_gitlab.return_value.projects.get.return_value = mock_project
@@ -124,6 +133,7 @@ shipment:
         mock_mr.changes.return_value = {
             'changes': [{'new_path': 'shipments/4.16/shipment.yaml'}]
         }
+        mock_mr.title = "Shipment for 1.2.3"
         mock_project.mergerequests.get.return_value = mock_mr
         mock_project.files.get.return_value = mock_file
         mock_gitlab.return_value.projects.get.return_value = mock_project
@@ -164,6 +174,7 @@ shipment:
                 {'new_path': 'shipments/4.16/shipment2.yaml'}
             ]
         }
+        mock_mr.title = "Shipment for 1.2.3"
         mock_project.mergerequests.get.return_value = mock_mr
         mock_project.files.get.side_effect = [mock_file1, mock_file2]
         mock_gitlab.return_value.projects.get.return_value = mock_project
@@ -188,3 +199,18 @@ shipment:
             self.assertIsInstance(component, ShipmentComponent)
             self.assertIsInstance(component.name, str)
             self.assertRegex(component.pullspec, r"^quay.io/redhat-user-workloads/ocp-art-tenant/.*@sha256:[a-f0-9]{64}$")
+
+    @unittest.skipUnless(os.getenv('GITLAB_TOKEN'), "GITLAB_TOKEN not set - skipping test_get_version")
+    def test_get_version(self):
+        """Test that the version is correctly extracted from the merge request title."""
+        shipment = Shipment(317)
+        self.assertEqual(shipment.version, "4.17.47")
+
+        shipment = Shipment(319)
+        self.assertEqual(shipment.version, "4.22.0-ec.1")
+
+        shipment = Shipment(308)
+        self.assertEqual(shipment.version, "4.21.0-rc.2")
+
+        with self.assertRaises(ValueError):
+            Shipment(320)

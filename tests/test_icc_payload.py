@@ -114,3 +114,16 @@ class TestPayload(unittest.TestCase):
         for image in not_skipped_images:
             with self.subTest(image=image):
                 self.assertFalse(self.payload._is_skipped_image(image), f"{image} should NOT be skipped")
+    
+    def test_payload_version(self):
+        """Test that the payload version is extracted correctly."""
+        self.assertEqual(self.payload.version, "4.16.55")
+
+        ec_payload = Payload("quay.io/openshift-release-dev/ocp-release:4.22.0-ec.1-x86_64")
+        self.assertEqual(ec_payload.version, "4.22.0-ec.1")
+
+        rc_payload = Payload("quay.io/openshift-release-dev/ocp-release:4.22.0-rc.1-x86_64")
+        self.assertEqual(rc_payload.version, "4.22.0-rc.1")
+
+        with self.assertRaises(ValueError):
+            Payload("quay.io/openshift-release-dev/ocp-release:invalid-x86_64")

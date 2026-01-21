@@ -42,6 +42,21 @@ class Payload:
             payload_url (str): The URL of the OpenShift release payload
         """
         self._url = payload_url
+        self.version = self._get_payload_version()
+
+    def _get_payload_version(self) -> str:
+        """
+        Get the payload version from the payload URL.
+
+        Returns:
+            str: The payload version
+        """
+        match = re.match(r"^quay\.io/openshift-release-dev/ocp-release:(\d+\.\d+\.\d+.*)-x86_64$", self._url)
+        if match:
+            return match.group(1)
+        else:
+            logger.error(f"Invalid payload URL: {self._url}")
+            raise ValueError(f"Invalid payload URL: {self._url}")
 
     def _fetch_payload_data(self) -> dict:
         """
@@ -98,3 +113,4 @@ class Payload:
         """
         payload_data = self._fetch_payload_data()
         return self._extract_images(payload_data)
+
