@@ -47,7 +47,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
 
         mock_image_metadata_class.side_effect = lambda ps: MagicMock(pull_spec=ps)
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
 
         # Should create metadata for 3 unique pullspecs (pullspec2 is shared)
         self.assertEqual(mock_image_metadata_class.call_count, 3)
@@ -72,7 +72,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
 
         mock_image_metadata_class.side_effect = lambda ps: payload_metadata if 'payload' in ps else shipment_metadata
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_payload_image_in_shipment(payload_image)
 
         self.assertTrue(result)
@@ -94,7 +94,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
 
         mock_image_metadata_class.side_effect = lambda ps: payload_metadata if 'payload' in ps else shipment_metadata
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_payload_image_in_shipment(payload_image)
 
         self.assertFalse(result)
@@ -120,7 +120,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         }
         mock_requests_get.return_value = mock_response
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_payload_image_released(payload_image)
 
         self.assertTrue(result)
@@ -144,7 +144,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_response.json.return_value = {'total': 0, 'data': []}
         mock_requests_get.return_value = mock_response
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_payload_image_released(payload_image)
 
         self.assertFalse(result)
@@ -168,7 +168,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_response.reason = 'Internal Server Error'
         mock_requests_get.return_value = mock_response
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_payload_image_released(payload_image)
 
         self.assertFalse(result)
@@ -190,7 +190,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
 
         mock_image_metadata_class.side_effect = lambda ps: payload_metadata if 'payload' in ps else shipment_metadata
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         checker._find_images_with_same_name(payload_image)
 
         shipment_metadata.log_details.assert_called()
@@ -213,7 +213,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_metadata.has_same_identifier.return_value = True
         mock_image_metadata_class.return_value = mock_metadata
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker.is_consistent()
 
         self.assertTrue(result)
@@ -241,7 +241,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         }
         mock_requests_get.return_value = mock_response
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker.is_consistent()
 
         self.assertTrue(result)
@@ -268,7 +268,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_response.json.return_value = {'total': 0, 'data': []}
         mock_requests_get.return_value = mock_response
 
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker.is_consistent()
 
         self.assertFalse(result)
@@ -279,7 +279,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_payload.version = '4.16.55'
         mock_shipment = MagicMock()
         mock_shipment.version = '4.16.55'
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_shipment_payload_version_same(mock_payload, mock_shipment)
         self.assertTrue(result)
 
@@ -289,7 +289,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_payload.version = '4.16.55'
         mock_shipment = MagicMock()
         mock_shipment.version = '4.16.56'
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=False)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=False)
         result = checker._is_shipment_payload_version_same(mock_payload, mock_shipment)
         self.assertFalse(result)
 
@@ -300,7 +300,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_shipment = MagicMock()
         mock_shipment.version = '4.16.56'
         with self.assertRaises(ValueError):
-            ImageConsistencyChecker(mock_payload, mock_shipment, check_version=True)
+            ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=True)
             
 
     def test_is_shipment_payload_version_same_check_version_true(self):
@@ -309,7 +309,7 @@ class TestImageConsistencyChecker(unittest.TestCase):
         mock_payload.version = '4.16.55'
         mock_shipment = MagicMock()
         mock_shipment.version = '4.16.55'
-        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version=True)
+        checker = ImageConsistencyChecker(mock_payload, mock_shipment, check_version_consistency=True)
         # no error should be raised
         result = checker._is_shipment_payload_version_same(mock_payload, mock_shipment)
         self.assertTrue(result)

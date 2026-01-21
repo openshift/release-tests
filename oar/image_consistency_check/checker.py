@@ -13,19 +13,19 @@ logger = logging.getLogger(__name__)
 
 class ImageConsistencyChecker:
 
-    def __init__(self, payload: Payload, shipment: Shipment, check_version: bool = True):
+    def __init__(self, payload: Payload, shipment: Shipment, check_version_consistency: bool = True):
         """
         Initialize the ImageConsistencyChecker object.
 
         Args:
             payload (Payload): The payload object
             shipment (Shipment): The shipment object
-            check_version (bool): Whether to check if the payload and shipment versions are the same
+            check_version_consistency (bool): Whether to check if the payload and shipment versions are the same
 
         Raises:
             ValueError: If the payload and shipment versions are not the same and check_version is True
         """
-        if check_version and not self._is_shipment_payload_version_same(payload, shipment):
+        if check_version_consistency and not self._is_shipment_payload_version_same(payload, shipment):
             raise ValueError(f"Payload version {payload.version} does not match shipment version {shipment.version}")
 
         self.payload_images = payload.get_images()
