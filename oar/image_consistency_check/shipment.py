@@ -7,6 +7,22 @@ from glom import glom
 logger = logging.getLogger(__name__)
 
 
+class ShipmentComponent:
+    """
+    Represents a shipment component with its name and pullspec.
+    """
+
+    def __init__(self, name: str, pullspec: str):
+        """
+        Initialize the ShipmentComponent object.
+
+        Args:
+            name (str): The name of the shipment component
+            pullspec (str): The pullspec of the shipment component
+        """
+        self.name = name
+        self.pullspec = pullspec
+
 class Shipment:
     """
     Handles loading and parsing shipment data from a GitLab Merge Request.
@@ -76,39 +92,41 @@ class Shipment:
             logger.debug(f"Successfully loaded shipment data from {change['new_path']}")
         return shipment_data_list
 
-    def get_image_pullspecs(self) -> list[str]:
+    def get_components(self) -> list[ShipmentComponent]:
         """
-        Get the list of image pullspecs from the shipment data.
+        Get the list of shipment components from the shipment data.
         
         Returns:
-            list[str]: List of image pullspecs
+            list[ShipmentComponent]: List of shipment components
         """
         shipment_data_list = self._get_shipment_data_list()
 
         if not shipment_data_list:
-            logger.warning("No shipment data available - cannot fetch pullspecs")
+            logger.warning("No shipment data available - cannot retrieve components")
             return []
 
-        all_pullspecs = []
+        all_components = []
         try:
             for shipment_data in shipment_data_list:
-                logger.info("Retrieving pullspecs from shipment components")
+                logger.info("Retrieving components from shipment data")
                 components = glom(shipment_data, 'shipment.snapshot.spec.components', default=[])
                 if not components:
-                    logger.warning("No components found in shipment data")
+                    logger.warning("No shipment components found in shipment data")
                     continue
 
-                logger.info(f"Found {len(components)} components in shipment")
+                logger.info(f"Found {len(components)} shipment components in shipment data")
                 for component in components:
                     pullspec = component.get('containerImage')
                     name = component.get('name')
                     if pullspec:
-                        logger.info(f"Found pullspec for component {name}: {pullspec}")
-                        all_pullspecs.append(pullspec)
+                        logger.info(f"Found shipment component {name} with pullspec: {pullspec}")
+                        all_components.append(ShipmentComponent(name, pullspec))
+                    else:
+                        logger.warning(f"No pullspec found for shipment component {name}")
 
-            return all_pullspecs
+            logger.info(f"Found {len(all_components)} shipment components in shipment data")
+            return all_components
 
         except Exception as e:
-            logger.error(f"Error retrieving pullspecs from shipment: {str(e)}", exc_info=True)
+            logger.error(f"Error retrieving components from shipment: {str(e)}", exc_info=True)
             return []
-
