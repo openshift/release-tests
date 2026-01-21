@@ -55,7 +55,6 @@ class Payload:
         if match:
             return match.group(1)
         else:
-            logger.error(f"Invalid payload URL: {self._url}")
             raise ValueError(f"Invalid payload URL: {self._url}")
 
     def _fetch_payload_data(self) -> dict:

@@ -63,7 +63,6 @@ class Shipment:
         if match:
             return match.group(1)
         else:
-            logger.error(f"Invalid shipment MR title: {self._mr.title}")
             raise ValueError(f"Invalid shipment MR title: {self._mr.title}")
 
     def _get_gitlab_token(self) -> str:
