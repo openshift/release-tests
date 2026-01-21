@@ -26,7 +26,6 @@ class ImageConsistencyChecker:
             ValueError: If the payload and shipment versions are not the same and check_version is True
         """
         if check_version and not self._is_shipment_payload_version_same(payload, shipment):
-            logger.error(f"Payload version {payload.version} does not match shipment version {shipment.version}")
             raise ValueError(f"Payload version {payload.version} does not match shipment version {shipment.version}")
 
         self.payload_images = payload.get_images()
