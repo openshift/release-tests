@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.63
 created_at: '2026-01-15T12:01:09Z'
-updated_at: '2026-01-20T01:10:23Z'
+updated_at: '2026-01-21T06:39:16Z'
 metadata:
   jira_ticket: ART-14397
   advisory_ids:
@@ -80,4 +80,15 @@ tasks:
     failure: GCP install test failed BO3 (1/3 success, flaky infrastructure issue
     - known problem recently resolved). AWS and Azure install tests passed. All upgrade
     tests passed.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-21T01:38:17Z'
+  completed_at: '2026-01-21T01:39:16Z'
+  result: |-
+    2026-01-21T01:38:17Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-21T01:38:17Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.13.63
+    2026-01-21T01:38:19Z: INFO: Image Digest: sha256:b373f9055bf22079e7baf0c7b3ea21067248932bb0ec57fa0af30c51810bbe91
+    2026-01-21T01:38:19Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=b373f9055bf22079e7baf0c7b3ea21067248932bb0ec57fa0af30c51810bbe91/signature-1
+    2026-01-21T01:39:16Z: INFO: Signature check PASSED
+    2026-01-21T01:39:16Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
