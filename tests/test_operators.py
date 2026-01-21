@@ -1,8 +1,9 @@
 import unittest
 import logging
-from unittest.mock import Mock, patch
-from oar.core.operators import ApprovalOperator
+from unittest.mock import Mock, patch, MagicMock
+from oar.core.operators import ApprovalOperator, ReleaseShipmentOperator
 from oar.core.configstore import ConfigStore
+from oar.core.exceptions import ShipmentDataException
 
 logger = logging.getLogger(__name__)
 
@@ -324,6 +325,157 @@ class TestReleaseShipmentOperator(unittest.TestCase):
         except Exception as e:
             self.skipTest(f"Release 4.19.6 (Errata) not configured: {str(e)}")
 
+
+
+class TestApprovalOperatorMergedMR(unittest.TestCase):
+    """Test ApprovalOperator handles merged shipment MR gracefully
+
+    This test suite verifies the fix for OCPERT-295 where change-advisory-status
+    was failing when the GitLab shipment MR was already merged.
+    """
+
+    @patch('oar.core.operators.ShipmentData')
+    @patch('oar.core.operators.AdvisoryManager')
+    def test_initialization_with_merged_mr_konflux_flow(self, mock_am_class, mock_sd_class):
+        """Test ApprovalOperator initialization when shipment MR is already merged (Konflux flow)"""
+        # Setup mock ConfigStore for Konflux flow
+        mock_cs = Mock(spec=ConfigStore)
+        mock_cs.release = "4.19.1"
+        mock_cs.is_konflux_flow.return_value = True
+
+        # Mock ShipmentData to raise exception (MR is merged)
+        mock_sd_class.side_effect = ShipmentDataException("Gitlab MR 12345 state is not open")
+
+        # Create ApprovalOperator - should not raise exception
+        operator = ApprovalOperator(mock_cs)
+
+        # Verify initialization succeeded gracefully
+        self.assertIsNotNone(operator)
+        self.assertEqual(operator._cs, mock_cs)
+        self.assertIsNone(operator._sd)  # ShipmentData should be None
+        self.assertIsNotNone(operator._sd_init_error)  # Error should be stored
+        self.assertIn("state is not open", operator._sd_init_error)
+
+        # Verify ShipmentData was attempted (for Konflux flow)
+        mock_sd_class.assert_called_once_with(mock_cs)
+
+    @patch('oar.core.operators.ShipmentData')
+    @patch('oar.core.operators.AdvisoryManager')
+    def test_initialization_with_open_mr_konflux_flow(self, mock_am_class, mock_sd_class):
+        """Test ApprovalOperator initialization when MR is still open (normal Konflux flow)"""
+        # Setup mock ConfigStore for Konflux flow
+        mock_cs = Mock(spec=ConfigStore)
+        mock_cs.release = "4.19.1"
+        mock_cs.is_konflux_flow.return_value = True
+
+        # Mock ShipmentData to succeed (MR is open)
+        mock_sd_instance = Mock()
+        mock_sd_class.return_value = mock_sd_instance
+
+        # Create ApprovalOperator
+        operator = ApprovalOperator(mock_cs)
+
+        # Verify initialization succeeded with ShipmentData
+        self.assertIsNotNone(operator)
+        self.assertEqual(operator._cs, mock_cs)
+        self.assertIsNotNone(operator._sd)  # ShipmentData should be initialized
+        self.assertEqual(operator._sd, mock_sd_instance)
+        self.assertIsNone(operator._sd_init_error)  # No error
+
+        # Verify ShipmentData was initialized
+        mock_sd_class.assert_called_once_with(mock_cs)
+
+    @patch('oar.core.operators.ShipmentData')
+    @patch('oar.core.operators.AdvisoryManager')
+    def test_initialization_errata_flow_skips_shipment_data(self, mock_am_class, mock_sd_class):
+        """Test ApprovalOperator initialization for Errata flow (no ShipmentData)"""
+        # Setup mock ConfigStore for Errata flow
+        mock_cs = Mock(spec=ConfigStore)
+        mock_cs.release = "4.19.1"
+        mock_cs.is_konflux_flow.return_value = False  # Errata flow
+
+        # Create ApprovalOperator
+        operator = ApprovalOperator(mock_cs)
+
+        # Verify initialization succeeded without ShipmentData
+        self.assertIsNotNone(operator)
+        self.assertEqual(operator._cs, mock_cs)
+        self.assertIsNone(operator._sd)  # ShipmentData should be None
+        self.assertIsNone(operator._sd_init_error)  # No error
+
+        # Verify ShipmentData was NOT initialized (Errata flow)
+        mock_sd_class.assert_not_called()
+
+    @patch('oar.core.operators.util.is_payload_metadata_url_accessible')
+    @patch('oar.core.operators.ShipmentData')
+    @patch('oar.core.operators.AdvisoryManager')
+    def test_approve_release_skips_qe_approval_when_mr_merged(self, mock_am_class, mock_sd_class, mock_url_check):
+        """Test approve_release skips QE approval when MR is already merged"""
+        # Setup mock ConfigStore for Konflux flow
+        mock_cs = Mock(spec=ConfigStore)
+        mock_cs.release = "4.19.1"
+        mock_cs.is_konflux_flow.return_value = True
+
+        # Mock ShipmentData to raise exception (MR is merged)
+        mock_sd_class.side_effect = ShipmentDataException("Gitlab MR 12345 state is not open")
+
+        # Mock payload URL as accessible
+        mock_url_check.return_value = True
+
+        # Mock AdvisoryManager
+        mock_am_instance = Mock()
+        mock_am_class.return_value = mock_am_instance
+
+        # Create ApprovalOperator
+        operator = ApprovalOperator(mock_cs)
+
+        # Call approve_release
+        result = operator.approve_release()
+
+        # Verify QE approval was NOT called (MR is merged, _sd is None)
+        # Since _sd is None, add_qe_approval should not be called
+
+        # Verify advisory status was changed (should proceed regardless of MR state)
+        mock_am_instance.change_advisory_status.assert_called_once()
+
+        # Verify result is True (success)
+        self.assertTrue(result)
+
+    @patch('oar.core.operators.util.is_payload_metadata_url_accessible')
+    @patch('oar.core.operators.ShipmentData')
+    @patch('oar.core.operators.AdvisoryManager')
+    def test_approve_release_adds_qe_approval_when_mr_open(self, mock_am_class, mock_sd_class, mock_url_check):
+        """Test approve_release adds QE approval when MR is still open"""
+        # Setup mock ConfigStore for Konflux flow
+        mock_cs = Mock(spec=ConfigStore)
+        mock_cs.release = "4.19.1"
+        mock_cs.is_konflux_flow.return_value = True
+
+        # Mock ShipmentData to succeed (MR is open)
+        mock_sd_instance = Mock()
+        mock_sd_class.return_value = mock_sd_instance
+
+        # Mock payload URL as accessible
+        mock_url_check.return_value = True
+
+        # Mock AdvisoryManager
+        mock_am_instance = Mock()
+        mock_am_class.return_value = mock_am_instance
+
+        # Create ApprovalOperator
+        operator = ApprovalOperator(mock_cs)
+
+        # Call approve_release
+        result = operator.approve_release()
+
+        # Verify QE approval was called (MR is open, _sd exists)
+        mock_sd_instance.add_qe_approval.assert_called_once()
+
+        # Verify advisory status was changed
+        mock_am_instance.change_advisory_status.assert_called_once()
+
+        # Verify result is True (success)
+        self.assertTrue(result)
 
 
 if __name__ == '__main__':
