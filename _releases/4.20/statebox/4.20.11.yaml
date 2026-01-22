@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.11
 created_at: '2026-01-15T11:03:39Z'
-updated_at: '2026-01-21T05:12:09Z'
+updated_at: '2026-01-22T05:18:18Z'
 metadata:
   jira_ticket: ART-14394
   advisory_ids:
@@ -103,24 +103,22 @@ tasks:
     2026-01-18T20:38:56Z: INFO: Signature check PASSED
     2026-01-18T20:38:56Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-01-21T00:11:41Z'
-  completed_at: null
+  completed_at: '2026-01-22T00:18:17Z'
   result: |-
-    2026-01-21T00:11:41Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-01-21T00:11:53Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-01-21T00:11:54Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202601130621-0
-    2026-01-21T00:11:54Z: INFO: The commit metadata is kernel-5.14.0-570.78.1.el9_6
-    2026-01-21T00:11:54Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 178473, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2025:15963-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179277, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:0661-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179479, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:0673-pending', 'perm': 'trusted', 'perm_id': 6}]
-    2026-01-21T00:11:55Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 311
-    2026-01-21T00:11:55Z: INFO: Successfully added QE approval to MR 311
-    2026-01-21T00:11:56Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:0663
-    2026-01-21T00:12:02Z: INFO: The metadata url is not accessible
-    2026-01-21T00:12:02Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-01-21T00:12:02Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-01-21T00:12:02Z: INFO: Background metadata checker process started (PID: 70499) - running independently after parent exit
-    2026-01-21T00:12:02Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260121_001202.log
-    2026-01-21T00:12:09Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-01-22T00:17:30Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-01-22T00:17:39Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-01-22T00:17:41Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202601130621-0
+    2026-01-22T00:17:42Z: INFO: The commit metadata is kernel-5.14.0-570.78.1.el9_6
+    2026-01-22T00:17:42Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163377, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 178473, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2025:15963-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179277, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:0661-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179479, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:0673-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-01-22T00:17:42Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 311
+    2026-01-22T00:17:42Z: INFO: Successfully added QE approval to MR 311
+    2026-01-22T00:17:43Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:0663
+    2026-01-22T00:18:04Z: INFO: The metadata url is accessible
+    2026-01-22T00:18:11Z: WARNING: cannot change state of advisory 158014 from REL_PREP to SHIPPED_LIVE, skip
+    2026-01-22T00:18:11Z: WARNING: cannot change state of advisory 158015 from REL_PREP to SHIPPED_LIVE, skip
+    2026-01-22T00:18:17Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158014'
   reported_at: '2026-01-15T12:38:25Z'
