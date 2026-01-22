@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Image Consistency Check is a validation tool that verifies all container images in an OpenShift release payload are consistent with the images declared in the shipment data (GitLab Merge Request). This ensures the integrity of container images before they are shipped to customers.
+The Image Consistency Check is a validation tool that verifies every image from the OpenShift release payload can be found in the shipment data (GitLab Merge Request) or has already been shipped. For images not found in the current shipment, the tool checks the image digest via the Red Hat Container Catalog to confirm they are already released. 
 
 ## Process flow
 
