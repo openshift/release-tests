@@ -7,8 +7,11 @@ from oar.image_consistency_check.payload import Payload, PayloadImage
 
 class TestPayload(unittest.TestCase):
     def setUp(self):
-        self.payload = Payload("quay.io/openshift-release-dev/ocp-release:4.16.55-x86_64")
+        self.payload_url = "quay.io/test/ocp-release:1.2.3-x86_64"
         self.test_payload_data = {
+            "metadata": {
+                "version": "1.2.3"
+            },
             "references": {
                 "spec": {
                     "tags": [
@@ -45,26 +48,16 @@ class TestPayload(unittest.TestCase):
     def test_fetch_payload_data(self, mock_run):
         """Test that payload data is fetched correctly from oc command."""
         mock_run.return_value = MagicMock(stdout=json.dumps(self.test_payload_data))
-        payload_data = self.payload._fetch_payload_data()
-        self.assertEqual(payload_data, self.test_payload_data)
+        payload = Payload(self.payload_url)
+        self.assertEqual(payload._payload_data, self.test_payload_data)
+        self.assertEqual(payload.version, "1.2.3")
         self.assertEqual(mock_run.call_count, 1)
-
-    def test_extract_images(self):
-        """Test that images are extracted and images that match the skipped images regex are filtered out."""
-        images = self.payload._extract_images(self.test_payload_data)
-        self.assertEqual(len(images), 3)
-        self.assertEqual(images[0].name, "aaa")
-        self.assertEqual(images[0].pullspec, "from-name-aaa")
-        self.assertEqual(images[1].name, "bbb")
-        self.assertEqual(images[1].pullspec, "from-name-bbb")
-        self.assertEqual(images[2].name, "ccc")
-        self.assertEqual(images[2].pullspec, "from-name-ccc")
-
+    
     @patch('oar.image_consistency_check.payload.subprocess.run')
     def test_get_images(self, mock_run):
         """Test that get_images fetches and extracts images correctly."""
         mock_run.return_value = MagicMock(stdout=json.dumps(self.test_payload_data))
-        images = self.payload.get_images()
+        images = Payload(self.payload_url).get_images()
         self.assertEqual(len(images), 3)
         self.assertEqual(images[0].name, "aaa")
         self.assertEqual(images[0].pullspec, "from-name-aaa")
@@ -76,15 +69,17 @@ class TestPayload(unittest.TestCase):
 
     def test_get_images_real(self):
         """Test get_images with a real payload from quay.io."""
-        images = self.payload.get_images()
+        images = Payload("quay.io/openshift-release-dev/ocp-release:4.16.55-x86_64").get_images()
         self.assertEqual(len(images), 188)
         for image in images:
             self.assertIsInstance(image, PayloadImage)
             self.assertIsInstance(image.name, str)
             self.assertRegex(image.pullspec, r"^quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:[a-f0-9]{64}$")
 
-    def test_is_skipped_image(self):
+    @patch('oar.image_consistency_check.payload.subprocess.run')
+    def test_is_skipped_image(self, mock_run):
         """Test that _is_skipped_image correctly identifies images to skip."""
+        mock_run.return_value = MagicMock(stdout=json.dumps(self.test_payload_data))
         # Images that should be skipped
         skipped_images = [
             "machine-os-content",
@@ -97,7 +92,7 @@ class TestPayload(unittest.TestCase):
         ]
         for image in skipped_images:
             with self.subTest(image=image):
-                self.assertTrue(self.payload._is_skipped_image(image), f"{image} should be skipped")
+                self.assertTrue(Payload(self.payload_url)._is_skipped_image(image), f"{image} should be skipped")
 
         # Images that should NOT be skipped
         not_skipped_images = [
@@ -113,4 +108,18 @@ class TestPayload(unittest.TestCase):
         ]
         for image in not_skipped_images:
             with self.subTest(image=image):
-                self.assertFalse(self.payload._is_skipped_image(image), f"{image} should NOT be skipped")
+                self.assertFalse(Payload(self.payload_url)._is_skipped_image(image), f"{image} should NOT be skipped")
+    
+    def test_payload_version(self):
+        """Test that the payload version is extracted correctly."""
+        payload = Payload("quay.io/openshift-release-dev/ocp-release:4.16.55-x86_64")
+        self.assertEqual(payload.version, "4.16.55")
+
+        ec_payload = Payload("quay.io/openshift-release-dev/ocp-release:4.22.0-ec.1-x86_64")
+        self.assertEqual(ec_payload.version, "4.22.0-ec.1")
+
+        rc_payload = Payload("quay.io/openshift-release-dev/ocp-release:4.21.0-rc.1-x86_64")
+        self.assertEqual(rc_payload.version, "4.21.0-rc.1")
+
+        with self.assertRaises(Exception):
+            Payload("quay.io/openshift-release-dev/ocp-release:invalid-x86_64")

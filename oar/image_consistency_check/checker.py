@@ -13,17 +13,37 @@ logger = logging.getLogger(__name__)
 
 class ImageConsistencyChecker:
 
-    def __init__(self, payload: Payload, shipment: Shipment):
+    def __init__(self, payload: Payload, shipment: Shipment, check_version_consistency: bool = True):
         """
         Initialize the ImageConsistencyChecker object.
 
         Args:
             payload (Payload): The payload object
             shipment (Shipment): The shipment object
+            check_version_consistency (bool): Whether to check if the payload and shipment versions are the same
+
+        Raises:
+            ValueError: If the payload and shipment versions are not the same and check_version is True
         """
+        if check_version_consistency and not self._is_shipment_payload_version_same(payload, shipment):
+            raise ValueError(f"Payload version {payload.version} does not match shipment version {shipment.version}")
+
         self.payload_images = payload.get_images()
         self.shipment_components = shipment.get_components()
         self.all_image_metadata: dict[str, ImageMetadata] = self._create_image_metadata(self.payload_images, self.shipment_components)
+
+    def _is_shipment_payload_version_same(self, payload: Payload, shipment: Shipment) -> bool:
+        """
+        Check if the payload and shipment versions are the same.
+
+        Args:
+            payload (Payload): The payload object
+            shipment (Shipment): The shipment object
+
+        Returns:
+            bool: True if the payload and shipment versions are the same, False otherwise
+        """
+        return payload.version == shipment.version
 
     def _create_image_metadata(self, payload_images: list[PayloadImage], shipment_components: list[ShipmentComponent]) -> dict[str, ImageMetadata]:
         """

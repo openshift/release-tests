@@ -41,17 +41,21 @@ class Payload:
         Args:
             payload_url (str): The URL of the OpenShift release payload
         """
-        self._url = payload_url
+        self._payload_data = self._fetch_payload_data(payload_url)
+        self.version = self._payload_data['metadata']['version']
 
-    def _fetch_payload_data(self) -> dict:
+    def _fetch_payload_data(self, payload_url: str) -> dict:
         """
         Get the payload data from the payload URL.
+
+        Args:
+            payload_url (str): The URL of the OpenShift release payload
 
         Returns:
             dict: The payload data
         """
-        logger.info(f"Fetching payload data from {self._url}")
-        cmd = ["oc", "adm", "release", "info", "--pullspecs", self._url, "-o", "json"]
+        logger.info(f"Fetching payload data from {payload_url}")
+        cmd = ["oc", "adm", "release", "info", "--pullspecs", payload_url, "-o", "json"]
         logger.debug(f"Running command: {' '.join(cmd)}")
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
         return json.loads(result.stdout)
@@ -67,19 +71,16 @@ class Payload:
         """
         return any(pattern.fullmatch(image_name) for pattern in self._SKIPPED_IMAGES_PATTERNS)
 
-    def _extract_images(self, payload_data: dict) -> list[PayloadImage]:
+    def _extract_images(self) -> list[PayloadImage]:
         """
         Extract images from the payload data.
-
-        Args:
-            payload_data (dict): The payload data
 
         Returns:
             list[PayloadImage]: List of images
         """
         logger.info(f"Extracting images from payload data")
         images = []
-        for tag in payload_data['references']['spec']['tags']:
+        for tag in self._payload_data['references']['spec']['tags']:
             if self._is_skipped_image(tag['name']):
                 logger.info(f"Skipping image - name: {tag['name']}, pullspec: {tag['from']['name']}")
                 continue
@@ -88,7 +89,6 @@ class Payload:
         logger.info(f"Extracted {len(images)} images from payload data")
         return images
 
-
     def get_images(self) -> list[PayloadImage]:
         """
         Get the images from the payload.
@@ -96,5 +96,5 @@ class Payload:
         Returns:
             list[PayloadImage]: List of images
         """
-        payload_data = self._fetch_payload_data()
-        return self._extract_images(payload_data)
+        return self._extract_images()
+
