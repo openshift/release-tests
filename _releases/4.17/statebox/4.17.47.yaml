@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.47
 created_at: '2026-01-16T00:02:32Z'
-updated_at: '2026-01-21T14:58:21Z'
+updated_at: '2026-01-22T08:20:40Z'
 metadata:
   jira_ticket: ART-14428
   advisory_ids:
@@ -47,9 +47,12 @@ tasks:
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-01-16T08:46:13Z'
-  completed_at: '2026-01-16T09:10:37Z'
-  result: 'Build already promoted to 4.17.47 (phase: Accepted). Skipping candidate
-    build analysis as promotion has already occurred.'
+  completed_at: '2026-01-22T08:20:40Z'
+  result: 'All blocking tests passed BO3 verification. Test result file shows accepted=true,
+    aggregated=true. 6 blocking test jobs completed successfully: AWS IPI (0 failures),
+    Azure IPI FIPS (0 failures), GCP IPI (SUCCESS after 2 retries - initial OAP cert-manager
+    failure passed on retry), AWS Disruptive (0 failures), Upgrade 4.16→4.17 GCP (SUCCESS),
+    Upgrade 4.17→4.17 AWS (SUCCESS).'
 - name: image-consistency-check
   status: Pass
   started_at: '2026-01-16T04:11:52Z'
