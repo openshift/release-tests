@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.12
 created_at: '2026-01-23T06:02:53Z'
-updated_at: '2026-01-23T11:49:09Z'
+updated_at: '2026-01-23T11:50:01Z'
 metadata:
   jira_ticket: ART-14456
   advisory_ids:
@@ -54,6 +54,17 @@ tasks:
     2026-01-23T06:49:08Z: INFO: checking push job status for advisory 158292 ...
     2026-01-23T06:49:08Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-01-23T06:49:08Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-01-23T06:49:59Z'
+  completed_at: null
+  result: |-
+    2026-01-23T06:49:59Z: INFO: Initialized StateBox for release 4.20.12 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.12.yaml
+    2026-01-23T06:49:59Z: INFO: Loaded state from _releases/4.20/statebox/4.20.12.yaml (SHA: d067f5ae)
+    2026-01-23T06:49:59Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-01-23T06:49:59Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.20.12-x86_64
+    2026-01-23T06:49:59Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3480/
+    2026-01-23T06:50:01Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158291'
   reported_at: '2026-01-23T06:41:19Z'
