@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0-rc.2
 created_at: '2026-01-15T06:31:25Z'
-updated_at: '2026-01-20T09:16:28Z'
+updated_at: '2026-01-23T00:20:20Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -58,4 +58,15 @@ tasks:
     2026-01-20T04:16:27Z: INFO: check stage job status according to job id: 1497
     2026-01-20T04:16:27Z: INFO: build status of zstreams/Stage-Pipeline/1497 is FAILURE
     2026-01-20T04:16:27Z: INFO: task [Stage Testing] status is changed to [Fail]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-22T19:19:55Z'
+  completed_at: '2026-01-22T19:20:19Z'
+  result: |-
+    2026-01-22T19:19:55Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-22T19:19:55Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.0-rc.2
+    2026-01-22T19:19:57Z: INFO: Image Digest: sha256:d728de4be64b32806f3e46c87e16fe5b2988798fcea33f1ecb11d0aef705ecb2
+    2026-01-22T19:19:57Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=d728de4be64b32806f3e46c87e16fe5b2988798fcea33f1ecb11d0aef705ecb2/signature-1
+    2026-01-22T19:20:19Z: INFO: Signature check PASSED
+    2026-01-22T19:20:19Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
