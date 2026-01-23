@@ -76,13 +76,58 @@
           "jobStartTime": "2026-01-23T03:25:28Z",
           "jobID": "ccf926d5-ad12-4f60-ac3d-8a5255b750e8",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2014539957284114432",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-01-23T05:59:26Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-01-23T03:25:33Z",
           "jobID": "629aa1b4-cf94-4efa-9abc-02e35cc697b8",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2014539978930917376",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-01-23T06:15:50Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 106,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-LEVEL0-Medium-73293-certificates with duplicate secretName should not cause flood of re-issuance attempt"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -119,13 +164,15 @@
           "jobStartTime": "2026-01-23T03:25:44Z",
           "jobID": "89beec79-a018-4a3f-8d5a-f76626861299",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2014540021415022592",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-01-23T06:00:26Z"
         },
         {
           "jobStartTime": "2026-01-23T03:25:49Z",
           "jobID": "1e0cd8d3-56e5-4691-b79e-d3cc0dbf554a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2014540042738864128",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-01-23T06:00:00Z"
         }
       ]
     },
@@ -146,5 +193,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.18.0-0.nightly-2026-01-22-203833",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.18.0-0.nightly-2026-01-22-203833"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
