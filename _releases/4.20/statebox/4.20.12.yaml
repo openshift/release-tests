@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.12
 created_at: '2026-01-23T06:02:53Z'
-updated_at: '2026-01-23T11:50:13Z'
+updated_at: '2026-01-23T14:13:11Z'
 metadata:
   jira_ticket: ART-14456
   advisory_ids:
@@ -55,16 +55,20 @@ tasks:
     2026-01-23T06:49:08Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-01-23T06:49:08Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-01-23T06:49:59Z'
-  completed_at: null
+  completed_at: '2026-01-23T09:13:11Z'
   result: |-
-    2026-01-23T06:49:59Z: INFO: Initialized StateBox for release 4.20.12 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.12.yaml
-    2026-01-23T06:49:59Z: INFO: Loaded state from _releases/4.20/statebox/4.20.12.yaml (SHA: d067f5ae)
-    2026-01-23T06:49:59Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-01-23T06:49:59Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.20.12-x86_64
-    2026-01-23T06:49:59Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3480/
-    2026-01-23T06:50:01Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-23T09:08:05Z: INFO: Initialized StateBox for release 4.20.12 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.12.yaml
+    2026-01-23T09:08:05Z: INFO: Checking image-consistency-check job status with job id: 3480
+    2026-01-23T09:08:05Z: INFO: build status of image-consistency-check/3480 is SUCCESS
+    2026-01-23T09:08:05Z: INFO: Starting image health check for shipment MR 323
+    2026-01-23T09:08:05Z: INFO: Stage release succeeded (verified by label)
+    2026-01-23T09:08:05Z: INFO: Processing MR 323
+    2026-01-23T09:08:09Z: INFO: Found 860 images to check
+    2026-01-23T09:13:09Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
+    2026-01-23T09:13:11Z: INFO: Added image health summary to MR 323
+    2026-01-23T09:13:11Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-01-23T06:50:10Z'
