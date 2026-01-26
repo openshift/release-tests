@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.56
 created_at: '2026-01-23T16:01:50Z'
-updated_at: '2026-01-26T14:51:21Z'
+updated_at: '2026-01-26T14:52:19Z'
 metadata:
   jira_ticket: ART-14454
   advisory_ids:
@@ -83,6 +83,17 @@ tasks:
   completed_at: '2026-01-26T07:55:58Z'
   result: 'All blocking tests passed BO3 verification for promoted build 4.16.56 (x86_64).
     Test results: aggregated=true, accepted=true. Gate check passed.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-26T09:51:36Z'
+  completed_at: '2026-01-26T09:52:18Z'
+  result: |-
+    2026-01-26T09:51:36Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-26T09:51:36Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.56
+    2026-01-26T09:51:38Z: INFO: Image Digest: sha256:c2684677867b7aa2270ae03d6b7a0f0a61e5b97d8567a986210f2b2971115d0d
+    2026-01-26T09:51:38Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=c2684677867b7aa2270ae03d6b7a0f0a61e5b97d8567a986210f2b2971115d0d/signature-1
+    2026-01-26T09:52:18Z: INFO: Signature check PASSED
+    2026-01-26T09:52:18Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Image consistency check failed: Image sha256:19dcc26ce21f0f5e48d5415ccb8314660bf604b1e0d6cfbe71eaf33842147c58
     (tag v4.16.0-202601220116.p2.ga81e3b3.assembly.stream.el9, commit a81e3b31948468d76ac744bbbb74b0c423fc969e)
