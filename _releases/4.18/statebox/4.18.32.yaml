@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.32
 created_at: '2026-01-26T16:03:06Z'
-updated_at: '2026-01-27T07:44:09Z'
+updated_at: '2026-01-27T07:44:24Z'
 metadata:
   jira_ticket: ART-14460
   advisory_ids:
@@ -68,15 +68,15 @@ tasks:
 - name: stage-testing
   status: Fail
   started_at: '2026-01-26T11:21:41Z'
-  completed_at: '2026-01-26T11:21:44Z'
-  result: "2026-01-26T11:21:41Z: INFO: Initialized StateBox for release 4.18.32 at\
-    \ openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.32.yaml\n2026-01-26T11:21:41Z:\
-    \ INFO: job id is not set, will trigger stage testing\n2026-01-26T11:21:42Z: INFO:\
-    \ Loaded state from _releases/4.18/statebox/4.18.32.yaml (SHA: a3803673)\n2026-01-26T11:21:43Z:\
-    \ INFO: Found pipeline 14278946 with status running\n2026-01-26T11:21:44Z: INFO:\
-    \ Stage 'stage-release-triggers' status: {'status': 'running', 'job': <ProjectPipelineBridge\
-    \ id:46380488>}\n2026-01-26T11:21:44Z: ERROR: Stage release failed with status\
-    \ running\n2026-01-26T11:21:44Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
+  completed_at: '2026-01-27T02:44:24Z'
+  result: "2026-01-27T02:44:22Z: INFO: Initialized StateBox for release 4.18.32 at\
+    \ openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.32.yaml\n2026-01-27T02:44:22Z:\
+    \ INFO: job id is not set, will trigger stage testing\n2026-01-27T02:44:22Z: INFO:\
+    \ Loaded state from _releases/4.18/statebox/4.18.32.yaml (SHA: 3e202fb0)\n2026-01-27T02:44:23Z:\
+    \ INFO: Found pipeline 14278946 with status failed\n2026-01-27T02:44:24Z: INFO:\
+    \ Stage 'stage-release-triggers' status: {'status': 'failed', 'job': <ProjectPipelineBridge\
+    \ id:46380488>}\n2026-01-27T02:44:24Z: ERROR: Stage release failed with status\
+    \ failed\n2026-01-27T02:44:24Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
     \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
     \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2026-01-23T10:52:57.000+00:00',\n\
     \            'committed_date': '2026-01-23T10:52:57.000+00:00',\n            'committer_email':\
@@ -99,30 +99,31 @@ tasks:
     \ 116177,\n                         'ref': 'refs/merge-requests/326/merge',\n\
     \                         'sha': '6b5edcd5b5d62e789bac9b1b79ce03a85da7a775',\n\
     \                         'source': 'parent_pipeline',\n                     \
-    \    'status': 'running',\n                         'updated_at': '2026-01-26T14:35:28.642Z',\n\
+    \    'status': 'failed',\n                         'updated_at': '2026-01-26T18:52:57.457Z',\n\
     \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14306895'},\n\
-    \ 'duration': 6457.118031774,\n 'erased_at': None,\n 'finished_at': None,\n 'id':\
-    \ 46380488,\n 'name': 'stage-job',\n 'pipeline': {'created_at': '2026-01-23T10:52:58.513Z',\n\
-    \              'id': 14278946,\n              'iid': 3450,\n              'project_id':\
-    \ 116177,\n              'ref': 'refs/merge-requests/326/merge',\n           \
-    \   'sha': '6b5edcd5b5d62e789bac9b1b79ce03a85da7a775',\n              'source':\
-    \ 'merge_request_event',\n              'status': 'running',\n              'updated_at':\
-    \ '2026-01-26T14:35:12.533Z',\n              'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14278946'},\n\
+    \ 'duration': 15464.885876,\n 'erased_at': None,\n 'failure_reason': 'unknown_failure',\n\
+    \ 'finished_at': '2026-01-26T18:52:57.674Z',\n 'id': 46380488,\n 'name': 'stage-job',\n\
+    \ 'pipeline': {'created_at': '2026-01-23T10:52:58.513Z',\n              'id':\
+    \ 14278946,\n              'iid': 3450,\n              'project_id': 116177,\n\
+    \              'ref': 'refs/merge-requests/326/merge',\n              'sha': '6b5edcd5b5d62e789bac9b1b79ce03a85da7a775',\n\
+    \              'source': 'merge_request_event',\n              'status': 'failed',\n\
+    \              'updated_at': '2026-01-26T18:52:57.826Z',\n              'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14278946'},\n\
     \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': 0.410221,\n\
     \ 'ref': 'refs/merge-requests/326/merge',\n 'stage': 'stage-release-triggers',\n\
-    \ 'started_at': '2026-01-26T14:35:12.788Z',\n 'status': 'running',\n 'tag': False,\n\
+    \ 'started_at': '2026-01-26T14:35:12.788Z',\n 'status': 'failed',\n 'tag': False,\n\
     \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/eea877851cf59c77d47ad7384964a44e5e53597b1318da0e64fcca5f74ed17d4?s=80&d=identicon',\n\
     \          'bio': '',\n          'bot': False,\n          'created_at': '2021-01-28T13:32:40.985Z',\n\
     \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
     \          'github': '',\n          'id': 9568,\n          'job_title': '',\n\
-    \          'linkedin': '',\n          'local_time': '4:22 PM',\n          'location':\
+    \          'linkedin': '',\n          'local_time': '7:45 AM',\n          'location':\
     \ '',\n          'locked': False,\n          'name': 'Luis Garcia Acosta',\n \
     \         'organization': '',\n          'pronouns': None,\n          'public_email':\
     \ '[EMAIL_REDACTED]',\n          'state': 'active',\n          'twitter': '',\n\
     \          'username': 'lgarciaa',\n          'web_url': 'https://gitlab.cee.redhat.com/lgarciaa',\n\
     \          'website_url': '',\n          'work_information': None},\n 'web_url':\
     \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/46380488'}\n\
-    2026-01-26T11:21:44Z: INFO: stage release pipeline is not success, will not trigger\
+    2026-01-27T02:44:24Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
 issues:
 - issue: 'GitLab stage-release pipeline 14278946 has been running for 3 days (since
