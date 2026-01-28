@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.61
 created_at: '2026-01-26T16:01:23Z'
-updated_at: '2026-01-28T17:12:07Z'
+updated_at: '2026-01-28T17:40:55Z'
 metadata:
   jira_ticket: ART-14457
   advisory_ids:
@@ -100,6 +100,17 @@ tasks:
     2026-01-28T12:11:59Z: INFO: Background metadata checker process started (PID: 132995) - running independently after parent exit
     2026-01-28T12:11:59Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.14_20260128_121159.log
     2026-01-28T12:12:06Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-01-28T12:40:15Z'
+  completed_at: '2026-01-28T12:40:55Z'
+  result: |-
+    2026-01-28T12:40:15Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-01-28T12:40:15Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.14.61
+    2026-01-28T12:40:17Z: INFO: Image Digest: sha256:9e91245847127c920394c66c06a2c5485a1e5e54c8254326f18c04fee139fb43
+    2026-01-28T12:40:17Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=9e91245847127c920394c66c06a2c5485a1e5e54c8254326f18c04fee139fb43/signature-1
+    2026-01-28T12:40:55Z: INFO: Signature check PASSED
+    2026-01-28T12:40:55Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'stage-release-triggers pipeline failing on shipment MR #324 - blocks Jenkins
     job execution'
