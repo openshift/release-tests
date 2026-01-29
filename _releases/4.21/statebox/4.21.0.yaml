@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0
 created_at: '2026-01-29T06:43:26Z'
-updated_at: '2026-01-29T07:00:31Z'
+updated_at: '2026-01-29T13:27:17Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -34,16 +34,20 @@ tasks:
     2026-01-29T01:55:47Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-01-29T01:55:47Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-01-29T01:58:09Z'
-  completed_at: null
+  completed_at: '2026-01-29T08:27:17Z'
   result: |-
-    2026-01-29T01:58:09Z: INFO: Initialized StateBox for release 4.21.0 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0.yaml
-    2026-01-29T01:58:09Z: INFO: Loaded state from _releases/4.21/statebox/4.21.0.yaml (SHA: 9c064513)
-    2026-01-29T01:58:09Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-01-29T01:58:09Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.21.0-x86_64
-    2026-01-29T01:58:09Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3486/
-    2026-01-29T01:58:11Z: INFO: sent slack message to <#team-qe-release>
+    2026-01-29T08:18:34Z: INFO: Initialized StateBox for release 4.21.0 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.0.yaml
+    2026-01-29T08:18:34Z: INFO: Checking image-consistency-check job status with job id: 3487
+    2026-01-29T08:18:34Z: INFO: build status of image-consistency-check/3487 is SUCCESS
+    2026-01-29T08:18:34Z: INFO: Starting image health check for shipment MR 330
+    2026-01-29T08:18:34Z: INFO: Stage release succeeded (verified by label)
+    2026-01-29T08:18:34Z: INFO: Processing MR 330
+    2026-01-29T08:18:38Z: INFO: Found 860 images to check
+    2026-01-29T08:27:16Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
+    2026-01-29T08:27:17Z: INFO: Added image health summary to MR 330
+    2026-01-29T08:27:17Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: push-to-cdn-staging
   status: Pass
   started_at: '2026-01-29T02:00:15Z'
