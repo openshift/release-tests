@@ -71,13 +71,58 @@
           "jobStartTime": "2026-01-28T20:30:05Z",
           "jobID": "61753e50-d78f-498e-9e71-25b22d53fe1d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2016609748358533120",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-01-28T23:31:26Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-01-28T20:30:05Z",
           "jobID": "6b3d7ad5-8f70-4500-906b-38bd31802b0c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2016609749058981888",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-01-28T23:36:31Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 28,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 19,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -159,5 +204,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2026-01-28-034030",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2026-01-28-034030"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
