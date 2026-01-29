@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0
 created_at: '2026-01-29T06:43:26Z'
-updated_at: '2026-01-29T06:58:11Z'
+updated_at: '2026-01-29T07:00:31Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -44,4 +44,15 @@ tasks:
     2026-01-29T01:58:09Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.21.0-x86_64
     2026-01-29T01:58:09Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3486/
     2026-01-29T01:58:11Z: INFO: sent slack message to <#team-qe-release>
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-01-29T02:00:15Z'
+  completed_at: '2026-01-29T02:00:30Z'
+  result: |-
+    2026-01-29T02:00:15Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-01-29T02:00:30Z: INFO: checking push job status for advisory 154550 ...
+    2026-01-29T02:00:30Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-01-29T02:00:30Z: INFO: checking push job status for advisory 157362 ...
+    2026-01-29T02:00:30Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-01-29T02:00:30Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues: []
