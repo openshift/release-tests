@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.56
 created_at: '2026-01-23T16:01:50Z'
-updated_at: '2026-01-28T07:04:03Z'
+updated_at: '2026-01-30T08:51:05Z'
 metadata:
   jira_ticket: ART-14454
   advisory_ids:
@@ -95,22 +95,24 @@ tasks:
     2026-01-26T09:52:18Z: INFO: Signature check PASSED
     2026-01-26T09:52:18Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-01-28T02:03:43Z'
-  completed_at: null
+  completed_at: '2026-01-30T03:51:05Z'
   result: |-
-    2026-01-28T02:03:43Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-01-28T02:03:47Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-01-28T02:03:48Z: INFO: RHCOS nvr is rhcos-x86_64-416.94.202601160124-0
-    2026-01-28T02:03:48Z: INFO: The commit metadata is kernel-5.14.0-427.107.1.el9_4
-    2026-01-28T02:03:48Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141775, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179215, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:0701-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179285, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:0917-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-01-28T02:03:49Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 322
-    2026-01-28T02:03:49Z: INFO: Successfully added QE approval to MR 322
-    2026-01-28T02:03:50Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2026:0992
-    2026-01-28T02:03:56Z: INFO: The metadata url is not accessible
-    2026-01-28T02:03:56Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-01-28T02:03:56Z: WARNING: Scheduler is already running for release 4.16 (lock file exists), skipping additional instance
-    2026-01-28T02:04:03Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
+    2026-01-30T03:50:09Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-01-30T03:50:12Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-01-30T03:50:12Z: INFO: RHCOS nvr is rhcos-x86_64-416.94.202601160124-0
+    2026-01-30T03:50:12Z: INFO: The commit metadata is kernel-5.14.0-427.107.1.el9_4
+    2026-01-30T03:50:12Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141775, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179215, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:0701-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179285, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:0917-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-01-30T03:50:13Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 322
+    2026-01-30T03:50:13Z: INFO: Successfully added QE approval to MR 322
+    2026-01-30T03:50:14Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2026:0992
+    2026-01-30T03:50:24Z: INFO: The metadata url is accessible
+    2026-01-30T03:50:29Z: WARNING: RHBA advisory 158303 does not have secalerts
+    2026-01-30T03:50:31Z: INFO: advisory 158303 state is updated to REL_PREP
+    2026-01-30T03:50:39Z: INFO: RHSA advisory 158304 does not have blocking secalert
+    2026-01-30T03:50:42Z: INFO: advisory 158304 state is updated to REL_PREP
+    2026-01-30T03:51:05Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: 'Image consistency check failed: Image sha256:19dcc26ce21f0f5e48d5415ccb8314660bf604b1e0d6cfbe71eaf33842147c58
     (tag v4.16.0-202601220116.p2.ga81e3b3.assembly.stream.el9, commit a81e3b31948468d76ac744bbbb74b0c423fc969e)
