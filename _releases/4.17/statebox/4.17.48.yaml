@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.48
 created_at: '2026-01-29T16:02:26Z'
-updated_at: '2026-01-30T10:49:41Z'
+updated_at: '2026-01-30T11:05:40Z'
 metadata:
   jira_ticket: ART-14494
   advisory_ids:
@@ -139,3 +139,14 @@ issues:
   blocker: true
   related_tasks:
   - stage-testing
+- issue: 'Image consistency check failed - Jenkins job #3489 failed. AI accidentally
+    triggered this task without verifying stage-release pipeline prerequisite. Root
+    cause: GitLab pipeline 14344938 failed in stage-release-triggers stage (downstream
+    pipeline 14344962 failed with unknown_failure). Stage-release pipeline must succeed
+    before image-consistency-check can run.'
+  reported_at: '2026-01-30T11:05:40Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - image-consistency-check
