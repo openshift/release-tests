@@ -24,6 +24,10 @@ ExecStart=/bin/bash -l -c 'cd /home/your-username/coderepo/release-tests && ./mc
 Restart=always
 RestartSec=10
 
+# Kill mode: only kill the main process, not child processes
+# This allows background metadata checker processes to survive server restarts
+KillMode=process
+
 # Logging
 StandardOutput=journal
 StandardError=journal
