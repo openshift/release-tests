@@ -12,7 +12,7 @@ from gspread.exceptions import *
 import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.exceptions import WorksheetException, WorksheetExistsException, JiraUnauthorizedException
+from oar.core.exceptions import WorksheetException, WorksheetExistsException, WorksheetNotFound, JiraUnauthorizedException
 from oar.core.jira import JiraManager
 from oar.core.shipment import ShipmentData
 
@@ -58,7 +58,7 @@ class WorksheetManager:
         try:
             self._doc = self._gs.open_by_key(self._cs.get_report_template())
             self._template = self._doc.worksheet("template")
-        except (Exception, BaseException) as we:
+        except Exception as we:
             raise WorksheetException("cannot find template worksheet") from we
 
     def create_test_report(self):
@@ -128,7 +128,7 @@ class WorksheetManager:
         except Exception as e:
             raise WorksheetException(
                 f"cannot find worksheet {self._cs.release} in report doc"
-            ) from e
+            ) from WorksheetNotFound(f"worksheet {self._cs.release} not found")
 
         return TestReport(ws, self._cs)
 
