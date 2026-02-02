@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.23
 created_at: '2026-01-29T16:03:54Z'
-updated_at: '2026-02-02T12:11:34Z'
+updated_at: '2026-02-02T12:11:54Z'
 metadata:
   jira_ticket: ART-14492
   advisory_ids:
@@ -75,6 +75,66 @@ tasks:
     2026-02-02T07:11:32Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.19.23-x86_64
     2026-02-02T07:11:32Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3490/
     2026-02-02T07:11:34Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: Fail
+  started_at: '2026-02-02T07:11:52Z'
+  completed_at: '2026-02-02T07:11:54Z'
+  result: "2026-02-02T07:11:52Z: INFO: Initialized StateBox for release 4.19.23 at\
+    \ openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.23.yaml\n2026-02-02T07:11:52Z:\
+    \ INFO: job id is not set, will trigger stage testing\n2026-02-02T07:11:52Z: INFO:\
+    \ Loaded state from _releases/4.19/statebox/4.19.23.yaml (SHA: eb2b7b37)\n2026-02-02T07:11:54Z:\
+    \ INFO: Found pipeline 14377101 with status failed\n2026-02-02T07:11:54Z: INFO:\
+    \ Stage 'stage-release-triggers' status: {'status': 'failed', 'job': <ProjectPipelineBridge\
+    \ id:46748500>}\n2026-02-02T07:11:54Z: ERROR: Stage release failed with status\
+    \ failed\n2026-02-02T07:11:54Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
+    \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
+    \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2026-01-30T18:49:32.000+00:00',\n\
+    \            'committed_date': '2026-01-30T18:49:32.000+00:00',\n            'committer_email':\
+    \ '[EMAIL_REDACTED]',\n            'committer_name': 'art-bot-jenkins',\n    \
+    \        'created_at': '2026-01-30T18:49:32.000+00:00',\n            'extended_trailers':\
+    \ {},\n            'id': 'c8b32f8f87d0e6b901b1529ca790ee5032dc2f94',\n       \
+    \     'message': \"Merge branch 'prepare-shipment-4.19.23-20260129091400' \"\n\
+    \                       \"into 'main'\\n\"\n                       '\\n'\n   \
+    \                    'Shipment for 4.19.23 (ship date: 2026-Feb-04)\\n'\n    \
+    \                   '\\n'\n                       'See merge request '\n     \
+    \                  'hybrid-platforms/art/ocp-shipment-data!336',\n           \
+    \ 'parent_ids': ['12a579cce850d870aecf6fe758a9806da23d5bfa',\n               \
+    \            '7ee56e5ff212d0cffc4063c4bbcb19164f3d7308'],\n            'short_id':\
+    \ 'c8b32f8f',\n            'title': \"Merge branch 'prepare-shipment-4.19.23-20260129091400'\
+    \ \"\n                     \"into 'main'\",\n            'trailers': {},\n   \
+    \         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/commit/c8b32f8f87d0e6b901b1529ca790ee5032dc2f94'},\n\
+    \ 'coverage': None,\n 'created_at': '2026-02-02T11:45:44.163Z',\n 'downstream_pipeline':\
+    \ {'created_at': '2026-02-02T11:45:45.426Z',\n                         'id': 14378596,\n\
+    \                         'iid': 3632,\n                         'project_id':\
+    \ 116177,\n                         'ref': 'refs/merge-requests/336/merge',\n\
+    \                         'sha': 'c8b32f8f87d0e6b901b1529ca790ee5032dc2f94',\n\
+    \                         'source': 'parent_pipeline',\n                     \
+    \    'status': 'failed',\n                         'updated_at': '2026-02-02T12:03:35.265Z',\n\
+    \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14378596'},\n\
+    \ 'duration': 1070.727546,\n 'erased_at': None,\n 'failure_reason': 'unknown_failure',\n\
+    \ 'finished_at': '2026-02-02T12:03:35.487Z',\n 'id': 46748500,\n 'name': 'stage-job',\n\
+    \ 'pipeline': {'created_at': '2026-02-02T09:19:02.327Z',\n              'id':\
+    \ 14377101,\n              'iid': 3625,\n              'project_id': 116177,\n\
+    \              'ref': 'refs/merge-requests/336/merge',\n              'sha': 'c8b32f8f87d0e6b901b1529ca790ee5032dc2f94',\n\
+    \              'source': 'merge_request_event',\n              'status': 'failed',\n\
+    \              'updated_at': '2026-02-02T12:03:35.649Z',\n              'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14377101'},\n\
+    \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': 0.398245,\n\
+    \ 'ref': 'refs/merge-requests/336/merge',\n 'stage': 'stage-release-triggers',\n\
+    \ 'started_at': '2026-02-02T11:45:44.759Z',\n 'status': 'failed',\n 'tag': False,\n\
+    \ 'user': {'avatar_url': 'https://gitlab.cee.redhat.com/uploads/-/system/user/avatar/29215/avatar.png',\n\
+    \          'bio': '',\n          'bot': False,\n          'created_at': '2025-12-02T15:25:58.431Z',\n\
+    \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
+    \          'github': '',\n          'id': 29215,\n          'job_title': '',\n\
+    \          'linkedin': '',\n          'local_time': '1:13 PM',\n          'location':\
+    \ '',\n          'locked': False,\n          'name': 'Fabio Gallotti',\n     \
+    \     'organization': '',\n          'pronouns': '',\n          'public_email':\
+    \ '',\n          'state': 'active',\n          'twitter': '',\n          'username':\
+    \ 'fgallott',\n          'web_url': 'https://gitlab.cee.redhat.com/fgallott',\n\
+    \          'website_url': '',\n          'work_information': None},\n 'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/46748500'}\n\
+    2026-02-02T07:11:54Z: INFO: stage release pipeline is not success, will not trigger\
+    \ stage test"
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158599'
   reported_at: '2026-01-30T07:58:33Z'
