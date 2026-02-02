@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.61
 created_at: '2026-01-29T16:01:22Z'
-updated_at: '2026-02-02T21:47:58Z'
+updated_at: '2026-02-02T21:58:25Z'
 metadata:
   jira_ticket: ART-14491
   advisory_ids:
@@ -70,6 +70,13 @@ tasks:
     2026-02-02T16:47:56Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-02-02T16:47:56Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1512/>
     2026-02-02T16:47:58Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-02-02T21:58:25Z'
+  completed_at: '2026-02-02T21:58:25Z'
+  result: 'All blocking tests passed BO3 verification. Build 4.15.61-x86_64 phase:
+    Accepted. Tests: upgrade-from-stable-4.14-aws (success), upgrade-from-stable-4.15-azure-fips
+    (success), upgrade-from-stable-4.15-gcp (success)'
 issues:
 - issue: Shipment MR release triggers failing at extras.watch-stage and image.watch-stage
   reported_at: '2026-02-02T13:37:39Z'
