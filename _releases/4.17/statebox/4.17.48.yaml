@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.48
 created_at: '2026-01-29T16:02:26Z'
-updated_at: '2026-02-02T14:41:38Z'
+updated_at: '2026-02-02T14:43:31Z'
 metadata:
   jira_ticket: ART-14494
   advisory_ids:
@@ -54,13 +54,14 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build 4.17.0-0.nightly-2026-01-29-015117
     accepted: true, aggregated: true. 6 jobs completed successfully (some after retries).'
 - name: image-consistency-check
-  status: In Progress
+  status: Fail
   started_at: '2026-02-02T09:41:37Z'
-  completed_at: null
+  completed_at: '2026-02-02T09:43:31Z'
   result: |-
-    2026-02-02T09:41:37Z: INFO: Initialized StateBox for release 4.17.48 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.48.yaml
-    2026-02-02T09:41:37Z: INFO: Loaded state from _releases/4.17/statebox/4.17.48.yaml (SHA: 3e518d6b)
-    2026-02-02T09:41:37Z: INFO: Image consistency check already In Progress, skipping
+    2026-02-02T09:43:31Z: INFO: Initialized StateBox for release 4.17.48 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.48.yaml
+    2026-02-02T09:43:31Z: INFO: Checking image-consistency-check job status with job id: 3491
+    2026-02-02T09:43:31Z: INFO: build status of image-consistency-check/3491 is FAILURE
+    2026-02-02T09:43:31Z: INFO: task [Image Consistency Check] status is changed to [Fail]
 - name: stage-testing
   status: In Progress
   started_at: '2026-02-02T09:18:00Z'
