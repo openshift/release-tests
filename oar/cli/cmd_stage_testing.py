@@ -2,7 +2,7 @@ import logging
 import click
 
 from oar.core.const import *
-from oar.core.exceptions import JenkinsException
+from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins import JenkinsHelper
 from oar.core.notification import NotificationManager
 from oar.core.shipment import ShipmentData
@@ -74,7 +74,7 @@ class StageTesting:
             logger.info(f"triggered stage pipeline job: <{build_url}>")
             if build_url:
                 self.nm.share_jenkins_build_url(JENKINS_JOB_STAGE_PIPELINE[9:], build_url)
-        except JenkinsException as jh:
+        except JenkinsHelperException as jh:
             logger.exception("trigger stage pipeline job failed")
             # Log fail status for cli_result_callback parsing
             util.log_task_status(TASK_STAGE_TESTING, TASK_STATUS_FAIL)

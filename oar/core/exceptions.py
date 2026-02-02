@@ -30,7 +30,7 @@ class NotificationException(Exception):
     """Exception class to raise error in notificationManager"""
 
 
-class JenkinsException(Exception):
+class JenkinsHelperException(Exception):
     """Exception class to raise error in JenkinsHelper"""
 
 
