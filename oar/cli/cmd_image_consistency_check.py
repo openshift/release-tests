@@ -2,7 +2,7 @@ import logging
 
 import click
 from oar.core.const import *
-from oar.core.exceptions import JenkinsException
+from oar.core.exceptions import JenkinsHelperException
 from oar.core.jenkins import JenkinsHelper
 from oar.core.notification import NotificationManager
 from oar.core.operators import ImageHealthOperator
@@ -45,7 +45,7 @@ class ImageConsistencyChecker:
             logger.info(f"Triggered image consistency check job: {build_info}")
 
             self.nm.share_jenkins_build_url(JENKINS_JOB_IMAGE_CONSISTENCY_CHECK, build_info)
-        except JenkinsException as je:
+        except JenkinsHelperException as je:
             logger.error(f"Failed to trigger image-consistency-check job: {str(je)}")
             # Log fail status for cli_result_callback parsing
             util.log_task_status(TASK_IMAGE_CONSISTENCY_CHECK, TASK_STATUS_FAIL)
@@ -55,7 +55,7 @@ class ImageConsistencyChecker:
         """Get pull spec based on build type"""
         if for_nightly:
             if "x86_64" not in self.cs.get_candidate_builds():
-                raise JenkinsException("No candidate nightly build for architecture x86_64")
+                raise JenkinsHelperException("No candidate nightly build for architecture x86_64")
             return f"registry.ci.openshift.org/ocp/release:{self.cs.get_candidate_builds().get('x86_64')}"
         return f"quay.io/openshift-release-dev/ocp-release:{self.cs.release}-x86_64"
 

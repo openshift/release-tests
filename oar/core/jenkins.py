@@ -7,7 +7,7 @@ from jenkins import JenkinsException
 import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.exceptions import JenkinsException
+from oar.core.exceptions import JenkinsHelperException
 from oar.core.shipment import ShipmentData
 
 logger = logging.getLogger(__name__)
@@ -36,12 +36,12 @@ class JenkinsHelper:
         try:
             # only check metadata ad for errata flow
             if not self._cs.is_konflux_flow() and not self.metadata_ad:
-                raise JenkinsException("metadata advisory not found")
+                raise JenkinsHelperException("metadata advisory not found")
 
             build_url = self.call_build_job(
                 JENKINS_JOB_STAGE_PIPELINE, self.pull_spec)
-        except JenkinsException as ej:
-            raise JenkinsException(
+        except (JenkinsException, JenkinsHelperException) as ej:
+            raise JenkinsHelperException(
                 "call stage pipeline job failed") from ej
         return build_url
 
@@ -50,8 +50,8 @@ class JenkinsHelper:
             logger.info(f"triggered a job with {pull_spec}")
             build_url = self.call_build_job(
                 "image-consistency-check", pull_spec)
-        except JenkinsException as ej:
-            raise JenkinsException(
+        except (JenkinsException, JenkinsHelperException) as ej:
+            raise JenkinsHelperException(
                 "call image-consistency-check pipeline job failed"
             ) from ej
         return build_url
@@ -78,7 +78,7 @@ class JenkinsHelper:
                     break
 
             if not params_action:
-                raise JenkinsException(
+                raise JenkinsHelperException(
                     f"cannot find parameter action for build {job_name}/{build_number}")
 
             # find param value of payload url
@@ -89,7 +89,7 @@ class JenkinsHelper:
                     break
 
             if not payload_url:
-                raise JenkinsException(
+                raise JenkinsHelperException(
                     f"cannot find payload url value in parameters of {job_name}/{build_number}")
 
             stable_version = self._cs.release
@@ -98,7 +98,7 @@ class JenkinsHelper:
             # both stable and candidate build cannot be found in payload url, i.e. this job is not triggered for current z-stream release
             # raise the exception
             if not stable_version in payload_url and not candidate_version in payload_url:
-                raise JenkinsException(
+                raise JenkinsHelperException(
                     f"please make sure this build {job_name}/{build_number} is triggered for {stable_version}, cannot find {stable_version} or {candidate_version} in payload url {payload_url}")
 
             # start to check build status and return
@@ -112,7 +112,7 @@ class JenkinsHelper:
                 f"build status of {job_name}/{build_number} is {job_status}")
 
         except Exception as e:
-            raise JenkinsException(
+            raise JenkinsHelperException(
                 f"get job {job_name}/{build_number} status failed"
             ) from e
 
@@ -128,7 +128,7 @@ class JenkinsHelper:
                 if 'name' in item['task'] and item['task']['name'] == job_name:
                     return True
         except Exception as e:
-            raise JenkinsException(
+            raise JenkinsHelperException(
                 f"check job queue failed"
             ) from e
 
@@ -183,15 +183,15 @@ class JenkinsHelper:
                             break
                         else:
                             time.sleep(interval)
-                except:
-                    raise JenkinsException(
-                        f"visit {queue_item_link} failed")
+                except (JenkinsException, Exception) as e:
+                    raise JenkinsHelperException(
+                        f"visit {queue_item_link} failed: {e}") from e
 
                 if not build_info:
                     build_info = f"polling queue item {queue_item_link} timeout, please check build url in this item manually"
 
-        except JenkinsException as ej:
-            raise JenkinsException(
+        except (JenkinsException, JenkinsHelperException) as ej:
+            raise JenkinsHelperException(
                 f"call {job_name} job failed"
             ) from ej
 
@@ -204,7 +204,7 @@ class JenkinsHelper:
                 username=self._cs.get_jenkins_username(),
                 password=self._cs.get_jenkins_token(),
             )
-        except JenkinsException as ej:
-            raise JenkinsException(
+        except (JenkinsException, JenkinsHelperException) as ej:
+            raise JenkinsHelperException(
                 "failed to init jenkins server"
             ) from ej
