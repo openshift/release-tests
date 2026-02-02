@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.32
 created_at: '2026-01-26T16:03:06Z'
-updated_at: '2026-02-02T08:18:11Z'
+updated_at: '2026-02-02T08:19:01Z'
 metadata:
   jira_ticket: ART-14460
   advisory_ids:
@@ -70,65 +70,17 @@ tasks:
     2026-02-02T03:18:10Z: INFO: Added image health summary to MR 326
     2026-02-02T03:18:10Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2026-01-26T11:21:41Z'
-  completed_at: '2026-01-28T11:25:48Z'
-  result: "2026-01-28T11:25:45Z: INFO: Initialized StateBox for release 4.18.32 at\
-    \ openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.32.yaml\n2026-01-28T11:25:45Z:\
-    \ INFO: job id is not set, will trigger stage testing\n2026-01-28T11:25:45Z: INFO:\
-    \ Loaded state from _releases/4.18/statebox/4.18.32.yaml (SHA: 8b8a03a3)\n2026-01-28T11:25:47Z:\
-    \ INFO: Found pipeline 14319188 with status failed\n2026-01-28T11:25:48Z: INFO:\
-    \ Stage 'stage-release-triggers' status: {'status': 'failed', 'job': <ProjectPipelineBridge\
-    \ id:46514835>}\n2026-01-28T11:25:48Z: ERROR: Stage release failed with status\
-    \ failed\n2026-01-28T11:25:48Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
-    \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
-    \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2026-01-27T13:12:27.000+00:00',\n\
-    \            'committed_date': '2026-01-27T13:12:27.000+00:00',\n            'committer_email':\
-    \ '[EMAIL_REDACTED]',\n            'committer_name': 'art-bot-jenkins',\n    \
-    \        'created_at': '2026-01-27T13:12:27.000+00:00',\n            'extended_trailers':\
-    \ {},\n            'id': '4f7f454f0a6c30fc506a2b38afd304df9145d27b',\n       \
-    \     'message': \"Merge branch 'prepare-shipment-4.18.32-20260123073137' \"\n\
-    \                       \"into 'main'\\n\"\n                       '\\n'\n   \
-    \                    'Shipment for 4.18.32 (ship date: 2026-Jan-28)\\n'\n    \
-    \                   '\\n'\n                       'See merge request '\n     \
-    \                  'hybrid-platforms/art/ocp-shipment-data!326',\n           \
-    \ 'parent_ids': ['aa81d03de102ea03d53288be4c77206991f0e64c',\n               \
-    \            '1bd3a4159f060e32d1738af5c0581122fae004f2'],\n            'short_id':\
-    \ '4f7f454f',\n            'title': \"Merge branch 'prepare-shipment-4.18.32-20260123073137'\
-    \ \"\n                     \"into 'main'\",\n            'trailers': {},\n   \
-    \         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/commit/4f7f454f0a6c30fc506a2b38afd304df9145d27b'},\n\
-    \ 'coverage': None,\n 'created_at': '2026-01-28T11:07:41.514Z',\n 'downstream_pipeline':\
-    \ {'created_at': '2026-01-28T11:07:42.923Z',\n                         'id': 14331807,\n\
-    \                         'iid': 3489,\n                         'project_id':\
-    \ 116177,\n                         'ref': 'refs/merge-requests/326/merge',\n\
-    \                         'sha': '4f7f454f0a6c30fc506a2b38afd304df9145d27b',\n\
-    \                         'source': 'parent_pipeline',\n                     \
-    \    'status': 'failed',\n                         'updated_at': '2026-01-28T15:25:18.789Z',\n\
-    \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14331807'},\n\
-    \ 'duration': 15456.855042,\n 'erased_at': None,\n 'failure_reason': 'unknown_failure',\n\
-    \ 'finished_at': '2026-01-28T15:25:19.034Z',\n 'id': 46514835,\n 'name': 'stage-job',\n\
-    \ 'pipeline': {'created_at': '2026-01-27T13:12:28.369Z',\n              'id':\
-    \ 14319188,\n              'iid': 3478,\n              'project_id': 116177,\n\
-    \              'ref': 'refs/merge-requests/326/merge',\n              'sha': '4f7f454f0a6c30fc506a2b38afd304df9145d27b',\n\
-    \              'source': 'merge_request_event',\n              'status': 'failed',\n\
-    \              'updated_at': '2026-01-28T15:25:19.246Z',\n              'web_url':\
-    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14319188'},\n\
-    \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': 0.439038,\n\
-    \ 'ref': 'refs/merge-requests/326/merge',\n 'stage': 'stage-release-triggers',\n\
-    \ 'started_at': '2026-01-28T11:07:42.179Z',\n 'status': 'failed',\n 'tag': False,\n\
-    \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/eea877851cf59c77d47ad7384964a44e5e53597b1318da0e64fcca5f74ed17d4?s=80&d=identicon',\n\
-    \          'bio': '',\n          'bot': False,\n          'created_at': '2021-01-28T13:32:40.985Z',\n\
-    \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
-    \          'github': '',\n          'id': 9568,\n          'job_title': '',\n\
-    \          'linkedin': '',\n          'local_time': '4:27 PM',\n          'location':\
-    \ '',\n          'locked': False,\n          'name': 'Luis Garcia Acosta',\n \
-    \         'organization': '',\n          'pronouns': None,\n          'public_email':\
-    \ '[EMAIL_REDACTED]',\n          'state': 'active',\n          'twitter': '',\n\
-    \          'username': 'lgarciaa',\n          'web_url': 'https://gitlab.cee.redhat.com/lgarciaa',\n\
-    \          'website_url': '',\n          'work_information': None},\n 'web_url':\
-    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/46514835'}\n\
-    2026-01-28T11:25:48Z: INFO: stage release pipeline is not success, will not trigger\
-    \ stage test"
+  status: In Progress
+  started_at: '2026-02-02T03:18:58Z'
+  completed_at: null
+  result: |-
+    2026-02-02T03:18:58Z: INFO: Initialized StateBox for release 4.18.32 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.32.yaml
+    2026-02-02T03:18:58Z: INFO: job id is not set, will trigger stage testing
+    2026-02-02T03:18:58Z: INFO: Loaded state from _releases/4.18/statebox/4.18.32.yaml (SHA: 90d95451)
+    2026-02-02T03:18:58Z: INFO: Stage release succeeded (verified by label)
+    2026-02-02T03:18:58Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-02-02T03:18:58Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1508/>
+    2026-02-02T03:19:01Z: INFO: sent slack message to <#team-qe-release>
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-01-28T11:22:13Z'
