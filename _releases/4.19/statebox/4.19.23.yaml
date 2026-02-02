@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.23
 created_at: '2026-01-29T16:03:54Z'
-updated_at: '2026-02-02T12:10:34Z'
+updated_at: '2026-02-02T12:11:34Z'
 metadata:
   jira_ticket: ART-14492
   advisory_ids:
@@ -64,6 +64,17 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build 4.19.23 test results:
     3/3 jobs passed (AWS Y-stream upgrade, Azure Z-stream upgrade FIPS, GCP Z-stream
     upgrade). No retries needed, zero flakiness detected. Confidence: High.'
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-02-02T07:11:32Z'
+  completed_at: null
+  result: |-
+    2026-02-02T07:11:32Z: INFO: Initialized StateBox for release 4.19.23 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.23.yaml
+    2026-02-02T07:11:32Z: INFO: Loaded state from _releases/4.19/statebox/4.19.23.yaml (SHA: d48df48c)
+    2026-02-02T07:11:32Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-02-02T07:11:32Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.19.23-x86_64
+    2026-02-02T07:11:32Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3490/
+    2026-02-02T07:11:34Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158599'
   reported_at: '2026-01-30T07:58:33Z'
