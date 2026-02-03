@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.48
 created_at: '2026-01-29T16:02:26Z'
-updated_at: '2026-02-03T08:34:23Z'
+updated_at: '2026-02-03T08:35:20Z'
 metadata:
   jira_ticket: ART-14494
   advisory_ids:
@@ -84,6 +84,17 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build 4.17.48 accepted: true,
     aggregated: true. 3 jobs completed successfully (upgrade-from-stable-4.16-aws-ipi,
     upgrade-from-stable-4.17-azure-ipi-fips, upgrade-from-stable-4.17-gcp-ipi).'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-03T03:34:53Z'
+  completed_at: '2026-02-03T03:35:20Z'
+  result: |-
+    2026-02-03T03:34:53Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-03T03:34:53Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.17.48
+    2026-02-03T03:34:55Z: INFO: Image Digest: sha256:dab58364ecbf7bb848ef62bc515148dee7120c56da91f64a4766eb376b43a2f4
+    2026-02-03T03:34:55Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=dab58364ecbf7bb848ef62bc515148dee7120c56da91f64a4766eb376b43a2f4/signature-1
+    2026-02-03T03:35:20Z: INFO: Signature check PASSED
+    2026-02-03T03:35:20Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: Stage testing failed - GitLab pipeline 14344938 failed in stage-release-triggers
     stage (downstream pipeline 14344962 failed with unknown_failure). Cannot trigger
