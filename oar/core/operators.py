@@ -17,7 +17,7 @@ from oar.core.shipment import ShipmentData
 from oar.core.statebox import StateBox
 from oar.core.worksheet import WorksheetManager
 from oar.core.const import *
-from oar.core.exceptions import ShipmentDataException, WorksheetException
+from oar.core.exceptions import ShipmentDataException, WorksheetException, ConfigStoreException
 from gspread.exceptions import WorksheetNotFound
 
 logger = logging.getLogger(__name__)
@@ -214,8 +214,8 @@ class ApprovalOperator:
         try:
             report = WorksheetManager(self._am._cs).get_test_report()
         except WorksheetException as e:
-            # Check if root cause is specifically WorksheetNotFound (expected for StateBox releases)
-            if isinstance(e.__cause__, WorksheetNotFound):
+            # Check if root cause is specifically WorksheetNotFound or ConfigStoreException (expected for StateBox releases)
+            if isinstance(e.__cause__, (WorksheetNotFound, ConfigStoreException)):
                 logger.info(f"Google Sheets worksheet not found (expected for StateBox releases): {e}")
             else:
                 # Other worksheet errors (API failures, network issues) should fail

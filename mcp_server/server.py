@@ -86,7 +86,7 @@ from oar.core.configstore import ConfigStore
 from oar.core.operators import ReleaseShipmentOperator
 from oar.core.worksheet import WorksheetManager
 from oar.core.statebox import StateBox
-from oar.core.exceptions import StateBoxException, WorksheetException
+from oar.core.exceptions import StateBoxException, WorksheetException, ConfigStoreException
 from oar.core.log_capture import capture_logs, merge_output
 from gspread.exceptions import WorksheetNotFound
 from oar.core.const import (
@@ -1274,8 +1274,8 @@ async def oar_update_task_status(release: str, task_name: str, status: str, resu
             updated_systems.append("worksheet")
             logger.info(f"Updated Google Sheets for task '{task_name}' to '{status}'")
         except WorksheetException as e:
-            # Check if the root cause is WorksheetNotFound (worksheet doesn't exist)
-            if isinstance(e.__cause__, WorksheetNotFound):
+            # Check if the root cause is WorksheetNotFound or ConfigStoreException (expected for StateBox releases)
+            if isinstance(e.__cause__, (WorksheetNotFound, ConfigStoreException)):
                 logger.info(f"Google Sheets worksheet does not exist for {release} (expected for new releases using StateBox only)")
             else:
                 # Other worksheet errors (API failures, network issues, etc.) should fail
