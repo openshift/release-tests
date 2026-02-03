@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.32
 created_at: '2026-01-26T16:03:06Z'
-updated_at: '2026-02-03T14:31:50Z'
+updated_at: '2026-02-03T17:34:01Z'
 metadata:
   jira_ticket: ART-14460
   advisory_ids:
@@ -98,24 +98,33 @@ tasks:
     2026-02-02T15:15:44Z: INFO: Signature check PASSED
     2026-02-02T15:15:44Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-02-03T09:31:25Z'
-  completed_at: null
+  completed_at: '2026-02-03T17:34:01Z'
   result: |-
-    2026-02-03T09:31:25Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-02-03T09:31:29Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-02-03T09:31:29Z: INFO: RHCOS nvr is rhcos-x86_64-418.94.202601202224-0
-    2026-02-03T09:31:30Z: INFO: The commit metadata is kernel-5.14.0-427.107.1.el9_4
-    2026-02-03T09:31:30Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141775, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179215, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:0701-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 179285, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:0917-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-02-03T09:31:30Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 326
-    2026-02-03T09:31:30Z: INFO: Successfully added QE approval to MR 326
-    2026-02-03T09:31:32Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:1062
-    2026-02-03T09:31:43Z: INFO: The metadata url is not accessible
-    2026-02-03T09:31:43Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-02-03T09:31:43Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-02-03T09:31:43Z: INFO: Background metadata checker process started (PID: 164935) - running independently after parent exit
-    2026-02-03T09:31:43Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.18_20260203_093143.log
-    2026-02-03T09:31:49Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-02-03 09:32:28,558 - INFO - Google Sheets worksheet not found (expected for StateBox releases): cannot find worksheet 4.18.32 in report doc
+    2026-02-03 09:32:28,559 - INFO - Scheduler lock acquired
+    2026-02-03 09:32:28,559 - INFO - Scheduler started: Checking payload metadata URL every 30 minutes
+    2026-02-03 09:32:28,560 - INFO - Scheduler will run until 2026-02-05 09:32:28 or until URL becomes accessible
+    2026-02-03 09:32:28,560 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999856)
+    2026-02-03 10:02:28,560 - INFO - Scheduler check #1: Checking payload metadata URL accessibility for release 4.18
+    2026-02-03 10:02:35,584 - INFO - Scheduler check #1: Payload metadata URL still not accessible
+    2026-02-03 10:02:35,584 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:52.975552)
+    2026-02-03 10:32:35,585 - INFO - Scheduler check #2: Checking payload metadata URL accessibility for release 4.18
+    2026-02-03 10:32:58,694 - INFO - Scheduler check #2: Payload metadata URL still not accessible
+    2026-02-03 10:32:58,694 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:29.865862)
+    2026-02-03 11:02:58,694 - INFO - Scheduler check #3: Checking payload metadata URL accessibility for release 4.18
+    2026-02-03 11:03:13,420 - INFO - Scheduler check #3: Payload metadata URL still not accessible
+    2026-02-03 11:03:13,420 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:29:15.139149)
+    2026-02-03 11:33:13,421 - INFO - Scheduler check #4: Checking payload metadata URL accessibility for release 4.18
+    2026-02-03 11:33:25,459 - INFO - Scheduler check #4: Payload metadata URL still not accessible
+    2026-02-03 11:33:25,459 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:59:03.100568)
+    2026-02-03 12:03:25,459 - INFO - Scheduler check #5: Checking payload metadata URL accessibility for release 4.18
+    2026-02-03 12:03:41,932 - INFO - Scheduler check #5: Payload metadata URL still not accessible
+    2026-02-03 12:03:41,932 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:28:46.627528)
+    2026-02-03 12:33:41,932 - INFO - Scheduler check #6: Checking payload metadata URL accessibility for release 4.18
+    2026-02-03 12:33:49,533 - INFO - Payload metadata URL is now accessible
+    2026-02-03 12:34:01,537 - INFO - Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.
 issues:
 - issue: 'GitLab stage-release pipeline 14278946 has been running for 3 days (since
     2026-01-23T10:52:58Z). This blocks stage-testing from being triggered. Pipeline
