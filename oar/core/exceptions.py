@@ -10,10 +10,6 @@ class WorksheetExistsException(WorksheetException):
     """Exception class to raise worksheet already exists error"""
 
 
-class WorksheetNotFound(WorksheetException):
-    """Exception class to raise worksheet not found error (expected for StateBox releases)"""
-
-
 class JiraException(Exception):
     """Exception class to raise error in JiraManager"""
 

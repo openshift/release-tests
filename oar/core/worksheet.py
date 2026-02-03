@@ -12,7 +12,7 @@ from gspread.exceptions import *
 import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
-from oar.core.exceptions import WorksheetException, WorksheetExistsException, WorksheetNotFound, JiraUnauthorizedException
+from oar.core.exceptions import WorksheetException, WorksheetExistsException, JiraUnauthorizedException
 from oar.core.jira import JiraManager
 from oar.core.shipment import ShipmentData
 
@@ -128,7 +128,7 @@ class WorksheetManager:
         except Exception as e:
             raise WorksheetException(
                 f"cannot find worksheet {self._cs.release} in report doc"
-            ) from WorksheetNotFound(f"worksheet {self._cs.release} not found")
+            ) from e
 
         return TestReport(ws, self._cs)
 
