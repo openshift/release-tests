@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.13
 created_at: '2026-01-29T16:04:43Z'
-updated_at: '2026-02-03T05:12:55Z'
+updated_at: '2026-02-03T05:13:38Z'
 metadata:
   jira_ticket: ART-14493
   advisory_ids:
@@ -108,6 +108,17 @@ tasks:
     No test failures detected. No analysis needed.
 
     Gate Check: PASSED - Build ready to proceed to final approval once async tasks complete.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-03T00:12:56Z'
+  completed_at: '2026-02-03T00:13:37Z'
+  result: |-
+    2026-02-03T00:12:56Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-03T00:12:56Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.13
+    2026-02-03T00:12:57Z: INFO: Image Digest: sha256:280ffe256696c1b3699a5d0bc9c520b785a0c6acff0ed58073adbd206185c4b9
+    2026-02-03T00:12:57Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=280ffe256696c1b3699a5d0bc9c520b785a0c6acff0ed58073adbd206185c4b9/signature-1
+    2026-02-03T00:13:37Z: INFO: Signature check PASSED
+    2026-02-03T00:13:37Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Shipment MR stage-release pipeline failed (pipeline 14343772). Stage ''stage-release-triggers''
     status: failed with unknown_failure. This blocks stage-testing task from executing.
