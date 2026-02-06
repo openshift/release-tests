@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.33
 created_at: '2026-02-05T23:02:44Z'
-updated_at: '2026-02-06T11:59:09Z'
+updated_at: '2026-02-06T12:50:53Z'
 metadata:
   jira_ticket: ART-14524
   advisory_ids:
@@ -65,15 +65,15 @@ tasks:
 - name: stage-testing
   status: Fail
   started_at: '2026-02-06T03:24:51Z'
-  completed_at: '2026-02-06T06:59:09Z'
-  result: "2026-02-06T06:59:07Z: INFO: Initialized StateBox for release 4.18.33 at\
-    \ openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.33.yaml\n2026-02-06T06:59:07Z:\
-    \ INFO: job id is not set, will trigger stage testing\n2026-02-06T06:59:07Z: INFO:\
-    \ Loaded state from _releases/4.18/statebox/4.18.33.yaml (SHA: aefc7191)\n2026-02-06T06:59:08Z:\
-    \ INFO: Found pipeline 14426354 with status running\n2026-02-06T06:59:09Z: INFO:\
-    \ Stage 'stage-release-triggers' status: {'status': 'pending', 'job': <ProjectPipelineBridge\
-    \ id:46983367>}\n2026-02-06T06:59:09Z: ERROR: Stage release failed with status\
-    \ pending\n2026-02-06T06:59:09Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
+  completed_at: '2026-02-06T07:50:52Z'
+  result: "2026-02-06T07:50:51Z: INFO: Initialized StateBox for release 4.18.33 at\
+    \ openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.33.yaml\n2026-02-06T07:50:51Z:\
+    \ INFO: job id is not set, will trigger stage testing\n2026-02-06T07:50:51Z: INFO:\
+    \ Loaded state from _releases/4.18/statebox/4.18.33.yaml (SHA: 6883bc65)\n2026-02-06T07:50:52Z:\
+    \ INFO: Found pipeline 14426354 with status failed\n2026-02-06T07:50:52Z: INFO:\
+    \ Stage 'stage-release-triggers' status: {'status': 'failed', 'job': <ProjectPipelineBridge\
+    \ id:46983367>}\n2026-02-06T07:50:52Z: ERROR: Stage release failed with status\
+    \ failed\n2026-02-06T07:50:52Z: ERROR: Job details: <class 'gitlab.v4.objects.pipelines.ProjectPipelineBridge'>\
     \ => \n{'allow_failure': False,\n 'commit': {'author_email': '[EMAIL_REDACTED]',\n\
     \            'author_name': 'art-bot-jenkins',\n            'authored_date': '2026-02-05T22:37:30.000+00:00',\n\
     \            'committed_date': '2026-02-05T22:37:30.000+00:00',\n            'committer_email':\
@@ -96,30 +96,31 @@ tasks:
     \ 116177,\n                         'ref': 'refs/merge-requests/350/merge',\n\
     \                         'sha': '948555097f99606e2f279a1a0826ba442e27576a',\n\
     \                         'source': 'parent_pipeline',\n                     \
-    \    'status': 'running',\n                         'updated_at': '2026-02-06T08:45:13.623Z',\n\
+    \    'status': 'failed',\n                         'updated_at': '2026-02-06T12:45:02.215Z',\n\
     \                         'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14426430'},\n\
-    \ 'duration': 20471.026523,\n 'erased_at': None,\n 'finished_at': '2026-02-06T08:44:58.185Z',\n\
-    \ 'id': 46983367,\n 'name': 'stage-job',\n 'pipeline': {'created_at': '2026-02-06T02:59:55.623Z',\n\
-    \              'id': 14426354,\n              'iid': 3903,\n              'project_id':\
-    \ 116177,\n              'ref': 'refs/merge-requests/350/merge',\n           \
-    \   'sha': '948555097f99606e2f279a1a0826ba442e27576a',\n              'source':\
-    \ 'merge_request_event',\n              'status': 'running',\n              'updated_at':\
-    \ '2026-02-06T08:45:14.130Z',\n              'web_url': 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14426354'},\n\
+    \ 'duration': 34875.505538,\n 'erased_at': None,\n 'failure_reason': 'unknown_failure',\n\
+    \ 'finished_at': '2026-02-06T12:45:02.664Z',\n 'id': 46983367,\n 'name': 'stage-job',\n\
+    \ 'pipeline': {'created_at': '2026-02-06T02:59:55.623Z',\n              'id':\
+    \ 14426354,\n              'iid': 3903,\n              'project_id': 116177,\n\
+    \              'ref': 'refs/merge-requests/350/merge',\n              'sha': '948555097f99606e2f279a1a0826ba442e27576a',\n\
+    \              'source': 'merge_request_event',\n              'status': 'failed',\n\
+    \              'updated_at': '2026-02-06T12:45:02.791Z',\n              'web_url':\
+    \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/14426354'},\n\
     \ 'project': {'ci_job_token_scope_enabled': False},\n 'queued_duration': -20486.776238,\n\
     \ 'ref': 'refs/merge-requests/350/merge',\n 'stage': 'stage-release-triggers',\n\
-    \ 'started_at': '2026-02-06T03:03:47.158Z',\n 'status': 'pending',\n 'tag': False,\n\
+    \ 'started_at': '2026-02-06T03:03:47.158Z',\n 'status': 'failed',\n 'tag': False,\n\
     \ 'user': {'avatar_url': 'https://seccdn.libravatar.org/avatar/3ec49d716d34aaca533acd5dd729c3ee667649b0a07cb333efd9ad112e33139c?s=80&d=identicon',\n\
     \          'bio': '',\n          'bot': False,\n          'created_at': '2020-11-09T13:23:37.317Z',\n\
     \          'discord': '',\n          'followers': 0,\n          'following': 0,\n\
     \          'github': '',\n          'id': 9181,\n          'job_title': '',\n\
-    \          'linkedin': '',\n          'local_time': '12:00 PM',\n          'location':\
+    \          'linkedin': '',\n          'local_time': '12:52 PM',\n          'location':\
     \ '',\n          'locked': False,\n          'name': 'Michael Biarnes Kiefer',\n\
     \          'organization': '',\n          'pronouns': None,\n          'public_email':\
     \ '[EMAIL_REDACTED]',\n          'state': 'active',\n          'twitter': '',\n\
     \          'username': 'mbiarnes',\n          'web_url': 'https://gitlab.cee.redhat.com/mbiarnes',\n\
     \          'website_url': '',\n          'work_information': None},\n 'web_url':\
     \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/46983367'}\n\
-    2026-02-06T06:59:09Z: INFO: stage release pipeline is not success, will not trigger\
+    2026-02-06T07:50:52Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
 issues:
 - issue: Stage release pipeline failed (pipeline 14426354, downstream 14426430). Stage
