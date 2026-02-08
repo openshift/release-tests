@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.33
 created_at: '2026-02-05T23:02:44Z'
-updated_at: '2026-02-08T15:32:02Z'
+updated_at: '2026-02-08T15:33:10Z'
 metadata:
   jira_ticket: ART-14524
   advisory_ids:
@@ -83,6 +83,17 @@ tasks:
   completed_at: '2026-02-08T10:13:06Z'
   result: 'All blocking tests passed BO3 verification. Build: 4.18.33, aggregated:
     true, accepted: true. No test analysis required.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-08T10:32:13Z'
+  completed_at: '2026-02-08T10:33:10Z'
+  result: |-
+    2026-02-08T10:32:13Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-08T10:32:13Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.33
+    2026-02-08T10:32:15Z: INFO: Image Digest: sha256:40bb7cf7c637bf9efd8fb0157839d325a019d67cc7d7279665fcf90dbb7f3f33
+    2026-02-08T10:32:15Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=40bb7cf7c637bf9efd8fb0157839d325a019d67cc7d7279665fcf90dbb7f3f33/signature-1
+    2026-02-08T10:33:10Z: INFO: Signature check PASSED
+    2026-02-08T10:33:10Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: Stage release pipeline failed (pipeline 14426354, downstream 14426430). Stage
     'stage-release-triggers' failed with 'unknown_failure'. GitLab MR 350 pipeline
