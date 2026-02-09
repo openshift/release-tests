@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.1
 created_at: '2026-02-05T23:03:56Z'
-updated_at: '2026-02-09T15:55:56Z'
+updated_at: '2026-02-09T15:56:16Z'
 metadata:
   jira_ticket: ART-14527
   advisory_ids:
@@ -125,6 +125,15 @@ tasks:
     Status: accepted=false, aggregated=true. Found GCP upgrade test failures (all
     3 attempts failed due to GCP IAM policy limit 1,501 > 1,500). Retriggered 2 jobs:
     8a8589a2-a0eb-40d8-aad3-be3e22195b95, af4b9a47-dc76-48c4-a7d4-4fad2bbb083f. Waiting
+    for job completion to complete analysis.'
+- name: analyze-promoted-build
+  status: In Progress
+  started_at: '2026-02-09T15:56:16Z'
+  completed_at: null
+  result: 'Retrieved test results from ocp-test-result-4.21.1-amd64.json. Status:
+    accepted=false, aggregated=true. Found GCP z-stream upgrade test failures (all
+    3 attempts failed due to GCP IAM policy limit 1,501 > 1,500). Retriggered 2 jobs:
+    9ad024a7-aaa5-4346-a522-f2504c7a4278, 7afcd0d6-e407-4b62-8700-f6a7aca8d0d1. Waiting
     for job completion to complete analysis.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158919'
