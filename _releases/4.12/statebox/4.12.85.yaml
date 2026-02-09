@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.85
 created_at: '2026-02-05T16:00:56Z'
-updated_at: '2026-02-09T09:48:45Z'
+updated_at: '2026-02-09T09:49:15Z'
 metadata:
   jira_ticket: ART-14523
   advisory_ids:
@@ -52,6 +52,18 @@ tasks:
     2026-02-06T11:54:37Z: INFO: checking push job status for advisory 158895 ...
     2026-02-06T11:54:37Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-02-06T11:54:37Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-02-09T04:49:12Z'
+  completed_at: null
+  result: |-
+    2026-02-09T04:49:12Z: INFO: Initialized StateBox for release 4.12.85 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.85.yaml
+    2026-02-09T04:49:12Z: INFO: job id is not set, will trigger stage testing
+    2026-02-09T04:49:12Z: INFO: Loaded state from _releases/4.12/statebox/4.12.85.yaml (SHA: 4b033f48)
+    2026-02-09T04:49:12Z: INFO: Stage release succeeded (verified by label)
+    2026-02-09T04:49:13Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-02-09T04:49:13Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1516/>
+    2026-02-09T04:49:14Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'RHCOS advisory 158895 has blocking security alert: Tracker OCPBUGS-66029
     has no associated flaws. Contact secalert@redhat.com to resolve.'
