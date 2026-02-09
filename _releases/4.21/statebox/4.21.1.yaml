@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.1
 created_at: '2026-02-05T23:03:56Z'
-updated_at: '2026-02-09T15:29:15Z'
+updated_at: '2026-02-09T15:55:56Z'
 metadata:
   jira_ticket: ART-14527
   advisory_ids:
@@ -117,6 +117,15 @@ tasks:
     \ 'https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/jobs/46977238'}\n\
     2026-02-06T05:30:26Z: INFO: stage release pipeline is not success, will not trigger\
     \ stage test"
+- name: analyze-candidate-build
+  status: In Progress
+  started_at: '2026-02-09T15:55:56Z'
+  completed_at: null
+  result: 'Retrieved test results from ocp-test-result-4.21.0-0.nightly-2026-02-04-232248-amd64.json.
+    Status: accepted=false, aggregated=true. Found GCP upgrade test failures (all
+    3 attempts failed due to GCP IAM policy limit 1,501 > 1,500). Retriggered 2 jobs:
+    8a8589a2-a0eb-40d8-aad3-be3e22195b95, af4b9a47-dc76-48c4-a7d4-4fad2bbb083f. Waiting
+    for job completion to complete analysis.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158919'
   reported_at: '2026-02-06T02:05:18Z'
