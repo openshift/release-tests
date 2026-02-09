@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.85
 created_at: '2026-02-05T16:00:56Z'
-updated_at: '2026-02-09T10:07:22Z'
+updated_at: '2026-02-09T10:20:24Z'
 metadata:
   jira_ticket: ART-14523
   advisory_ids:
@@ -68,6 +68,13 @@ tasks:
     2026-02-09T05:07:12Z: INFO: check stage job status according to job id: 1516
     2026-02-09T05:07:22Z: INFO: build status of zstreams/Stage-Pipeline/1516 is In Progress
     2026-02-09T05:07:22Z: INFO: task [Stage Testing] status is changed to [In Progress]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-02-09T10:20:24Z'
+  completed_at: '2026-02-09T10:20:24Z'
+  result: 'Azure UPI upgrade test failure waived (0/3 BO3 attempts passed). Known
+    issue - platform-specific Azure infrastructure problem. Reference: https://issues.redhat.com/browse/OCPBUGS-64839.
+    AWS IPI and GCP IPI upgrade tests passed successfully.'
 issues:
 - issue: 'RHCOS advisory 158895 has blocking security alert: Tracker OCPBUGS-66029
     has no associated flaws. Contact secalert@redhat.com to resolve.'
