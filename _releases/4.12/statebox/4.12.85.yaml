@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.85
 created_at: '2026-02-05T16:00:56Z'
-updated_at: '2026-02-09T13:57:41Z'
+updated_at: '2026-02-09T14:02:26Z'
 metadata:
   jira_ticket: ART-14523
   advisory_ids:
@@ -75,6 +75,17 @@ tasks:
   result: 'Azure UPI upgrade test failure waived (0/3 BO3 attempts passed). Known
     issue - platform-specific Azure infrastructure problem. Reference: https://issues.redhat.com/browse/OCPBUGS-64839.
     AWS IPI and GCP IPI upgrade tests passed successfully.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-09T09:01:59Z'
+  completed_at: '2026-02-09T09:02:26Z'
+  result: |-
+    2026-02-09T09:01:59Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-09T09:01:59Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.12.85
+    2026-02-09T09:02:01Z: INFO: Image Digest: sha256:ff7d04b2684670422141a33da362cef8b0475505c458ff9a74564b37e97868a9
+    2026-02-09T09:02:01Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=ff7d04b2684670422141a33da362cef8b0475505c458ff9a74564b37e97868a9/signature-1
+    2026-02-09T09:02:26Z: INFO: Signature check PASSED
+    2026-02-09T09:02:26Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 158895 has blocking security alert: Tracker OCPBUGS-66029
     has no associated flaws. Contact secalert@redhat.com to resolve.'
