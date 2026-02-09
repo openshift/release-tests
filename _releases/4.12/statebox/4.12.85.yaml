@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.85
 created_at: '2026-02-05T16:00:56Z'
-updated_at: '2026-02-09T09:56:37Z'
+updated_at: '2026-02-09T10:03:46Z'
 metadata:
   jira_ticket: ART-14523
   advisory_ids:
@@ -34,13 +34,20 @@ tasks:
     2026-02-06T11:34:17Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-02-06T11:34:17Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-02-09T04:56:36Z'
-  completed_at: null
+  completed_at: '2026-02-09T05:03:45Z'
   result: |-
-    2026-02-09T04:56:36Z: INFO: Initialized StateBox for release 4.12.85 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.85.yaml
-    2026-02-09T04:56:36Z: INFO: Loaded state from _releases/4.12/statebox/4.12.85.yaml (SHA: ca62df21)
-    2026-02-09T04:56:36Z: INFO: Image consistency check already In Progress, skipping
+    2026-02-09T05:02:20Z: INFO: Initialized StateBox for release 4.12.85 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.85.yaml
+    2026-02-09T05:02:20Z: INFO: Checking image-consistency-check job status with job id: 3496
+    2026-02-09T05:02:20Z: INFO: build status of image-consistency-check/3496 is SUCCESS
+    2026-02-09T05:02:20Z: INFO: Starting image health check for shipment MR 349
+    2026-02-09T05:02:20Z: INFO: Stage release succeeded (verified by label)
+    2026-02-09T05:02:20Z: INFO: Processing MR 349
+    2026-02-09T05:02:22Z: INFO: Found 240 images to check
+    2026-02-09T05:03:44Z: INFO: Completed image health check. Scanned 240 images, found 0 unhealthy
+    2026-02-09T05:03:45Z: INFO: Added image health summary to MR 349
+    2026-02-09T05:03:45Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: push-to-cdn-staging
   status: Pass
   started_at: '2026-02-06T08:54:27Z'
