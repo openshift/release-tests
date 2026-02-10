@@ -37,7 +37,28 @@
         "jobStartTime": "2026-02-10T19:25:18Z",
         "jobID": "f957b922-1360-46d1-87c3-778dd2477365",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2021304489771798528",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-02-10T22:40:26Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 30
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -47,9 +68,46 @@
         "jobStartTime": "2026-02-10T19:25:24Z",
         "jobID": "1831fc7a-0467-4ba5-a0a3-dd1b0f98469e",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/2021304510974005248",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-10T22:49:05Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 29,
+            "failingScenarios": [
+              "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-69123-Catalogd clustercatalog offer the operator content through http server"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-10T23:25:56Z",
+          "jobID": "ece9da6d-ae4d-4972-836b-71cb88d14b6d",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/2021365044423430144",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-10T23:26:01Z",
+          "jobID": "1ef9dd27-fc91-4202-9e08-fa5f67fe8d99",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/2021365065705328640",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-aws-ipi-disruptive-f999",
