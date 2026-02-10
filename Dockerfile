@@ -45,8 +45,4 @@ RUN uv pip install --python ${PY_BIN} --system . && \
     oar --help && \
     oarctl --help
 
-# Install RH IT Root Certificate
-RUN curl -fsSLo /etc/pki/ca-trust/source/anchors/Current-IT-Root-CAs.pem https://certs.corp.redhat.com/certs/Current-IT-Root-CAs.pem && \
-    update-ca-trust extract
-
 CMD [ "/bin/bash" ]
