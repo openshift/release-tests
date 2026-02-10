@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.14
 created_at: '2026-02-06T01:03:17Z'
-updated_at: '2026-02-10T02:10:17Z'
+updated_at: '2026-02-10T02:21:05Z'
 metadata:
   jira_ticket: ART-14525
   advisory_ids:
@@ -72,6 +72,25 @@ tasks:
     2026-02-09T21:10:15Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-02-09T21:10:15Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1519/>
     2026-02-09T21:10:16Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-02-10T02:21:05Z'
+  completed_at: '2026-02-10T02:21:05Z'
+  result: |-
+    Build 4.20.14 ACCEPTED despite test aggregation showing accepted=false.
+
+    Azure FIPS upgrade job failed all 3 BO3 attempts (0/3) due to infrastructure issues, NOT product bugs:
+    - Attempt 1: yq binary download failure (mirror/CDN issue)
+    - Attempts 2-3: DNS resolution failure for cluster API server (Azure DNS propagation issue)
+    - Failures occurred during cluster installation phase, before any upgrade testing
+
+    Cross-platform validation SUCCESSFUL:
+    - AWS upgrade (4.19→4.20.14): PASSED on first attempt
+    - GCP upgrade (4.20→4.20.14): PASSED on first attempt
+
+    Waiver justification: Azure infrastructure failures are platform-specific and unrelated to release payload quality. AWS and GCP tests confirm payload is functionally sound.
+
+    Confidence: HIGH (95%+)
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158909'
   reported_at: '2026-02-06T06:51:30Z'
