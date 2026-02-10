@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.1
 created_at: '2026-02-05T23:03:56Z'
-updated_at: '2026-02-10T09:41:53Z'
+updated_at: '2026-02-10T11:04:55Z'
 metadata:
   jira_ticket: ART-14527
   advisory_ids:
@@ -119,42 +119,24 @@ tasks:
     2026-02-10T00:35:50Z: INFO: Signature check PASSED
     2026-02-10T00:35:50Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: Fail
+  status: Pass
   started_at: '2026-02-10T00:39:00Z'
-  completed_at: '2026-02-10T09:41:53Z'
+  completed_at: '2026-02-10T06:04:55Z'
   result: |-
-    2026-02-10 00:39:39,096 - INFO - Google Sheets worksheet not found (expected for StateBox releases): cannot find template worksheet
-    2026-02-10 00:39:39,097 - INFO - Scheduler lock acquired
-    2026-02-10 00:39:39,097 - INFO - Scheduler started: Checking payload metadata URL every 30 minutes
-    2026-02-10 00:39:39,097 - INFO - Scheduler will run until 2026-02-12 00:39:39 or until URL becomes accessible
-    2026-02-10 00:39:39,097 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999888)
-    2026-02-10 01:09:39,099 - INFO - Scheduler check #1: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 01:09:54,299 - INFO - Scheduler check #1: Payload metadata URL still not accessible
-    2026-02-10 01:09:54,299 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:44.797489)
-    2026-02-10 01:39:54,300 - INFO - Scheduler check #2: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 01:40:06,061 - INFO - Scheduler check #2: Payload metadata URL still not accessible
-    2026-02-10 01:40:06,061 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:33.035587)
-    2026-02-10 02:10:06,062 - INFO - Scheduler check #3: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 02:10:21,307 - INFO - Scheduler check #3: Payload metadata URL still not accessible
-    2026-02-10 02:10:21,307 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:29:17.790185)
-    2026-02-10 02:40:21,307 - INFO - Scheduler check #4: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 02:40:28,144 - INFO - Scheduler check #4: Payload metadata URL still not accessible
-    2026-02-10 02:40:28,144 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:59:10.952483)
-    2026-02-10 03:10:28,145 - INFO - Scheduler check #5: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 03:10:50,173 - INFO - Scheduler check #5: Payload metadata URL still not accessible
-    2026-02-10 03:10:50,173 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:28:48.923487)
-    2026-02-10 03:40:50,175 - INFO - Scheduler check #6: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 03:41:02,550 - INFO - Scheduler check #6: Payload metadata URL still not accessible
-    2026-02-10 03:41:02,550 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 20:58:36.546646)
-    2026-02-10 04:11:02,551 - INFO - Scheduler check #7: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 04:11:24,677 - INFO - Scheduler check #7: Payload metadata URL still not accessible
-    2026-02-10 04:11:24,678 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 20:28:14.419295)
-    2026-02-10 04:41:24,678 - INFO - Scheduler check #8: Checking payload metadata URL accessibility for release 4.21
-    2026-02-10 04:41:32,746 - INFO - Payload metadata URL is now accessible
-    2026-02-10 04:41:53,044 - INFO - Scheduler lock released
-    2026-02-10 04:41:53,044 - INFO - All scheduled jobs cleared
-    2026-02-10 04:41:53,044 - ERROR - Background metadata checker failed: change advisory status failed
-    2026-02-10 04:41:53,044 - ERROR - Release approval failed with error: change advisory status failed
+    2026-02-10T06:04:00Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-02-10T06:04:12Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-02-10T06:04:13Z: INFO: RHCOS nvr is rhcos-x86_64-9.6.20260204-0
+    2026-02-10T06:04:13Z: INFO: The commit metadata is kernel-5.14.0-570.86.1.el9_6
+    2026-02-10T06:04:13Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147773, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 147850, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-nvidiaoot-override', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179159, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.23-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180488, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:2352-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 180688, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:2076-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-02-10T06:04:13Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 352
+    2026-02-10T06:04:13Z: INFO: Successfully added QE approval to MR 352
+    2026-02-10T06:04:15Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:2129
+    2026-02-10T06:04:21Z: INFO: The metadata url is accessible
+    2026-02-10T06:04:42Z: INFO: RHSA advisory 158919 does not have blocking secalert
+    2026-02-10T06:04:46Z: INFO: advisory 158919 state is updated to REL_PREP
+    2026-02-10T06:04:46Z: WARNING: RHBA advisory 158920 does not have secalerts
+    2026-02-10T06:04:48Z: INFO: advisory 158920 state is updated to REL_PREP
+    2026-02-10T06:04:55Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158919'
   reported_at: '2026-02-06T02:05:18Z'
