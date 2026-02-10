@@ -4,6 +4,7 @@ import re
 import yaml
 from gitlab import Gitlab
 from glom import glom
+from requests.exceptions import SSLError
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,20 @@ class Shipment:
         self._gitlab_url = gitlab_url
 
         self._gl = Gitlab(self._gitlab_url, private_token=self._get_gitlab_token(), retry_transient_errors=True)
-        self._gl.auth()
+        try:
+            self._gl.auth()
+        except SSLError as e:
+            logger.error(
+                f"Failed to authenticate with GitLab due to SSL error: {e}\n"
+                "Please check Current IT Root CA certificates are installed on your machine.\n"
+                "You can set the REQUESTS_CA_BUNDLE environment variable to the path of the certificate bundle/file.\n"
+                "For more information, see https://certs.corp.redhat.com/"
+            )
+            raise
+        except Exception as e:
+            logger.error(f"Failed to authenticate with GitLab: {e}")
+            raise
+
         self._project = self._gl.projects.get(self._project_path)
         self._mr = self._project.mergerequests.get(self._mr_id)
         self.version = self._get_version()
