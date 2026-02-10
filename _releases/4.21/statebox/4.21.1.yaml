@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.1
 created_at: '2026-02-05T23:03:56Z'
-updated_at: '2026-02-10T05:35:51Z'
+updated_at: '2026-02-10T05:39:32Z'
 metadata:
   jira_ticket: ART-14527
   advisory_ids:
@@ -118,6 +118,25 @@ tasks:
     2026-02-10T00:35:25Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7ca8870aa5e505f969aa26161594a3f99b65baf7d29bab8adaca0cade51b0bb6/signature-1
     2026-02-10T00:35:50Z: INFO: Signature check PASSED
     2026-02-10T00:35:50Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-02-10T00:39:00Z'
+  completed_at: null
+  result: |-
+    2026-02-10T00:39:00Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-02-10T00:39:09Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-02-10T00:39:12Z: INFO: RHCOS nvr is rhcos-x86_64-9.6.20260204-0
+    2026-02-10T00:39:12Z: INFO: The commit metadata is kernel-5.14.0-570.86.1.el9_6
+    2026-02-10T00:39:12Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147773, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 147850, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-nvidiaoot-override', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179159, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.23-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180488, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:2352-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 180688, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:2076-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 180690, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:2082-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-02-10T00:39:13Z: INFO: Successfully approved MR 352
+    2026-02-10T00:39:13Z: INFO: Successfully added QE approval to MR 352
+    2026-02-10T00:39:14Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:2129
+    2026-02-10T00:39:25Z: INFO: The metadata url is not accessible
+    2026-02-10T00:39:25Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-02-10T00:39:25Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-02-10T00:39:25Z: INFO: Background metadata checker process started (PID: 200392) - running independently after parent exit
+    2026-02-10T00:39:25Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.21_20260210_003925.log
+    2026-02-10T00:39:32Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158919'
   reported_at: '2026-02-06T02:05:18Z'
