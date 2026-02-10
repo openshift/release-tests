@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.33
 created_at: '2026-02-05T23:02:44Z'
-updated_at: '2026-02-08T15:33:48Z'
+updated_at: '2026-02-10T11:00:05Z'
 metadata:
   jira_ticket: ART-14524
   advisory_ids:
@@ -96,23 +96,21 @@ tasks:
     2026-02-08T10:33:10Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
   status: In Progress
-  started_at: '2026-02-08T10:33:25Z'
+  started_at: '2026-02-10T05:59:43Z'
   completed_at: null
   result: |-
-    2026-02-08T10:33:25Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-02-08T10:33:32Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-02-08T10:33:33Z: INFO: RHCOS nvr is rhcos-x86_64-418.94.202602022246-0
-    2026-02-08T10:33:33Z: INFO: The commit metadata is kernel-5.14.0-427.109.1.el9_4
-    2026-02-08T10:33:33Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180247, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:1879-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-02-08T10:33:34Z: INFO: Successfully approved MR 350
-    2026-02-08T10:33:34Z: INFO: Successfully added QE approval to MR 350
-    2026-02-08T10:33:35Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:2078
-    2026-02-08T10:33:42Z: INFO: The metadata url is not accessible
-    2026-02-08T10:33:42Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-02-08T10:33:42Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-02-08T10:33:42Z: INFO: Background metadata checker process started (PID: 190951) - running independently after parent exit
-    2026-02-08T10:33:42Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.18_20260208_103342.log
-    2026-02-08T10:33:48Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-02-10T05:59:43Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-02-10T05:59:49Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-02-10T05:59:49Z: INFO: RHCOS nvr is rhcos-x86_64-418.94.202602022246-0
+    2026-02-10T05:59:49Z: INFO: The commit metadata is kernel-5.14.0-427.109.1.el9_4
+    2026-02-10T05:59:49Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180247, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:1879-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-02-10T05:59:49Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 350
+    2026-02-10T05:59:49Z: INFO: Successfully added QE approval to MR 350
+    2026-02-10T05:59:51Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:2078
+    2026-02-10T05:59:57Z: INFO: The metadata url is not accessible
+    2026-02-10T05:59:57Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-02-10T05:59:57Z: WARNING: Scheduler is already running for release 4.18 (lock file exists), skipping additional instance
+    2026-02-10T06:00:04Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
 issues:
 - issue: Stage release pipeline failed (pipeline 14426354, downstream 14426430). Stage
     'stage-release-triggers' failed with 'unknown_failure'. GitLab MR 350 pipeline
