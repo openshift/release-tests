@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.1
 created_at: '2026-02-05T23:03:56Z'
-updated_at: '2026-02-10T05:35:02Z'
+updated_at: '2026-02-10T05:35:51Z'
 metadata:
   jira_ticket: ART-14527
   advisory_ids:
@@ -107,6 +107,17 @@ tasks:
   result: All blocking tests passed BO3 verification. Promoted build 4.21.1 is accepted
     (accepted=true). Retriggered GCP jobs succeeded after initial IAM policy limit
     failures.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-10T00:35:23Z'
+  completed_at: '2026-02-10T00:35:50Z'
+  result: |-
+    2026-02-10T00:35:23Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-10T00:35:23Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.1
+    2026-02-10T00:35:25Z: INFO: Image Digest: sha256:7ca8870aa5e505f969aa26161594a3f99b65baf7d29bab8adaca0cade51b0bb6
+    2026-02-10T00:35:25Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7ca8870aa5e505f969aa26161594a3f99b65baf7d29bab8adaca0cade51b0bb6/signature-1
+    2026-02-10T00:35:50Z: INFO: Signature check PASSED
+    2026-02-10T00:35:50Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158919'
   reported_at: '2026-02-06T02:05:18Z'
