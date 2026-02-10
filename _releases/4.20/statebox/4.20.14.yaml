@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.14
 created_at: '2026-02-06T01:03:17Z'
-updated_at: '2026-02-10T05:14:38Z'
+updated_at: '2026-02-10T05:15:28Z'
 metadata:
   jira_ticket: ART-14525
   advisory_ids:
@@ -103,6 +103,17 @@ tasks:
     2026-02-09T23:18:20Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
     2026-02-09T23:18:20Z: INFO: Added image health summary to MR 351
     2026-02-09T23:18:20Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-10T00:15:02Z'
+  completed_at: '2026-02-10T00:15:28Z'
+  result: |-
+    2026-02-10T00:15:02Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-10T00:15:02Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.14
+    2026-02-10T00:15:03Z: INFO: Image Digest: sha256:682e85bfe8034924e596b281ed8fefe4451e6f6c5bac07b5ec300443eeb23566
+    2026-02-10T00:15:03Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=682e85bfe8034924e596b281ed8fefe4451e6f6c5bac07b5ec300443eeb23566/signature-1
+    2026-02-10T00:15:28Z: INFO: Signature check PASSED
+    2026-02-10T00:15:28Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 158909'
   reported_at: '2026-02-06T06:51:30Z'
