@@ -6,7 +6,28 @@
         "jobStartTime": "2026-02-11T06:22:45Z",
         "jobID": "75cf2e1a-cda9-47fd-be3a-734c0cd6ea9a",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-f999/2021469938958471168",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-02-11T09:51:52Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 23
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -47,9 +68,48 @@
         "jobStartTime": "2026-02-11T06:22:55Z",
         "jobID": "2b33d19c-2ce7-4c4a-b037-dfdb82af0b03",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-gcp-ipi-f999/2021469981765537792",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-11T09:31:51Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 30,
+            "failingScenarios": [
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44906-[CSI-Driver] [Dynamic PV] [Delete reclaimPolicy] volumes should be deleted after the pvc deletion",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI-Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-11T10:27:36Z",
+          "jobID": "039bc444-4b2f-46ff-aa33-ab3e74c7da00",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-gcp-ipi-f999/2021531559202394112",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-11T10:27:41Z",
+          "jobID": "171036b7-bca4-494e-a61e-e50fa54c0dd7",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-gcp-ipi-f999/2021531580878557184",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-disruptive-f999",
@@ -57,9 +117,34 @@
         "jobStartTime": "2026-02-11T06:23:00Z",
         "jobID": "b4932e8d-7073-4bf6-b707-0af8bb6b9053",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-disruptive-f999/2021470002988716032",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-11T09:40:48Z",
+        "testResultSummary": {
+          "openshift-extended-test-disruptive": {
+            "total": 9,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 5,
+            "failingScenarios": [
+              "[sig-networking] SDN udn services Author:huirwang-LEVEL0-High-77827-Restarting ovn pods should not break service. [Disruptive] [Serial]"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-11T10:27:51Z",
+          "jobID": "21067354-484c-456f-b592-e159731a0960",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-disruptive-f999/2021531623744344064",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-11T10:27:57Z",
+          "jobID": "08c994c6-7e61-4e6c-beef-e69041a724c4",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-disruptive-f999/2021531645101740032",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-stable-4.21-upgrade-from-stable-4.20-gcp-ipi-f999",
@@ -78,7 +163,8 @@
         "jobStartTime": "2026-02-11T06:23:10Z",
         "jobID": "12a85d63-8ab4-4be3-9544-604cbb392e44",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-stable-4.21-upgrade-from-stable-4.21-aws-ipi-f999/2021470047129571328",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-02-11T09:48:24Z"
       },
       "retriedJobs": []
     }
