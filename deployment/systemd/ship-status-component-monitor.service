@@ -1,0 +1,28 @@
+[Unit]
+Description=SHIP Status Dashboard Component Monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# IMPORTANT: Replace 'cloud-user' with your actual username on the VM
+User=cloud-user
+
+WorkingDirectory=/home/cloud-user/release-tests/deployment/component-monitor
+
+ExecStart=/usr/local/bin/component-monitor \
+    --config-path=/home/cloud-user/release-tests/deployment/component-monitor/config.yaml \
+    --dashboard-url=https://protected.ship-status.ci.openshift.org \
+    --name=ert-component-monitor \
+    --report-auth-token-file=/etc/component-monitor/token.txt
+
+Restart=always
+RestartSec=10
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ship-status-component-monitor
+
+[Install]
+WantedBy=multi-user.target

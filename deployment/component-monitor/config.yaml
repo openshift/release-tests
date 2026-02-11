@@ -1,0 +1,9 @@
+frequency: 30s
+components:
+  - component_slug: "errata-reliability"
+    sub_component_slug: "mcp-server"
+    http_monitor:
+      url: "http://10.0.76.71:8000/health"
+      code: 200
+      retry_after: 5s
+      severity: "Down"
