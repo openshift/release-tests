@@ -68,13 +68,61 @@
           "jobStartTime": "2026-02-11T06:27:50Z",
           "jobID": "86ee059b-44ed-4e3d-a745-edb147615c76",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2021471220213485568",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-02-11T10:08:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 32,
+              "failingScenarios": [
+                "[sig-networking] SDN IPSEC EW Author:huirwang-LEVEL0-Critical-79184-pod2pod cross nodes traffic should work and not broken."
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-02-11T06:27:55Z",
           "jobID": "785fa73b-d311-4b6c-8477-7e7559c78879",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2021471241906425856",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-02-11T09:59:20Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 33
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14688:Workloads pod will be scheduled on the node which meets pod affinity - In"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -156,5 +204,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2026-02-10-201532",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2026-02-10-201532"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
