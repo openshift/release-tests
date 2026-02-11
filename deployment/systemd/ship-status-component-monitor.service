@@ -6,9 +6,6 @@ Wants=network-online.target
 [Service]
 Type=simple
 
-# IMPORTANT: Replace 'cloud-user' with your actual username on the VM
-User=cloud-user
-
 ExecStartPre=-/usr/bin/podman pull quay.io/openshiftci/component-monitor:latest
 ExecStart=/usr/bin/podman run --rm --name ship-status-component-monitor \
     -v /home/cloud-user/release-tests/deployment/component-monitor/config.yaml:/config.yaml:ro,Z \
