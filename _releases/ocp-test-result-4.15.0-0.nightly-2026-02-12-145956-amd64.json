@@ -37,9 +37,47 @@
         "jobStartTime": "2026-02-13T03:24:23Z",
         "jobID": "9d65407c-244b-4206-bca4-a25390381835",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2022149829907451904",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-13T06:52:10Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 27
+          },
+          "cucushift-e2e": {
+            "total": 28,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts",
+              "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-13T07:22:11Z",
+          "jobID": "b0be6d48-beaf-441e-b65f-39eada019568",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2022209671074418688",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-13T07:22:16Z",
+          "jobID": "9babfe2c-6071-4f1d-9112-c2299ca5d461",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2022209692410843136",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
