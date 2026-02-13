@@ -1,0 +1,29 @@
+[Unit]
+Description=SHIP Status Dashboard Component Monitor
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+ExecStartPre=-/usr/bin/podman pull quay.io/openshiftci/component-monitor:latest
+ExecStart=/usr/bin/podman run --rm --name ship-status-component-monitor \
+    -v /home/cloud-user/release-tests/deployment/component-monitor/config.yaml:/config.yaml:ro,Z \
+    -v /etc/component-monitor/token.txt:/token.txt:ro,Z \
+    quay.io/openshiftci/component-monitor:latest \
+    ./component-monitor \
+    --config-path=/config.yaml \
+    --dashboard-url=https://protected.ship-status.ci.openshift.org \
+    --name=ert-component-monitor \
+    --report-auth-token-file=/token.txt
+ExecStop=/usr/bin/podman stop ship-status-component-monitor
+
+Restart=always
+RestartSec=10
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=ship-status-component-monitor
+
+[Install]
+WantedBy=multi-user.target
