@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.49
 created_at: '2026-02-13T22:02:41Z'
-updated_at: '2026-02-16T07:29:11Z'
+updated_at: '2026-02-16T11:35:08Z'
 metadata:
   jira_ticket: ART-14552
   advisory_ids:
@@ -42,10 +42,17 @@ tasks:
   completed_at: '2026-02-16T07:29:11Z'
   result: Image consistency check completed successfully (confirmed by user)
 - name: stage-testing
-  status: Fail
-  started_at: '2026-02-16T01:22:03Z'
-  completed_at: '2026-02-16T06:29:35Z'
-  result: Jenkins outage detected - job stuck for 37+ hours. Resetting to re-trigger.
+  status: In Progress
+  started_at: '2026-02-16T06:35:04Z'
+  completed_at: null
+  result: |-
+    2026-02-16T06:35:04Z: INFO: Initialized StateBox for release 4.17.49 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.49.yaml
+    2026-02-16T06:35:04Z: INFO: job id is not set, will trigger stage testing
+    2026-02-16T06:35:04Z: INFO: Loaded state from _releases/4.17/statebox/4.17.49.yaml (SHA: b1f9ff99)
+    2026-02-16T06:35:04Z: INFO: Stage release succeeded (verified by label)
+    2026-02-16T06:35:05Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-02-16T06:35:05Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1523/>
+    2026-02-16T06:35:07Z: INFO: sent slack message to <#team-qe-release>
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-02-14T17:06:05Z'
