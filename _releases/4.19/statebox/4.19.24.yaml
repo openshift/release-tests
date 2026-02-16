@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.24
 created_at: '2026-02-12T14:44:28Z'
-updated_at: '2026-02-12T15:54:53Z'
+updated_at: '2026-02-16T10:39:42Z'
 metadata:
   jira_ticket: ART-14543
   advisory_ids:
@@ -47,6 +47,20 @@ tasks:
   completed_at: '2026-02-12T14:57:57Z'
   result: All blocking tests passed BO3 verification. No failures detected in 6 blocking
     jobs (AWS, Azure FIPS, GCP, AWS disruptive, upgrade 4.18->4.19, upgrade 4.19->4.19).
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-02-16T05:39:29Z'
+  completed_at: null
+  result: |-
+    2026-02-16T05:39:29Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-02-16T05:39:39Z: INFO: checking push job status for advisory 159139 ...
+    2026-02-16T05:39:39Z: INFO: no push job found for advisory 159139
+    2026-02-16T05:39:39Z: INFO: advisory 159139 has blocking advisory []
+    2026-02-16T05:39:41Z: INFO: push job for advisory 159139 is triggered
+    2026-02-16T05:39:41Z: INFO: checking push job status for advisory 159140 ...
+    2026-02-16T05:39:41Z: INFO: no push job found for advisory 159140
+    2026-02-16T05:39:41Z: INFO: advisory 159140 has blocking advisory []
+    2026-02-16T05:39:42Z: INFO: push job for advisory 159140 is triggered
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 159139'
   reported_at: '2026-02-12T14:48:54Z'
