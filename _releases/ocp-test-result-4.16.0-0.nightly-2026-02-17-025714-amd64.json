@@ -37,9 +37,48 @@
         "jobStartTime": "2026-02-17T07:20:11Z",
         "jobID": "4057180f-e6e8-41a7-a5d4-10267da1bcd8",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2023658723062321152",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-17T10:37:38Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 26
+          },
+          "cucushift-e2e": {
+            "total": 27,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+              "OCP-14521:Workloads pod will be scheduled to the node which matches node anti-affinity - DoesNotExist",
+              "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-17T11:28:53Z",
+          "jobID": "55485660-7d5e-4c9f-b8d6-0b08b01878a3",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2023721495871623168",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-17T11:29:28Z",
+          "jobID": "b6eec5e3-1706-4777-a562-7812a6ec746c",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2023721505937952768",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
