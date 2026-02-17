@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.2
 created_at: '2026-02-12T15:02:29Z'
-updated_at: '2026-02-17T18:33:09Z'
+updated_at: '2026-02-17T19:37:28Z'
 metadata:
   jira_ticket: ART-14542
   advisory_ids:
@@ -97,23 +97,18 @@ tasks:
     a blocker. Issue already exists in 4.21.1. Cincinnati update graph controls which
     upgrade paths are enabled. OTA team will triage. Release approved to ship.'
 - name: change-advisory-status
-  status: Fail
+  status: Pass
   started_at: '2026-02-17T08:45:11Z'
-  completed_at: '2026-02-17T13:33:09Z'
+  completed_at: '2026-02-17T20:05:14Z'
   result: |-
-    2026-02-17T13:32:57Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-02-17T13:33:01Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-02-17T13:33:03Z: INFO: RHCOS nvr is rhcos-x86_64-9.6.20260210-0
-    2026-02-17T13:33:03Z: INFO: The commit metadata is kernel-5.14.0-570.88.1.el9_6
-    2026-02-17T13:33:04Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147775, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-pending-signed', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179159, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.23-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 181001, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:2630-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 181139, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:2632-pending', 'perm': 'trusted', 'perm_id': 6}]
-    2026-02-17T13:33:04Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 368
-    2026-02-17T13:33:04Z: INFO: Successfully added QE approval to MR 368
-    2026-02-17T13:33:04Z: ERROR: Execute oc command failed: Command '['oc', 'adm', 'release', 'info', 'quay.io/openshift-release-dev/ocp-release:4.21.2-x86_64', '-o', 'json']' returned non-zero exit status 1.
-    2026-02-17T13:33:04Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-02-17T13:33:04Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-02-17T13:33:04Z: INFO: Background metadata checker process started (PID: 267066) - running independently after parent exit
-    2026-02-17T13:33:04Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.21_20260217_133304.log
-    2026-02-17T13:33:09Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-02-17T20:04:15Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-02-17T20:04:42Z: INFO: Changing advisory status to REL_PREP...
+    2026-02-17T20:04:55Z: WARNING: RHBA advisory 159137 does not have secalerts
+    2026-02-17T20:05:07Z: INFO: advisory 159137 state is updated to REL_PREP
+    2026-02-17T20:05:07Z: WARNING: RHBA advisory 159138 does not have secalerts
+    2026-02-17T20:05:13Z: INFO: advisory 159138 state is updated to REL_PREP
+    2026-02-17T20:05:13Z: INFO: Closing Jira QE subtasks...
+    2026-02-17T20:05:14Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: 'reference_releases missing in releases.yml (commented out due to cluster-kube-cluster-api-operator
     removal). Using nightly builds from comments for test analysis: 4.21.0-0.nightly-2026-02-11-143507'
