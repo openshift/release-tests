@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.57
 created_at: '2026-02-13T22:01:52Z'
-updated_at: '2026-02-16T16:10:08Z'
+updated_at: '2026-02-17T05:42:17Z'
 metadata:
   jira_ticket: ART-14550
   advisory_ids:
@@ -78,4 +78,12 @@ tasks:
   result: All blocking tests passed BO3 verification. No failures detected. Test result
     file shows aggregated=true, accepted=true with 3/3 blocking jobs successful (upgrade-from-stable-4.15-aws,
     upgrade-from-stable-4.16-azure-fips, upgrade-from-stable-4.16-gcp).
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-02-17T05:42:17Z'
+  completed_at: '2026-02-17T05:42:17Z'
+  result: 'Waivable failures: GCP infrastructure failure (Attempt 1 - 9min runtime),
+    cert-manager flake OCPQE-31059 (Azure Retry 1, GCP Retry 2), Azure Compliance/FIO
+    flake (Attempt 1, not reproduced). GCP Attempt 2 passed all 102 tests with 0 failures
+    - build is viable. Failures are test automation issues, not product bugs.'
 issues: []
