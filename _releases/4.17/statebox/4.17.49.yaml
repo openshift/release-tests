@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.49
 created_at: '2026-02-13T22:02:41Z'
-updated_at: '2026-02-18T11:11:41Z'
+updated_at: '2026-02-18T11:14:31Z'
 metadata:
   jira_ticket: ART-14552
   advisory_ids:
@@ -82,17 +82,17 @@ tasks:
 - name: change-advisory-status
   status: Fail
   started_at: '2026-02-16T06:39:45Z'
-  completed_at: '2026-02-18T06:11:40Z'
+  completed_at: '2026-02-18T06:14:31Z'
   result: |-
-    2026-02-18T06:11:29Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-02-18T06:11:32Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-02-18T06:11:32Z: INFO: RHCOS nvr is rhcos-x86_64-417.94.202602090846-0
-    2026-02-18T06:11:33Z: INFO: The commit metadata is kernel-5.14.0-427.110.1.el9_4
-    2026-02-18T06:11:33Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128178, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-pending-signed', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180633, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:2594-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-02-18T06:11:33Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 373
-    2026-02-18T06:11:33Z: INFO: Successfully added QE approval to MR 373
-    2026-02-18T06:11:34Z: ERROR: Execute oc command failed: Command '['oc', 'adm', 'release', 'info', 'quay.io/openshift-release-dev/ocp-release:4.17.49-x86_64', '-o', 'json']' returned non-zero exit status 1.
-    2026-02-18T06:11:34Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-02-18T06:11:34Z: WARNING: Scheduler is already running for release 4.17 (lock file exists), skipping additional instance
-    2026-02-18T06:11:40Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
+    2026-02-18T06:14:22Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-02-18T06:14:25Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-02-18T06:14:26Z: INFO: RHCOS nvr is rhcos-x86_64-417.94.202602090846-0
+    2026-02-18T06:14:26Z: INFO: The commit metadata is kernel-5.14.0-427.110.1.el9_4
+    2026-02-18T06:14:26Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128178, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-pending-signed', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180633, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:2594-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-02-18T06:14:26Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 373
+    2026-02-18T06:14:26Z: INFO: Successfully added QE approval to MR 373
+    2026-02-18T06:14:26Z: ERROR: Execute oc command failed: Command '['oc', 'adm', 'release', 'info', 'quay.io/openshift-release-dev/ocp-release:4.17.49-x86_64', '-o', 'json']' returned non-zero exit status 1.
+    2026-02-18T06:14:26Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-02-18T06:14:26Z: WARNING: Scheduler is already running for release 4.17 (lock file exists), skipping additional instance
+    2026-02-18T06:14:31Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
 issues: []
