@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.57
 created_at: '2026-02-13T22:01:52Z'
-updated_at: '2026-02-18T09:54:15Z'
+updated_at: '2026-02-18T10:14:42Z'
 metadata:
   jira_ticket: ART-14550
   advisory_ids:
@@ -98,9 +98,23 @@ tasks:
     2026-02-17T00:56:46Z: INFO: Signature check PASSED
     2026-02-17T00:56:46Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: Fail
+  status: Pass
   started_at: '2026-02-18T10:24:06Z'
-  completed_at: '2026-02-18T09:54:15Z'
-  result: Task execution cancelled - background metadata checker terminated before
-    completion
+  completed_at: '2026-02-18T11:14:41Z'
+  result: |-
+    2026-02-18T11:13:22Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2026-02-18T11:13:22Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-02-18T11:13:36Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-02-18T11:13:37Z: INFO: RHCOS nvr is rhcos-x86_64-416.94.202602101357-0
+    2026-02-18T11:13:42Z: INFO: The commit metadata is kernel-5.14.0-427.110.1.el9_4
+    2026-02-18T11:13:43Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128178, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-pending-signed', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 180633, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:2594-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-02-18T11:13:43Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 372
+    2026-02-18T11:13:43Z: INFO: Successfully added QE approval to MR 372
+    2026-02-18T11:13:47Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:2661
+    2026-02-18T11:13:48Z: INFO: The metadata url is accessible
+    2026-02-18T11:14:13Z: INFO: RHSA advisory 159160 does not have blocking secalert
+    2026-02-18T11:14:20Z: INFO: advisory 159160 state is updated to REL_PREP
+    2026-02-18T11:14:35Z: INFO: RHSA advisory 159161 does not have blocking secalert
+    2026-02-18T11:14:40Z: INFO: advisory 159161 state is updated to REL_PREP
+    2026-02-18T11:14:41Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues: []
