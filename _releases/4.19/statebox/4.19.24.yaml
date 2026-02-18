@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.24
 created_at: '2026-02-12T14:44:28Z'
-updated_at: '2026-02-18T21:04:29Z'
+updated_at: '2026-02-18T21:24:29Z'
 metadata:
   jira_ticket: ART-14543
   advisory_ids:
@@ -102,10 +102,16 @@ tasks:
 - name: change-advisory-status
   status: Pass
   started_at: '2026-02-18T17:31:26Z'
-  completed_at: '2026-02-18T21:04:29Z'
-  result: Shipment MR already approved and merged. Metadata URLs are available and
-    accessible. No blocking secalerts present in advisories. Advisories manually moved
-    to REL_PREP state.
+  completed_at: '2026-02-18T21:24:29Z'
+  result: |-
+    2026-02-18 21:54:04,399 - INFO - Google Sheets worksheet not found (expected for StateBox releases): cannot find template worksheet
+    2026-02-18 21:54:04,403 - INFO - Scheduler lock acquired
+    2026-02-18 21:54:04,403 - INFO - Scheduler started: Checking payload metadata URL every 30 minutes
+    2026-02-18 21:54:04,403 - INFO - Scheduler will run until 2026-02-20 21:54:04 or until URL becomes accessible
+    2026-02-18 21:54:04,403 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999895)
+    2026-02-18 22:24:04,403 - INFO - Scheduler check #1: Checking payload metadata URL accessibility for release 4.19
+    2026-02-18 22:24:12,329 - INFO - Payload metadata URL is now accessible
+    2026-02-18 22:24:29,188 - INFO - Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 159139'
   reported_at: '2026-02-12T14:48:54Z'
