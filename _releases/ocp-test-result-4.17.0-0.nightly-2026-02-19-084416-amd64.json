@@ -37,9 +37,47 @@
         "jobStartTime": "2026-02-19T16:25:53Z",
         "jobID": "7e626c33-985d-4d8c-9ed5-8d1c4f19aa6a",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2024520826933481472",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-19T19:55:00Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 100,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 28,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-19T20:27:27Z",
+          "jobID": "c177b760-135a-4661-bba9-90f11ce3d19f",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2024581619922243584",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-19T20:27:32Z",
+          "jobID": "08f6f15a-9a25-4905-a390-683d46405d97",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2024581641237696512",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999",
