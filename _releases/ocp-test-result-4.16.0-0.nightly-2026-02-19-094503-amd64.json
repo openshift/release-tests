@@ -68,13 +68,62 @@
           "jobStartTime": "2026-02-19T18:23:47Z",
           "jobID": "143a0511-6734-4e80-8b04-3ee501179498",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2024550504511574016",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-02-19T22:03:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads Set activeDeadLineseconds using the run-once-duration-override-operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-60351-Critical-60352-Install Run Once Duration Override operator via a deployment and verify that it works fine",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-Critical-24485-[CSI-Driver] [Dynamic PV] [Filesystem default] volumes should store data and allow exec of files"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14698:Workloads pod with pod affinity will not be scheduled if not all matchExpressions are satisfied"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-02-19T18:23:52Z",
           "jobID": "ddfdab66-b385-48dd-9541-a12bed756108",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2024550520135356416",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-02-19T21:28:21Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -156,5 +205,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2026-02-19-094503",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2026-02-19-094503"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
