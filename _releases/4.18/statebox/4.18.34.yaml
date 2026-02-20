@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.34
 created_at: '2026-02-19T13:49:01Z'
-updated_at: '2026-02-19T15:59:46Z'
+updated_at: '2026-02-20T07:39:12Z'
 metadata:
   jira_ticket: ART-14567
   advisory_ids:
@@ -51,4 +51,15 @@ tasks:
   result: Waiting for test results to be aggregated. Test result file not yet available
     at _releases/ocp-test-result-4.18.34.json or for nightly build 4.18.0-0.nightly-2026-02-18-030516.
     Tests need to be triggered via jobctl.
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-02-20T02:39:09Z'
+  completed_at: null
+  result: |-
+    2026-02-20T02:39:09Z: INFO: Initialized StateBox for release 4.18.34 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.34.yaml
+    2026-02-20T02:39:10Z: INFO: Loaded state from _releases/4.18/statebox/4.18.34.yaml (SHA: 1a85c514)
+    2026-02-20T02:39:10Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-02-20T02:39:10Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.18.34-x86_64
+    2026-02-20T02:39:10Z: INFO: Triggered image consistency check job: a new job triggered by you is pending, you can check queue item link: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/queue/item/16384/api/json
+    2026-02-20T02:39:11Z: INFO: sent slack message to <#team-qe-release>
 issues: []
