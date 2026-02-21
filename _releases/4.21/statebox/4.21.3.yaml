@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.3
 created_at: '2026-02-19T12:04:16Z'
-updated_at: '2026-02-21T13:53:02Z'
+updated_at: '2026-02-21T13:53:46Z'
 metadata:
   jira_ticket: ART-14568
   advisory_ids:
@@ -70,4 +70,15 @@ tasks:
     2026-02-21T08:53:01Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-02-21T08:53:01Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1528/>
     2026-02-21T08:53:02Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-02-21T13:53:46Z'
+  completed_at: '2026-02-21T13:53:46Z'
+  result: |-
+    All blocking tests passed BO3 verification. Promoted build 4.21.3 tested successfully:
+    - Aggregated: true (all tests completed)
+    - Accepted: true (BO3 verification passed)
+    - Total Jobs: 3 (upgrade tests)
+    - Failed Jobs: 0
+    - Platform Coverage: AWS (4.20→4.21 upgrade), Azure FIPS (4.21→4.21 upgrade), GCP (4.21→4.21 upgrade)
 issues: []
