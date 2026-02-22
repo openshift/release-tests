@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.15
 created_at: '2026-02-19T12:03:43Z'
-updated_at: '2026-02-22T16:25:51Z'
+updated_at: '2026-02-22T16:26:40Z'
 metadata:
   jira_ticket: ART-14569
   advisory_ids:
@@ -83,6 +83,17 @@ tasks:
   completed_at: '2026-02-20T07:53:36Z'
   result: 'All blocking tests passed BO3 verification (aggregated: true, accepted:
     true). No AI analysis required.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-22T11:25:57Z'
+  completed_at: '2026-02-22T11:26:39Z'
+  result: |-
+    2026-02-22T11:25:57Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-22T11:25:57Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.15
+    2026-02-22T11:25:59Z: INFO: Image Digest: sha256:a60fbe523d8ad802ab9bcbb4c505f5fe4467283fc748e4978fe9a3b280145d75
+    2026-02-22T11:25:59Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=a60fbe523d8ad802ab9bcbb4c505f5fe4467283fc748e4978fe9a3b280145d75/signature-1
+    2026-02-22T11:26:39Z: INFO: Signature check PASSED
+    2026-02-22T11:26:39Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'image-consistency-check Jenkins job #3505 failed - check Jenkins logs for
     details'
