@@ -127,13 +127,61 @@
           "jobStartTime": "2026-02-22T16:27:11Z",
           "jobID": "077fe73f-64f3-4adb-adbe-06d5f96ef2f1",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2025608315634978816",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-02-22T19:36:16Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-02-22T16:27:16Z",
           "jobID": "72134a5f-21e3-4da6-82e0-9cce20b674c0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2025608336904294400",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-02-22T19:51:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-cli] Workloads ocmirror v1 works well NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Low-51093-oc-mirror init"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -273,5 +321,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2026-02-22-080859",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2026-02-22-080859"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
