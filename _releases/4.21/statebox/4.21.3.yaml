@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.3
 created_at: '2026-02-19T12:04:16Z'
-updated_at: '2026-02-23T04:59:23Z'
+updated_at: '2026-02-23T05:00:45Z'
 metadata:
   jira_ticket: ART-14568
   advisory_ids:
@@ -81,6 +81,17 @@ tasks:
     - Total Jobs: 3 (upgrade tests)
     - Failed Jobs: 0
     - Platform Coverage: AWS (4.20→4.21 upgrade), Azure FIPS (4.21→4.21 upgrade), GCP (4.21→4.21 upgrade)
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-02-22T23:59:47Z'
+  completed_at: '2026-02-23T00:00:45Z'
+  result: |-
+    2026-02-22T23:59:47Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-02-22T23:59:47Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.3
+    2026-02-22T23:59:49Z: INFO: Image Digest: sha256:994bbf87fec04efb0e89ffbc54b2d37590d48e6a804c78cf2cf62dd9bc156793
+    2026-02-22T23:59:49Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=994bbf87fec04efb0e89ffbc54b2d37590d48e6a804c78cf2cf62dd9bc156793/signature-1
+    2026-02-23T00:00:45Z: INFO: Signature check PASSED
+    2026-02-23T00:00:45Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Stage-testing failed: Azure cluster provisioning failure - Virtual network
     subnet STAGE-1528-CPQKN-MASTER-SUBNET not found during Flexy-install (job #369400).
