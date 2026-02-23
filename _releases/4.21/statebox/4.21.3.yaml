@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.3
 created_at: '2026-02-19T12:04:16Z'
-updated_at: '2026-02-23T06:16:06Z'
+updated_at: '2026-02-23T06:20:01Z'
 metadata:
   jira_ticket: ART-14568
   advisory_ids:
@@ -111,6 +111,31 @@ tasks:
     2026-02-23T00:01:01Z: INFO: Background metadata checker process started (PID: 41763) - running independently after parent exit
     2026-02-23T00:01:01Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.21_20260223_000101.log
     2026-02-23T00:01:07Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-02-23T06:20:01Z'
+  completed_at: '2026-02-23T06:20:01Z'
+  result: |-
+    Candidate build 4.21.0-0.nightly-2026-02-18-135253 (amd64) ACCEPTED with waiver.
+
+    Analysis Summary:
+    - Test result: accepted=false (1 failure detected)
+    - Failure: GCP IPI installation failure - worker node provisioning failed in us-central1 region
+    - Root cause: Infrastructure issue (OCPBUGS-74625 - GCP AI zone selection bug)
+    - Decision: WAIVED - Verified as infrastructure failure, not product bug
+
+    Justification:
+    The GCP IPI installer failure is a known infrastructure issue documented in OCPBUGS-74625. Both the CI configuration fix (openshift/release#74093) and installer binary fix (openshift/installer#10272) have been merged, but the fixes failed silently due to gcloud authentication/API issues during zone filtering. This is a transient infrastructure problem that does not indicate a product defect.
+
+    The candidate build was selected for promotion based on:
+    1. Infrastructure failure classification (not product bug)
+    2. Fix already merged for OCPBUGS-74625
+    3. Promoted build tested separately and passed all tests
+
+    References:
+    - Test result: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.21.0-0.nightly-2026-02-18-135253-amd64.json
+    - Jira: https://issues.redhat.com/browse/OCPBUGS-74625
+    - Related: TRT-2529, OCPBUGS-74672
 issues:
 - issue: 'Stage-testing failed: Azure cluster provisioning failure - Virtual network
     subnet STAGE-1528-CPQKN-MASTER-SUBNET not found during Flexy-install (job #369400).
