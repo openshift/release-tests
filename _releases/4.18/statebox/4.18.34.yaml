@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.34
 created_at: '2026-02-19T13:49:01Z'
-updated_at: '2026-02-20T10:20:29Z'
+updated_at: '2026-02-23T08:07:49Z'
 metadata:
   jira_ticket: ART-14567
   advisory_ids:
@@ -53,14 +53,20 @@ tasks:
     upgrade-from-4.17, upgrade-from-4.18). No test failures detected. Build phase:
     Accepted.'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-02-20T05:20:28Z'
-  completed_at: null
+  completed_at: '2026-02-23T03:07:48Z'
   result: |-
-    2026-02-20T05:20:28Z: INFO: Initialized StateBox for release 4.18.34 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.34.yaml
-    2026-02-20T05:20:28Z: INFO: Checking image-consistency-check job status with job id: 3506
-    2026-02-20T05:20:28Z: INFO: build status of image-consistency-check/3506 is In Progress
-    2026-02-20T05:20:28Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-02-23T03:02:10Z: INFO: Initialized StateBox for release 4.18.34 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.34.yaml
+    2026-02-23T03:02:10Z: INFO: Checking image-consistency-check job status with job id: 3506
+    2026-02-23T03:02:10Z: INFO: build status of image-consistency-check/3506 is SUCCESS
+    2026-02-23T03:02:10Z: INFO: Starting image health check for shipment MR 378
+    2026-02-23T03:02:10Z: INFO: Stage release succeeded (verified by label)
+    2026-02-23T03:02:10Z: INFO: Processing MR 378
+    2026-02-23T03:02:13Z: INFO: Found 864 images to check
+    2026-02-23T03:07:48Z: INFO: Completed image health check. Scanned 864 images, found 0 unhealthy
+    2026-02-23T03:07:48Z: INFO: Added image health summary to MR 378
+    2026-02-23T03:07:48Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-02-20T05:11:36Z'
