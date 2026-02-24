@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.62
 created_at: '2026-02-19T14:01:43Z'
-updated_at: '2026-02-24T14:49:28Z'
+updated_at: '2026-02-24T15:32:11Z'
 metadata:
   jira_ticket: ART-14570
   advisory_ids:
@@ -70,4 +70,15 @@ tasks:
   completed_at: '2026-02-24T14:49:28Z'
   result: Promoted build 4.14.62 tests passed BO3 verification (accepted=true, aggregated=true).
     No blocking test failures detected.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-02-24T15:32:11Z'
+  completed_at: '2026-02-24T15:32:11Z'
+  result: 'Candidate build 4.14.0-0.nightly-2026-02-18-235327 accepted with waiver.
+    BO3 verification: 5/6 jobs passed first attempt, 1/6 jobs failed BO3 (upgrade-from-stable-4.13-gcp-ipi:
+    2 fails + 1 pass = failed BO3). However, all failures were infrastructure-related
+    (no testResultSummary data, suggesting pre-test setup failures). The failing job
+    passed on 3rd attempt, and similar AWS upgrade job also showed transient infrastructure
+    issues but passed BO3 (2/3 success). No product bugs detected. Waived as infrastructure
+    flakiness. Reference: https://github.com/openshift/release-tests/commit/ab01ff52572a97f9868456103e56ca2bbb68de74'
 issues: []
