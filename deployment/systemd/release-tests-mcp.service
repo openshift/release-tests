@@ -9,6 +9,9 @@ Type=simple
 # This ensures the service runs as your user and inherits bash_profile environment
 User=your-username
 
+# Set up proper PAM user session (required for podman/oc commands)
+PAMName=systemd-user
+
 # Working directory (adjust path if needed)
 WorkingDirectory=/home/your-username/coderepo/release-tests
 
