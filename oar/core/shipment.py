@@ -910,9 +910,13 @@ class ShipmentData:
             # Only need to handle opened MR
             if not mr.is_opened():
                 raise ShipmentDataException(f"Gitlab MR {mr_id} state is not open")
+        except ShipmentDataException:
+            # Re-raise ShipmentDataException (merged MR) for ApprovalOperator to handle gracefully
+            raise
         except Exception as e:
             logger.warning(f"Failed to initialize MR from {url}: {str(e)}")
-                
+            raise ShipmentDataException(f"Failed to initialize merge request: {str(e)}") from e
+
         return mr
 
     def get_mr(self) -> GitLabMergeRequest:
