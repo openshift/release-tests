@@ -1,5 +1,5 @@
 # Jira Notificator
-This is copy of [Jira Notificator](https://spaces.redhat.com/spaces/OCPERT/pages/653924138/Jira+Notificator) Confluence article.
+This is copy of [Jira Notificator](https://redhat.atlassian.net/wiki/spaces/OCPERT/pages/653924138/Jira+Notificator) Confluence article.
 
 ## Overview
 This Jira Notificator Python script is a command-line tool designed to monitor OCPBUGS jira issues in the ON_QA status and send escalating notifications if they remain in that state for extended periods. It automatically notifies the QA Contact, Team Lead, and Manager in sequence to ensure timely verification of issues.

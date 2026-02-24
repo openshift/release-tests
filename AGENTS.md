@@ -1011,8 +1011,8 @@ See individual agent sections above for specific environment variables required.
 #### Authentication Issues
 
 **Problem:** `JIRA_TOKEN` authentication fails
-- **Solution:** Regenerate your Jira personal access token at https://issues.redhat.com
-- **Verify:** Test with `curl -H "Authorization: Bearer $JIRA_TOKEN" https://issues.redhat.com/rest/api/2/myself`
+- **Solution:** Regenerate your Jira personal access token at https://redhat.atlassian.net/jira
+- **Verify:** Test with `curl -H "Authorization: Bearer $JIRA_TOKEN" https://redhat.atlassian.net/jira/rest/api/2/myself`
 
 **Problem:** Kerberos ticket expired for Errata Tool access
 - **Solution:** Renew your Kerberos ticket: `kinit $kid@$domain`

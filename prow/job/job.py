@@ -62,7 +62,7 @@ class Jobs:
 
     # it's for ARM test, now unable to find the 'cli' image in the provided ARM release image, but x86
     # so extract the corresponding amd64 version from the arm64 build,
-    # see bug: https://issues.redhat.com/browse/DPTP-3538, https://issues.redhat.com/browse/OCPQE-17600
+    # see bug: https://redhat.atlassian.net/browse/DPTP-3538, https://redhat.atlassian.net/browse/OCPQE-17600
     def get_amd_image_for_arm(self, payload):
         """Function get amd64 image as the ARM platform base image"""
         version_pattern = re.compile(r':(\d*\.\d{2}\.\d)(-.*)?-')
@@ -698,7 +698,7 @@ def get_cmd(job_id, poll):
 def run_cmd(job_name, payload, upgrade_from, upgrade_to):
     """Run a job and save results to /tmp/prow-jobs.csv. \n
     For ARM test, we hard code a x86 image as the base image. 
-    Details: https://issues.redhat.com/browse/DPTP-3538
+    Details: https://redhat.atlassian.net/jira/browse/DPTP-3538
     """
     JOB.run_job(job_name, payload, upgrade_from, upgrade_to)
 

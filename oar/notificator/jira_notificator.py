@@ -706,7 +706,7 @@ def jira_notificator(search_batch_size: int, dry_run: bool, from_date: Optional[
     if not jira_token:
         raise RuntimeError("JIRA token is missing or empty. Please set the JIRA_TOKEN environment variable.")
 
-    jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
+    jira = JIRA(server="https://redhat.atlassian.net/jira", token_auth=jira_token)
 
     ns = NotificationService(jira, dry_run)
     ns.process_on_qa_issues(search_batch_size, from_date)
