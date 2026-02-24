@@ -116,6 +116,9 @@ sudo vi /etc/systemd/system/release-tests-mcp.service
 **Edit these fields:**
 - `User=your-username` → Replace with your actual VM username
 - `WorkingDirectory=/home/your-username/coderepo/release-tests` → Adjust path
+- `ExecStart=...` → Update paths in ExecStart command
+
+**Note:** The service uses `PAMName=systemd-user` to set up a proper user session, which automatically provides `XDG_RUNTIME_DIR` required for podman/oc commands and other session variables.
 
 #### Enable and Start Service
 
