@@ -53,9 +53,48 @@
         "jobStartTime": "2026-02-24T10:22:37Z",
         "jobID": "92403977-6c1d-48b6-8b91-497907a59379",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2026241345013682176",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-24T13:55:26Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 107,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 30,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-LEVEL0-Medium-73293-certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-24T14:30:19Z",
+          "jobID": "d6f806bd-41dc-494d-8f91-5de580c6712f",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2026303681007194112",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-24T14:30:24Z",
+          "jobID": "f3a6feca-b65a-4e23-8444-88dd5b04f0a9",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2026303702561722368",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999",
