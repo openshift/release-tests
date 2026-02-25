@@ -37,9 +37,47 @@
         "jobStartTime": "2026-02-25T19:29:15Z",
         "jobID": "61dad323-7d51-4a80-b312-3607abbe5e3a",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2026741298400071680",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-02-25T23:01:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 29,
+            "failingScenarios": [
+              "[sig-network-edge] Network_Edge Component_Router Author:shudili-LEVEL0-Critical-41110-The threadCount ingresscontroller parameter controls the nbthread option for the haproxy router",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-44905-[CSI-Driver] [Dynamic PV] [block volume] volumes should store data"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 28,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-02-25T23:23:01Z",
+          "jobID": "9f4196dd-d37d-406a-a6a8-8804a7d66604",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2026800129738018816",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-02-25T23:23:06Z",
+          "jobID": "d8adc415-f293-45de-9a2a-e29748646819",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2026800151334490112",
+          "jobState": "pending"
+        }
+      ]
     }
   ],
   "build": {
