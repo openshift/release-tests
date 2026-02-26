@@ -27,9 +27,11 @@ ExecStart=/bin/bash -l -c 'cd /home/your-username/coderepo/release-tests && ./mc
 Restart=always
 RestartSec=10
 
-# Kill mode: only kill the main process, not child processes
-# This allows background metadata checker processes to survive server restarts
-KillMode=process
+# Kill mode: must be 'control-group' or 'mixed' when PAM is enabled
+# Note: Using 'control-group' brings back OCPERT-318 issue - background metadata checker processes
+# will NOT survive server restarts. Stale lock files may require manual cleanup at /tmp/oar_scheduler_*.lock
+# TODO: Implement systemd-run solution to spawn background processes outside cgroup
+KillMode=control-group
 
 # Logging
 StandardOutput=journal
