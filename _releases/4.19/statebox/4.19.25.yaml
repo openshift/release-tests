@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.25
 created_at: '2026-02-26T10:02:43Z'
-updated_at: '2026-02-26T10:13:05Z'
+updated_at: '2026-02-26T10:13:54Z'
 metadata:
   jira_ticket: ART-14627
   advisory_ids:
@@ -14,7 +14,25 @@ metadata:
     aarch64: 4.19.0-0.nightly-arm64-2026-02-25-223653
     x86_64: 4.19.0-0.nightly-2026-02-25-223703
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/385
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-02-26T05:12:55Z'
+  completed_at: '2026-02-26T05:13:54Z'
+  result: |-
+    2026-02-26T05:12:55Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-02-26T05:12:59Z: WARNING: advisory state is not QE, it is NEW_FILES
+    2026-02-26T05:13:01Z: INFO: QA Owner of advisory 159598 is updated to [EMAIL_REDACTED]
+    2026-02-26T05:13:04Z: INFO: QA Owner of advisory 159599 is updated to [EMAIL_REDACTED]
+    2026-02-26T05:13:04Z: INFO: Added QE release lead comment to MR 385
+    2026-02-26T05:13:04Z: INFO: Initialized StateBox for release 4.19.25 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.25.yaml
+    2026-02-26T05:13:05Z: INFO: Loaded state from _releases/4.19/statebox/4.19.25.yaml (SHA: 93bb63cb)
+    2026-02-26T05:13:05Z: INFO: Added blocking (tasks: push-to-cdn-staging) issue: Advisories in abnormal state (NEW_FILES instead of QE): 159598
+    2026-02-26T05:13:05Z: INFO: Updated state file _releases/4.19/statebox/4.19.25.yaml (attempt 1)
+    2026-02-26T05:13:06Z: INFO: Created StateBox blocker issue for abnormal advisories: Advisories in abnormal state (NEW_FILES instead of QE): 159598
+    2026-02-26T05:13:53Z: INFO: sent slack message to <#team-qe-release>
+    2026-02-26T05:13:54Z: INFO: sent slack message to <#forum-ocp-release>
+    2026-02-26T05:13:54Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 159598'
   reported_at: '2026-02-26T10:13:05Z'
