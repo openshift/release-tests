@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.25
 created_at: '2026-02-26T10:02:43Z'
-updated_at: '2026-02-27T08:03:39Z'
+updated_at: '2026-02-27T08:03:48Z'
 metadata:
   jira_ticket: ART-14627
   advisory_ids:
@@ -68,6 +68,18 @@ tasks:
     2026-02-27T03:03:37Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.19.25-x86_64
     2026-02-27T03:03:37Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3509/
     2026-02-27T03:03:38Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-02-27T03:03:46Z'
+  completed_at: null
+  result: |-
+    2026-02-27T03:03:46Z: INFO: Initialized StateBox for release 4.19.25 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.25.yaml
+    2026-02-27T03:03:46Z: INFO: job id is not set, will trigger stage testing
+    2026-02-27T03:03:46Z: INFO: Loaded state from _releases/4.19/statebox/4.19.25.yaml (SHA: 1f29289f)
+    2026-02-27T03:03:46Z: INFO: Stage release succeeded (verified by label)
+    2026-02-27T03:03:46Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-02-27T03:03:46Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1531/>
+    2026-02-27T03:03:48Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 159598'
   reported_at: '2026-02-26T10:13:05Z'
