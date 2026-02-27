@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.64
 created_at: '2026-02-26T13:01:30Z'
-updated_at: '2026-02-27T15:12:14Z'
+updated_at: '2026-02-27T15:16:20Z'
 metadata:
   jira_ticket: ART-14631
   advisory_ids:
@@ -51,12 +51,9 @@ tasks:
   result: 'Jenkins build #3511 completed successfully. Image consistency verified
     for 4.13.64.'
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-02-27T10:12:13Z'
-  completed_at: null
-  result: |-
-    2026-02-27T10:12:13Z: INFO: Initialized StateBox for release 4.13.64 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.64.yaml
-    2026-02-27T10:12:13Z: INFO: job id is not set, will trigger stage testing
-    2026-02-27T10:12:13Z: INFO: Loaded state from _releases/4.13/statebox/4.13.64.yaml (SHA: fb791394)
-    2026-02-27T10:12:13Z: INFO: stage testing already triggered and in progress, no need to trigger again
+  completed_at: '2026-02-27T15:16:20Z'
+  result: 'Jenkins build #1536 failed due to Azure infrastructure issue (subnet creation
+    timing problem). Retrying with new build.'
 issues: []
