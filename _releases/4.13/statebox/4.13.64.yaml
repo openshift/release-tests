@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.64
 created_at: '2026-02-26T13:01:30Z'
-updated_at: '2026-02-27T15:16:20Z'
+updated_at: '2026-02-27T15:17:56Z'
 metadata:
   jira_ticket: ART-14631
   advisory_ids:
@@ -51,9 +51,15 @@ tasks:
   result: 'Jenkins build #3511 completed successfully. Image consistency verified
     for 4.13.64.'
 - name: stage-testing
-  status: Fail
-  started_at: '2026-02-27T10:12:13Z'
-  completed_at: '2026-02-27T15:16:20Z'
-  result: 'Jenkins build #1536 failed due to Azure infrastructure issue (subnet creation
-    timing problem). Retrying with new build.'
+  status: In Progress
+  started_at: '2026-02-27T10:17:53Z'
+  completed_at: null
+  result: |-
+    2026-02-27T10:17:53Z: INFO: Initialized StateBox for release 4.13.64 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.64.yaml
+    2026-02-27T10:17:53Z: INFO: job id is not set, will trigger stage testing
+    2026-02-27T10:17:53Z: INFO: Loaded state from _releases/4.13/statebox/4.13.64.yaml (SHA: 17c0ce3d)
+    2026-02-27T10:17:53Z: INFO: Stage release succeeded (verified by label)
+    2026-02-27T10:17:53Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-02-27T10:17:53Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1538/>
+    2026-02-27T10:17:55Z: INFO: sent slack message to <#team-qe-release>
 issues: []
