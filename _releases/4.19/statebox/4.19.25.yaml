@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.25
 created_at: '2026-02-26T10:02:43Z'
-updated_at: '2026-02-27T14:55:51Z'
+updated_at: '2026-02-27T15:01:07Z'
 metadata:
   jira_ticket: ART-14627
   advisory_ids:
@@ -55,13 +55,20 @@ tasks:
     2026-02-27T05:37:12Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-02-27T05:37:12Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-02-27T09:55:51Z'
-  completed_at: null
+  completed_at: '2026-02-27T10:01:07Z'
   result: |-
-    2026-02-27T09:55:51Z: INFO: Initialized StateBox for release 4.19.25 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.25.yaml
-    2026-02-27T09:55:51Z: INFO: Loaded state from _releases/4.19/statebox/4.19.25.yaml (SHA: 353549da)
-    2026-02-27T09:55:51Z: INFO: Image consistency check already In Progress, skipping
+    2026-02-27T09:56:33Z: INFO: Initialized StateBox for release 4.19.25 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.25.yaml
+    2026-02-27T09:56:33Z: INFO: Checking image-consistency-check job status with job id: 3512
+    2026-02-27T09:56:33Z: INFO: build status of image-consistency-check/3512 is SUCCESS
+    2026-02-27T09:56:33Z: INFO: Starting image health check for shipment MR 385
+    2026-02-27T09:56:33Z: INFO: Stage release succeeded (verified by label)
+    2026-02-27T09:56:33Z: INFO: Processing MR 385
+    2026-02-27T09:56:36Z: INFO: Found 858 images to check
+    2026-02-27T10:01:06Z: INFO: Completed image health check. Scanned 858 images, found 0 unhealthy
+    2026-02-27T10:01:07Z: INFO: Added image health summary to MR 385
+    2026-02-27T10:01:07Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-02-27T06:36:06Z'
