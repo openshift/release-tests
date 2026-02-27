@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.50
 created_at: '2026-02-27T01:02:18Z'
-updated_at: '2026-02-27T10:25:15Z'
+updated_at: '2026-02-27T10:36:28Z'
 metadata:
   jira_ticket: ART-14632
   advisory_ids:
@@ -70,6 +70,13 @@ tasks:
     2026-02-27T05:25:13Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-02-27T05:25:13Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1532/>
     2026-02-27T05:25:14Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-02-27T10:36:28Z'
+  completed_at: '2026-02-27T10:36:28Z'
+  result: 'All blocking tests passed BO3 verification. Total jobs: 3 (AWS upgrade,
+    Azure FIPS upgrade, GCP upgrade). All succeeded on first attempt without retries.
+    Build quality: Excellent.'
 issues:
 - issue: 'RHCOS advisory 159608 has blocking security alert: Tracker OCPBUGS-66916
     has no associated flaws. Contact secalert@redhat.com for resolution.'
