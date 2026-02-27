@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.50
 created_at: '2026-02-27T01:02:18Z'
-updated_at: '2026-02-27T10:24:00Z'
+updated_at: '2026-02-27T10:24:56Z'
 metadata:
   jira_ticket: ART-14632
   advisory_ids:
@@ -47,6 +47,17 @@ tasks:
     2026-02-27T05:24:00Z: INFO: checking push job status for advisory 159608 ...
     2026-02-27T05:24:00Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-02-27T05:24:00Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-02-27T05:24:53Z'
+  completed_at: null
+  result: |-
+    2026-02-27T05:24:53Z: INFO: Initialized StateBox for release 4.17.50 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.50.yaml
+    2026-02-27T05:24:54Z: INFO: Loaded state from _releases/4.17/statebox/4.17.50.yaml (SHA: a1ecb954)
+    2026-02-27T05:24:54Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-02-27T05:24:54Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.17.50-x86_64
+    2026-02-27T05:24:54Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3510/
+    2026-02-27T05:24:56Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'RHCOS advisory 159608 has blocking security alert: Tracker OCPBUGS-66916
     has no associated flaws. Contact secalert@redhat.com for resolution.'
