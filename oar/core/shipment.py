@@ -885,34 +885,33 @@ class ShipmentData:
         
     def _initialize_mr(self) -> GitLabMergeRequest:
         """Initialize GitLabMergeRequest objects from shipment MRs
-        
+
         Returns:
             GitLabMergeRequest: Initialized merge request object in 'opened' state
-            
+
         Raises:
             ShipmentDataException: If unable to initialize merge request
         """
         url = self._cs.get_shipment_mr()
-        
-        mr = None
+
         try:
             project, mr_id = parse_mr_url(url)
             gitlab_url = self._cs.get_gitlab_url()
             token = self._cs.get_gitlab_token()
-            
+
             mr = GitLabMergeRequest(
                 gitlab_url=gitlab_url,
                 project_name=project,
                 merge_request_id=mr_id,
                 private_token=token
             )
-            
-            # Only need to handle opened MR
-            if not mr.is_opened():
-                raise ShipmentDataException(f"Gitlab MR {mr_id} state is not open")
         except Exception as e:
-            logger.warning(f"Failed to initialize MR from {url}: {str(e)}")
-                
+            raise ShipmentDataException(f"Failed to initialize merge request: {str(e)}") from e
+
+        # State check is business logic — outside try/except so it's never accidentally swallowed
+        if not mr.is_opened():
+            raise ShipmentDataException(f"Gitlab MR {mr_id} state is not open")
+
         return mr
 
     def get_mr(self) -> GitLabMergeRequest:

@@ -681,6 +681,47 @@ class TestShipmentData(unittest.TestCase):
         self.assertTrue(len(missed_trackers) == 0)
 
 
+class TestShipmentDataMergedMR(unittest.TestCase):
+    """Test ShipmentData behavior with merged MR (OCPERT-326)"""
+
+    @patch('oar.core.shipment.parse_mr_url')
+    @patch('oar.core.shipment.GitLabMergeRequest')
+    def test_initialize_mr_raises_exception_when_merged(self, mock_mr_class, mock_parse):
+        """Test that ShipmentData raises exception when MR is merged (OCPERT-326)
+
+        This test verifies the fix for OCPERT-326 where _initialize_mr() was
+        catching but not re-raising ShipmentDataException when MR was not in
+        'opened' state. This caused ShipmentData.__init__() to succeed even when
+        MR was merged, leading to later crashes in add_qe_approval().
+
+        The fix ensures the exception is properly raised so ApprovalOperator can
+        handle merged MRs gracefully.
+        """
+        # Setup mock parse_mr_url
+        mock_parse.return_value = ("hybrid-platforms/art/ocp-shipment-data", "369")
+
+        # Setup mock MR that is merged (not opened)
+        mock_mr = MagicMock()
+        mock_mr.is_opened.return_value = False  # MR is merged
+        mock_mr_class.return_value = mock_mr
+
+        # Setup mock ConfigStore
+        mock_cs = MagicMock()
+        mock_cs.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/369"
+        mock_cs.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
+        mock_cs.get_gitlab_token.return_value = "test-token"
+
+        # ShipmentData initialization should raise exception when MR is merged
+        with self.assertRaises(ShipmentDataException) as context:
+            ShipmentData(mock_cs)
+
+        # Verify exception message
+        self.assertIn("state is not open", str(context.exception))
+
+        # Verify is_opened was called
+        mock_mr.is_opened.assert_called_once()
+
+
 class TestShipmentImageHealth(unittest.TestCase):
     """Tests for container image health checking functionality"""
 
