@@ -39,7 +39,25 @@
           "jobStartTime": "2026-02-27T17:27:41Z",
           "jobID": "ede5f8c6-b117-441a-aeb9-72e0bd0625d4",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2027435483423838208",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-02-27T20:51:20Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 22,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 30,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-02-27T17:27:46Z",
@@ -103,5 +121,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-02-27-051516",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-02-27-051516"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
