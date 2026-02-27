@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.50
 created_at: '2026-02-27T01:02:18Z'
-updated_at: '2026-02-27T10:02:05Z'
+updated_at: '2026-02-27T10:24:00Z'
 metadata:
   jira_ticket: ART-14632
   advisory_ids:
@@ -37,19 +37,16 @@ tasks:
     2026-02-27T03:39:58Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-02-27T03:39:58Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-02-27T05:01:49Z'
-  completed_at: null
+  completed_at: '2026-02-27T05:24:00Z'
   result: |-
-    2026-02-27T05:01:49Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-02-27T05:02:01Z: INFO: checking push job status for advisory 159607 ...
-    2026-02-27T05:02:01Z: INFO: no push job found for advisory 159607
-    2026-02-27T05:02:01Z: INFO: advisory 159607 has blocking advisory []
-    2026-02-27T05:02:02Z: INFO: push job for advisory 159607 is triggered
-    2026-02-27T05:02:04Z: INFO: checking push job status for advisory 159608 ...
-    2026-02-27T05:02:04Z: INFO: no push job found for advisory 159608
-    2026-02-27T05:02:04Z: INFO: advisory 159608 has blocking advisory []
-    2026-02-27T05:02:04Z: INFO: push job for advisory 159608 is triggered
+    2026-02-27T05:23:47Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-02-27T05:23:59Z: INFO: checking push job status for advisory 159607 ...
+    2026-02-27T05:23:59Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-02-27T05:24:00Z: INFO: checking push job status for advisory 159608 ...
+    2026-02-27T05:24:00Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-02-27T05:24:00Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 159608 has blocking security alert: Tracker OCPBUGS-66916
     has no associated flaws. Contact secalert@redhat.com for resolution.'
