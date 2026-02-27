@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.64
 created_at: '2026-02-26T13:01:30Z'
-updated_at: '2026-02-27T15:17:56Z'
+updated_at: '2026-02-27T15:23:32Z'
 metadata:
   jira_ticket: ART-14631
   advisory_ids:
@@ -62,4 +62,13 @@ tasks:
     2026-02-27T10:17:53Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-02-27T10:17:53Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1538/>
     2026-02-27T10:17:55Z: INFO: sent slack message to <#team-qe-release>
-issues: []
+issues:
+- issue: 'Jenkins Stage-Pipeline #1536 failed due to Azure subnet timing issue - subnet
+    creation succeeded but VM creation couldn''t find it, causing address prefix conflict
+    (10.0.99.0/24 vs 10.0.0.0/24). Resolved by retry with build #1538.'
+  reported_at: '2026-02-27T15:23:32Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - stage-testing
