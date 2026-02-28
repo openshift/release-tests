@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.4
 created_at: '2026-02-26T10:03:31Z'
-updated_at: '2026-02-28T02:46:49Z'
+updated_at: '2026-02-28T02:47:02Z'
 metadata:
   jira_ticket: ART-14630
   advisory_ids:
@@ -61,13 +61,11 @@ tasks:
     EOF errors). AWS (3/3) and Azure (1/1) passed. WAIVED: GCP failures are platform-specific
     infrastructure issues, not product bugs. Manual retry triggered: job 2027352597437878272'
 - name: image-consistency-check
-  status: In Progress
+  status: Fail
   started_at: '2026-02-27T21:46:48Z'
-  completed_at: null
-  result: |-
-    2026-02-27T21:46:48Z: INFO: Initialized StateBox for release 4.21.4 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.4.yaml
-    2026-02-27T21:46:48Z: INFO: Loaded state from _releases/4.21/statebox/4.21.4.yaml (SHA: 6ef75cc8)
-    2026-02-27T21:46:48Z: INFO: Image consistency check already In Progress, skipping
+  completed_at: '2026-02-28T02:47:02Z'
+  result: Previous job not found in Jenkins (started 2026-02-27 08:57:46Z). Jenkins
+    job tracking lost. Resetting to trigger fresh run.
 - name: stage-testing
   status: Pass
   started_at: '2026-02-27T08:13:08Z'
