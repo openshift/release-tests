@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.50
 created_at: '2026-02-27T01:02:18Z'
-updated_at: '2026-03-02T12:51:19Z'
+updated_at: '2026-03-02T13:01:07Z'
 metadata:
   jira_ticket: ART-14632
   advisory_ids:
@@ -94,8 +94,13 @@ issues:
     2027391494427512832, 2027391525607968768. Candidate build analysis is non-critical
     - does not block promoted build release.'
   reported_at: '2026-02-27T14:38:46Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'GCP quota issue resolved. Root cause: SSD_TOTAL_GB quota exceeded in
+    us-central1 region (81920 GB limit). Large scale test clusters consuming excessive
+    disk quota were cleaned up. Quota back to normal. GCP job rebuilds triggered and
+    test results manually promoted. Future mitigation: OCPNODE-4144 opened to create
+    separate perfscale GCP profile in non-us-central1 regions to avoid CI job impact.'
   blocker: false
   related_tasks:
   - analyze-candidate-build
+  resolved_at: '2026-03-02T13:01:07Z'
