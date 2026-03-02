@@ -37,13 +37,58 @@
           "jobStartTime": "2026-03-02T03:25:18Z",
           "jobID": "7e8df7c5-7bfe-45d8-aad6-934205171ca6",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2028310652879114240",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-03-02T06:06:34Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 20
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-03-02T03:25:18Z",
           "jobID": "dc4606f8-8a9e-4fb9-b3a2-cf40fde67b31",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2028310653986410496",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-02T06:29:17Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -115,13 +160,58 @@
           "jobStartTime": "2026-03-02T03:25:28Z",
           "jobID": "c76e7679-06e2-4f91-9ffb-aaec199db3a5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2028310696860585984",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-03-02T06:01:35Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 25
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-03-02T03:25:34Z",
           "jobID": "1c38638c-7feb-438b-9b24-c44f921ac590",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2028310742427504640",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-02T06:13:04Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-64296-disable CORS headers on Thanos querier [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -172,5 +262,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2026-03-01-190258",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2026-03-01-190258"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
