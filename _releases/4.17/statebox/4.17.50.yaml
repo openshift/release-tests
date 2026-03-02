@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.50
 created_at: '2026-02-27T01:02:18Z'
-updated_at: '2026-03-02T13:01:07Z'
+updated_at: '2026-03-02T13:10:48Z'
 metadata:
   jira_ticket: ART-14632
   advisory_ids:
@@ -78,6 +78,14 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Total jobs: 3 (AWS upgrade,
     Azure FIPS upgrade, GCP upgrade). All succeeded on first attempt without retries.
     Build quality: Excellent.'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-03-02T13:10:48Z'
+  completed_at: '2026-03-02T13:10:48Z'
+  result: GCP job rebuilds completed after quota issue resolved. One rebuild showed
+    test failure (OAP-73293 cert-manager), second rebuild passed successfully. Manually
+    promoted due to confirmed test flakiness. AWS and Azure jobs passed on first attempt
+    (4/6 total jobs).
 issues:
 - issue: 'RHCOS advisory 159608 has blocking security alert: Tracker OCPBUGS-66916
     has no associated flaws. Contact secalert@redhat.com for resolution.'
