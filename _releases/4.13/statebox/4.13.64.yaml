@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.64
 created_at: '2026-02-26T13:01:30Z'
-updated_at: '2026-03-02T14:22:44Z'
+updated_at: '2026-03-02T16:20:03Z'
 metadata:
   jira_ticket: ART-14631
   advisory_ids:
@@ -62,6 +62,14 @@ tasks:
     2026-03-02T05:34:56Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-03-02T05:34:56Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1540/>
     2026-03-02T05:34:58Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-03-02T16:20:03Z'
+  completed_at: '2026-03-02T16:20:03Z'
+  result: All 3 blocking upgrade test jobs passed BO3 verification. accepted=true,
+    aggregated=true. AWS 4.12→4.13 cross-version upgrade passed, Azure 4.13.x→4.13.y
+    micro-upgrade passed, GCP 4.13.x→4.13.y micro-upgrade passed. No test failures
+    detected.
 issues:
 - issue: 'Jenkins Stage-Pipeline #1536 failed due to Azure subnet timing issue - subnet
     creation succeeded but VM creation couldn''t find it, causing address prefix conflict
