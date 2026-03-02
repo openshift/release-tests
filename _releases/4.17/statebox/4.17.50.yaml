@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.50
 created_at: '2026-02-27T01:02:18Z'
-updated_at: '2026-03-02T13:10:48Z'
+updated_at: '2026-03-02T13:13:50Z'
 metadata:
   jira_ticket: ART-14632
   advisory_ids:
@@ -86,6 +86,17 @@ tasks:
     test failure (OAP-73293 cert-manager), second rebuild passed successfully. Manually
     promoted due to confirmed test flakiness. AWS and Azure jobs passed on first attempt
     (4/6 total jobs).
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-03-02T08:13:24Z'
+  completed_at: '2026-03-02T08:13:50Z'
+  result: |-
+    2026-03-02T08:13:24Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-03-02T08:13:24Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.17.50
+    2026-03-02T08:13:25Z: INFO: Image Digest: sha256:fffcbd70f5251c30d23bdcc87900e3eaf8b3ae4945a29618c26277669b453b1d
+    2026-03-02T08:13:25Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=fffcbd70f5251c30d23bdcc87900e3eaf8b3ae4945a29618c26277669b453b1d/signature-1
+    2026-03-02T08:13:50Z: INFO: Signature check PASSED
+    2026-03-02T08:13:50Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 159608 has blocking security alert: Tracker OCPBUGS-66916
     has no associated flaws. Contact secalert@redhat.com for resolution.'
