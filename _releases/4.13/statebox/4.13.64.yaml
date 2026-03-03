@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.64
 created_at: '2026-02-26T13:01:30Z'
-updated_at: '2026-03-03T09:38:37Z'
+updated_at: '2026-03-03T10:07:55Z'
 metadata:
   jira_ticket: ART-14631
   advisory_ids:
@@ -77,6 +77,17 @@ tasks:
     promoted build 4.13.64 using AWS platform, (2) GCP 4.13.x→4.13.y micro-upgrade
     passed in promoted build, (3) Failure not in Release Controller blocking test
     set (6/6 blocking tests passed), (4) Promoted build already accepted by QE (accepted=true).'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-03-03T05:06:57Z'
+  completed_at: '2026-03-03T05:07:55Z'
+  result: |-
+    2026-03-03T05:06:57Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-03-03T05:06:57Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.13.64
+    2026-03-03T05:06:58Z: INFO: Image Digest: sha256:a7c362225f22ef51feca9c9959409ffc5f8308a9ecc06ed2cc39b31668327eba
+    2026-03-03T05:06:58Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=a7c362225f22ef51feca9c9959409ffc5f8308a9ecc06ed2cc39b31668327eba/signature-1
+    2026-03-03T05:07:55Z: INFO: Signature check PASSED
+    2026-03-03T05:07:55Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Jenkins Stage-Pipeline #1536 failed due to Azure subnet timing issue - subnet
     creation succeeded but VM creation couldn''t find it, causing address prefix conflict
