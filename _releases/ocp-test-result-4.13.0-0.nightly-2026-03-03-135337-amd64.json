@@ -39,13 +39,49 @@
           "jobStartTime": "2026-03-03T21:20:45Z",
           "jobID": "4aa8516d-3d8b-48dd-873b-0c16931e43ac",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2028943688314392576",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-04T00:40:42Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-operators] OLM for an end user handle within a namespace Author:bandrade-LEVEL0-Critical-41026-OCS should only one installplan generated when creating subscription"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 30,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-03-03T21:20:51Z",
           "jobID": "3c70224f-3f83-48f8-9287-fab3cf7c49c0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2028943710271574016",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-04T00:39:55Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI-Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 30,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -132,5 +168,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-03-03-135337",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-03-03-135337"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
