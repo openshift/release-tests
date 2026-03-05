@@ -37,9 +37,49 @@
         "jobStartTime": "2026-03-05T08:21:05Z",
         "jobID": "f1c463d2-4c0d-4599-9903-0f4dcf94686d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2029472252470235136",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-03-05T13:21:59Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 105,
+            "failures": 5,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-apps] Workloads test kcm works well NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-High-67765-Make sure rolling update logic to exclude unsetting nodes [Serial]",
+              "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+              "[sig-operators] OLM should ConnectedOnly-Author:jiazha-LEVEL0-Critical-22070-support grpc sourcetype [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-03-05T13:28:16Z",
+          "jobID": "39e1d63a-54b0-4d48-9a97-6399713454e8",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2029549642437365760",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-03-05T13:28:41Z",
+          "jobID": "d34d655f-2956-4d0d-b7f4-2e4a59bf12b5",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999",
