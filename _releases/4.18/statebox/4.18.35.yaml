@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.35
 created_at: '2026-03-06T09:02:44Z'
-updated_at: '2026-03-06T15:00:12Z'
+updated_at: '2026-03-06T15:00:22Z'
 metadata:
   jira_ticket: ART-14673
   advisory_ids:
@@ -61,6 +61,18 @@ tasks:
     2026-03-06T10:00:09Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.18.35-x86_64
     2026-03-06T10:00:09Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3515/
     2026-03-06T10:00:12Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-03-06T10:00:19Z'
+  completed_at: null
+  result: |-
+    2026-03-06T10:00:19Z: INFO: Initialized StateBox for release 4.18.35 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.35.yaml
+    2026-03-06T10:00:19Z: INFO: job id is not set, will trigger stage testing
+    2026-03-06T10:00:20Z: INFO: Loaded state from _releases/4.18/statebox/4.18.35.yaml (SHA: 930ff1e4)
+    2026-03-06T10:00:20Z: INFO: Stage release succeeded (verified by label)
+    2026-03-06T10:00:20Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-03-06T10:00:20Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1543/>
+    2026-03-06T10:00:22Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'RHCOS advisory 160014 has blocking security alert: Tracker OCPBUGS-76982
     has no associated flaws. Contact secalert@redhat.com for resolution.'
