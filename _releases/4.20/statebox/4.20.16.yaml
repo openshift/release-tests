@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.16
 created_at: '2026-03-06T09:03:46Z'
-updated_at: '2026-03-09T11:27:23Z'
+updated_at: '2026-03-09T11:28:29Z'
 metadata:
   jira_ticket: ART-14672
   advisory_ids:
@@ -43,6 +43,20 @@ tasks:
     2026-03-06T04:26:15Z: INFO: Processing MR 392 for Jira issues
     2026-03-06T04:26:16Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-03-06T04:26:16Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-03-09T07:28:09Z'
+  completed_at: null
+  result: |-
+    2026-03-09T07:28:09Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-03-09T07:28:26Z: INFO: checking push job status for advisory 159997 ...
+    2026-03-09T07:28:26Z: INFO: no push job found for advisory 159997
+    2026-03-09T07:28:26Z: INFO: advisory 159997 has blocking advisory []
+    2026-03-09T07:28:27Z: INFO: push job for advisory 159997 is triggered
+    2026-03-09T07:28:27Z: INFO: checking push job status for advisory 159999 ...
+    2026-03-09T07:28:27Z: INFO: no push job found for advisory 159999
+    2026-03-09T07:28:27Z: INFO: advisory 159999 has blocking advisory []
+    2026-03-09T07:28:28Z: INFO: push job for advisory 159999 is triggered
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 159997'
   reported_at: '2026-03-06T09:24:48Z'
