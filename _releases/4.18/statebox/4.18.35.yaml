@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.35
 created_at: '2026-03-06T09:02:44Z'
-updated_at: '2026-03-09T08:59:28Z'
+updated_at: '2026-03-09T09:00:18Z'
 metadata:
   jira_ticket: ART-14673
   advisory_ids:
@@ -68,6 +68,13 @@ tasks:
     2026-03-09T03:56:28Z: INFO: check stage job status according to job id: 1543
     2026-03-09T03:56:28Z: INFO: build status of zstreams/Stage-Pipeline/1543 is SUCCESS
     2026-03-09T03:56:28Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-03-09T09:00:18Z'
+  completed_at: '2026-03-09T09:00:18Z'
+  result: 'All blocking tests passed BO3 verification. Build: 4.18.35, Phase: Accepted,
+    aggregated: true, accepted: true. All upgrade tests (from 4.17, from 4.18) completed
+    successfully on AWS, Azure, and GCP platforms.'
 issues:
 - issue: 'RHCOS advisory 160014 has blocking security alert: Tracker OCPBUGS-76982
     has no associated flaws. Contact secalert@redhat.com for resolution.'
