@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.35
 created_at: '2026-03-06T09:02:44Z'
-updated_at: '2026-03-09T10:22:13Z'
+updated_at: '2026-03-09T10:23:06Z'
 metadata:
   jira_ticket: ART-14673
   advisory_ids:
@@ -81,6 +81,17 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build: 4.18.35, Phase: Accepted,
     aggregated: true, accepted: true. All upgrade tests (from 4.17, from 4.18) completed
     successfully on AWS, Azure, and GCP platforms.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-03-09T06:22:25Z'
+  completed_at: '2026-03-09T06:23:05Z'
+  result: |-
+    2026-03-09T06:22:25Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-03-09T06:22:25Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.35
+    2026-03-09T06:22:27Z: INFO: Image Digest: sha256:59727c4b3fef19e5149675cf3350735bbfe2c6588a57654b2e4552dd719f58b1
+    2026-03-09T06:22:27Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=59727c4b3fef19e5149675cf3350735bbfe2c6588a57654b2e4552dd719f58b1/signature-1
+    2026-03-09T06:23:05Z: INFO: Signature check PASSED
+    2026-03-09T06:23:05Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 160014 has blocking security alert: Tracker OCPBUGS-76982
     has no associated flaws. Contact secalert@redhat.com for resolution.'
