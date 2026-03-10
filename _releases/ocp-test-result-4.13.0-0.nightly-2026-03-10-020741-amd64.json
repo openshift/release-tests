@@ -31,9 +31,40 @@
         "jobStartTime": "2026-03-10T08:23:12Z",
         "jobID": "210f3bba-1138-40fd-9ffa-cda474113f5b",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2031284724189630464",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-03-10T11:32:11Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 71,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 22
+          },
+          "cucushift-e2e": {
+            "total": 30,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-03-10T12:22:45Z",
+          "jobID": "cf1fa3c4-b67c-42fb-b75b-a5f015ba39c7",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2031345011278221312",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-03-10T12:22:46Z",
+          "jobID": "59163a2c-60fe-4cb1-b48b-6fed2a0b9281",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2031345012138053632",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999",
