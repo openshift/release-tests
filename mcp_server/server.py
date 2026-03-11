@@ -690,23 +690,26 @@ async def oar_image_signed_check(release: str) -> str:
 # ============================================================================
 
 @mcp.tool()
-async def oar_image_consistency_check(release: str, build_number: str = None) -> str:
+async def oar_image_consistency_check(release: str, job_id: str = None) -> str:
     """
     Check status of image consistency check or start new check.
 
-    If build_number is provided, queries existing job status (READ-ONLY).
-    If build_number is not provided, starts new consistency check (WRITE).
+    Triggers a Prow job via Gangway API to verify payload images match shipment.
+    Requires APITOKEN environment variable for Prow authentication.
+
+    If job_id is provided, queries existing Prow job status (READ-ONLY).
+    If job_id is not provided, starts new consistency check (WRITE).
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
-        build_number: Optional specific build number to check status
+        job_id: Optional Prow job ID to check status
 
     Returns:
         Job status information or new job details
     """
     args = []
-    if build_number is not None and build_number != "":
-        args.extend(["-n", build_number])
+    if job_id is not None and job_id != "":
+        args.extend(["-i", job_id])
 
     result = await invoke_oar_command_async(release, "image-consistency-check", args)
     return format_result(result)
@@ -1480,7 +1483,7 @@ async def oar_add_issue(
         oar_add_issue("4.19.1", "ART build pipeline down - ETA: 2025-01-16", True, None)
 
         # Non-blocking issue (automation improvement)
-        oar_add_issue("4.19.1", "Jenkins job timeout - retry succeeded", False, "image-consistency-check")
+        oar_add_issue("4.19.1", "Prow job timeout - retry succeeded", False, "image-consistency-check")
     """
     try:
         cs = get_cached_configstore(release)

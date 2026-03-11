@@ -201,7 +201,7 @@ The MCP (Model Context Protocol) server (`mcp_server/server.py`) exposes OAR com
 
 **Categories of tools:**
 1. **Read-only tools** - Safe query operations (check-greenwave-cvp-tests, check-cve-tracker-bug, image-signed-check, is-release-shipped)
-2. **Status check tools** - Query job status (image-consistency-check -n, stage-testing -n)
+2. **Status check tools** - Query job status (image-consistency-check -i, stage-testing -n)
 3. **Write operations** - Modify state (create-test-report, update-bug-list, take-ownership)
 4. **Critical operations** - Production impact (push-to-cdn-staging, change-advisory-status)
 5. **Controller tools** - Background agents (start-release-detector, jira-notificator)
@@ -463,7 +463,7 @@ oar -r 4.19.1 update-bug-list
 
 # 4. Verify payload images
 oar -r 4.19.1 image-consistency-check
-oar -r 4.19.1 image-consistency-check -n <build-number>  # Check status
+oar -r 4.19.1 image-consistency-check -i <job-id>  # Check status
 
 # 5. Validate CVP tests
 oar -r 4.19.1 check-greenwave-cvp-tests
@@ -510,8 +510,9 @@ When adding new version support, update:
 1. Jira query filters (`oar/notificator/jira_notificator.py`)
 2. Job registry configurations
 3. Test report templates
-4. Jenkins job parameters (stage-testing, image-consistency-check)
-5. ConfigStore config (test template doc ID, Slack group alias)
+4. Jenkins job parameters (stage-testing)
+5. Prow job configuration (image-consistency-check)
+6. ConfigStore config (test template doc ID, Slack group alias)
 
 ## Authentication Notes
 

@@ -252,7 +252,7 @@ For complete step-by-step logic, refer to the **`release-workflow` skill** (`.cl
 
 **Async Task Monitoring:**
 - Re-execute the same MCP tool to check status
-- Example: `oar_image_consistency_check(release, build_number=123)` to check progress
+- Example: `oar_image_consistency_check(release, job_id="uuid")` to check progress
 
 ## Key Decision Points
 
@@ -383,7 +383,7 @@ state = oar_get_release_status(release="4.20.1")
       "status": "In Progress",
       "started_at": "2025-01-15T14:00:00Z",
       "completed_at": null,
-      "result": "Jenkins job #123 triggered..."
+      "result": "Prow job triggered..."
     }
   ],
   "issues": [
@@ -458,17 +458,18 @@ elif task["status"] == "Pass":
     Continue to next task
 
 elif task["status"] == "In Progress":
-    # Check if async task (Jenkins jobs)
+    # Check if async task (Prow/Jenkins jobs)
     if task_name in ["image-consistency-check", "stage-testing"]:
-        # Extract build number from task result
-        build_number = extract_from_result(task["result"], r"Build number: (\d+)")
+        # Extract job ID from task result
+        # image-consistency-check uses Prow job ID, stage-testing uses Jenkins build number
+        job_id = extract_from_result(task["result"], r"job ID: (\S+)") or extract_from_result(task["result"], r"Build number: (\d+)")
 
-        if not build_number:
-            Log: f"⚠ {task_name} in progress but no build number found, retrying..."
+        if not job_id:
+            Log: f"⚠ {task_name} in progress but no job ID found, retrying..."
             Execute task_name
         else:
-            # Query Jenkins job status
-            result = execute_mcp_tool(task_name, build_number=build_number)
+            # Query job status (Prow or Jenkins depending on task)
+            result = execute_mcp_tool(task_name, job_id=job_id)
 
             if "status is changed to [Pass]" in result:
                 Log: f"✓ {task_name} completed successfully"
@@ -477,7 +478,7 @@ elif task["status"] == "In Progress":
                 Log: f"✗ {task_name} failed"
                 STOP pipeline
             else:
-                Log: f"⏳ {task_name} still running (job #{build_number})"
+                Log: f"⏳ {task_name} still running (job {job_id})"
                 Ask user to check back later
                 RETURN
     else:
@@ -505,36 +506,36 @@ elif task["status"] == "Fail":
 
 ### Async Task Monitoring
 
-**For long-running Jenkins tasks:**
+**For long-running async tasks:**
 
 ```python
-# Initial trigger (when task doesn't exist or has no build number)
+# Initial trigger (when task doesn't exist or has no job ID)
 result = oar_image_consistency_check(release=release)
 
-if "Build number:" in result:
-    build_number = extract_build_number(result)
-    Log: f"⏳ Jenkins job #{build_number} triggered"
+if "Prow job" in result:
+    job_id = extract_job_id(result)
+    Log: f"⏳ Prow job {job_id} triggered"
     Log: "Check back in 20-30 minutes with: /release:drive {release}"
     RETURN
 
-# Status check on resume (when task has build number in result)
-result = oar_image_consistency_check(release=release, build_number=build_number)
+# Status check on resume (when task has job ID in result)
+result = oar_image_consistency_check(release=release, job_id=job_id)
 
 if "status is changed to [Pass]" in result:
-    Log: f"✓ Job #{build_number} completed successfully"
+    Log: f"✓ Job {job_id} completed successfully"
     Continue to next task
 elif "status is changed to [Fail]" in result:
     # Add issue to StateBox
     oar_add_issue(
         release=release,
-        issue=f"image-consistency-check job #{build_number} failed: {extract_failure_reason(result)}",
+        issue=f"image-consistency-check Prow job {job_id} failed: {extract_failure_reason(result)}",
         blocker=True,
         related_tasks=["image-consistency-check"]
     )
     Log: "✗ Job failed, blocker added to StateBox"
     STOP pipeline
 else:
-    Log: f"⏳ Job #{build_number} still running..."
+    Log: f"⏳ Job {job_id} still running..."
     RETURN
 ```
 
@@ -644,8 +645,8 @@ AI: Resuming from PHASE 2...
 AI: ✓ Skipping 2 completed tasks (take-ownership, check-cve-tracker-bug)
 AI: ⏳ push-to-cdn-staging still running (job #456)
 AI: ✓ Build promoted! Phase: PHASE 3 - Test Evaluation
-AI: ⏳ image-consistency-check triggered (job #789)
-AI: ⏳ stage-testing triggered (job #790)
+AI: ⏳ image-consistency-check triggered (Prow job abc-123-def)
+AI: ⏳ stage-testing triggered (Jenkins job #790)
 AI: Waiting for test results, check back in 1 hour
 ```
 
@@ -656,8 +657,8 @@ AI: Loading StateBox state for 4.20.1...
 AI: Resuming from PHASE 4...
 AI: ✓ Skipping 4 completed tasks
 AI: ✓ push-to-cdn-staging completed (job #456)
-AI: ✓ image-consistency-check completed (job #789)
-AI: ✓ stage-testing completed (job #790)
+AI: ✓ image-consistency-check completed (Prow job abc-123-def)
+AI: ✓ stage-testing completed (Jenkins job #790)
 AI: Analyzing promoted build test results...
 AI: ✓ All tests passed, proceeding to PHASE 5
 AI: ✓ image-signed-check completed

@@ -800,7 +800,7 @@ WHEN trigger phase:
     Report to user: "Task triggered, check status in X minutes"
 
 WHEN user re-invokes /release:drive:
-    Execute command with build_number parameter (if applicable)
+    Execute command with job ID (Prow job ID or Jenkins build number)
     Parse stdout for status
 
     IF status == "In Progress":

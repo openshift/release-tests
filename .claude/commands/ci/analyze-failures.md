@@ -29,9 +29,10 @@ https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-openshift-
 
 **Example Jenkins URLs**:
 ```
-https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3436/
 https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1413/
 ```
+
+> **Note:** Image consistency check has been migrated from Jenkins to Prow. Prow job URLs follow the Prow URL pattern above.
 
 ## Action to Take
 
@@ -54,7 +55,7 @@ https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/St
 
   Please specify which type of CI job this is:
   1. **Prow job** - OpenShift CI Prow jobs (from qe-private-deck or prow.ci.openshift.org)
-  2. **Jenkins job** - Jenkins jobs (image-consistency-check, stage-testing, etc.)
+  2. **Jenkins job** - Jenkins jobs (stage-testing, etc.)
 
   Or provide a more complete URL if the one given was truncated.
   ```

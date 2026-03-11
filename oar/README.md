@@ -43,7 +43,7 @@ Commands:
   create-test-report         Create test report for z-stream release
   take-ownership             Take ownership for advisory and jira subtasks
   update-bug-list            Update bug status listed in report, update...
-  image-consistency-check    Check if images in advisories and payload...
+  image-consistency-check    Check if images in payload and shipment...
   check-greenwave-cvp-tests  Check Greenwave CVP test results for all...
   check-cve-tracker-bug      Check if there is any missed CVE tracker bug
   push-to-cdn-staging        Trigger push job for cdn stage targets
@@ -72,10 +72,10 @@ $ oar -r $release-version take-ownership -e foo@bar.com
 ```
 $ oar -r $release-version update-bug-list
 ```
-4. This command triggers image-consistency-check jenkins job to verify images in release payload. The build number is returned with the first run. The build number can be used as an option for subsequent run to check jenkins job status
+4. This command triggers image-consistency-check Prow job via Gangway API to verify images in release payload match images in shipment. The Prow job ID is returned with the first run. The job ID can be used as an option for subsequent run to check job status
 ```
 $ oar -r $release-version image-consistency-check
-$ oar -r $release-version image-consistency-check -n 123
+$ oar -r $release-version image-consistency-check -i <job-id>
 ```
 5. This command checks all Greenwave CVP tests of all advisories. Expected result is that all tests finish with status `PASSED/WAIVED`. If any of the tests failed, you can trigger `Refetch` with the test id and corresponding advisory number. You can get those parameters from this command output. If the test is still failing after refetch, contact CVP team via Google Spaces [CVP]
 ```
