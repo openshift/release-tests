@@ -403,23 +403,24 @@ oar -r <release-version> [OPTIONS] COMMAND [ARGS]
 **Command:**
 ```bash
 oar -r <release> image-consistency-check
-oar -r <release> image-consistency-check -n <build-number>
+oar -r <release> image-consistency-check -i <job-id>
 ```
 
-**Purpose:** Verifies that images in the release payload are consistent with advisory contents.
+**Purpose:** Verifies that images in the release payload are consistent with images in the shipment.
 
 **Options:**
-- `-n, --build-number` - Jenkins build number to check status (for subsequent runs)
+- `-i, --job-id` - Prow job ID to check status (for subsequent runs)
 
 **What it does:**
-- Triggers a Jenkins job to verify image consistency
-- Compares images in release payload with images in advisories
-- Returns build number on first run
-- Can check job status on subsequent runs with build number
+- Triggers a Prow job via Gangway API to verify image consistency
+- Compares images in release payload with images in shipment MR
+- Returns Prow job ID on first run
+- Can check job status on subsequent runs with job ID
+- Requires `APITOKEN` environment variable for Prow authentication
 
 **Workflow:**
-1. First run: Triggers job, returns build number
-2. Subsequent runs: Check status using `-n <build-number>`
+1. First run: Triggers Prow job, returns job ID
+2. Subsequent runs: Check status using `-i <job-id>`
 
 ---
 
@@ -792,18 +793,17 @@ All core modules follow a consistent pattern:
 
 **Key Functionality:**
 - Trigger stage testing pipeline
-- Trigger image consistency check jobs
 - Monitor job queue and execution
 - Validate job parameters match release version
 - Get build status with detailed error handling
 
 **Supported Jobs:**
 - `stage-pipeline` - Stage environment testing
-- `image-consistency-check` - Verify payload images match advisories
+
+**Note:** Image consistency check has been migrated to Prow (see `prow/job/job.py` `run_image_consistency_check`).
 
 **Key Methods:**
 - `call_stage_job()` - Trigger stage testing
-- `call_image_consistency_job()` - Trigger image consistency validation
 - `get_build_status()` - Check job status by build number
 - `is_job_enqueue()` - Check if job is queued
 
@@ -1124,5 +1124,5 @@ When adding support for new OpenShift versions, update:
 2. Job registry configurations
 3. Test report templates
 4. Add new ci-profile for stage-testing pipeline
-5. Add new release version to parameter `VERSION` of image-consistency-check job
+5. Update Prow job configuration for image-consistency-check
 6. Update configstore config to add new test template doc ID and slack group alias for release leads

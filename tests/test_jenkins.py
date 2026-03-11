@@ -16,8 +16,3 @@ class TestJenkinsHelper(unittest.TestCase):
         result = self.jh.call_stage_job()
         self.assertIsNotNone(result)
         self.assertIn("Stage-Pipeline", result)
-
-    def test_call_image_consistency_job(self):
-        result = self.jh.call_image_consistency_job(self.jh.pull_spec)
-        self.assertIsNotNone(result)
-        self.assertIn("image-consistency-check", result)

@@ -649,11 +649,11 @@ OR
 
 **Purpose:** Verify image consistency across architectures
 
-**MCP Tool:** `oar_image_consistency_check(release, build_number=None)`
+**MCP Tool:** `oar_image_consistency_check(release, job_id=None)`
 
 **Input:**
 - `release`: Z-stream version
-- `build_number`: Optional Jenkins build number (for status check)
+- `job_id`: Optional Prow job ID (for status check)
 
 **Prerequisites:**
 - Build promotion detected (phase == "Accepted")
@@ -667,10 +667,10 @@ Execute: oar_image_consistency_check(release)
 
 # Possible outcomes:
 
-# Success - Jenkins job triggered:
+# Success - Prow job triggered:
 stdout contains: "task [Image consistency check] status is changed to [In Progress]"
 AND
-Capture Jenkins build number from stdout pattern
+Capture Prow job ID from stdout pattern
 
 # OR
 
@@ -696,10 +696,10 @@ IF stage-release pipeline error detected:
     RETURN (do not mark as failed - this is a prerequisite wait state)
 ```
 
-**Phase 2 - Check Status (when build_number available):**
+**Phase 2 - Check Status (when job_id available):**
 ```python
 When user invokes /release:drive:
-    Execute: oar_image_consistency_check(release, build_number={captured_build_number})
+    Execute: oar_image_consistency_check(release, job_id={captured_job_id})
     Check stdout for status update
 ```
 
@@ -1177,13 +1177,13 @@ Report to user: "Build promoted (phase: Accepted)! Triggering async tasks now...
 oar_image_consistency_check(release="4.20.1")
 oar_stage_testing(release="4.20.1")
 
-# Capture Jenkins build numbers
-consistency_build = parse_build_number(stdout)
-stage_build = parse_build_number(stdout)
+# Capture job IDs
+consistency_job_id = parse_job_id(stdout)  # Prow job ID
+stage_build = parse_build_number(stdout)   # Jenkins build number
 
 Report to user: """
 2 async tasks triggered:
-- image-consistency-check (build #{consistency_build})
+- image-consistency-check (Prow job ID: {consistency_job_id})
 - stage-testing (build #{stage_build})
 
 These tasks are now running in parallel with test result analysis.
@@ -1198,7 +1198,7 @@ RETURN
 ```python
 # First check async task status
 oar_push_to_cdn_staging(release="4.20.1")  # Check status
-oar_image_consistency_check(release="4.20.1", build_number=consistency_build)
+oar_image_consistency_check(release="4.20.1", job_id=consistency_job_id)
 oar_stage_testing(release="4.20.1", build_number=stage_build)
 
 async_tasks_status = {

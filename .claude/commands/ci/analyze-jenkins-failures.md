@@ -1,16 +1,19 @@
 ---
-description: Analyze Jenkins job failures (image-consistency-check, stage-testing) using AI
+description: Analyze Jenkins job failures (stage-testing) using AI
 ---
 
-You are helping the user analyze failures from a Jenkins job run (typically image-consistency-check or stage-testing jobs used in z-stream release testing).
+You are helping the user analyze failures from a Jenkins job run (typically stage-testing jobs used in z-stream release testing).
+
+> **Note:** Image-consistency-check has been migrated from Jenkins to Prow. For Prow job failures, use `/ci:analyze-failures` instead.
 
 The user has provided a Jenkins job URL: {{args}}
 
 ## Overview
 
 Jenkins jobs used in OAR z-stream release workflow:
-- **image-consistency-check**: Verifies payload image consistency
 - **stage-testing** (Stage-Pipeline): Runs E2E tests for optional operators shipped with Openshift
+
+> **Note:** image-consistency-check has been migrated to Prow and is no longer a Jenkins job.
 
 Each job has its own custom console log format. This command fetches the raw console log and analyzes it based on the job type.
 
@@ -23,7 +26,7 @@ Expected URL patterns:
 
 Extract:
 - **Base URL**: e.g., `https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com`
-- **Job name**: e.g., `image-consistency-check` or `zstreams/Stage-Pipeline`
+- **Job name**: e.g., `zstreams/Stage-Pipeline`
 - **Build number**: e.g., `3436`
 
 ### 2. Fetch Job Parameters via API
@@ -908,7 +911,7 @@ Present findings in a clear, actionable format:
 # Jenkins Job Failure Analysis Summary
 
 ## Job Details
-- **Type**: {image-consistency-check | stage-testing}
+- **Type**: stage-testing
 - **Build**: #{build_number}
 - **Status**: {status}
 - **URL**: {jenkins_url}
@@ -995,7 +998,6 @@ No critical actions required. Monitor for:
 **Context**:
 - These jobs are part of OAR z-stream release workflow
 - Triggered by commands like:
-  - `oar -r 4.19.1 image-consistency-check`
   - `oar -r 4.19.1 stage-testing`
 - Failures may block release approval
 
@@ -1008,11 +1010,11 @@ No critical actions required. Monitor for:
 ## Example Usage
 
 ```bash
-/ci:analyze-jenkins-failures https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3436/
+/ci:analyze-jenkins-failures https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1413/
 ```
 
 The command will:
 1. Fetch console log from public endpoint
-2. Detect it's an image-consistency-check job
+2. Detect it's a stage-testing job
 3. Parse the structured output sections
 4. Provide analysis and recommendation

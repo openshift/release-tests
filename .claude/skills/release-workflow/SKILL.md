@@ -168,7 +168,7 @@ WHEN trigger phase:
     Report: "Task triggered, check status in X minutes"
 
 WHEN check phase:
-    Execute command with build_number
+    Execute command with job ID (Prow job ID or Jenkins build number)
     IF status == "In Progress":
         Report: "Task still running"
     ELSE IF status == "Pass":
