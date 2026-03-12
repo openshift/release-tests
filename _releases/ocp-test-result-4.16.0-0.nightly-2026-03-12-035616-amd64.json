@@ -129,13 +129,64 @@
           "jobStartTime": "2026-03-12T16:23:04Z",
           "jobID": "bc5b8656-70c5-4559-91bc-29146aaa94ad",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2032130262644559872",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-12T19:37:28Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-cli] Workloads NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Low-51093-oc-mirror init",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-03-12T16:23:09Z",
           "jobID": "098eb753-ec45-498c-ab16-9e26b6cc5727",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2032130297927045120",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-12T19:41:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-scheduling] Workloads The Descheduler Operator automates pod evictions using different profiles Author:knarra-LEVEL0-ROSA-OSD_CCS-ARO-High-21205-Install descheduler operator via a deployment",
+                "[sig-scheduling] Workloads Validate Secondary Scheduler Operator Author:knarra-LEVEL0-NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Critical-48916-Critical-48917-Install seconday scheduler operator via a deployment & verify user is able to schedule pod using secondary-scheduler"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -252,5 +303,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2026-03-12-035616",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2026-03-12-035616"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
