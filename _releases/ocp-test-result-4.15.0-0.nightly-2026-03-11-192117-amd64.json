@@ -37,9 +37,48 @@
         "jobStartTime": "2026-03-12T01:25:00Z",
         "jobID": "bf812ed5-fc93-4ae9-be10-73063e2be36c",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2031904257665404928",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-03-12T05:14:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 27
+          },
+          "cucushift-e2e": {
+            "total": 28,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-19717:UserInterface Check configmap on console",
+              "OCP-26910:UserInterface Check project page",
+              "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-03-12T05:22:37Z",
+          "jobID": "95f038d9-1dac-4e35-8455-ce85a21765cf",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2031964054691516416",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-03-12T05:22:42Z",
+          "jobID": "9fb34104-81f1-4ce0-b886-baecf60fa047",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2031964076296376320",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999",
