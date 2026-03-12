@@ -120,17 +120,17 @@ job run_image_consistency_check --payload-url PAYLOAD_URL --mr-id MERGE_REQUEST_
 
 ## Links
 - Implementation links
-  - [Image Consistency Check source code](https://github.com/openshift/release-tests/tree/master/oar/image_consistency_check)
-  - [Image Consistency Check command source code](https://github.com/openshift/release-tests/blob/master/oar/cli/cmd_controller_group.py)
-  - [Image Consistency Check job run command source code](https://github.com/openshift/release-tests/blob/master/prow/job/job.py)
-  - [Image Consistency Check Step registry](https://github.com/openshift/release/tree/master/ci-operator/step-registry/release-qe-tests/image-consistency-check)
-  - [Image Consistency Check job configuration](https://github.com/openshift/release/blob/master/ci-operator/jobs/openshift/release-tests/openshift-release-tests-master-periodics.yaml)
+  - [Image Consistency Check source code](https://github.com/openshift/release-tests/tree/main/oar/image_consistency_check)
+  - [Image Consistency Check command source code](https://github.com/openshift/release-tests/blob/main/oar/cli/cmd_controller_group.py)
+  - [Image Consistency Check job run command source code](https://github.com/openshift/release-tests/blob/main/prow/job/job.py)
+  - [Image Consistency Check Step registry](https://github.com/openshift/release/tree/main/ci-operator/step-registry/release-qe-tests/image-consistency-check)
+  - [Image Consistency Check job configuration](https://github.com/openshift/release/blob/main/ci-operator/jobs/openshift/release-tests/openshift-release-tests-main-periodics.yaml)
 - Job Links
-  - [Image Consistency Check Prow job](https://prow.ci.openshift.org/?job=periodic-ci-openshift-release-tests-master-image-consistency-check)
+  - [Image Consistency Check Prow job](https://prow.ci.openshift.org/?job=periodic-ci-openshift-release-tests-main-image-consistency-check)
   - [(Deprecated) Image Consistency Check Jenkins job](https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/)
 
 ## Implementation Notes
 
-Environment variables passed to the Prow job must have the `MULTISTAGE_PARAM_OVERRIDE_` prefix to be available in the [step registry script](https://github.com/openshift/release/blob/master/ci-operator/step-registry/release-qe-tests/image-consistency-check/release-qe-tests-image-consistency-check-commands.sh):
+Environment variables passed to the Prow job must have the `MULTISTAGE_PARAM_OVERRIDE_` prefix to be available in the [step registry script](https://github.com/openshift/release/blob/main/ci-operator/step-registry/release-qe-tests/image-consistency-check/release-qe-tests-image-consistency-check-commands.sh):
 - `MULTISTAGE_PARAM_OVERRIDE_PAYLOAD_URL` - The payload URL
 - `MULTISTAGE_PARAM_OVERRIDE_MERGE_REQUEST_ID` - The shipment merge request ID

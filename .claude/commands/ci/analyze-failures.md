@@ -19,7 +19,7 @@ Detect whether this is a Prow job or Jenkins job based on URL patterns, then inv
 **Example Prow URLs**:
 ```
 https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/1979765746749673472
-https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-openshift-release-master-ci-4.17-e2e-gcp/1234567890
+https://prow.ci.openshift.org/view/gs/origin-ci-test/logs/periodic-ci-openshift-release-main-ci-4.17-e2e-gcp/1234567890
 ```
 
 ### Jenkins Job Indicators:

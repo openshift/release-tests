@@ -78,7 +78,7 @@ periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-up
 ### Debug failure job
 - `Error code: 500, reason: Internal Server Error`
 This error indicates the input job name doesn't exist, you need to input an exist one. 
-For example, this `periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14` doesn't exist anymore in fact, you need to find the correct job full name by searching the key words `gcp-ipi-disconnected-private` in the corresponding job file: https://github.com/openshift/release/blob/master/ci-operator/jobs/openshift/openshift-tests-private/openshift-openshift-tests-private-release-4.10-periodics.yaml 
+For example, this `periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14` doesn't exist anymore in fact, you need to find the correct job full name by searching the key words `gcp-ipi-disconnected-private` in the corresponding job file: https://github.com/openshift/release/blob/main/ci-operator/jobs/openshift/openshift-tests-private/openshift-openshift-tests-private-release-4.10-periodics.yaml 
 
 ```console
 $job run periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14 --payload quay.io/openshift-release-dev/ocp-release:4.11.0-assembly.art6883.2
