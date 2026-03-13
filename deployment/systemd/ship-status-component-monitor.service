@@ -8,8 +8,10 @@ Type=simple
 
 ExecStartPre=-/usr/bin/podman pull quay.io/openshiftci/component-monitor:latest
 ExecStart=/usr/bin/podman run --rm --name ship-status-component-monitor \
-    -v /home/cloud-user/release-tests/deployment/component-monitor/config.yaml:/config.yaml:ro,Z \
-    -v /etc/component-monitor/token.txt:/token.txt:ro,Z \
+    --security-opt label=disable \
+    -v /home/cloud-user/release-tests/deployment/component-monitor/config.yaml:/config.yaml:ro \
+    -v /etc/component-monitor/token.txt:/token.txt:ro \
+    -v /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro \
     quay.io/openshiftci/component-monitor:latest \
     ./component-monitor \
     --config-path=/config.yaml \
