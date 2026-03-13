@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.62
 created_at: '2026-03-12T13:01:34Z'
-updated_at: '2026-03-13T15:11:16Z'
+updated_at: '2026-03-13T15:27:50Z'
 metadata:
   jira_ticket: ART-14726
   advisory_ids:
@@ -65,4 +65,13 @@ tasks:
     2026-03-13T11:11:15Z: INFO: check stage job status according to job id: 1549
     2026-03-13T11:11:15Z: INFO: build status of zstreams/Stage-Pipeline/1549 is In Progress
     2026-03-13T11:11:15Z: INFO: task [Stage Testing] status is changed to [In Progress]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-03-13T15:27:50Z'
+  completed_at: '2026-03-13T15:27:50Z'
+  result: 'Waivable failures - All 3 UI test failures on Azure FIPS are Selenium WebDriver
+    infrastructure issues (DevToolsActivePort error). Same tests passed on AWS/GCP.
+    No product bugs detected. Detailed analysis: Selenium/Chrome initialization failure
+    in containerized environment, likely due to Azure resource constraints or FIPS
+    mode conflicts.'
 issues: []
