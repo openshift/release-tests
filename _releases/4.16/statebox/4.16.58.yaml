@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.58
 created_at: '2026-03-12T19:02:30Z'
-updated_at: '2026-03-12T19:02:30Z'
+updated_at: '2026-03-13T04:54:00Z'
 metadata:
   jira_ticket: ART-14728
   advisory_ids:
@@ -11,5 +11,19 @@ metadata:
   candidate_builds:
     x86_64: 4.16.0-0.nightly-2026-03-12-035616
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/407
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-03-13T00:52:34Z'
+  completed_at: '2026-03-13T00:54:00Z'
+  result: |-
+    2026-03-13T00:52:34Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-03-13T00:52:46Z: INFO: QA Owner of advisory 163534 is updated to [EMAIL_REDACTED]
+    2026-03-13T00:52:48Z: INFO: QA Owner of advisory 163535 is updated to [EMAIL_REDACTED]
+    2026-03-13T00:52:48Z: INFO: Added QE release lead comment to MR 407
+    2026-03-13T00:53:57Z: ERROR: Failed to send a request to Slack API server: <urlopen error _ssl.c:983: The handshake operation timed out>
+    2026-03-13T00:53:57Z: INFO: A retry handler found: ConnectionErrorRetryHandler for POST https://slack.com/api/usergroups.list - <urlopen error _ssl.c:983: The handshake operation timed out>
+    2026-03-13T00:53:58Z: INFO: Going to retry the same request: POST https://slack.com/api/usergroups.list
+    2026-03-13T00:54:00Z: INFO: sent slack message to <#team-qe-release>
+    2026-03-13T00:54:00Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues: []
