@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.51
 created_at: '2026-03-12T21:02:41Z'
-updated_at: '2026-03-13T12:17:15Z'
+updated_at: '2026-03-13T12:18:31Z'
 metadata:
   jira_ticket: ART-14729
   advisory_ids:
@@ -83,6 +83,17 @@ tasks:
   completed_at: '2026-03-13T08:08:54Z'
   result: 'Promoted build 4.17.51 tests passed - all tests successful (aggregated:
     true, accepted: true). Gate check PASSED.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-03-13T08:17:33Z'
+  completed_at: '2026-03-13T08:18:30Z'
+  result: |-
+    2026-03-13T08:17:33Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-03-13T08:17:33Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.17.51
+    2026-03-13T08:17:34Z: INFO: Image Digest: sha256:75dc5b2eeb18f5e46a7546e7206a6cb485971d77ca66cd34390f55c0d147ea89
+    2026-03-13T08:17:34Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=75dc5b2eeb18f5e46a7546e7206a6cb485971d77ca66cd34390f55c0d147ea89/signature-1
+    2026-03-13T08:18:30Z: INFO: Signature check PASSED
+    2026-03-13T08:18:30Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'image-consistency-check job #3521 failed due to Jenkins environment issue:
     ModuleNotFoundError: No module named ''gitlab''. This is an infrastructure problem
