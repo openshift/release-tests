@@ -221,7 +221,7 @@ class JobController:
             self._release, self._nightly, self._arch)
         self.release_test_record = GithubUtil(
             REPO_RELEASE_TESTS, BRANCH_RECORD)
-        self.release_test_master = GithubUtil(REPO_RELEASE_TESTS)
+        self.release_test_main = GithubUtil(REPO_RELEASE_TESTS)
         self._session = create_session()
 
     def get_latest_build(self):
@@ -378,7 +378,7 @@ class JobController:
 
 class GithubUtil:
 
-    def __init__(self, repo, branch="master"):
+    def __init__(self, repo, branch="main"):
         token = os.environ.get("GITHUB_TOKEN")
         auth = Auth.Token(token)
         self._client = Github(auth=auth)
@@ -442,7 +442,7 @@ class GithubUtil:
 class TestJobRegistry():
 
     def __init__(self, arch=Architectures.AMD64):
-        self.release_tests_master = GithubUtil(REPO_RELEASE_TESTS)
+        self.release_tests_main = GithubUtil(REPO_RELEASE_TESTS)
         self._registry = {}
         self._arch = Architectures.fromString(arch)
         self.init()
@@ -450,13 +450,13 @@ class TestJobRegistry():
     def init(self):
         logger.info("Initializing test job registry ...")
 
-        contents = self.release_tests_master.get_files(DIR_RELEASE)
+        contents = self.release_tests_main.get_files(DIR_RELEASE)
         for content in contents:
             matched_path = re.search(
                 r'ocp-\d\.\d+-test-jobs-{}.json'.format(self._arch), content.path)
             if matched_path:
                 release = re.search(r'\d\.\d+', matched_path.group()).group()
-                file_content = self.release_tests_master.get_file_content(
+                file_content = self.release_tests_main.get_file_content(
                     content.path)
                 self._registry[release] = json.loads(
                     file_content)

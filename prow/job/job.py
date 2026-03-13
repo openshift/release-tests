@@ -25,13 +25,13 @@ class Jobs:
     POLL_MAX_ATTEMPTS = 5
     POLL_INTERVAL_SECONDS = 5
 
-    IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-master-image-consistency-check"
+    IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-main-image-consistency-check"
 
     def __init__(self):
         self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
         # config the based URL here
-        self.job_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=master"
+        self.job_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=main"
         self.gangway_url = "https://gangway-ci.apps.ci.l2s4.p1.openshiftapps.com/v1/executions/"
         self.prow_job_url = "https://prow.ci.openshift.org/prowjob?prowjob={}"
         self.base_image = "quay.io/openshift-release-dev/ocp-release:4.13.4-x86_64"
@@ -84,7 +84,7 @@ class Jobs:
             print("Error! You cannot run e2e and upgrade test at the same time!")
             sys.exit(1)
         # amd_latest env is must no mater what platforms you run
-        # support platforms: https://github.com/openshift/release-controller/blob/master/cmd/release-controller/sync_verify_prow.go#L203
+        # support platforms: https://github.com/openshift/release-controller/blob/main/cmd/release-controller/sync_verify_prow.go#L203
         amd_latest = "RELEASE_IMAGE_LATEST"
         amd_target = "RELEASE_IMAGE_TARGET"
         arm_latest = "RELEASE_IMAGE_ARM64_LATEST"
@@ -244,7 +244,7 @@ class Jobs:
 
     def get_recored_version(self, url):
         """Function get the stored OCP payload info"""
-        # it will use the default master branch
+        # it will use the default main branch
         res = requests.get(url=url, headers=self.get_github_headers())
         if res.status_code != 200:
             print(
@@ -438,9 +438,9 @@ class Jobs:
         return job_id
 
     def search_job(self, job_name, ocp_version):
-        """Function search the prow job from https://github.com/openshift/release/tree/master/ci-operator/jobs/openshift/openshift-tests-private"""
+        """Function search the prow job from https://github.com/openshift/release/tree/main/ci-operator/jobs/openshift/openshift-tests-private"""
         print("Searching job...")
-        jobs_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/?ref=master"
+        jobs_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/?ref=main"
         req = requests.get(url=jobs_url, timeout=3)
         if req.status_code != 200:
             print(f"Error code: {req.status_code}, reason: {req.reason}")
@@ -453,7 +453,7 @@ class Jobs:
             if not file_name.endswith(".yaml") or "periodics" not in file_name:
                 continue
             print(">>>> " + file_name)
-            url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=master"
+            url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=main"
             res = requests.get(
                 url=url, headers=self.get_github_headers(), timeout=3)
             if res.status_code != 200:
@@ -568,7 +568,7 @@ class Jobs:
         if component is None:
             component = "openshift/openshift-tests-private"
         if branch is None:
-            branch = "master"
+            branch = "main"
         base_url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/config/{component}/?ref={branch}"
         req = requests.get(url=base_url, timeout=3)
         if req.status_code == 200:
@@ -706,9 +706,9 @@ def run_cmd(job_name, payload, upgrade_from, upgrade_to):
 @cli.command("list")
 @click.option(
     "--component",
-    help="The detault is 'openshift/openshift-tests-private': https://github.com/openshift/release/tree/master/ci-operator/config/openshift/openshift-tests-private ",
+    help="The detault is 'openshift/openshift-tests-private': https://github.com/openshift/release/tree/main/ci-operator/config/openshift/openshift-tests-private ",
 )
-@click.option("--branch", help="the master branch is as default.")
+@click.option("--branch", help="the main branch is as default.")
 def run_list_job(component, branch):
     """List the jobs which support the API call."""
     JOB.list_jobs(component, branch)
@@ -750,7 +750,7 @@ def run_payloads(versions, push, run):
 @cli.command("run_z_stream_test")
 def run_z_stream():
     """Run jobs list in the _releases/required-jobs.json file.
-     It only used for periodic-ci-openshift-release-tests-master-stable-build-test prow job.
+     It only used for periodic-ci-openshift-release-tests-main-stable-build-test prow job.
     """
     JOB.run_z_stream_test()
 

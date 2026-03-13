@@ -313,7 +313,7 @@ External Services (Google Sheets, Jira, etc.)
 ### Update Code
 ```bash
 cd ~/release-tests
-git pull origin master
+git pull origin main
 
 # If dependencies changed
 pip3 install -r tools/release_progress_dashboard/requirements.txt

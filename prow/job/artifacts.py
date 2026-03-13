@@ -186,7 +186,7 @@ class JunitTestReport():
             for e in elements:
                 tc = JunitTestCase(e)
                 if tc.is_failure():
-                    # https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-openshift-release-master-nightly-4.15-e2e-aws-ovn-upi/1776477546024538112/artifacts/e2e-aws-ovn-upi/openshift-e2e-test/artifacts/junit/test-failures-summary_20240406-055752.json
+                    # https://gcsweb-ci.apps.ci.l2s4.p1.openshiftapps.com/gcs/test-platform-results/logs/periodic-ci-openshift-release-main-nightly-4.15-e2e-aws-ovn-upi/1776477546024538112/artifacts/e2e-aws-ovn-upi/openshift-e2e-test/artifacts/junit/test-failures-summary_20240406-055752.json
                     test_cases.append({
                         "Test": {"Name": tc.name},
                         "Suite": {"Name": self.get_test_summary().name},

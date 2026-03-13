@@ -204,7 +204,7 @@ class ParamBuilder():
 
 
 class FilterBuilder():
-    # https://github.com/openshift/sippy/blob/master/pkg/api/README.md#filtering-and-sorting
+    # https://github.com/openshift/sippy/blob/main/pkg/api/README.md#filtering-and-sorting
 
     def __init__(self):
         self._params = {}

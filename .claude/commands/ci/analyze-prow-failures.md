@@ -46,7 +46,7 @@ Follow these steps:
      - Extract release version from job name
      - Job name pattern: `periodic-ci-openshift-openshift-tests-private-release-{X.Y}-...`
      - Example: `periodic-ci-openshift-openshift-tests-private-release-4.17-...` → use branch `release-4.17`
-     - If no release version found, use `master` branch
+     - If no release version found, use `main` branch
 
 4. **AI Analysis**: Analyze the test failures and provide:
    - **Data Handling Note**: The fetcher automatically groups failures by pattern and may truncate data if there are many failures (>50 by default). Check the `truncation_info` and `failure_patterns` fields in the JSON output.

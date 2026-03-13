@@ -36,7 +36,7 @@ class TestSippy(unittest.TestCase):
         self.assertIsNotNone(tests.get("previous_pass_percentage"))
 
     def test_query_jobs_by_name(self):
-        job_name = "periodic-ci-openshift-release-master-ci-4.16-e2e-gcp-sdn-upgrade-out-of-change"
+        job_name = "periodic-ci-openshift-release-main-ci-4.16-e2e-gcp-sdn-upgrade-out-of-change"
         filters = FilterBuilder().filter("name", "equals", job_name).done()
         params = ParamBuilder().release("4.16").filter(filters).done()
         resp = self.sippy.query_jobs(params)
@@ -179,7 +179,7 @@ class TestSippy(unittest.TestCase):
         job_data_a = {
             "ID": 1767798075599884288,
             "ProwJob": {
-                "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
+                "Name": "periodic-ci-openshift-release-main-nightly-4.16-e2e-aws-ovn-serial"
             },
             "TestCount": 100
         }
@@ -187,7 +187,7 @@ class TestSippy(unittest.TestCase):
         job_data_b = {
             "ID": 1767798075599884288,
             "ProwJob": {
-                "Name": "periodic-ci-openshift-release-master-nightly-4.16-e2e-aws-ovn-serial"
+                "Name": "periodic-ci-openshift-release-main-nightly-4.16-e2e-aws-ovn-serial"
             },
             "ClusterData": {
                 "Release": "4.16",

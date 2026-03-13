@@ -26,7 +26,7 @@ class AutoReleaseJobs():
         if not release:
             raise ValueError("param <release> is mandatory")
         self._release = release
-        self.release_master = GithubUtil("openshift/release")
+        self.release_main = GithubUtil("openshift/release")
 
     def get_jobs(self) -> list[str]:
         # get automated release jobs from github repo openshift/release by different releases
@@ -34,14 +34,14 @@ class AutoReleaseJobs():
         auto_release_jobs = []
         # check whether config file exists for the requested release
         config_file_path = f"{self.CONFIG_FILE_DIR}/openshift-openshift-tests-private-release-{self._release}__automated-release.yaml"
-        if not self.release_master.file_exists(config_file_path):
+        if not self.release_main.file_exists(config_file_path):
             raise FileNotFoundError(
                 f"automate release job file cannot be found for release {self._release}")
 
         # because the file size is big, the raw content won't be sent back via api call
         # we need to download the raw file content separately
         job_file_path = f"{self.JOB_FILE_DIR}/openshift-openshift-tests-private-release-{self._release}-periodics.yaml"
-        raw_data_url = self.release_master.get_files(
+        raw_data_url = self.release_main.get_files(
             job_file_path).download_url
         resp = requests.get(raw_data_url)
         resp.raise_for_status()
@@ -94,7 +94,7 @@ class GithubApp():
 class LocalGitRepo():
 
     def __init__(self, repo_url):
-        self._default_branch = "master"
+        self._default_branch = "main"
         self._repo_name = repo_url.split()[-1].replace(".git", "")
         self._repo_local_dir = tempfile.NamedTemporaryFile(
             dir="/tmp", prefix="release-tests-").name
@@ -169,4 +169,4 @@ class TestJobRegistryUpdater():
 
         self._app_of_upstream_repo.create_pull_request_and_approve(
             f"Update test job registry for {self._release}-{self._arch} - {datetime.now().strftime('%y%m%d%H%M')}",
-            "Update job registry with rotated job list", "master", f"{self._app_of_forked_repo.app_owner}:{self._local_git_repo.branch_name}")
+            "Update job registry with rotated job list", "main", f"{self._app_of_forked_repo.app_owner}:{self._local_git_repo.branch_name}")
