@@ -7,3 +7,13 @@ components:
       code: 200
       retry_after: 5s
       severity: "Down"
+  - component_slug: "errata-reliability"
+    sub_component_slug: "slack-bot"
+    systemd_monitor:
+      unit: "oar-bot.service"
+      severity: "Down"
+  - component_slug: "errata-reliability"
+    sub_component_slug: "release-progress-dashboard"
+    systemd_monitor:
+      unit: "release-progress-dashboard.service"
+      severity: "Down"
