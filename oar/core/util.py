@@ -105,7 +105,7 @@ def init_logging(log_level=logging.INFO):
             logger.setLevel(logging.CRITICAL)
 
 def get_jira_link(key):
-    return "%s/browse/%s" % ("https://issues.redhat.com", key)
+    return "%s/browse/%s" % ("https://redhat.atlassian.net/jira", key)
 
 
 def get_advisory_link(advisory):

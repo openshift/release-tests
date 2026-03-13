@@ -147,7 +147,7 @@ class GitLabMergeRequest:
             
             # Add valid issues to our set
             for issue in fixed_issues:
-                if isinstance(issue, dict) and issue.get('source') == 'issues.redhat.com':
+                if isinstance(issue, dict) and issue.get('source') == 'redhat.atlassian.net/jira':
                     issues.add(issue['id'])
                     
         except (yaml.YAMLError, KeyError, glom.PathAccessError) as e:
@@ -923,7 +923,7 @@ class ShipmentData:
         return self._mr
 
     def get_jira_issues(self) -> List[str]:
-        """Get Jira issue IDs from shipment YAML files where source is issues.redhat.com
+        """Get Jira issue IDs from shipment YAML files where source is redhat.atlassian.net/jira
         
         Returns:
             List[str]: Sorted list of unique Jira issue IDs (e.g. ["OCPBUGS-123", "OCPBUGS-456"])
@@ -1155,7 +1155,7 @@ class ShipmentData:
                 if f'id: {bug_id}' in line and line.strip().startswith('-'):
                     # Mark this line and the next line (which should contain source) for removal
                     lines_to_remove.add(i)
-                    if i + 1 < len(lines) and 'source: issues.redhat.com' in lines[i + 1]:
+                    if i + 1 < len(lines) and 'source: redhat.atlassian.net/jira' in lines[i + 1]:
                         lines_to_remove.add(i + 1)
         
         # Build new content without the removed lines

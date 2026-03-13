@@ -159,7 +159,7 @@ class TestNotificationManager(unittest.TestCase):
             unverified_cve_msg,
         )
         self.assertIn(
-            "<https://issues.redhat.com/browse/OCPBUGS-57123|OCPBUGS-57123> <@",
+            "<https://redhat.atlassian.net/browse/OCPBUGS-57123|OCPBUGS-57123> <@",
             unverified_cve_msg,
         )
 

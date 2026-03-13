@@ -13,7 +13,7 @@ class TestJiraNotificator(unittest.TestCase):
 
     def setUp(self):
         jira_token = os.environ.get("JIRA_TOKEN")
-        self.jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
+        self.jira = JIRA(server="https://redhat.atlassian.net/jira", token_auth=jira_token)
         self.ns = NotificationService(self.jira, True)
 
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")

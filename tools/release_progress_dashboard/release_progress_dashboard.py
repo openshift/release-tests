@@ -518,7 +518,7 @@ def render_metadata_tabs(release: str, metadata: Dict[str, Any], shipped_data: D
     with tab3:
         jira_ticket = metadata.get('jira_ticket', '')
         if jira_ticket and jira_ticket != 'N/A':
-            jira_url = f"https://issues.redhat.com/browse/{jira_ticket}"
+            jira_url = f"https://redhat.atlassian.net/browse/{jira_ticket}"
             jira_df = pd.DataFrame([
                 {"Field": "Jira Ticket", "Value": f"[{jira_ticket}]({jira_url})"}
             ])
