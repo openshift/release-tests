@@ -301,6 +301,12 @@ class ConfigStore:
         """
         return self._get_env_var(ENV_VAR_JIRA_TOKEN)
 
+    def get_jira_username(self):
+        """
+        Get jira username from env var JIRA_USERNAME
+        """
+        return self._get_env_var(ENV_VAR_JIRA_USERNAME)
+
     def get_jenkins_server(self):
         """
         Get jenkins server url

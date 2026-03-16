@@ -28,7 +28,12 @@ class JiraManager:
             raise JiraException(
                 "cannot find auth token from env var JIRA_TOKEN")
 
-        self._svc = JIRA(server=self._cs.get_jira_server(), token_auth=token)
+        username = self._cs.get_jira_username()
+        if not username:
+            raise JiraException(
+                "cannot find username from env var JIRA_USERNAME")
+
+        self._svc = JIRA(server=self._cs.get_jira_server(), basic_auth=(username, token))
         try:
             self._svc.issue(self._cs.get_jira_ticket())
         except JIRAError as je:
@@ -390,7 +395,7 @@ class JiraIssue:
         """
         Get issue field `QA Contact`
         """
-        field = self._issue.fields.customfield_12315948
+        field = self._issue.fields.customfield_10470
         if field:
             if not field.active:
                 logger.warning(
@@ -432,8 +437,8 @@ class JiraIssue:
         Get issue field `Release Blocker`, e.g. None, Rejected, Approved, Proposed
         """
         release_blocker = "None"
-        if self._issue.fields.customfield_12319743:
-            release_blocker = self._issue.fields.customfield_12319743.value
+        if self._issue.fields.customfield_10847:
+            release_blocker = self._issue.fields.customfield_10847.value
         return release_blocker
 
     def get_summary(self):
@@ -446,25 +451,25 @@ class JiraIssue:
         """
         Get issue field `SFDC Cases Counter`
         """
-        return self._issue.fields.customfield_12313440
+        return self._issue.fields.customfield_10978
 
     def get_sfdc_case_links(self):
         """
         Get issue field `SFDC Cases Links`
         """
-        return self._issue.fields.customfield_12313441
+        return self._issue.fields.customfield_10979
 
     def get_need_info_from(self):
         """
         Get issue field `Need Info From`
         """
-        return self._issue.fields.customfield_12311840
+        return self._issue.fields.customfield_10482
 
     def set_need_info_from(self, users: list[dict]):
         """
         Set issue field `Need Info From`
         """
-        self._issue.update({"customfield_12311840": users})
+        self._issue.update({"customfield_10482": users})
 
     def is_critical_issue(self):
         """
@@ -490,11 +495,16 @@ class JiraIssue:
 
         - Check issue field [SFDC Cases Counter] > 0
         - Check issue field [SFDC Cases Links] is not empty
+
+        Note: After migration to Jira Cloud, the SFDC Cases Counter and SFDC Cases Links fields
+        return encrypted opaque strings instead of plain numeric/text values. The actual numeric
+        value is decrypted only by the Salesforce browser plugin and is never exposed via the
+        REST API. The reliable check is: None means 0 cases, non-None means counter > 0.
         """
         sfdc_case_counter = self.get_sfdc_case_counter()
         sfdc_case_links = self.get_sfdc_case_links()
 
-        return float(sfdc_case_counter) > 0 or bool(sfdc_case_links)
+        return sfdc_case_counter is not None or bool(sfdc_case_links)
 
     def is_cve_tracker(self):
         """

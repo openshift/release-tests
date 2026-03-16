@@ -53,7 +53,7 @@ class TestJiraManager(unittest.TestCase):
     )
     def test_set_issue_fields(self):
         issue = self.jm.get_issue("OCPBUGS-59288")
-        qa_contact = issue._issue.fields.customfield_12315948
+        qa_contact = issue._issue.fields.customfield_10470
         self.assertEqual(issue.get_need_info_from(), None)
         issue.set_need_info_from([qa_contact.raw])
         self.assertEqual(issue.get_need_info_from(), [qa_contact])
@@ -126,9 +126,9 @@ class TestJiraManager(unittest.TestCase):
         fields_full = {
             "summary": "CVE - Full: CVE, release blocker and customer case issue",  # Is CVE issue
             "labels": ["CVE_TestLabel", "TestBlocker"],  # Is CVE issue, is Blocker issue
-            "customfield_12319743": "Approved",  # Is Release Blocker
-            "customfield_12313440": 2,  # Is Customer Case
-            "customfield_12313441": "03955817 03955962"  # Is Customer Case
+            "customfield_10847": "Approved",  # Is Release Blocker
+            "customfield_10978": "encrypted-counter",  # Is Customer Case: non-None means counter > 0 on Jira Cloud
+            "customfield_10979": "encrypted-links"  # Is Customer Case: non-None means links present on Jira Cloud
         }
 
         fields_CVE_1 = {
@@ -148,26 +148,26 @@ class TestJiraManager(unittest.TestCase):
 
         fields_blocker_2 = {
             "summary": "Blocker Issue 2",
-            "customfield_12319743": "Approved",  # Is Release Blocker
+            "customfield_10847": "Approved",  # Is Release Blocker
         }
 
         fields_blocker_3 = {
             "summary": "Blocker Issue 3",
-            "customfield_12319743": "Proposed",  # May be Release Blocker
+            "customfield_10847": "Proposed",  # May be Release Blocker
         }
 
         fields_customer_case = {
             "summary": "Customer Case Issue 1",
-            "customfield_12313440": 1,  # Is Customer Case
-            "customfield_12313441": "03955817"  # Is Customer Case
+            "customfield_10978": "encrypted-counter",  # Is Customer Case: non-None means counter > 0 on Jira Cloud
+            "customfield_10979": "encrypted-links"  # Is Customer Case: non-None means links present on Jira Cloud
         }
 
         fields_low_severity = {
             "summary": "Low severity fields Issue",
             "labels": ["TestLabel1", "TestLabel2"],
-            "customfield_12319743": "Rejected",
-            "customfield_12313440": 0,
-            "customfield_12313441": ""
+            "customfield_10847": "Rejected",
+            "customfield_10978": None,  # None means 0 cases on Jira Cloud
+            "customfield_10979": None
         }
 
         high_severity_issues_data = {
@@ -238,15 +238,15 @@ class TestJiraManager(unittest.TestCase):
         mock_field.priority.name = priority_name
         mock_field.labels = []
         mock_field.summary = "Default issue summary"
-        mock_field.customfield_12313440 = 0  # SFDC Cases Counter
-        mock_field.customfield_12313441 = None  # SFDC Cases Links
-        mock_field.customfield_12319743 = None  # Release Blocker: None, Rejected, Approved, Proposed
+        mock_field.customfield_10978 = None  # SFDC Cases Counter: None means 0 cases on Jira Cloud
+        mock_field.customfield_10979 = None  # SFDC Cases Links
+        mock_field.customfield_10847 = None  # Release Blocker: None, Rejected, Approved, Proposed
 
         for field_name, field_value in fields.items():
-            if field_name == "customfield_12319743":
-                mock_customfield_12319743 = Mock()
-                mock_field.customfield_12319743 = mock_customfield_12319743
-                mock_field.customfield_12319743.value = field_value
+            if field_name == "customfield_10847":
+                mock_customfield_10847 = Mock()
+                mock_field.customfield_10847 = mock_customfield_10847
+                mock_field.customfield_10847.value = field_value
             else:
                 setattr(mock_field, field_name, field_value)
 
