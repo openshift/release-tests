@@ -69,6 +69,7 @@ class ConfigStore:
         required_vars = {
             ENV_VAR_OAR_JWK: "Required for decrypting config_store.json (ConfigStore)",
             ENV_VAR_JIRA_TOKEN: "Required for Jira operations (JiraManager)",
+            ENV_VAR_JIRA_USERNAME: "Required for Jira Cloud authentication (JiraManager)",
             ENV_VAR_GCP_SA_FILE: "Required for Google Sheets operations (WorksheetManager)",
             ENV_VAR_SLACK_BOT_TOKEN: "Required for Slack notifications (NotificationManager)",
             ENV_JENKINS_USER: "Required for Jenkins job operations (JenkinsHelper)",
