@@ -147,6 +147,7 @@ class GitLabMergeRequest:
             
             # Add valid issues to our set
             for issue in fixed_issues:
+                # TODO: Update source value to 'redhat.atlassian.net' once Konflux shipment YAML is updated
                 if isinstance(issue, dict) and issue.get('source') == 'issues.redhat.com':
                     issues.add(issue['id'])
                     
@@ -924,6 +925,8 @@ class ShipmentData:
 
     def get_jira_issues(self) -> List[str]:
         """Get Jira issue IDs from shipment YAML files where source is issues.redhat.com
+
+        TODO: Update source reference to 'redhat.atlassian.net' once Konflux shipment YAML is updated
         
         Returns:
             List[str]: Sorted list of unique Jira issue IDs (e.g. ["OCPBUGS-123", "OCPBUGS-456"])
@@ -1155,6 +1158,7 @@ class ShipmentData:
                 if f'id: {bug_id}' in line and line.strip().startswith('-'):
                     # Mark this line and the next line (which should contain source) for removal
                     lines_to_remove.add(i)
+                    # TODO: Update source value to 'redhat.atlassian.net' once Konflux shipment YAML is updated
                     if i + 1 < len(lines) and 'source: issues.redhat.com' in lines[i + 1]:
                         lines_to_remove.add(i + 1)
         
