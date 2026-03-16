@@ -29,10 +29,9 @@ if not release_version:
 
 ## Complete Workflow Specification
 
-**IMPORTANT**: The complete, authoritative workflow specification is defined in:
-**`docs/KONFLUX_RELEASE_FLOW.md`**
+**IMPORTANT**: The complete, authoritative workflow specification is embedded in the **`release-workflow` skill** (`.claude/skills/release-workflow/SKILL.md`).
 
-You MUST read and follow that document for:
+You MUST follow that skill for:
 - Task execution order and dependencies
 - Build promotion checkpoint logic
 - Test result evaluation (candidate vs promoted builds)
@@ -171,9 +170,9 @@ Tasks `analyze-candidate-build` and `analyze-promoted-build` have **NO dedicated
 
 **CRITICAL: Read Full Execution Steps**
 
-For complete step-by-step logic, read **`docs/KONFLUX_RELEASE_FLOW.md`**:
-- **Section 6: analyze-candidate-build** (lines 471-548)
-- **Section 7: analyze-promoted-build** (lines 550-643)
+For complete step-by-step logic, refer to the **`release-workflow` skill** (`.claude/skills/release-workflow/SKILL.md`):
+- **Section: analyze-candidate-build**
+- **Section: analyze-promoted-build**
 
 **Decision Flow:**
 
@@ -329,7 +328,7 @@ AI will:
 
 ## Important Notes
 
-- **Read the full spec**: All detailed logic is in `docs/KONFLUX_RELEASE_FLOW.md`
+- **Read the full spec**: All detailed logic is in the `release-workflow` skill (`.claude/skills/release-workflow/SKILL.md`)
 - **Don't assume**: Always check actual task status before executing
 - **Be transparent**: Tell user exactly what you're doing and why
 - **Handle failures gracefully**: Provide clear error messages and recovery steps
@@ -338,7 +337,7 @@ AI will:
 ## Error Recovery
 
 If you encounter errors:
-1. Check `docs/KONFLUX_RELEASE_FLOW.md` Troubleshooting Guide
+1. Check the Troubleshooting Guide in the `release-workflow` skill (`.claude/skills/release-workflow/SKILL.md`)
 2. Report error details to user
 3. Suggest manual intervention steps if needed
 4. Don't retry destructive operations without user confirmation
