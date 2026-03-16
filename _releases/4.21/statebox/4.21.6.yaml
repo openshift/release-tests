@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.6
 created_at: '2026-03-13T11:02:16Z'
-updated_at: '2026-03-16T08:46:38Z'
+updated_at: '2026-03-16T08:47:32Z'
 metadata:
   jira_ticket: ART-14724
   advisory_ids:
@@ -39,6 +39,14 @@ tasks:
     2026-03-16T04:45:43Z: INFO: no push job found for advisory 162727
     2026-03-16T04:45:43Z: INFO: advisory 162727 has blocking advisory []
     2026-03-16T04:45:44Z: INFO: push job for advisory 162727 is triggered
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-03-16T08:47:32Z'
+  completed_at: '2026-03-16T08:47:32Z'
+  result: 'All blocking tests passed BO3 verification (accepted: true). Test summary:
+    1) upgrade-from-stable-4.20-aws-ipi: success (no retries), 2) upgrade-from-stable-4.21-azure-ipi-fips:
+    success (no retries), 3) upgrade-from-stable-4.21-gcp-ipi: success after retries
+    (BO3 passed). Gate check: PASSED.'
 issues:
 - issue: Jira ticket ART-14724 not accessible (HTTP 404) - blocks image-consistency-check
     and stage-testing automation. NotificationManager initialization fails.
