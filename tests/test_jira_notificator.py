@@ -13,7 +13,8 @@ class TestJiraNotificator(unittest.TestCase):
 
     def setUp(self):
         jira_token = os.environ.get("JIRA_TOKEN")
-        self.jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
+        jira_username = os.environ.get("JIRA_USERNAME")
+        self.jira = JIRA(server="https://redhat.atlassian.net", basic_auth=(jira_username, jira_token))
         self.ns = NotificationService(self.jira, True)
 
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
@@ -343,14 +344,14 @@ class TestJiraNotificator(unittest.TestCase):
             self.ns.get_on_qa_filter(None),
             (
                 "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
-                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z, 4.20.z, 4.21.z)"
             )
         )
         self.assertEqual(
             self.ns.get_on_qa_filter(datetime(2025, 7, 17, tzinfo=timezone.utc)),
             (
                 "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
-                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z, 4.20.z, 4.21.z)"
                 " AND status changed to ON_QA after 2025-07-17"
             )
         )

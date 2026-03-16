@@ -195,7 +195,7 @@ class NotificationService:
             Optional[User]: The QA contact user if set, otherwise None.
         """
 
-        qa_contact = issue.fields.customfield_12315948
+        qa_contact = issue.fields.customfield_10470
         if qa_contact:
             return qa_contact
         else:
@@ -702,11 +702,15 @@ def jira_notificator(search_batch_size: int, dry_run: bool, from_date: Optional[
     """
 
     jira_token = os.environ.get("JIRA_TOKEN")
+    jira_username = os.environ.get("JIRA_USERNAME")
 
     if not jira_token:
         raise RuntimeError("JIRA token is missing or empty. Please set the JIRA_TOKEN environment variable.")
 
-    jira = JIRA(server="https://issues.redhat.com", token_auth=jira_token)
+    if not jira_username:
+        raise RuntimeError("JIRA username is missing or empty. Please set the JIRA_USERNAME environment variable.")
+
+    jira = JIRA(server="https://redhat.atlassian.net", basic_auth=(jira_username, jira_token))
 
     ns = NotificationService(jira, dry_run)
     ns.process_on_qa_issues(search_batch_size, from_date)
