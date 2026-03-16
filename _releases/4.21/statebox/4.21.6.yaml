@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.6
 created_at: '2026-03-13T11:02:16Z'
-updated_at: '2026-03-16T11:10:33Z'
+updated_at: '2026-03-16T11:10:47Z'
 metadata:
   jira_ticket: ART-14724
   advisory_ids:
@@ -27,20 +27,17 @@ tasks:
     tracker bug check required. This is a non-blocking task per workflow spec.
 - name: push-to-cdn-staging
   status: In Progress
-  started_at: '2026-03-16T06:25:29Z'
+  started_at: '2026-03-16T07:10:41Z'
   completed_at: null
   result: |-
-    2026-03-16T06:25:29Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-03-16T06:25:35Z: INFO: checking push job status for advisory 162725 ...
-    2026-03-16T06:25:35Z: INFO: push job for target <cdn_stage> is FAILED
-    2026-03-16T06:25:35Z: WARNING: found failed push job, will trigger again
-    2026-03-16T06:25:35Z: INFO: advisory 162725 has blocking advisory []
-    2026-03-16T06:25:36Z: INFO: push job for advisory 162725 is triggered
-    2026-03-16T06:25:36Z: INFO: checking push job status for advisory 162727 ...
-    2026-03-16T06:25:36Z: INFO: push job for target <cdn_stage> is FAILED
-    2026-03-16T06:25:36Z: WARNING: found failed push job, will trigger again
-    2026-03-16T06:25:36Z: INFO: advisory 162727 has blocking advisory []
-    2026-03-16T06:25:37Z: INFO: push job for advisory 162727 is triggered
+    2026-03-16T07:10:41Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-03-16T07:10:44Z: INFO: checking push job status for advisory 162725 ...
+    2026-03-16T07:10:44Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-03-16T07:10:45Z: INFO: checking push job status for advisory 162727 ...
+    2026-03-16T07:10:45Z: INFO: push job for target <cdn_stage> is FAILED
+    2026-03-16T07:10:45Z: WARNING: found failed push job, will trigger again
+    2026-03-16T07:10:45Z: INFO: advisory 162727 has blocking advisory []
+    2026-03-16T07:10:46Z: INFO: push job for advisory 162727 is triggered
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-03-16T08:47:32Z'
