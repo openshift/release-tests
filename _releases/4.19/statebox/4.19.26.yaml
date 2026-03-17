@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.26
 created_at: '2026-03-12T14:03:29Z'
-updated_at: '2026-03-17T08:06:28Z'
+updated_at: '2026-03-17T14:52:03Z'
 metadata:
   jira_ticket: ART-14725
   advisory_ids:
@@ -94,6 +94,24 @@ tasks:
     2026-03-13T11:15:07Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=64d312cc715ccb58e44b7ed0a7a1a24ad407b72be2cb865512f9bf8ff7578524/signature-1
     2026-03-13T11:15:48Z: INFO: Signature check PASSED
     2026-03-13T11:15:48Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-03-17T15:51:41Z'
+  completed_at: null
+  result: |-
+    2026-03-17T15:51:41Z: WARNING: Optional environment variable not set: SLACK_APP_TOKEN
+    2026-03-17T15:51:42Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-03-17T15:51:52Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-03-17T15:51:54Z: INFO: RHCOS nvr is rhcos-x86_64-4.19.9.6.202603101249-0
+    2026-03-17T15:51:55Z: INFO: The commit metadata is kernel-5.14.0-570.98.1.el9_6
+    2026-03-17T15:51:56Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147774, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 182434, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:160637-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 182605, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:4427-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 182719, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:4416-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-03-17T15:51:57Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 406
+    2026-03-17T15:51:57Z: INFO: Successfully added QE approval to MR 406
+    2026-03-17T15:51:59Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:4434
+    2026-03-17T15:52:00Z: INFO: The metadata url is not accessible
+    2026-03-17T15:52:00Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-03-17T15:52:00Z: WARNING: Scheduler is already running for release 4.19 (lock file exists), skipping additional instance
+    2026-03-17T15:52:02Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
 issues:
 - issue: 'Pub task 978303 for advisory 162783 (RPM) stuck for 17+ hours during CDN
     staging push. Task cancelled and retried. Root cause: Pulp backend appears stuck
