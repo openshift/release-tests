@@ -58,9 +58,9 @@ Follow these steps:
    - **Truncation Awareness**: If `is_truncated` is true, acknowledge that only representative samples are shown and mention the total failure count
 
 5. **Query Known Issues from Jira** (Optional - requires Jira MCP):
-   - **Checkpoint**: First verify if Jira MCP is available by checking if `mcp__mcp-atlassian__jira_search` tool exists
+   - **Checkpoint**: First verify if a Jira MCP tool is available by checking for any tool matching the pattern `*searchJira*` or `*jira_search*` (e.g., `mcp__atlassian__searchJiraIssuesUsingJql` or equivalent from another Jira MCP server)
    - **If Jira MCP is NOT available**: Skip this step gracefully and continue to step 6. Mention in the final report that known issue lookup was skipped (MCP not configured).
-   - **If Jira MCP IS available**: Search both OCPBUGS (product bugs) and OCPQE (QE automation issues)
+   - **If Jira MCP IS available**: Use the discovered search tool to search both OCPBUGS (product bugs) and OCPQE (QE automation issues)
 
    **A. Search OCPBUGS for Product Bugs**:
    - For each major failure pattern (top 3-5 by occurrence count):
