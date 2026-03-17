@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.58
 created_at: '2026-03-12T19:02:30Z'
-updated_at: '2026-03-17T05:53:07Z'
+updated_at: '2026-03-17T05:54:37Z'
 metadata:
   jira_ticket: ART-14728
   advisory_ids:
@@ -81,4 +81,15 @@ tasks:
     - 1 failure waived by BO3: azure-ovn-upgrade-4.16-micro (failed 2 attempts)
     - All critical tests passed: aws-ovn, aws-sdn, fips-scan, gcp-ovn-rt-upgrade, hypershift, metal-ipi
     - Assessment: ACCEPT - build passed BO3 verification
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-03-17T05:54:37Z'
+  completed_at: '2026-03-17T05:54:37Z'
+  result: |-
+    Promoted build 4.16.58 analysis:
+    - Phase: Accepted by Release Controller
+    - Blocking tests: 2/2 passed (100% pass rate)
+    - Tests: upgrade (Succeeded), upgrade-minor (Succeeded)
+    - No failures detected
+    - Assessment: ACCEPT - clean promotion with all tests passed
 issues: []
