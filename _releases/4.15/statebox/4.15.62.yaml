@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.62
 created_at: '2026-03-12T13:01:34Z'
-updated_at: '2026-03-17T05:28:57Z'
+updated_at: '2026-03-17T05:30:07Z'
 metadata:
   jira_ticket: ART-14726
   advisory_ids:
@@ -41,8 +41,14 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-03-13T11:29:21Z'
-  completed_at: '2026-03-17T05:25:52Z'
-  result: 'Jenkins job #3524 succeeded - all image consistency checks passed'
+  completed_at: '2026-03-17T01:15:00Z'
+  result: |-
+    2026-03-13T11:29:21Z: INFO: Initialized StateBox for release 4.15.62 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.62.yaml
+    2026-03-13T11:29:21Z: INFO: Checking image-consistency-check job status with job id: 3524
+    2026-03-13T11:29:21Z: INFO: build status of image-consistency-check/3524 is In Progress
+    2026-03-13T11:29:21Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-03-17T01:15:00Z: INFO: Jenkins job #3524 succeeded - all image consistency checks passed
+    2026-03-17T01:15:00Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-03-13T11:29:45Z'
