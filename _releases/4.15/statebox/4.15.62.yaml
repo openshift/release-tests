@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.62
 created_at: '2026-03-12T13:01:34Z'
-updated_at: '2026-03-17T05:30:42Z'
+updated_at: '2026-03-17T05:32:03Z'
 metadata:
   jira_ticket: ART-14726
   advisory_ids:
@@ -36,8 +36,21 @@ tasks:
 - name: push-to-cdn-staging
   status: Pass
   started_at: '2026-03-17T01:13:12Z'
-  completed_at: '2026-03-17T05:28:57Z'
-  result: 'CDN staging push succeeded for both advisories (162736: rpm, 162738: rhcos)'
+  completed_at: '2026-03-17T01:15:00Z'
+  result: |-
+    2026-03-16T05:37:16Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-03-16T05:37:20Z: INFO: checking push job status for advisory 162736 ...
+    2026-03-16T05:37:20Z: INFO: push job for target <cdn_stage> is FAILED
+    2026-03-16T05:37:20Z: WARNING: found failed push job, will trigger again
+    2026-03-16T05:37:20Z: INFO: advisory 162736 has blocking advisory []
+    2026-03-16T05:37:21Z: INFO: push job for advisory 162736 is triggered
+    2026-03-16T05:37:22Z: INFO: checking push job status for advisory 162738 ...
+    2026-03-16T05:37:22Z: INFO: push job for target <cdn_stage> is FAILED
+    2026-03-16T05:37:22Z: WARNING: found failed push job, will trigger again
+    2026-03-16T05:37:22Z: INFO: advisory 162738 has blocking advisory []
+    2026-03-16T05:37:24Z: INFO: push job for advisory 162738 is triggered
+    2026-03-17T01:15:00Z: INFO: CDN staging push succeeded for both advisories (162736: rpm, 162738: rhcos)
+    2026-03-17T01:15:00Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
   status: Pass
   started_at: '2026-03-13T11:29:21Z'
