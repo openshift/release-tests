@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.6
 created_at: '2026-03-13T11:02:16Z'
-updated_at: '2026-03-17T09:12:15Z'
+updated_at: '2026-03-17T18:53:51Z'
 metadata:
   jira_ticket: ART-14724
   advisory_ids:
@@ -124,8 +124,16 @@ issues:
     Release cannot proceed until prod-sec review is complete and vulnerabilities are
     addressed or waived.
   reported_at: '2026-03-17T09:12:15Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: |-
+    Product Security review completed - waiver confirmed.
+
+    Root cause: Scanner compared RHEL 9.6 base images against RHEL 9.7 CVE database. Release 4.21.6 is built on RHEL 9.6 base. CVEs with fixes only available in RHEL 9.7 show as "unhealthy" because the scanner checks against the latest RHEL version, not the RHEL version actually used.
+
+    Why this is not a problem: Product Security confirmed that Container Health Index alerts for CVEs fixed in newer RHEL minor versions (9.7) do not block releases built on older RHEL minor versions (9.6).
+
+    Decision: Proceed with release.
   blocker: true
   related_tasks:
   - image-consistency-check
+  resolved_at: '2026-03-17T18:53:51Z'
