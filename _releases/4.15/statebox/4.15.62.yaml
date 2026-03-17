@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.62
 created_at: '2026-03-12T13:01:34Z'
-updated_at: '2026-03-17T05:30:07Z'
+updated_at: '2026-03-17T05:30:42Z'
 metadata:
   jira_ticket: ART-14726
   advisory_ids:
@@ -52,8 +52,14 @@ tasks:
 - name: stage-testing
   status: Pass
   started_at: '2026-03-13T11:29:45Z'
-  completed_at: '2026-03-17T05:26:34Z'
-  result: 'Jenkins job #1549 succeeded - all stage tests passed'
+  completed_at: '2026-03-17T01:15:00Z'
+  result: |-
+    2026-03-13T11:29:45Z: INFO: Initialized StateBox for release 4.15.62 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.62.yaml
+    2026-03-13T11:29:45Z: INFO: check stage job status according to job id: 1549
+    2026-03-13T11:29:45Z: INFO: build status of zstreams/Stage-Pipeline/1549 is In Progress
+    2026-03-13T11:29:45Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-03-17T01:15:00Z: INFO: Jenkins job #1549 succeeded - all stage tests passed
+    2026-03-17T01:15:00Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-03-13T15:27:50Z'
