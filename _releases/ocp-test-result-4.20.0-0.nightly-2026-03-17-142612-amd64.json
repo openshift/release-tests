@@ -37,7 +37,28 @@
         "jobStartTime": "2026-03-18T02:33:26Z",
         "jobID": "7d1c4f2a-1171-4d6a-bc4c-78c5ff69f32e",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2034095807426203648",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-03-18T05:39:20Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 33
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -47,7 +68,31 @@
         "jobStartTime": "2026-03-18T02:33:31Z",
         "jobID": "a66117b1-4ff5-4947-9e34-e9e047ce10bd",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/2034095828779405312",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-03-18T05:42:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 31
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-20800:UserInterface Key/Value Secret"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -87,5 +132,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2026-03-17-142612",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2026-03-17-142612"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
