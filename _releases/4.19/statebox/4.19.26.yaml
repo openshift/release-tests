@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.26
 created_at: '2026-03-12T14:03:29Z'
-updated_at: '2026-03-18T16:09:57Z'
+updated_at: '2026-03-18T18:41:59Z'
 metadata:
   jira_ticket: ART-14725
   advisory_ids:
@@ -95,24 +95,30 @@ tasks:
     2026-03-13T11:15:48Z: INFO: Signature check PASSED
     2026-03-13T11:15:48Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-03-18T12:09:29Z'
-  completed_at: null
+  completed_at: '2026-03-18T18:41:59Z'
   result: |-
-    2026-03-18T12:09:29Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-03-18T12:09:32Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-03-18T12:09:33Z: INFO: RHCOS nvr is rhcos-x86_64-4.19.9.6.202603101249-0
-    2026-03-18T12:09:33Z: INFO: The commit metadata is kernel-5.14.0-570.98.1.el9_6
-    2026-03-18T12:09:33Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147773, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171957, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 182434, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:4745-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 182605, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:4427-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 182719, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:4416-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-03-18T12:09:34Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 406
-    2026-03-18T12:09:34Z: INFO: Successfully added QE approval to MR 406
-    2026-03-18T12:09:35Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:4434
-    2026-03-18T12:09:55Z: INFO: The metadata url is not accessible
-    2026-03-18T12:09:55Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-03-18T12:09:55Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-03-18T12:09:55Z: INFO: Background metadata checker process started (PID: 4375) - running independently after parent exit
-    2026-03-18T12:09:55Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.19_20260318_120955.log
-    2026-03-18T12:09:56Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-03-18 12:10:25,300 - INFO - Google Sheets worksheet not found (expected for StateBox releases): cannot find worksheet 4.19.26 in report doc
+    2026-03-18 12:10:25,301 - INFO - Scheduler lock acquired
+    2026-03-18 12:10:25,301 - INFO - Scheduler started: Checking payload metadata URL every 30 minutes
+    2026-03-18 12:10:25,301 - INFO - Scheduler will run until 2026-03-20 12:10:25 or until URL becomes accessible
+    2026-03-18 12:10:25,301 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999935)
+    2026-03-18 12:40:25,302 - INFO - Scheduler check #1: Checking payload metadata URL accessibility for release 4.19
+    2026-03-18 12:40:46,933 - INFO - Scheduler check #1: Payload metadata URL still not accessible
+    2026-03-18 12:40:46,933 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:38.368070)
+    2026-03-18 13:10:46,934 - INFO - Scheduler check #2: Checking payload metadata URL accessibility for release 4.19
+    2026-03-18 13:11:08,888 - INFO - Scheduler check #2: Payload metadata URL still not accessible
+    2026-03-18 13:11:08,888 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:16.412783)
+    2026-03-18 13:41:08,890 - INFO - Scheduler check #3: Checking payload metadata URL accessibility for release 4.19
+    2026-03-18 13:41:30,658 - INFO - Scheduler check #3: Payload metadata URL still not accessible
+    2026-03-18 13:41:30,658 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:28:54.642975)
+    2026-03-18 14:11:30,660 - INFO - Scheduler check #4: Checking payload metadata URL accessibility for release 4.19
+    2026-03-18 14:11:45,242 - INFO - Scheduler check #4: Payload metadata URL still not accessible
+    2026-03-18 14:11:45,242 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:58:40.058626)
+    2026-03-18 14:41:45,243 - INFO - Scheduler check #5: Checking payload metadata URL accessibility for release 4.19
+    2026-03-18 14:41:51,899 - INFO - Payload metadata URL is now accessible
+    2026-03-18 14:41:58,931 - INFO - Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.
 issues:
 - issue: 'Pub task 978303 for advisory 162783 (RPM) stuck for 17+ hours during CDN
     staging push. Task cancelled and retried. Root cause: Pulp backend appears stuck
