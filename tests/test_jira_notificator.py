@@ -343,25 +343,25 @@ class TestJiraNotificator(unittest.TestCase):
             self.ns.get_on_qa_filter(None),
             (
                 "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
-                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z, 4.20.z, 4.21.z)"
             )
         )
         self.assertEqual(
             self.ns.get_on_qa_filter(datetime(2025, 7, 17, tzinfo=timezone.utc)),
             (
                 "project = OCPBUGS AND issuetype in (Bug, Vulnerability) "
-                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z)"
+                "AND status = ON_QA AND 'Target Version' in (4.12.z, 4.13.z, 4.14.z, 4.15.z, 4.16.z, 4.17.z, 4.18.z, 4.19.z, 4.20.z, 4.21.z)"
                 " AND status changed to ON_QA after 2025-07-17"
             )
         )
 
     def test_get_on_qa_issues(self):
-        issues = self.ns.get_on_qa_issues(100, None)
+        issues = self.ns.get_on_qa_issues(None)
         self.assertNotEqual(len(issues), 0)
         for i in issues:
             self.assertTrue(i.key.startswith("OCPBUGS-"))
 
-        issues_after_date = self.ns.get_on_qa_issues(100, datetime(2025, 7, 17, tzinfo=timezone.utc))
+        issues_after_date = self.ns.get_on_qa_issues(datetime(2025, 7, 17, tzinfo=timezone.utc))
         self.assertNotEqual(len(issues_after_date), 0)
         self.assertGreater(len(issues), len(issues_after_date))
         for iad in issues_after_date:
@@ -383,10 +383,10 @@ class TestJiraNotificator(unittest.TestCase):
 
     def test_process_on_qa_issues(self):
         day_ago = datetime.now() - timedelta(hours=24)
-        self.assertEqual(len(self.ns.process_on_qa_issues(100, day_ago)), 0)
+        self.assertEqual(len(self.ns.process_on_qa_issues(day_ago)), 0)
 
         week_ago = datetime.now() - timedelta(weeks=1)
         self.assertLess(
-            len(self.ns.process_on_qa_issues(100, week_ago)), 
-            len(self.ns.process_on_qa_issues(100, None))
+            len(self.ns.process_on_qa_issues(week_ago)),
+            len(self.ns.process_on_qa_issues(None))
         )
