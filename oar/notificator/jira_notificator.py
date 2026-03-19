@@ -628,48 +628,42 @@ class NotificationService:
 
         return base_filter + date_suffix
 
-    def get_on_qa_issues(self, search_batch_size: int, from_date: Optional[datetime]) -> List[Issue]:
+    def get_on_qa_issues(self, from_date: Optional[datetime]) -> List[Issue]:
         """
-        Retrieves ON_QA issues from JIRA in batches, optionally filtered by a date.
+        Retrieves all ON_QA issues from JIRA, optionally filtered by a date.
 
         Args:
-            search_batch_size (int): Number of issues to fetch per batch.
             from_date (Optional[datetime]): If provided, fetches issues transitioned to ON_QA after this date.
 
         Returns:
             List[Issue]: A list of JIRA issues matching the ON_QA criteria.
         """
 
-        start_at = 0
-        on_qa_issues = []
+        # FIXME: OCPERT-135 Find a solution to access Jira tickets with limited permissions
+        # Use enhanced_search_issues for Jira Cloud compatibility (search_issues deprecated for Cloud)
+        # maxResults=0 fetches all pages automatically via nextPageToken pagination (100 per page)
+        on_qa_issues = self.jira.enhanced_search_issues(
+            self.get_on_qa_filter(from_date),
+            maxResults=0,
+            expand="changelog",
+        )
 
-        while True:
-            # FIXME: OCPERT-135 Find a solution to access Jira tickets with limited permissions
-            issues = self.jira.search_issues(
-                self.get_on_qa_filter(from_date), startAt=start_at, maxResults=search_batch_size, expand="changelog"
-            )
-            if not issues:
-                break
-            on_qa_issues.extend(issues)
-            start_at += len(issues)
+        return list(on_qa_issues)
 
-        return on_qa_issues
-
-    def process_on_qa_issues(self, search_batch_size: int, from_date: Optional[datetime]) -> List[Notification]:
+    def process_on_qa_issues(self, from_date: Optional[datetime]) -> List[Notification]:
         """
         Processes ON_QA issues by checking and notifying responsible people.
 
         Args:
-            search_batch_size (int): Number of issues to fetch per batch.
             from_date (Optional[datetime]): If provided, process issues transitioned to ON_QA after this date.
-        
+
         Returns:
             List[Notification]: List of successfully sent notifications.
         """
         sent_notifications: list[Notification] = []
         error_occurred = False
 
-        for issue in self.get_on_qa_issues(search_batch_size, from_date):
+        for issue in self.get_on_qa_issues(from_date):
             logger.info(f"Processing issue: {issue.key}")
             try:
                 notification = self.check_issue_and_notify_responsible_people(issue)
@@ -685,15 +679,13 @@ class NotificationService:
         return sent_notifications
 
 @click.command()
-@click.option("--search-batch-size", default=100, type=int, help="Maximum number of results to retrieve in each search iteration or batch.")
 @click.option("--dry-run", is_flag=True, default=False, help="Run without sending Jira notifications.")
 @click.option("--from-date", default=None, type=click.DateTime(formats=["%Y-%m-%d"]), required=False, help="Filters issues that changed to ON_QA state after this date.")
-def jira_notificator(search_batch_size: int, dry_run: bool, from_date: Optional[datetime]) -> None:
+def jira_notificator(dry_run: bool, from_date: Optional[datetime]) -> None:
     """
     CLI entry point to process ON_QA issues and notify responsible people.
 
     Args:
-        search_batch_size (int): Number of issues to fetch per batch.
         dry_run (bool): If True, simulate notifications without sending.
         from_date (Optional[datetime]): Filter issues transitioned to ON_QA after this date.
 
@@ -713,7 +705,7 @@ def jira_notificator(search_batch_size: int, dry_run: bool, from_date: Optional[
     jira = JIRA(server="https://redhat.atlassian.net", basic_auth=(jira_username, jira_token))
 
     ns = NotificationService(jira, dry_run)
-    ns.process_on_qa_issues(search_batch_size, from_date)
+    ns.process_on_qa_issues(from_date)
 
 if __name__ == "__main__":
     jira_notificator()

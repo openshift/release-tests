@@ -19,7 +19,7 @@ class TestJiraNotificator(unittest.TestCase):
 
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
         self.test_issue_without_qa = self.jira.issue("OCPBUGS-8760", expand="changelog")
-        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-1542", expand="changelog")
+        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-78840", expand="changelog")
         self.test_issue_on_qa = self.jira.issue("OCPBUGS-46472", expand="changelog")
 
         self.test_user = Mock()
@@ -357,12 +357,12 @@ class TestJiraNotificator(unittest.TestCase):
         )
 
     def test_get_on_qa_issues(self):
-        issues = self.ns.get_on_qa_issues(100, None)
+        issues = self.ns.get_on_qa_issues(None)
         self.assertNotEqual(len(issues), 0)
         for i in issues:
             self.assertTrue(i.key.startswith("OCPBUGS-"))
 
-        issues_after_date = self.ns.get_on_qa_issues(100, datetime(2025, 7, 17, tzinfo=timezone.utc))
+        issues_after_date = self.ns.get_on_qa_issues(datetime(2025, 7, 17, tzinfo=timezone.utc))
         self.assertNotEqual(len(issues_after_date), 0)
         self.assertGreater(len(issues), len(issues_after_date))
         for iad in issues_after_date:
@@ -384,10 +384,10 @@ class TestJiraNotificator(unittest.TestCase):
 
     def test_process_on_qa_issues(self):
         day_ago = datetime.now() - timedelta(hours=24)
-        self.assertEqual(len(self.ns.process_on_qa_issues(100, day_ago)), 0)
+        self.assertEqual(len(self.ns.process_on_qa_issues(day_ago)), 0)
 
         week_ago = datetime.now() - timedelta(weeks=1)
         self.assertLess(
-            len(self.ns.process_on_qa_issues(100, week_ago)), 
-            len(self.ns.process_on_qa_issues(100, None))
+            len(self.ns.process_on_qa_issues(week_ago)),
+            len(self.ns.process_on_qa_issues(None))
         )
