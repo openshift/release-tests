@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.51
 created_at: '2026-03-12T21:02:41Z'
-updated_at: '2026-03-18T07:54:28Z'
+updated_at: '2026-03-19T19:42:17Z'
 metadata:
   jira_ticket: ART-14729
   advisory_ids:
@@ -95,22 +95,24 @@ tasks:
     2026-03-13T08:18:30Z: INFO: Signature check PASSED
     2026-03-13T08:18:30Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-03-18T03:54:16Z'
-  completed_at: null
+  completed_at: '2026-03-19T15:42:16Z'
   result: |-
-    2026-03-18T03:54:16Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-03-18T03:54:19Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-03-18T03:54:20Z: INFO: RHCOS nvr is rhcos-x86_64-417.94.202603102246-0
-    2026-03-18T03:54:20Z: INFO: The commit metadata is kernel-5.14.0-427.114.1.el9_4
-    2026-03-18T03:54:20Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 182154, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:4246-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-03-18T03:54:20Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 410
-    2026-03-18T03:54:20Z: INFO: Successfully added QE approval to MR 410
-    2026-03-18T03:54:22Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:4510
-    2026-03-18T03:54:27Z: INFO: The metadata url is not accessible
-    2026-03-18T03:54:27Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-03-18T03:54:27Z: WARNING: Scheduler is already running for release 4.17 (lock file exists), skipping additional instance
-    2026-03-18T03:54:28Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
+    2026-03-19T15:41:40Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-03-19T15:41:41Z: INFO: ShipmentData initialization failed (MR likely merged): Gitlab MR 410 state is not open
+    2026-03-19T15:41:43Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-03-19T15:41:44Z: INFO: RHCOS nvr is rhcos-x86_64-417.94.202603102246-0
+    2026-03-19T15:41:44Z: INFO: The commit metadata is kernel-5.14.0-427.114.1.el9_4
+    2026-03-19T15:41:44Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 182154, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:4246-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-03-19T15:41:44Z: INFO: Shipment MR for 4.17.51 already merged, skipping QE approval step
+    2026-03-19T15:41:45Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:4510
+    2026-03-19T15:41:55Z: INFO: The metadata url is accessible
+    2026-03-19T15:41:57Z: WARNING: RHBA advisory 163538 does not have secalerts
+    2026-03-19T15:41:59Z: INFO: advisory 163538 state is updated to REL_PREP
+    2026-03-19T15:42:14Z: INFO: RHSA advisory 163539 does not have blocking secalert
+    2026-03-19T15:42:15Z: INFO: advisory 163539 state is updated to REL_PREP
+    2026-03-19T15:42:16Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: 'image-consistency-check job #3521 failed due to Jenkins environment issue:
     ModuleNotFoundError: No module named ''gitlab''. This is an infrastructure problem
