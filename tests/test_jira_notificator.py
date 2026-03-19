@@ -27,6 +27,12 @@ class TestJiraNotificator(unittest.TestCase):
         self.test_user.displayName = "Tomas David"
         self.test_user.emailAddress = "tdavid@redhat.com"
 
+    def test_get_user_email(self):
+        self.assertEqual(self.ns.get_user_email(self.test_user), "tdavid@redhat.com")
+
+        user_without_email = Mock(spec=[])
+        self.assertIsNone(self.ns.get_user_email(user_without_email))
+
     def test_create_notification_title(self):
         self.assertEqual(
             self.ns.create_notification_title(NotificationType.QA_CONTACT),
