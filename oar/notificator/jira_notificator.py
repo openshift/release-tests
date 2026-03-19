@@ -640,20 +640,16 @@ class NotificationService:
             List[Issue]: A list of JIRA issues matching the ON_QA criteria.
         """
 
-        start_at = 0
-        on_qa_issues = []
+        # FIXME: OCPERT-135 Find a solution to access Jira tickets with limited permissions
+        # Use enhanced_search_issues for Jira Cloud compatibility (search_issues deprecated for Cloud)
+        # maxResults=0 fetches all pages automatically via nextPageToken pagination
+        on_qa_issues = self.jira.enhanced_search_issues(
+            self.get_on_qa_filter(from_date),
+            maxResults=0,
+            expand="changelog",
+        )
 
-        while True:
-            # FIXME: OCPERT-135 Find a solution to access Jira tickets with limited permissions
-            issues = self.jira.search_issues(
-                self.get_on_qa_filter(from_date), startAt=start_at, maxResults=search_batch_size, expand="changelog"
-            )
-            if not issues:
-                break
-            on_qa_issues.extend(issues)
-            start_at += len(issues)
-
-        return on_qa_issues
+        return list(on_qa_issues)
 
     def process_on_qa_issues(self, search_batch_size: int, from_date: Optional[datetime]) -> List[Notification]:
         """

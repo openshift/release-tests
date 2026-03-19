@@ -18,7 +18,7 @@ class TestJiraNotificator(unittest.TestCase):
 
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
         self.test_issue_without_qa = self.jira.issue("OCPBUGS-8760", expand="changelog")
-        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-1542", expand="changelog")
+        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-78840", expand="changelog")
         self.test_issue_on_qa = self.jira.issue("OCPBUGS-46472", expand="changelog")
 
         self.test_user = Mock()
