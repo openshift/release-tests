@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.36
 created_at: '2026-03-19T18:02:30Z'
-updated_at: '2026-03-20T12:57:41Z'
+updated_at: '2026-03-20T13:05:56Z'
 metadata:
   jira_ticket: ART-14758
   advisory_ids:
@@ -89,8 +89,12 @@ issues:
 - issue: 'image-consistency-check job #3531 FAILED - Jenkins job failed. Investigation
     required to determine root cause before proceeding to final approval.'
   reported_at: '2026-03-20T12:57:41Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Root cause: Transient network timeout when fetching multi-arch parent
+    manifest sha256:a667fb9a from quay.io/redhat-user-workloads during job execution.
+    Verified monitoring-plugin image sha256:fa0673c1 is present in payload and accessible.
+    Retrying job.'
   blocker: true
   related_tasks:
   - image-consistency-check
+  resolved_at: '2026-03-20T13:05:56Z'
