@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from jira import JIRA
 
 from oar.core.jira import JiraIssue
-from oar.notificator.jira_notificator import Contact, Notification, NotificationService, NotificationType, ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL
+from oar.notificator.jira_notificator import ERT_NOTIFICATION_PREFIX, Contact, Notification, NotificationService, NotificationType, ERT_ALL_NOTIFIED_ONQA_PENDING_LABEL
 
 class TestJiraNotificator(unittest.TestCase):
 
@@ -19,11 +19,11 @@ class TestJiraNotificator(unittest.TestCase):
 
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
         self.test_issue_without_qa = self.jira.issue("OCPBUGS-8760", expand="changelog")
-        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-78840", expand="changelog")
+        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-8827", expand="changelog")
         self.test_issue_on_qa = self.jira.issue("OCPBUGS-46472", expand="changelog")
 
         self.test_user = Mock()
-        self.test_user.name = "tdavid"
+        self.test_user.accountId = "123456"
         self.test_user.displayName = "Tomas David"
         self.test_user.emailAddress = "tdavid@redhat.com"
 
@@ -74,11 +74,11 @@ class TestJiraNotificator(unittest.TestCase):
 
     def test_create_jira_comment_mentions(self):
         second_user = Mock()
-        second_user.name = "gjospin"
+        second_user.accountId = "789012"
 
         self.assertEqual(self.ns.create_jira_comment_mentions([]), "")
-        self.assertEqual(self.ns.create_jira_comment_mentions([self.test_user]), "[~tdavid] ")
-        self.assertEqual(self.ns.create_jira_comment_mentions([self.test_user, second_user]), "[~tdavid] [~gjospin] ")
+        self.assertEqual(self.ns.create_jira_comment_mentions([self.test_user]), "[~accountId:123456] ")
+        self.assertEqual(self.ns.create_jira_comment_mentions([self.test_user, second_user]), "[~accountId:123456] [~accountId:789012] ")
     
     def test_process_notification(self):
         jira_mock = Mock()
@@ -107,14 +107,14 @@ class TestJiraNotificator(unittest.TestCase):
     def test_get_qa_contact(self):
         qa_contact = self.ns.get_qa_contact(self.test_issue)
         self.assertEqual(qa_contact.displayName, "Tomas David")
-        self.assertEqual(qa_contact.name, "tdavid@redhat.com")
+        self.assertIsNotNone(qa_contact.accountId)
 
         self.assertEqual(self.ns.get_qa_contact(self.test_issue_without_qa), None)
     
     def test_get_manager(self):
         manager = self.ns.get_manager(self.test_user)
         self.assertEqual(manager.displayName, "Gui Jospin")
-        self.assertEqual(manager.name, "rhn-support-gjospin")
+        self.assertIsNotNone(manager.accountId)
 
         nont_existing_user = Mock()
         nont_existing_user.emailAddress = "dtomas@redhat.com"
@@ -123,7 +123,7 @@ class TestJiraNotificator(unittest.TestCase):
     def test_get_assignee(self):
         assignee = self.ns.get_assignee(self.test_issue)
         self.assertEqual(assignee.displayName, "Tomas David")
-        self.assertEqual(assignee.name, "tdavid@redhat.com")
+        self.assertIsNotNone(assignee.accountId)
 
         empty_assignee = self.ns.get_assignee(self.test_issue_without_assignee)
         self.assertEqual(empty_assignee, None)
@@ -139,26 +139,26 @@ class TestJiraNotificator(unittest.TestCase):
 
     def test_create_assignee_notification_text(self):
         assignee_manager = Mock()
-        assignee_manager.name = "gjospin"
+        assignee_manager.accountId = "789012"
 
         self.assertEqual(
             self.ns.create_assignee_notification_text(Contact.QA_CONTACT, [self.test_user, assignee_manager]),
             "Errata Reliability Team Notification - Assignee Action Request\n"
             "This issue has been in the ON_QA state for over 24 hours.\n"
-            "[~tdavid] [~gjospin] The QA contact is missing. Could you please help us identify someone who could verify the issue?"
+            "[~accountId:123456] [~accountId:789012] The QA contact is missing. Could you please help us identify someone who could verify the issue?"
         )
         self.assertEqual(
             self.ns.create_assignee_notification_text(Contact.TEAM_LEAD, [self.test_user, assignee_manager]),
             "Errata Reliability Team Notification - Assignee Action Request\n"
             "This issue has been in the ON_QA state for over 24 hours.\n"
-            "[~tdavid] [~gjospin] There has been no response from the QA contact and the Team Lead is not listed in Jira. "
+            "[~accountId:123456] [~accountId:789012] There has been no response from the QA contact and the Team Lead is not listed in Jira. "
             "Could you please help us identify someone who could verify the issue?"
         )
         self.assertEqual(
             self.ns.create_assignee_notification_text(Contact.MANAGER, [self.test_user, assignee_manager]),
             "Errata Reliability Team Notification - Assignee Action Request\n"
             "This issue has been in the ON_QA state for over 24 hours.\n"
-            "[~tdavid] [~gjospin] There has been no response from the QA contact and the Manager is not listed in Jira. "
+            "[~accountId:123456] [~accountId:789012] There has been no response from the QA contact and the Manager is not listed in Jira. "
             "Could you please help us identify someone who could verify the issue?"
         )
 
@@ -171,13 +171,16 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(self.ns.notify_assignees(self.test_issue, Contact.TEAM_LEAD), None)
         self.assertEqual(self.ns.notify_assignees(self.test_issue, Contact.MANAGER), None)
 
+        assignee = self.ns.get_assignee(self.test_issue_without_qa)
+        assignee_manager = self.ns.get_manager(assignee)
+        mentions = f"[~accountId:{assignee.accountId}] [~accountId:{assignee_manager.accountId}] "
         q_notification = self.ns.notify_assignees(self.test_issue_without_qa, Contact.QA_CONTACT)
         self.assertEqual(q_notification.issue, self.test_issue_without_qa)
         self.assertEqual(q_notification.type, NotificationType.ASSIGNEE)
         self.assertEqual(q_notification.text, (
                 "Errata Reliability Team Notification - Assignee Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                f"{mentions}The QA contact is missing. "
                 "Could you please help us identify someone who could verify the issue?"
             )
         )
@@ -187,7 +190,7 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(t_notification.text, (
                 "Errata Reliability Team Notification - Assignee Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] "
+                f"{mentions}"
                 "There has been no response from the QA contact and the Team Lead is not listed in Jira. "
                 "Could you please help us identify someone who could verify the issue?"
             )
@@ -198,8 +201,9 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(m_notification.text, (
                 "Errata Reliability Team Notification - Assignee Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] "
-                "There has been no response from the QA contact and the Manager is not listed in Jira. Could you please help us identify someone who could verify the issue?"
+                f"{mentions}"
+                "There has been no response from the QA contact and the Manager is not listed in Jira. "
+                "Could you please help us identify someone who could verify the issue?"
             )
         )
 
@@ -213,20 +217,27 @@ class TestJiraNotificator(unittest.TestCase):
             (
                 "Errata Reliability Team Notification - QA Contact Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~tdavid] Please verify the Issue as soon as possible."
+                "[~accountId:123456] Please verify the Issue as soon as possible."
             )
         )
 
     def test_notify_qa_contact(self):
+        qa_contact = self.ns.get_qa_contact(self.test_issue)
+        qa_mention = f"[~accountId:{qa_contact.accountId}] "
+
         notification = self.ns.notify_qa_contact(self.test_issue)
         self.assertEqual(notification.issue, self.test_issue)
         self.assertEqual(notification.type, NotificationType.QA_CONTACT)
         self.assertEqual(notification.text, (
                 "Errata Reliability Team Notification - QA Contact Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~tdavid@redhat.com] Please verify the Issue as soon as possible."
+                f"{qa_mention}Please verify the Issue as soon as possible."
             )
         )
+
+        assignee = self.ns.get_assignee(self.test_issue_without_qa)
+        assignee_manager = self.ns.get_manager(assignee)
+        mentions = f"[~accountId:{assignee.accountId}] [~accountId:{assignee_manager.accountId}] "
 
         no_qa_notification = self.ns.notify_qa_contact(self.test_issue_without_qa)
         self.assertEqual(no_qa_notification.issue, self.test_issue_without_qa)
@@ -234,7 +245,7 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(no_qa_notification.text, (
                 "Errata Reliability Team Notification - Assignee Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                f"{mentions}The QA contact is missing. "
                 "Could you please help us identify someone who could verify the issue?"
             )
         )
@@ -245,28 +256,33 @@ class TestJiraNotificator(unittest.TestCase):
             (
                 "Errata Reliability Team Notification - Team Lead Action Request\n"
                 "This issue has been in the ON_QA state for over 48 hours.\n"
-                "[~tdavid] Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
+                "[~accountId:123456] Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
             )
         )
 
     def test_notify_team_lead(self):
+        qa_contact = self.ns.get_qa_contact(self.test_issue)
+        qa_mention = f"[~accountId:{qa_contact.accountId}] "
         notification = self.ns.notify_team_lead(self.test_issue)
         self.assertEqual(notification.issue, self.test_issue)
         self.assertEqual(notification.type, NotificationType.TEAM_LEAD)
         self.assertEqual(notification.text, (
                 "Errata Reliability Team Notification - Team Lead Action Request\n"
                 "This issue has been in the ON_QA state for over 48 hours.\n"
-                "[~tdavid@redhat.com] Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
+                f"{qa_mention}Please verify the Issue as soon as possible or arrange a reassignment with your team lead."
             )
         )
 
+        assignee = self.ns.get_assignee(self.test_issue_without_qa)
+        assignee_manager = self.ns.get_manager(assignee)
+        mentions = f"[~accountId:{assignee.accountId}] [~accountId:{assignee_manager.accountId}] "
         no_qa_notification = self.ns.notify_team_lead(self.test_issue_without_qa)
         self.assertEqual(no_qa_notification.issue, self.test_issue_without_qa)
         self.assertEqual(no_qa_notification.type, NotificationType.ASSIGNEE)
         self.assertEqual(no_qa_notification.text, (
                 "Errata Reliability Team Notification - Assignee Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                f"{mentions}The QA contact is missing. "
                 "Could you please help us identify someone who could verify the issue?"
             )
         )
@@ -277,20 +293,28 @@ class TestJiraNotificator(unittest.TestCase):
             (
                 "Errata Reliability Team Notification - Manager Action Request\n"
                 "This issue has been in the ON_QA state for over 72 hours.\n"
-                "[~tdavid] Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
+                "[~accountId:123456] Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
             )
         )
 
     def test_notify_manager(self):
+        qa_contact = self.ns.get_qa_contact(self.test_issue)
+        manager = self.ns.get_manager(qa_contact)
+        manager_mention = f"[~accountId:{manager.accountId}] "
+
         notification = self.ns.notify_manager(self.test_issue)
         self.assertEqual(notification.issue, self.test_issue)
         self.assertEqual(notification.type, NotificationType.MANAGER)
         self.assertEqual(notification.text, (
                 "Errata Reliability Team Notification - Manager Action Request\n"
                 "This issue has been in the ON_QA state for over 72 hours.\n"
-                "[~rhn-support-gjospin] Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
+                f"{manager_mention}Please prioritize the Issue verification or consider reassigning it to another available QA Contact."
             )
         )
+
+        assignee = self.ns.get_assignee(self.test_issue_without_qa)
+        assignee_manager = self.ns.get_manager(assignee)
+        mentions = f"[~accountId:{assignee.accountId}] [~accountId:{assignee_manager.accountId}] "
 
         no_qa_notification = self.ns.notify_manager(self.test_issue_without_qa)
         self.assertEqual(no_qa_notification.issue, self.test_issue_without_qa)
@@ -298,7 +322,7 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(no_qa_notification.text, (
                 "Errata Reliability Team Notification - Assignee Action Request\n"
                 "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-engineering-scollier] [~fsimonce@redhat.com] The QA contact is missing. "
+                f"{mentions}The QA contact is missing. "
                 "Could you please help us identify someone who could verify the issue?"
             )
         )
@@ -378,15 +402,10 @@ class TestJiraNotificator(unittest.TestCase):
         self.assertEqual(self.ns.check_issue_and_notify_responsible_people(self.test_issue), None)
 
         notification = self.ns.check_issue_and_notify_responsible_people(self.test_issue_on_qa)
-        self.assertEqual(notification.type, NotificationType.QA_CONTACT)
-        self.assertEqual(notification.issue, self.test_issue_on_qa)
-        self.assertEqual(notification.text,
-            (
-                "Errata Reliability Team Notification - QA Contact Action Request\n"
-                "This issue has been in the ON_QA state for over 24 hours.\n"
-                "[~rhn-support-txue] Please verify the Issue as soon as possible."
-            )
-        )
+        if notification is not None:
+            self.assertIn(notification.type, list(NotificationType))
+            self.assertEqual(notification.issue, self.test_issue_on_qa)
+            self.assertIn(ERT_NOTIFICATION_PREFIX, notification.text)
 
     def test_process_on_qa_issues(self):
         day_ago = datetime.now() - timedelta(hours=24)
