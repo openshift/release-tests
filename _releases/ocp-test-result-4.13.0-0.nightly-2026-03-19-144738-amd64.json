@@ -142,13 +142,50 @@
           "jobStartTime": "2026-03-20T04:25:32Z",
           "jobID": "634aa793-5cd6-4242-8917-066fe26515cd",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2034848793656037376",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-20T07:23:53Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_Router Author:aiyengar-ROSA-OSD_CCS-ARO-LEVEL0-High-41042-The Power-of-two balancing features defaults to random LB algorithm instead of leastconn for REEN/Edge/insecure routes"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 30,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-03-20T04:25:37Z",
           "jobID": "162f4dd1-62eb-46ff-9d5f-68b250ec7c23",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2034848815348977664",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-03-20T07:32:34Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 19
+            },
+            "cucushift-e2e": {
+              "total": 30,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14509:Workloads if no preferred nodes are available non-preferred nodes will be chosen",
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            }
+          }
         }
       ]
     },
@@ -195,5 +232,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-03-19-144738",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-03-19-144738"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
