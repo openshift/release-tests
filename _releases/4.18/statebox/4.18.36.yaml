@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.36
 created_at: '2026-03-19T18:02:30Z'
-updated_at: '2026-03-20T16:02:01Z'
+updated_at: '2026-03-20T16:10:27Z'
 metadata:
   jira_ticket: ART-14758
   advisory_ids:
@@ -81,6 +81,17 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Promoted build 4.18.36 accepted.
     Test results aggregated: 3/3 jobs successful (upgrade tests passed on AWS, Azure
     FIPS, GCP). Gate check: PASSED - proceeding to async task completion wait.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-03-20T12:09:28Z'
+  completed_at: '2026-03-20T12:10:27Z'
+  result: |-
+    2026-03-20T12:09:28Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-03-20T12:09:28Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.36
+    2026-03-20T12:09:31Z: INFO: Image Digest: sha256:7486ca2ec3bce0ee41dd2c03d75e120b6f660929ea50240463937ae1c4b118f7
+    2026-03-20T12:09:31Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7486ca2ec3bce0ee41dd2c03d75e120b6f660929ea50240463937ae1c4b118f7/signature-1
+    2026-03-20T12:10:27Z: INFO: Signature check PASSED
+    2026-03-20T12:10:27Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: check-cve-tracker-bug fails - elliott using deprecated Jira API v2 (HTTP
     410). Needs update to Jira API v3 in elliottlib/bzutil.py
