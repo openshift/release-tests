@@ -1261,7 +1261,7 @@ class ShipmentData:
             url = f"https://catalog.stage.redhat.com/api/containers/v1/images?filter=image_id==sha256:{image_digest}&page_size=100&page=0"
             proxies = {"https": "squid.corp.redhat.com:3128"}
 
-            response = requests.get(url, proxies=proxies)
+            response = requests.get(url, proxies=proxies, timeout=30)
             response.raise_for_status()
 
             data = response.json()
@@ -1272,7 +1272,7 @@ class ShipmentData:
             vuln_href = image_data.get("_links", {}).get("vulnerabilities", {}).get("href", "")
             return grades, vuln_href
         except Exception as e:
-            raise ShipmentDataException(f"Failed to query Pyxis API: {str(e)}")
+            raise ShipmentDataException(f"Failed to query Pyxis API: {e}") from e
 
     def _query_pyxis_vulnerabilities(self, vuln_href: str) -> list[dict]:
         """Query Pyxis API for image vulnerability details.
@@ -1296,13 +1296,13 @@ class ShipmentData:
             url = f"https://catalog.stage.redhat.com/api/containers{vuln_href}?page_size=100&page=0"
             proxies = {"https": "squid.corp.redhat.com:3128"}
 
-            response = requests.get(url, proxies=proxies)
+            response = requests.get(url, proxies=proxies, timeout=30)
             response.raise_for_status()
 
             data = response.json()
             return data.get("data", [])
         except Exception as e:
-            raise ShipmentDataException(f"Failed to query Pyxis vulnerabilities API: {str(e)}")
+            raise ShipmentDataException(f"Failed to query Pyxis vulnerabilities API: {e}") from e
 
     def _get_current_image_health_status(self, grades: list[dict]) -> str:
         """Determine the current health status from Pyxis freshness grades.
