@@ -1434,38 +1434,54 @@ class ShipmentData:
                 summary += f"{comp['name']} (grade {comp['grade']}, arch {comp['architecture']}) - {comp['pull_spec']}.  \n"
 
             # Collect and deduplicate vulnerabilities across all unhealthy components
-            seen = set()
-            deduped_vulns = []
+            # Group by (affected_package, version) -> {cves, severity, suggested}
+            pkg_vuln_map = {}
+            severity_order = {"Critical": 0, "Important": 1, "Moderate": 2, "Low": 3}
             for comp in health_data.unhealthy_components:
                 for vuln in comp.get("vulnerabilities", []):
                     cve = vuln.get("cve_id", "N/A")
+                    severity = vuln.get("severity", "N/A")
+                    suggested_parts = []
+                    for p in vuln.get("packages", []):
+                        nevra = p.get("srpm_nevra", [])
+                        if isinstance(nevra, str):
+                            suggested_parts.append(nevra)
+                        else:
+                            suggested_parts.extend(nevra)
+                    suggested = ", ".join(suggested_parts) or "N/A"
                     for pkg in vuln.get("affected_packages", []):
-                        key = (cve, pkg.get("name", ""), pkg.get("version", ""))
-                        if key not in seen:
-                            seen.add(key)
-                            suggested_parts = []
-                            for p in vuln.get("packages", []):
-                                nevra = p.get("srpm_nevra", [])
-                                if isinstance(nevra, str):
-                                    suggested_parts.append(nevra)
-                                else:
-                                    suggested_parts.extend(nevra)
-                            suggested = ", ".join(suggested_parts) or "N/A"
-                            deduped_vulns.append({
-                                "cve": cve,
-                                "severity": vuln.get("severity", "N/A"),
-                                "affected": f"{pkg.get('name', 'N/A')}-{pkg.get('version', 'N/A')}",
+                        pkg_key = (pkg.get("name", "N/A"), pkg.get("version", "N/A"))
+                        if pkg_key not in pkg_vuln_map:
+                            pkg_vuln_map[pkg_key] = {
+                                "cves": [],
+                                "severity": severity,
                                 "suggested": suggested,
-                            })
+                            }
+                        entry = pkg_vuln_map[pkg_key]
+                        if cve not in entry["cves"]:
+                            entry["cves"].append(cve)
+                        # Keep highest severity
+                        if severity_order.get(severity, 99) < severity_order.get(entry["severity"], 99):
+                            entry["severity"] = severity
+                            entry["suggested"] = suggested
 
-            if deduped_vulns:
-                severity_order = {"Critical": 0, "Important": 1, "Moderate": 2, "Low": 3}
-                deduped_vulns.sort(key=lambda v: (severity_order.get(v["severity"], 99), v["cve"]))
+            if pkg_vuln_map:
+                pkg_rows = [
+                    {
+                        "affected": f"{name}-{version}",
+                        "cves": sorted(cves_info["cves"]),
+                        "severity": cves_info["severity"],
+                        "suggested": cves_info["suggested"],
+                    }
+                    for (name, version), cves_info in pkg_vuln_map.items()
+                ]
+                pkg_rows.sort(key=lambda v: (severity_order.get(v["severity"], 99), v["affected"]))
                 summary += "  \nVulnerabilities summary:  \n"
-                summary += "| CVE | Severity | Affected Package | Suggested Package |  \n"
-                summary += "|-----|----------|-----------------|-------------------|  \n"
-                for v in deduped_vulns:
-                    summary += f"| {v['cve']} | {v['severity']} | {v['affected']} | {v['suggested']} |  \n"
+                summary += "| Affected Package | Severity | CVEs | Suggested Package |  \n"
+                summary += "|-----------------|----------|------|-------------------|  \n"
+                for v in pkg_rows:
+                    cve_list = ", ".join(v["cves"])
+                    summary += f"| {v['affected']} | {v['severity']} | {cve_list} | {v['suggested']} |  \n"
 
         return summary
 

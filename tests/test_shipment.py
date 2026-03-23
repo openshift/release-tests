@@ -837,8 +837,8 @@ class TestShipmentImageHealth(unittest.TestCase):
                 has_vulns = any(comp.get("vulnerabilities") for comp in health_data.unhealthy_components)
                 if has_vulns:
                     self.assertIn("Vulnerabilities summary", summary)
-                    self.assertIn("| CVE |", summary)
                     self.assertIn("| Affected Package |", summary)
+                    self.assertIn("| CVEs |", summary)
                     self.assertIn("| Suggested Package |", summary)
         except Exception as e:
             self.fail(f"E2E test for MR {mr_id} failed: {str(e)}")
