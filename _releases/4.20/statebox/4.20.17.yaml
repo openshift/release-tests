@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.17
 created_at: '2026-03-20T04:02:48Z'
-updated_at: '2026-03-23T09:27:34Z'
+updated_at: '2026-03-23T10:03:30Z'
 metadata:
   jira_ticket: ART-14761
   advisory_ids:
@@ -124,4 +124,55 @@ tasks:
     Manually promoted test results: jobctl promote-test-results --build 4.20.0-0.nightly-2026-03-17-142612 --arch amd64
 
     Confidence: HIGH
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-03-23T10:03:30Z'
+  completed_at: '2026-03-23T10:03:30Z'
+  result: |-
+    Promoted Build Analysis: 4.20.17
+
+    Test Aggregation Status:
+    - accepted: true ✅
+    - aggregated: true ✅
+    - Build Phase: Accepted
+
+    Test Results Summary (3 upgrade jobs):
+
+    ✅ All jobs PASSED on first attempt (3/3):
+
+    1. AWS 4.19→4.20 upgrade (f999): PASSED (1/1)
+       - Job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.19-aws-ipi-f999/2034969693323792384
+       - Duration: ~2h 45min (12:25 → 15:11)
+       - Status: SUCCESS
+
+    2. Azure 4.20→4.20 upgrade FIPS (f999): PASSED (1/1)
+       - Job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-azure-ipi-fips-f999/2034969716514099200
+       - Duration: ~3h 5min (12:26 → 15:31)
+       - Status: SUCCESS
+
+    3. GCP 4.20→4.20 upgrade (f999): PASSED (1/1)
+       - Job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-gcp-ipi-f999/2034969793617989632
+       - Duration: ~2h 51min (12:26 → 15:17)
+       - Status: SUCCESS
+
+    Assessment:
+
+    ✅ All upgrade tests passed BO3 verification
+    ✅ No test failures detected
+    ✅ No retries required
+    ✅ Multi-cloud coverage: AWS, Azure FIPS, GCP
+    ✅ Both upgrade paths tested:
+       - 4.19 → 4.20 (z-stream to next minor)
+       - 4.20 → 4.20 (z-stream within same minor)
+
+    Decision: ACCEPT PROMOTED BUILD ✅
+
+    The promoted build 4.20.17 has clean test results with all blocking upgrade tests passing on first attempt across multiple cloud platforms. No issues detected.
+
+    Confidence: HIGH
+
+    Gate Check: PASSED ✅
+    - Promoted build accepted: true
+    - All tests passed
+    - Ready to proceed to final approval phase
 issues: []
