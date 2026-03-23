@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.63
 created_at: '2026-03-19T20:01:24Z'
-updated_at: '2026-03-23T13:46:36Z'
+updated_at: '2026-03-23T16:01:55Z'
 metadata:
   jira_ticket: ART-14759
   advisory_ids:
@@ -34,16 +34,20 @@ tasks:
     2026-03-20T07:32:34Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-03-20T07:32:34Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-03-23T09:46:34Z'
-  completed_at: null
+  completed_at: '2026-03-23T12:01:55Z'
   result: |-
-    2026-03-23T09:46:34Z: INFO: Initialized StateBox for release 4.14.63 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.63.yaml
-    2026-03-23T09:46:34Z: INFO: Loaded state from _releases/4.14/statebox/4.14.63.yaml (SHA: 997c14e6)
-    2026-03-23T09:46:34Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-03-23T09:46:34Z: INFO: triggered a job with quay.io/openshift-release-dev/ocp-release:4.14.63-x86_64
-    2026-03-23T09:46:34Z: INFO: Triggered image consistency check job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consistency-check/3538/
-    2026-03-23T09:46:36Z: INFO: sent slack message to <#team-qe-release>
+    2026-03-23T11:54:28Z: INFO: Initialized StateBox for release 4.14.63 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.63.yaml
+    2026-03-23T11:54:28Z: INFO: Checking image-consistency-check job status with job id: 3538
+    2026-03-23T11:54:28Z: INFO: build status of image-consistency-check/3538 is SUCCESS
+    2026-03-23T11:54:28Z: INFO: Starting image health check for shipment MR 424
+    2026-03-23T11:54:28Z: INFO: Stage release succeeded (verified by label)
+    2026-03-23T11:54:28Z: INFO: Processing MR 424
+    2026-03-23T11:54:31Z: INFO: Found 840 images to check
+    2026-03-23T12:01:54Z: INFO: Completed image health check. Scanned 840 images, found 0 unhealthy
+    2026-03-23T12:01:55Z: INFO: Added image health summary to MR 424
+    2026-03-23T12:01:55Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-03-23T12:43:54Z'
