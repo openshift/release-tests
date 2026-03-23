@@ -729,29 +729,29 @@ class TestShipmentImageHealth(unittest.TestCase):
     def setUp(self, mock_config):
         self.mock_config = mock_config
         self.mock_config.get_gitlab_url.return_value = "https://gitlab.cee.redhat.com"
-        self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/39"
+        self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/427"
         # Don't mock the token - let it be retrieved from environment
         self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
         self.shipment = ShipmentData(self.mock_config)
 
+    @patch('oar.core.shipment.ShipmentData.is_stage_release_success', return_value=True)
+    @patch('oar.core.shipment.ShipmentData._query_pyxis_vulnerabilities')
     @patch('oar.core.shipment.ShipmentData._query_pyxis_freshness')
-    @patch('oar.core.shipment.ShipmentData._get_components_from_shipment')
-    def test_check_component_image_health(self, mock_components, mock_pyxis):
+    @patch('oar.core.shipment.ShipmentData._get_images_from_shipment')
+    def test_check_component_image_health(self, mock_components, mock_pyxis, mock_vulns, mock_stage):
         """Test checking container image health status"""
-        # Setup mock components and Pyxis response
         mock_components.return_value = [
-            {"name": "test-component1", "containerImage": "test1@sha256:123"},
-            {"name": "test-component2", "containerImage": "test2@sha256:456"}
+            {"component": "test-component1", "containerImage": "test1@sha256:123", "architecture": "amd64"},
+            {"component": "test-component2", "containerImage": "test2@sha256:456", "architecture": "arm64"}
         ]
         mock_pyxis.side_effect = [
-            [{"start_date": "2025-01-01T00:00:00Z", "grade": "A"}, {"start_date": "2025-02-01T00:00:00Z", "grade": "C"}],
-            [{"start_date": "2025-02-01T00:00:00Z", "grade": "F"}]
+            ([{"start_date": "2025-01-01T00:00:00Z", "grade": "A"}, {"start_date": "2025-02-01T00:00:00Z", "grade": "C"}], "/v1/images/id/abc/vulnerabilities"),
+            ([{"start_date": "2025-02-01T00:00:00Z", "grade": "F"}], "/v1/images/id/def/vulnerabilities"),
         ]
+        mock_vulns.return_value = []
 
-        # Test the method
         health_data = self.shipment.check_component_image_health()
-        
-        # Verify results
+
         self.assertEqual(health_data.total_scanned, 2)
         self.assertEqual(health_data.unhealthy_count, 2)
         self.assertEqual(len(health_data.unhealthy_components), 2)
@@ -763,19 +763,23 @@ class TestShipmentImageHealth(unittest.TestCase):
     @patch('oar.core.shipment.ShipmentData.check_component_image_health')
     def test_generate_image_health_summary(self, mock_check):
         """Test summary generation from health check data"""
-        # Setup mock health check results
         mock_check.return_value = ImageHealthData(
             total_scanned=2,
-            unhealthy_components=[{"name": "test-component", "grade": "C", "pull_spec": "test@sha256:123"}]
+            unhealthy_components=[{
+                "name": "test-component",
+                "grade": "C",
+                "pull_spec": "test@sha256:123",
+                "architecture": "amd64",
+                "vulnerabilities": [],
+            }]
         )
 
-        # Test the method
         summary = self.shipment.generate_image_health_summary()
-        
-        # Verify summary content
+
         self.assertIn("Images scanned: 2", summary)
         self.assertIn("Unhealthy components detected: 1", summary)
-        self.assertIn("test-component (grade C)", summary)
+        self.assertIn("test-component (grade C, arch amd64)", summary)
+        self.assertNotIn("Vulnerabilities summary", summary)
         mock_check.assert_called_once()
 
     def test_image_health_real_mr(self):
@@ -786,11 +790,11 @@ class TestShipmentImageHealth(unittest.TestCase):
         try:
             # Use MR 15 which has container images
             shipment = ShipmentData(self.mock_config)
-            
+
             # Test the full flow
             health_data = shipment.check_component_image_health()
             summary = shipment.generate_image_health_summary()
-            
+
             # Basic validation
             self.assertIsInstance(health_data.total_scanned, int)
             self.assertIsInstance(health_data.unhealthy_count, int)
@@ -798,10 +802,46 @@ class TestShipmentImageHealth(unittest.TestCase):
             self.assertGreaterEqual(health_data.total_scanned, 0)
             self.assertGreaterEqual(health_data.unhealthy_count, 0)
             self.assertLessEqual(health_data.unhealthy_count, health_data.total_scanned)
-            
+
             print(f"\nImage health summary:\n{summary}")
         except Exception as e:
             self.fail(f"Real MR test failed: {str(e)}")
+
+    def test_image_health_with_vulnerabilities_real_mr(self):
+        """E2E test: verify vulnerability summary output for a real MR (no comment posted).
+
+        Configure via env vars:
+            GITLAB_TOKEN: required, GitLab personal access token
+            TEST_SHIPMENT_MR_ID: optional, MR ID to check (default: 427)
+        """
+        if not os.getenv('GITLAB_TOKEN'):
+            self.skipTest("GITLAB_TOKEN not set - skipping real API test")
+
+        mr_id = os.getenv('TEST_SHIPMENT_MR_ID', '427')
+        mr_url = f"https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/{mr_id}"
+        self.mock_config.get_shipment_mr.return_value = mr_url
+        shipment = ShipmentData(self.mock_config)
+
+        try:
+            health_data = shipment.check_component_image_health()
+            summary = shipment.generate_image_health_summary(health_data)
+
+            print(f"\nImage health summary for MR {mr_id}:\n{summary}")
+
+            self.assertIsInstance(health_data.total_scanned, int)
+            self.assertGreaterEqual(health_data.total_scanned, 0)
+            self.assertIn("Images scanned", summary)
+            self.assertIn("Unhealthy components detected", summary)
+
+            if health_data.unhealthy_count > 0:
+                has_vulns = any(comp.get("vulnerabilities") for comp in health_data.unhealthy_components)
+                if has_vulns:
+                    self.assertIn("Vulnerabilities summary", summary)
+                    self.assertIn("| CVE |", summary)
+                    self.assertIn("| Affected Package |", summary)
+                    self.assertIn("| Suggested Package |", summary)
+        except Exception as e:
+            self.fail(f"E2E test for MR {mr_id} failed: {str(e)}")
 
 if __name__ == '__main__':
     unittest.main()

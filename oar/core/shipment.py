@@ -1242,36 +1242,67 @@ class ShipmentData:
             
         return pull_spec.split("@sha256:")[1]
 
-    def _query_pyxis_freshness(self, image_digest: str) -> list[dict]:
+    def _query_pyxis_freshness(self, image_digest: str) -> tuple[list[dict], str]:
         """Query Pyxis container registry API for image freshness grades.
-        
+
         Args:
             image_digest: SHA256 image digest to query (without "sha256:" prefix)
-            
+
         Returns:
-            list[dict]: List of freshness grade objects from Pyxis API response,
-                       each containing start_date and grade fields
-                       
+            tuple[list[dict], str]: Freshness grade objects and vulnerabilities href
+
         Raises:
             ShipmentDataException: If API request fails or returns invalid response
-            
+
         Note:
             Uses corporate proxy (squid.corp.redhat.com:3128) for the request
         """
-        
         try:
             url = f"https://catalog.stage.redhat.com/api/containers/v1/images?filter=image_id==sha256:{image_digest}&page_size=100&page=0"
             proxies = {"https": "squid.corp.redhat.com:3128"}
-            
+
             response = requests.get(url, proxies=proxies)
             response.raise_for_status()
-            
+
             data = response.json()
             if not data.get("data"):
-                return []
-            return data["data"][0].get("freshness_grades", [])
+                return [], ""
+            image_data = data["data"][0]
+            grades = image_data.get("freshness_grades", [])
+            vuln_href = image_data.get("_links", {}).get("vulnerabilities", {}).get("href", "")
+            return grades, vuln_href
         except Exception as e:
             raise ShipmentDataException(f"Failed to query Pyxis API: {str(e)}")
+
+    def _query_pyxis_vulnerabilities(self, vuln_href: str) -> list[dict]:
+        """Query Pyxis API for image vulnerability details.
+
+        Args:
+            vuln_href: Relative vulnerabilities href from the images API response
+                       (e.g. "/v1/images/id/<id>/vulnerabilities")
+
+        Returns:
+            list[dict]: List of vulnerability objects, each containing cve_id, severity,
+                        affected_packages (current vulnerable packages), and packages
+                        (fixed/suggested source RPMs)
+
+        Raises:
+            ShipmentDataException: If API request fails or returns invalid response
+
+        Note:
+            Uses corporate proxy (squid.corp.redhat.com:3128) for the request
+        """
+        try:
+            url = f"https://catalog.stage.redhat.com/api/containers{vuln_href}?page_size=100&page=0"
+            proxies = {"https": "squid.corp.redhat.com:3128"}
+
+            response = requests.get(url, proxies=proxies)
+            response.raise_for_status()
+
+            data = response.json()
+            return data.get("data", [])
+        except Exception as e:
+            raise ShipmentDataException(f"Failed to query Pyxis vulnerabilities API: {str(e)}")
 
     def _get_current_image_health_status(self, grades: list[dict]) -> str:
         """Determine the current health status from Pyxis freshness grades.
@@ -1344,17 +1375,24 @@ class ShipmentData:
                     component = image.get("component")
                     architecture = image.get("architecture")
                     logger.debug(f"Checking image health for {component} ({digest}) architecture={architecture}")
-                    grades = self._query_pyxis_freshness(digest)
+                    grades, vuln_href = self._query_pyxis_freshness(digest)
                     grade = self._get_current_image_health_status(grades)
-                    
+
                     total_scanned += 1
                     logger.debug(f"Component {component} health grade: {grade}")
                     if grade and (grade == "Unknown" or grade > "B"):
+                        vulnerabilities = []
+                        if vuln_href:
+                            try:
+                                vulnerabilities = self._query_pyxis_vulnerabilities(vuln_href)
+                            except Exception as e:
+                                logger.warning(f"Failed to fetch vulnerabilities for {component}: {str(e)}")
                         unhealthy_components.append({
                             "name": component,
                             "grade": grade,
                             "pull_spec": pull_spec,
-                            "architecture": architecture
+                            "architecture": architecture,
+                            "vulnerabilities": vulnerabilities,
                         })
                 except Exception as e:
                     logger.warning(f"Failed to check freshness for image: {str(e)}")
@@ -1394,7 +1432,41 @@ class ShipmentData:
             summary += "Unhealthy components:  \n"
             for comp in health_data.unhealthy_components:
                 summary += f"{comp['name']} (grade {comp['grade']}, arch {comp['architecture']}) - {comp['pull_spec']}.  \n"
-                
+
+            # Collect and deduplicate vulnerabilities across all unhealthy components
+            seen = set()
+            deduped_vulns = []
+            for comp in health_data.unhealthy_components:
+                for vuln in comp.get("vulnerabilities", []):
+                    cve = vuln.get("cve_id", "N/A")
+                    for pkg in vuln.get("affected_packages", []):
+                        key = (cve, pkg.get("name", ""), pkg.get("version", ""))
+                        if key not in seen:
+                            seen.add(key)
+                            suggested_parts = []
+                            for p in vuln.get("packages", []):
+                                nevra = p.get("srpm_nevra", [])
+                                if isinstance(nevra, str):
+                                    suggested_parts.append(nevra)
+                                else:
+                                    suggested_parts.extend(nevra)
+                            suggested = ", ".join(suggested_parts) or "N/A"
+                            deduped_vulns.append({
+                                "cve": cve,
+                                "severity": vuln.get("severity", "N/A"),
+                                "affected": f"{pkg.get('name', 'N/A')}-{pkg.get('version', 'N/A')}",
+                                "suggested": suggested,
+                            })
+
+            if deduped_vulns:
+                severity_order = {"Critical": 0, "Important": 1, "Moderate": 2, "Low": 3}
+                deduped_vulns.sort(key=lambda v: (severity_order.get(v["severity"], 99), v["cve"]))
+                summary += "  \nVulnerabilities summary:  \n"
+                summary += "| CVE | Severity | Affected Package | Suggested Package |  \n"
+                summary += "|-----|----------|-----------------|-------------------|  \n"
+                for v in deduped_vulns:
+                    summary += f"| {v['cve']} | {v['severity']} | {v['affected']} | {v['suggested']} |  \n"
+
         return summary
 
     def add_image_health_summary_comment(self, health_data: ImageHealthData = None) -> None:
