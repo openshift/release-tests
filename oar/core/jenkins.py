@@ -45,6 +45,17 @@ class JenkinsHelper:
                 "call stage pipeline job failed") from ej
         return build_url
 
+    def call_image_consistency_job(self, pull_spec):
+        try:
+            logger.info(f"triggered a job with {pull_spec}")
+            build_url = self.call_build_job(
+                "image-consistency-check", pull_spec)
+        except (JenkinsException, JenkinsHelperException) as ej:
+            raise JenkinsHelperException(
+                "call image-consistency-check pipeline job failed"
+            ) from ej
+        return build_url
+
     def get_build_status(self, job_name, build_number):
         """
         get job status via build_number
@@ -130,7 +141,17 @@ class JenkinsHelper:
 
         build_info = ""
         try:
-            if (job_name == JENKINS_JOB_STAGE_PIPELINE):
+            if (job_name == JENKINS_JOB_IMAGE_CONSISTENCY_CHECK):
+                parameters_value = {
+                    "VERSION": "v" + self.version,
+                    "PAYLOAD_URL": pull_spec,
+                }
+                # Add SHIPMENT_MR_ID if shipment MR is available
+                if self.mr_id:
+                    parameters_value["SHIPMENT_MR_ID"] = self.mr_id
+                else:
+                    parameters_value["ERRATA_NUMBERS"] = self.errata_numbers
+            elif (job_name == JENKINS_JOB_STAGE_PIPELINE):
                 parameters_value = {
                     "VERSION": self.version,
                     "PULL_SPEC": pull_spec,
