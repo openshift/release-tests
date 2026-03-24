@@ -1,4 +1,5 @@
 import logging
+import re
 
 import click
 
@@ -23,9 +24,22 @@ class ImageConsistencyChecker:
     def trigger_job(self):
         """Trigger image consistency check Prow job."""
         task_status = self.statebox.get_task_status(TASK_IMAGE_CONSISTENCY_CHECK)
-        if task_status in [TASK_STATUS_PASS, TASK_STATUS_INPROGRESS]:
-            logger.info(f"Image consistency check already {task_status}, skipping")
+        if task_status == TASK_STATUS_PASS:
+            logger.info("Image consistency check already passed, skipping")
             return
+
+        if task_status == TASK_STATUS_INPROGRESS:
+            task = self.statebox.get_task(TASK_IMAGE_CONSISTENCY_CHECK)
+            result_text = (task or {}).get("result", "") or ""
+            match = re.search(r"Triggered image consistency check Prow job: (\S+)", result_text)
+            if match:
+                existing_job_id = match.group(1)
+                job_info = self.jobs.get_job_results(existing_job_id)
+                job_state = (job_info or {}).get("jobState", "")
+                if job_state in ("triggered", "pending", "success"):
+                    logger.info(f"Prow job {existing_job_id} already in state '{job_state}', skipping duplicate trigger")
+                    return
+                logger.info(f"Prow job {existing_job_id} ended with state '{job_state}', re-triggering")
 
         try:
             util.log_task_status(TASK_IMAGE_CONSISTENCY_CHECK, TASK_STATUS_INPROGRESS)
@@ -68,8 +82,11 @@ class ImageConsistencyChecker:
         if job_state == "success":
             healthy = self.io.check_image_health()
             task_status = TASK_STATUS_PASS if healthy else TASK_STATUS_FAIL
-        elif job_state in ("pending", "triggered", ""):
+        elif job_state in ("triggered", "pending"):
             task_status = TASK_STATUS_INPROGRESS
+        elif job_state in ("aborted", "error"):
+            logger.warning(f"Prow job {job_id} ended with state '{job_state}', resetting for re-trigger")
+            task_status = TASK_STATUS_NOT_STARTED
         else:
             task_status = TASK_STATUS_FAIL
 
