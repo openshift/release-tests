@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.63
 created_at: '2026-03-19T20:01:24Z'
-updated_at: '2026-03-24T10:51:33Z'
+updated_at: '2026-03-24T10:51:56Z'
 metadata:
   jira_ticket: ART-14759
   advisory_ids:
@@ -66,15 +66,12 @@ tasks:
     2026-03-24T06:51:32Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-03-24T06:51:32Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-03-23T13:17:20Z'
-  completed_at: null
+  completed_at: '2026-03-24T06:51:56Z'
   result: |-
-    2026-03-23T13:17:20Z: INFO: Initialized StateBox for release 4.14.63 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.63.yaml
-    2026-03-23T13:17:20Z: INFO: job id is not set, will trigger stage testing
-    2026-03-23T13:17:20Z: INFO: Loaded state from _releases/4.14/statebox/4.14.63.yaml (SHA: 5b88bc83)
-    2026-03-23T13:17:20Z: INFO: Stage release succeeded (verified by label)
-    2026-03-23T13:17:20Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-03-23T13:17:20Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1555/>
-    2026-03-23T13:17:22Z: INFO: sent slack message to <#team-qe-release>
+    2026-03-24T06:51:56Z: INFO: Initialized StateBox for release 4.14.63 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.63.yaml
+    2026-03-24T06:51:56Z: INFO: check stage job status according to job id: 1555
+    2026-03-24T06:51:56Z: INFO: build status of zstreams/Stage-Pipeline/1555 is FAILURE
+    2026-03-24T06:51:56Z: INFO: task [Stage Testing] status is changed to [Fail]
 issues: []
