@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.63
 created_at: '2026-03-19T20:01:24Z'
-updated_at: '2026-03-24T15:50:50Z'
+updated_at: '2026-03-24T15:56:46Z'
 metadata:
   jira_ticket: ART-14759
   advisory_ids:
@@ -66,12 +66,19 @@ tasks:
     2026-03-24T06:51:32Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-03-24T06:51:32Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
+  status: Pass
   started_at: '2026-03-24T07:28:55Z'
-  completed_at: '2026-03-24T11:50:50Z'
+  completed_at: '2026-03-24T15:56:46Z'
   result: |-
-    2026-03-24T11:50:50Z: INFO: Initialized StateBox for release 4.14.63 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.63.yaml
-    2026-03-24T11:50:50Z: INFO: check stage job status according to job id: 1557
-    2026-03-24T11:50:50Z: INFO: build status of zstreams/Stage-Pipeline/1557 is FAILURE
-    2026-03-24T11:50:50Z: INFO: task [Stage Testing] status is changed to [Fail]
+    Stage testing failures waived by release lead:
+
+    1. keda operator is not shipped with OCP - need to remove stagerun label from test cases (bugs 52383, 62570)
+    2. nmstate and metallb operators can be installed manually from the web UI - verified via:
+       $ oc get subscriptions.operators.coreos.com --all-namespaces | grep -E 'nmstate|metallb'
+       metallb-system       metallb-operator               metallb-operator               qe-app-registry   stable
+       openshift-nmstate    kubernetes-nmstate-operator    kubernetes-nmstate-operator    qe-app-registry   stable
+
+    Reference: https://redhat-internal.slack.com/archives/C07HMSFE7N2/p1774360503827109
+
+    Original Jenkins job #1557 failed but failures are non-blocking test automation issues, not product defects.
 issues: []
