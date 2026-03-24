@@ -36,7 +36,7 @@ class ImageConsistencyChecker:
                 existing_job_id = match.group(1)
                 job_info = self.jobs.get_job_results(existing_job_id)
                 job_state = (job_info or {}).get("jobState", "")
-                if job_state in ("triggered", "pending", "success"):
+                if job_state in ("triggered", "pending", "running", "success"):
                     logger.info(f"Prow job {existing_job_id} already in state '{job_state}', skipping duplicate trigger")
                     return
                 logger.info(f"Prow job {existing_job_id} ended with state '{job_state}', re-triggering")
@@ -82,7 +82,7 @@ class ImageConsistencyChecker:
         if job_state == "success":
             healthy = self.io.check_image_health()
             task_status = TASK_STATUS_PASS if healthy else TASK_STATUS_FAIL
-        elif job_state in ("triggered", "pending"):
+        elif job_state in ("triggered", "pending", "running"):
             task_status = TASK_STATUS_INPROGRESS
         elif job_state in ("aborted", "error"):
             logger.warning(f"Prow job {job_id} ended with state '{job_state}', resetting for re-trigger")

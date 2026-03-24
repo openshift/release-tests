@@ -565,13 +565,13 @@ ELSE IF file.accepted == false:
 
 ### 8. image-consistency-check (Async Task)
 
-**Purpose:** Verify image consistency across architectures
+**Purpose:** Verify payload images match shipment MR
 
-**MCP Tool:** `oar_image_consistency_check(release, build_number=None)`
+**MCP Tool:** `oar_image_consistency_check(release, job_id=None)`
 
 **Input:**
 - `release`: Z-stream version
-- `build_number`: Optional Jenkins build number (for status check)
+- `job_id`: Optional Prow job ID (for status check)
 
 **Prerequisites:**
 - Build promotion detected (phase == "Accepted")
@@ -583,9 +583,9 @@ ELSE IF file.accepted == false:
 ```python
 Execute: oar_image_consistency_check(release)
 
-# Success - Jenkins job triggered:
+# Success - Prow job triggered:
 stdout contains: "task [Image consistency check] status is changed to [In Progress]"
-AND capture Jenkins build number from stdout
+AND capture Prow job ID from stdout (pattern: "Triggered image consistency check Prow job: {job_id}")
 
 # Blocked - Stage-release pipeline not succeeded:
 IF stage-release pipeline error detected:
@@ -595,7 +595,7 @@ IF stage-release pipeline error detected:
 
 **Phase 2 - Check Status:**
 ```python
-Execute: oar_image_consistency_check(release, build_number={captured_build_number})
+Execute: oar_image_consistency_check(release, job_id={captured_job_id})
 ```
 
 **Phase 3 - Complete:**
@@ -608,7 +608,7 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 
 **Failure Handling:**
 - Stage-release pipeline not ready: Report to user, ask to work with ART, wait for user to re-invoke
-- Jenkins job failure: Mark overall status "Red", notify owner
+- Prow job failure: Mark overall status "Red", notify owner
 
 ---
 
@@ -796,7 +796,7 @@ ELSE:
 ```
 WHEN trigger phase:
     Execute command
-    Capture Jenkins build_number from stdout (if applicable)
+    Capture job ID from stdout (Prow job ID or Jenkins build number)
     Report to user: "Task triggered, check status in X minutes"
 
 WHEN user re-invokes /release:drive:

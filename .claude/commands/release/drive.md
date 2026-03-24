@@ -461,8 +461,9 @@ elif task["status"] == "In Progress":
     # Check if async task (Prow/Jenkins jobs)
     if task_name in ["image-consistency-check", "stage-testing"]:
         # Extract job ID from task result
-        # image-consistency-check uses Prow job ID, stage-testing uses Jenkins build number
-        job_id = extract_from_result(task["result"], r"job ID: (\S+)") or extract_from_result(task["result"], r"Build number: (\d+)")
+        # image-consistency-check: "Triggered image consistency check Prow job: {job_id}"
+        # stage-testing: "Build number: {build_number}"
+        job_id = extract_from_result(task["result"], r"Prow job: (\S+)") or extract_from_result(task["result"], r"job ID: (\S+)") or extract_from_result(task["result"], r"Build number: (\d+)")
 
         if not job_id:
             Log: f"⚠ {task_name} in progress but no job ID found, retrying..."
