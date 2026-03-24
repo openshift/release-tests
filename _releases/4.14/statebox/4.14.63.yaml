@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.63
 created_at: '2026-03-19T20:01:24Z'
-updated_at: '2026-03-24T15:56:46Z'
+updated_at: '2026-03-24T16:00:18Z'
 metadata:
   jira_ticket: ART-14759
   advisory_ids:
@@ -81,4 +81,15 @@ tasks:
     Reference: https://redhat-internal.slack.com/archives/C07HMSFE7N2/p1774360503827109
 
     Original Jenkins job #1557 failed but failures are non-blocking test automation issues, not product defects.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-03-24T11:59:35Z'
+  completed_at: '2026-03-24T12:00:17Z'
+  result: |-
+    2026-03-24T11:59:35Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-03-24T11:59:35Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.14.63
+    2026-03-24T11:59:37Z: INFO: Image Digest: sha256:d41fd6ac8eae1c7512722550c3848c389b2a307d3f45db63d4237e24c4bfed49
+    2026-03-24T11:59:37Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=d41fd6ac8eae1c7512722550c3848c389b2a307d3f45db63d4237e24c4bfed49/signature-1
+    2026-03-24T12:00:17Z: INFO: Signature check PASSED
+    2026-03-24T12:00:17Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
