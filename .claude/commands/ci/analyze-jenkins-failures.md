@@ -1,19 +1,18 @@
 ---
-description: Analyze Jenkins job failures (stage-testing) using AI
+description: Analyze Jenkins job failures (image-consistency-check, stage-testing) using AI
 ---
 
-You are helping the user analyze failures from a Jenkins job run (typically stage-testing jobs used in z-stream release testing).
+You are helping the user analyze failures from a Jenkins job run (typically image-consistency-check or stage-testing jobs used in z-stream release testing).
 
-> **Note:** Image-consistency-check has been migrated from Jenkins to Prow. For Prow job failures, use `/ci:analyze-failures` instead.
+> **Note:** Image consistency check has been migrated from Jenkins to Prow. For new Prow-based image-consistency-check jobs, use `/ci:analyze-failures` instead. This command still supports analyzing legacy Jenkins image-consistency-check runs.
 
 The user has provided a Jenkins job URL: {{args}}
 
 ## Overview
 
 Jenkins jobs used in OAR z-stream release workflow:
+- **image-consistency-check**: Verifies payload image consistency
 - **stage-testing** (Stage-Pipeline): Runs E2E tests for optional operators shipped with Openshift
-
-> **Note:** image-consistency-check has been migrated to Prow and is no longer a Jenkins job.
 
 Each job has its own custom console log format. This command fetches the raw console log and analyzes it based on the job type.
 
@@ -26,7 +25,7 @@ Expected URL patterns:
 
 Extract:
 - **Base URL**: e.g., `https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com`
-- **Job name**: e.g., `zstreams/Stage-Pipeline`
+- **Job name**: e.g., `image-consistency-check` or `zstreams/Stage-Pipeline`
 - **Build number**: e.g., `3436`
 
 ### 2. Fetch Job Parameters via API
@@ -911,7 +910,7 @@ Present findings in a clear, actionable format:
 # Jenkins Job Failure Analysis Summary
 
 ## Job Details
-- **Type**: stage-testing
+- **Type**: {image-consistency-check | stage-testing}
 - **Build**: #{build_number}
 - **Status**: {status}
 - **URL**: {jenkins_url}
