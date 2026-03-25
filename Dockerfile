@@ -41,8 +41,10 @@ RUN case ${TARGETARCH} in \
 # Install OAR CLI
 WORKDIR /usr/src/release-tests
 COPY . .
-RUN uv pip install --python ${PY_BIN} --system . && \
+RUN uv pip install --python ${PY_BIN} --system . ./prow && \
     oar --help && \
-    oarctl --help
+    oarctl --help && \
+    job --help && \
+    jobctl --help
 
 CMD [ "/bin/bash" ]

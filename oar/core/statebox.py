@@ -50,7 +50,7 @@ Example Usage:
     statebox.update_task(
         "image-consistency-check",
         status="Pass",
-        result="Jenkins job completed successfully. All images verified."
+        result="Prow job completed successfully. All images verified."
     )
 
     # Add blocking issue (task-specific)

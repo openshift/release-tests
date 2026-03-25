@@ -279,6 +279,20 @@ class NotificationManager:
             raise NotificationException(
                 "share jenkins build url failed") from e
 
+    def share_prow_job_url(self, job_name, job_url):
+        """
+        Share notification for new Prow job
+        """
+        try:
+            slack_msg = self.mh.get_slack_message_for_prow_job(
+                job_name, job_url)
+            if len(slack_msg):
+                self.sc.post_message(self.cs.get_slack_channel_from_contact(
+                    "qe-release"), slack_msg)
+        except Exception as e:
+            raise NotificationException(
+                "share prow job url failed") from e
+
     def share_greenwave_cvp_failures(self, jira_key):
         """
         Share greenwave cvp failures
@@ -967,6 +981,25 @@ class MessageHelper:
             message += f"[{self.cs.release}] Hello {gid}, {build_info}"
 
         return message
+
+    def get_slack_message_for_prow_job(self, job_name, job_url):
+        """
+        Format slack message for Prow job
+
+        Args:
+            job_name (str): Prow job name
+            job_url (str): Prow job url
+
+        Returns:
+            str: slack message
+        """
+        gid = self.sc.get_group_id_by_name(
+            self.cs.get_slack_user_group_from_contact(
+                "qe-release", util.get_y_release(self.cs.release)
+            )
+        )
+
+        return f"[{self.cs.release}] Hello {gid}, triggered Prow job [{job_name}], url is {job_url}"
 
     def get_slack_message_for_failed_cvp(self, jira_key):
         """

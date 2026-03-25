@@ -33,6 +33,8 @@ https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/image-consisten
 https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1413/
 ```
 
+> **Note:** Image consistency check has been migrated from Jenkins to Prow. Prow job URLs follow the Prow URL pattern above.
+
 ## Action to Take
 
 **Step 1**: Analyze the provided URL against the detection rules above.
