@@ -72,6 +72,19 @@ class NotificationService:
         self.dry_run = dry_run
         self.ldap = LdapHelper()
 
+    def get_user_email(self, user: User) -> Optional[str]:
+        """
+        Get user email address from Jira Cloud user object.
+
+        Args:
+            user (User): The Jira Cloud user object.
+
+        Returns:
+            Optional[str]: The user email address if found, otherwise None.
+        """
+
+        return getattr(user, "emailAddress", None)
+
     def create_notification_title(self, notification_type: NotificationType) -> str:
         """
         Returns a formatted notification title based on the given type.
@@ -117,7 +130,7 @@ class NotificationService:
 
         jira_comment_mentions = ""
         for u in users:
-            jira_comment_mentions += f"[~{u.name}] "
+            jira_comment_mentions += f"[~accountId:{u.accountId}] "
         return jira_comment_mentions
 
     def process_notification(self, notification: Notification) -> None:
@@ -178,8 +191,8 @@ class NotificationService:
             Optional[User]: The matched user if found, otherwise None.
         """
 
-        for user in self.jira.search_users(user=email):
-            if user.emailAddress == email:
+        for user in self.jira.search_users(query=email):
+            if self.get_user_email(user) == email:
                 return user
         logger.warning(f"User was not found for email {email}.")
         return None
@@ -213,7 +226,7 @@ class NotificationService:
             Optional[User]: The manager user if found, otherwise None.
         """
 
-        manager_email = self.ldap.get_manager_email(user.emailAddress)
+        manager_email = self.ldap.get_manager_email(self.get_user_email(user))
         if manager_email:
             manager = self.find_user_by_email(manager_email)
             if manager:
@@ -221,7 +234,7 @@ class NotificationService:
             else:
                 logger.warning(f"Manager {manager_email} was not found in Jira.")
         else:
-            logger.warning(f"Manager of {user.emailAddress} was not found in LDAP.")
+            logger.warning(f"Manager of {self.get_user_email(user)} was not found in LDAP.")
         return None
 
     def get_assignee(self, issue: Issue) -> Optional[User]:
@@ -251,9 +264,9 @@ class NotificationService:
             user (User): The user to add to the need info from field.
         """
         if self.dry_run:
-            logger.info(f"Skipping adding {user.emailAddress} to need info from field. Issue {issue.key}.")
+            logger.info(f"Skipping adding {self.get_user_email(user)} to need info from field. Issue {issue.key}.")
         else:
-            logger.info(f"Adding {user.emailAddress} to need info from field. Issue {issue.key}.")
+            logger.info(f"Adding {self.get_user_email(user)} to need info from field. Issue {issue.key}.")
             jira_issue = JiraIssue(issue)
             need_info_from = jira_issue.get_need_info_from() or []
             updated_users = [u.raw for u in need_info_from]
