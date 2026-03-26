@@ -23,11 +23,13 @@ Options:
   --help                Show this message and exit.
 
 Commands:
-  get_payloads  Check the latest payload of each version.
-  get_results   Return the Prow job executed info.
-  list          List the jobs which support the API call.
-  run           Run a job and save results to /tmp/prow-jobs.csv
-  run_required  Run required jobs from a file
+  get_payloads              Check the latest payload of each version.
+  get_results               Return the Prow job executed info.
+  list                      List the jobs which support the API call.
+  run                       Run a job and save results to /tmp/prow-jobs.csv
+  run_image_consistency_check  Run image consistency check Prow job.
+  run_required              Run required jobs from a file
+  run_stage_testing         Run stage testing Prow job for a given payload.
 ```
 
 ### Run job
@@ -73,6 +75,27 @@ MacBook-Pro:~ jianzhang$ job run --upgrade_to quay.io/openshift-release-dev/ocp-
 Debug mode is off
 Returned job id: 3ebe0a6e-ea5c-4c96-9ca4-295074f9eaa3
 periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14 None 3ebe0a6e-ea5c-4c96-9ca4-295074f9eaa3 2023-06-07T06:15:10Z https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.11-amd64-nightly-4.11-upgrade-from-stable-4.10-gcp-ipi-disconnected-private-p2-f14/1666327924111839232
+```
+
+### Run stage testing
+
+Run the stage testing Prow job for a given release payload. The job name is version-specific and constructed automatically from the payload URL.
+
+```console
+$ job run_stage_testing -p quay.io/openshift-release-dev/ocp-release:4.19.1-x86_64
+Stage testing job name: periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi
+Stage testing job id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+Stage testing job url: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/...
+```
+
+### Run image consistency check
+
+Run the image consistency check Prow job for a given release payload and shipment MR.
+
+```console
+$ job run_image_consistency_check -p quay.io/openshift-release-dev/ocp-release:4.19.1-x86_64 -m 189
+Image consistency check job id: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+Image consistency check job url: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/...
 ```
 
 ### Debug failure job
