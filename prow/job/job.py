@@ -26,6 +26,7 @@ class Jobs:
     POLL_INTERVAL_SECONDS = 5
 
     IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-main-image-consistency-check"
+    STAGE_TESTING_JOB_NAME_TEMPLATE = "periodic-ci-openshift-openshift-tests-private-release-{minor_release}-stage-testing-e2e-aws-ipi"
 
     def __init__(self):
         self.run = False
@@ -350,7 +351,11 @@ class Jobs:
         pattern = r"^quay\.io/openshift-release-dev/ocp-release:\d+\.\d+\.\d+.*-x86_64$"
         return re.match(pattern, payload_url) is not None
 
-        
+    def _get_minor_release_from_payload_url(self, payload_url):
+        """Extract minor release (e.g. '4.19') from a validated payload URL."""
+        z_version = payload_url.split(":")[1].split("-")[0]
+        return ".".join(z_version.split(".")[:2])
+
     def run_image_consistency_check(self, payload_url: str, mr_id: int) -> dict:
         """
         Run image consistency check Prow job.
@@ -396,6 +401,58 @@ class Jobs:
         # get job url from job results
         job_status = self.get_job_results(job_id, poll=True)
         print(f"Image consistency check job url: {job_status['jobURL']}")
+
+        return job_status
+
+    def run_stage_testing(self, payload_url: str) -> dict:
+        """
+        Run stage testing Prow job.
+
+        The Prow job name is version-specific:
+        periodic-ci-openshift-openshift-tests-private-release-{minor_release}-stage-testing-e2e-aws-ipi
+
+        Args:
+            payload_url: The URL of the release payload to test
+                (e.g. quay.io/openshift-release-dev/ocp-release:4.19.1-x86_64)
+
+        Returns:
+            A dictionary containing the job info.
+        """
+
+        if not self._is_valid_payload_url(payload_url):
+            raise Exception(f"Invalid payload URL: {payload_url}")
+
+        minor_release = self._get_minor_release_from_payload_url(payload_url)
+
+        job_name = Jobs.STAGE_TESTING_JOB_NAME_TEMPLATE.format(minor_release=minor_release)
+        print(f"Stage testing job name: {job_name}")
+
+        url = self.gangway_url + job_name
+        data = {
+            "job_execution_type": "1",
+            "pod_spec_options": {
+                "envs": {
+                    "RELEASE_IMAGE_LATEST": payload_url,
+                }
+            }
+        }
+
+        job_run_res = self._get_session().post(
+            url=url,
+            json=data,
+            headers=self.get_prow_headers()
+        )
+        if job_run_res.status_code != 200:
+            raise Exception(
+                f"Failed to run stage testing job '{job_name}'. "
+                f"Error code: {job_run_res.status_code}, reason: {job_run_res.reason}"
+            )
+
+        job_id = json.loads(job_run_res.text)["id"]
+        print(f"Stage testing job id: {job_id}")
+
+        job_status = self.get_job_results(job_id, poll=True)
+        print(f"Stage testing job url: {job_status['jobURL']}")
 
         return job_status
 
@@ -766,6 +823,18 @@ def run_image_consistency_check(payload_url: str, mr_id: int):
         mr_id (int): The ID of the merge request
     """
     JOB.run_image_consistency_check(payload_url, mr_id)
+
+
+@cli.command("run_stage_testing")
+@click.option("-p", "--payload-url", type=str, required=True, help="Payload URL (e.g. quay.io/openshift-release-dev/ocp-release:4.19.1-x86_64)")
+def run_stage_testing(payload_url: str):
+    """
+    Run stage testing Prow job for a given payload.
+    
+    Args:
+        payload_url (str): The URL of the payload
+    """
+    JOB.run_stage_testing(payload_url)
 
 # no need this program entry since this file won't be imported as a module.
 # if __name__ == "__main__":
