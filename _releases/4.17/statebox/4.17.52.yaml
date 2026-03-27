@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.52
 created_at: '2026-03-26T17:00:18Z'
-updated_at: '2026-03-27T08:23:49Z'
+updated_at: '2026-03-27T11:46:45Z'
 metadata:
   jira_ticket: ART-14783
   advisory_ids:
@@ -52,14 +52,21 @@ tasks:
     (x86_64). Test summary: 6 jobs completed successfully with 0 failures across AWS,
     Azure, and GCP platforms including upgrade tests from 4.16 and 4.17.'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-03-27T04:23:32Z'
-  completed_at: null
+  completed_at: '2026-03-27T07:46:44Z'
   result: |-
-    2026-03-27T04:23:32Z: INFO: Initialized StateBox for release 4.17.52 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.52.yaml
-    2026-03-27T04:23:32Z: INFO: Checking image consistency check Prow job status for job ID: 4537f6d3-8ba0-416a-82d2-f4de428f13c6
-    2026-03-27T04:23:32Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2037443286183972864
-    2026-03-27T04:23:32Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-03-27T07:37:51Z: INFO: Initialized StateBox for release 4.17.52 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.52.yaml
+    2026-03-27T07:37:51Z: INFO: Checking image consistency check Prow job status for job ID: 4537f6d3-8ba0-416a-82d2-f4de428f13c6
+    2026-03-27T07:37:51Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2037443286183972864
+    2026-03-27T07:37:51Z: INFO: Starting image health check for shipment MR 439
+    2026-03-27T07:37:51Z: INFO: Stage release succeeded (verified by label)
+    2026-03-27T07:37:51Z: INFO: Processing MR 439
+    2026-03-27T07:37:55Z: INFO: Found 875 images to check
+    2026-03-27T07:38:25Z: WARNING: Failed to check freshness for image: Failed to query Pyxis API: HTTPSConnectionPool(host='catalog.stage.redhat.com', port=443): Read timed out. (read timeout=30)
+    2026-03-27T07:46:44Z: INFO: Completed image health check. Scanned 874 images, found 0 unhealthy
+    2026-03-27T07:46:44Z: INFO: Added image health summary to MR 439
+    2026-03-27T07:46:44Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-03-27T04:23:48Z'
