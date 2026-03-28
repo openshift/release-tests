@@ -47,9 +47,10 @@ Tools exposed:
 - 1 job command (run)
 - 4 configuration tools (get-release-metadata, is-release-shipped, get-release-status, update-task-status)
 - 4 issue management tools (add-issue, resolve-issue, get-issues, get-task-blocker)
+- 1 discovery tool (discover-active-releases)
 - 3 cache management tools (mcp_cache_stats, mcp_cache_invalidate, mcp_cache_warm)
 
-Total: 28 tools (100% optimized - all CLI commands use direct Click invocation)
+Total: 29 tools (100% optimized - all CLI commands use direct Click invocation)
 
 Performance Characteristics:
 - ConfigStore cache hit: <10ms (3x-100x faster than miss)
@@ -68,10 +69,14 @@ import threading
 import io
 import asyncio
 import traceback
+import urllib.request
+import urllib.error
+import yaml
+import re
 from typing import Optional
 from threading import RLock
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from fastmcp import FastMCP
@@ -1306,6 +1311,113 @@ async def oar_update_task_status(release: str, task_name: str, status: str, resu
             "release": release,
             "task": task_name,
             "status": status
+        })
+
+
+# ============================================================================
+# Release Discovery Tool
+# ============================================================================
+
+@mcp.tool()
+async def discover_active_releases(keep_days_after_release: int = 1) -> str:
+    """
+    Discover active releases using cached ConfigStore.
+
+    This is a READ-ONLY operation - queries tracking files from GitHub and uses cached ConfigStore.
+
+    Discovery logic:
+    - Auto-discovers y-streams from _releases directory
+    - For each y-stream: fetches tracking file, gets latest release
+    - Uses ConfigStore (cached) to get release_date
+    - Returns releases within date window (today <= release_date + keep_days_after_release)
+
+    Args:
+        keep_days_after_release: Number of days after release_date to include in results (default: 1)
+
+    Returns:
+        JSON string with discovery results:
+        - Success: {"releases": ["4.14.63", "4.18.36", "4.20.17"]}
+        - Error: {"error": "...", "releases": []}
+    """
+    try:
+        today = datetime.now().date()
+        active_releases = []
+
+        # Auto-discover y-streams by fetching the _releases directory listing from GitHub API
+        api_url = "https://api.github.com/repos/openshift/release-tests/contents/_releases?ref=z-stream"
+
+        try:
+            req = urllib.request.Request(api_url)
+            req.add_header('Accept', 'application/vnd.github.v3+json')
+
+            with urllib.request.urlopen(req) as response:
+                contents = json.loads(response.read())
+
+            # Extract y-stream versions from directory names (e.g., "4.20", "4.21")
+            y_streams = []
+            pattern = re.compile(r'^4\.\d{1,2}$')
+
+            for item in contents:
+                if item['type'] == 'dir' and pattern.match(item['name']):
+                    y_streams.append(item['name'])
+
+            y_streams.sort(key=lambda v: tuple(map(int, v.split('.'))))
+
+        except Exception as e:
+            logger.error(f"Error discovering y-streams: {e}")
+            y_streams = []
+
+        # For each y-stream, get latest release and check date using cached ConfigStore
+        for y_stream in y_streams:
+            # Get the latest release from the tracking file
+            tracking_url = f"https://raw.githubusercontent.com/openshift/release-tests/z-stream/_releases/{y_stream}/{y_stream}.z.yaml"
+
+            try:
+                with urllib.request.urlopen(tracking_url) as response:
+                    tracking_data = yaml.safe_load(response.read())
+
+                # Get all releases from tracking file
+                releases = tracking_data.get("releases", {}).keys()
+
+                if not releases:
+                    continue
+
+                # Find latest release
+                latest_release = max(releases, key=lambda v: tuple(map(int, v.split('.'))))
+
+                # Use cached ConfigStore
+                # First call populates cache, subsequent calls hit cache
+                try:
+                    cs = get_cached_configstore(latest_release)
+                    release_date_str = cs.get_release_date()
+
+                    # Parse date in format: 2026-Mar-25
+                    release_date = datetime.strptime(release_date_str, "%Y-%b-%d").date()
+
+                    # Keep if today is within the visibility window after release
+                    if today <= release_date + timedelta(days=keep_days_after_release):
+                        active_releases.append(latest_release)
+
+                except ConfigStoreException as e:
+                    # ConfigStore not ready for this release (build data not available yet)
+                    logger.debug(f"ConfigStore not available for {latest_release}: {e}")
+                    continue
+
+            except (urllib.error.HTTPError, Exception) as e:
+                # Tracking file not found or error - skip this y-stream
+                logger.debug(f"Error processing y-stream {y_stream}: {e}")
+                continue
+
+        # Return releases array wrapped in dict for consistent structure
+        return json.dumps({"releases": active_releases})
+
+    except Exception as e:
+        logger.error(f"Failed to discover active releases: {e}")
+        logger.error(traceback.format_exc())
+        # Return error with empty releases as fallback
+        return json.dumps({
+            "error": str(e),
+            "releases": []
         })
 
 

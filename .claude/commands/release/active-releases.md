@@ -20,13 +20,16 @@ This command provides a team-wide view of active releases based on StateBox trac
 
 ### 1. Auto-Discover Active Releases
 
-Run the discovery script:
+Call the MCP discovery tool:
 
-```bash
-./scripts/discover-active-releases.py
+```python
+result = json.loads(discover_active_releases(keep_days_after_release=1))
+if "error" in result:
+    raise Exception(f"Failed to discover active releases: {result['error']}")
+releases = result["releases"]
 ```
 
-This outputs JSON array with: `version`, `release_date`, `release_date_str`, `days_until_release`
+Example result: `{"releases": ["4.14.63", "4.16.59", "4.17.52"]}`
 
 ### 2. Fetch Status for Each Release
 
@@ -41,7 +44,9 @@ shipped_data = oar_is_release_shipped(release=version)
 **From `oar_get_release_status()`:**
 - `tasks` - List of task objects (name, status, started_at, completed_at)
 - `issues` - List of all issues (blocker and non-blocker)
-- `metadata` - Contains release_date, advisory IDs, shipment MR, etc.
+- `metadata` - Contains:
+  - `release_date` - Release date string in format "2026-Mar-26" (use for countdown calculation)
+  - Advisory IDs, shipment MR, Jira ticket, etc.
 
 **From `oar_is_release_shipped()`:**
 - `shipped` - Boolean indicating if release is live in production
@@ -54,6 +59,12 @@ For each release, extract:
 
 **From `oar_get_release_status()`:**
 - `tasks` - Task list for counting and phase determination
+- `metadata.release_date` - Parse this to calculate `days_until_release`:
+  ```python
+  from datetime import datetime
+  release_date = datetime.strptime(metadata["release_date"], "%Y-%b-%d").date()
+  days_until_release = (release_date - datetime.now().date()).days
+  ```
 - `issues` - Use ONLY the issues array from StateBox
   - **CRITICAL:** If `issues` is empty array `[]`, there are NO issues - show `"-"`
   - **NEVER infer or create issues from task result text** - only use the explicit issues array
@@ -119,7 +130,7 @@ https://github.com/openshift/release-tests/blob/z-stream/_releases/{y_stream}/st
 **Sort releases (multi-level):**
 1. **Primary**: Status priority
    - BLOCKED (0)
-   - Overdue - `days_until_release < 0` (1)
+   - Overdue - days_until_release < 0 (1)
    - IN PROGRESS (2)
    - NOT STARTED (3)
    - COMPLETE (4)
@@ -152,7 +163,10 @@ Active Z-Stream Releases:
 **Field details:**
 - `{emoji}`: 🚀 SHIPPED, ✅ COMPLETE, 🔴 BLOCKED, 🟠 IN PROGRESS (with non-blocking issues), 🟢 IN PROGRESS (no issues), ⚪ NOT STARTED
 - `{status}`: SHIPPED, COMPLETE, BLOCKED, IN PROGRESS, NOT STARTED
-- `{release_countdown}`: "TODAY", "in X days", "X days OVERDUE"
+- `{release_countdown}`:
+  - If days_until_release > 0: "in {days_until_release} days"
+  - If days_until_release == 0: "TODAY"
+  - If days_until_release < 0: "{abs(days_until_release)} days OVERDUE"
 - `{phase_task_name}`: Task name(s) with status from StateBox
   - Examples: `"change-advisory-status (Pass)"`, `"stage-testing (In Progress)"`, `"check-cve-tracker-bug (Fail)"`, `"Not started"`
   - Multiple In Progress: `"stage-testing (In Progress), image-consistency-check (In Progress)"`
@@ -212,7 +226,7 @@ Active Z-Stream Releases:
 
 ## Important Notes
 
-- **Auto-discovery**: Automatically finds releases from StateBox files (no hardcoded lists)
+- **Auto-discovery**: Automatically finds releases from tracking files (no hardcoded lists)
 - **Date filtering**: Excludes releases with release_date older than 2 days
 - **StateBox required**: Only shows releases with StateBox (ready for QE work)
 - **Timing**: Releases appear 1-2 days after cut-off when ART creates StateBox

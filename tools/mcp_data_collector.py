@@ -287,6 +287,17 @@ class MCPDataCollector:
             'shipped': shipped
         }
 
+    async def discover_active_releases_async(self) -> Dict[str, Any]:
+        """
+        Discover active releases using MCP discovery tool (async)
+
+        Returns:
+            Dict with discovery results:
+            - Success: {"releases": ["4.14.63", "4.16.59", ...]}
+            - Error: {"error": "...", "releases": []}
+        """
+        return await self._call_mcp_tool_async("discover_active_releases")
+
     def _run_async(self, coro):
         """
         Run async coroutine using the persistent event loop.
@@ -331,6 +342,10 @@ class MCPDataCollector:
     def get_all_release_data(self, release: str) -> Dict[str, Any]:
         """Get all release data (sync wrapper)"""
         return self._run_async(self.get_all_release_data_async(release))
+
+    def discover_active_releases(self) -> Dict[str, Any]:
+        """Discover active releases (sync wrapper)"""
+        return self._run_async(self.discover_active_releases_async())
 
 
 if __name__ == "__main__":

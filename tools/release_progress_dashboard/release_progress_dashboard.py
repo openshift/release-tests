@@ -766,6 +766,34 @@ def main():
             else:
                 st.sidebar.warning(f"{new_release} already added")
 
+    # Auto-discover active releases button
+    if st.sidebar.button("🔍 Load Active Releases", use_container_width=True):
+        try:
+            # Use MCP data collector to discover active releases
+            collector = get_data_collector()
+            result = collector.discover_active_releases()
+
+            # Check for error
+            if "error" in result:
+                st.sidebar.error(f"❌ Discovery failed: {result['error']}")
+            else:
+                active_releases = result["releases"]
+                added_count = 0
+
+                for version in active_releases:
+                    if version not in st.session_state.releases:
+                        st.session_state.releases.append(version)
+                        added_count += 1
+
+                if added_count > 0:
+                    st.sidebar.success(f"✅ Added {added_count} active release(s)")
+                    st.rerun()
+                else:
+                    st.sidebar.info("All active releases already tracked")
+
+        except Exception as e:
+            st.sidebar.error(f"Error discovering releases: {str(e)}")
+
     # Show current releases
     st.sidebar.divider()
     st.sidebar.subheader("📋 Tracked Releases")
