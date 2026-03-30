@@ -6,15 +6,16 @@ You are helping the user view all currently active OpenShift z-stream releases a
 
 ## Overview
 
-This command provides a team-wide view of active releases based on StateBox tracking files.
+This command provides a team-wide view of active releases with status and progress from StateBox.
 
 **Auto-discovery approach:**
-- Scans StateBox files in release-tests repository (z-stream branch)
-- Excludes releases with release_date older than 2 days
-- Only shows releases that have StateBox (ready for QE work)
+- Discovers y-streams from `_releases/` directory structure (z-stream branch)
+- Finds latest z-stream release per y-stream from tracking files (`4.X.z.yaml`)
+- Filters by release date using ConfigStore (excludes releases older than 1 day past release_date)
+- Fetches detailed status from StateBox for each release
 - No hardcoded version lists
 
-**Timing note:** Releases appear here only after ART creates the StateBox (typically Thursday-Friday after Wednesday cut-off).
+**Timing note:** Releases appear after ART announces them and build data is available in ConfigStore.
 
 ## Steps
 
@@ -23,7 +24,7 @@ This command provides a team-wide view of active releases based on StateBox trac
 Call the MCP discovery tool:
 
 ```python
-result = json.loads(discover_active_releases(keep_days_after_release=1))
+result = json.loads(discover_active_releases())
 if "error" in result:
     raise Exception(f"Failed to discover active releases: {result['error']}")
 releases = result["releases"]
