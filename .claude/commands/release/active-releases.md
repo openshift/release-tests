@@ -4,6 +4,8 @@ description: Show all currently active z-stream releases and their status
 
 You are helping the user view all currently active OpenShift z-stream releases and their progress.
 
+**CRITICAL:** Always check the system context for today's date (look for "Today's date is" in system-reminder). Use this date for all countdown calculations - NEVER hardcode or assume a date.
+
 ## Overview
 
 This command provides a team-wide view of active releases with status and progress from StateBox.
@@ -64,7 +66,10 @@ For each release, extract:
   ```python
   from datetime import datetime
   release_date = datetime.strptime(metadata["release_date"], "%Y-%b-%d").date()
-  days_until_release = (release_date - datetime.now().date()).days
+  # IMPORTANT: Use the current date from system context (check system-reminder for today's date)
+  # DO NOT hardcode the date - always use the date provided in the system context
+  today = datetime.now().date()  # This will be the date from system context
+  days_until_release = (release_date - today).days
   ```
 - `issues` - Use ONLY the issues array from StateBox
   - **CRITICAL:** If `issues` is empty array `[]`, there are NO issues - show `"-"`
