@@ -60,28 +60,22 @@ Performance Characteristics:
 - Memory: Shared ConfigStore instances across workers (cache efficiency)
 """
 
-import sys
-import os
-import logging
-import json
-import time
-import threading
-import io
 import asyncio
+import json
+import logging
+import os
+import sys
+import time
 import traceback
-import urllib.request
-import urllib.error
-import yaml
-import re
-from typing import Optional
-from threading import RLock
-from dataclasses import dataclass, field
-from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor
-from functools import partial
-from fastmcp import FastMCP
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from threading import RLock
+from typing import Optional
+
 from cachetools import TTLCache
 from click.testing import CliRunner
+from fastmcp import FastMCP
 from starlette.responses import JSONResponse
 
 # Import OAR validation
@@ -96,7 +90,6 @@ from oar.core.exceptions import StateBoxException, WorksheetException, ConfigSto
 from oar.core.log_capture import capture_logs, merge_output
 from gspread.exceptions import WorksheetNotFound
 from oar.core.const import (
-    LABEL_OVERALL_STATUS,
     LABEL_TASK_OWNERSHIP,
     LABEL_TASK_IMAGE_CONSISTENCY_TEST,
     LABEL_TASK_NIGHTLY_BUILD_TEST,

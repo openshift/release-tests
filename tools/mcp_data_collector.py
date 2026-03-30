@@ -16,16 +16,17 @@ Usage:
     metadata = collector.get_release_metadata("4.19.1")
 """
 
+import asyncio
+import concurrent.futures
 import json
 import logging
 import os
 import sys
-import asyncio
-import concurrent.futures
 from typing import Dict, Any, Optional
+
 import httpx
-from mcp.client.streamable_http import streamable_http_client
 from mcp import ClientSession
+from mcp.client.streamable_http import streamable_http_client
 
 logger = logging.getLogger(__name__)
 

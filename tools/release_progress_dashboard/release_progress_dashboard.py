@@ -9,15 +9,15 @@ Usage:
     streamlit run tools/release_progress_dashboard_new.py
 """
 
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-from datetime import datetime
 import logging
+import os
+import sys
+from datetime import datetime
 from typing import Dict, List, Any
 
-import sys
-import os
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
 
 # Add parent directory to path to import mcp_data_collector from tools/
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
