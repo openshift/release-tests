@@ -347,7 +347,6 @@ class Jobs:
         Returns:
             True if the payload URL is valid, False otherwise.
         """
-
         pattern = r"^quay\.io/openshift-release-dev/ocp-release:\d+\.\d+\.\d+.*-x86_64$"
         return re.match(pattern, payload_url) is not None
 
@@ -367,7 +366,6 @@ class Jobs:
         Returns:
             A dictionary containing the job info.
         """
-
         if not self._is_valid_payload_url(payload_url):
             raise Exception(f"Invalid payload URL: {payload_url}")
 
@@ -418,7 +416,6 @@ class Jobs:
         Returns:
             A dictionary containing the job info.
         """
-
         if not self._is_valid_payload_url(payload_url):
             raise Exception(f"Invalid payload URL: {payload_url}")
 
@@ -458,7 +455,6 @@ class Jobs:
 
     def run_job(self, job_name, payload, upgrade_from, upgrade_to):
         """Function run Prow job by calling the API"""
-
         job_id = None
 
         if job_name is None:
