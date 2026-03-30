@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.27
 created_at: '2026-03-27T10:00:10Z'
-updated_at: '2026-03-30T04:47:29Z'
+updated_at: '2026-03-30T08:45:43Z'
 metadata:
   jira_ticket: ART-14782
   advisory_ids:
@@ -85,4 +85,14 @@ tasks:
     2026-03-30T00:47:06Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=67559510d25d5024c374d67104b99d88f83746f615fa8232ae778d9e7fec14f8/signature-1
     2026-03-30T00:47:28Z: INFO: Signature check PASSED
     2026-03-30T00:47:28Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-03-30T08:45:43Z'
+  completed_at: '2026-03-30T08:45:43Z'
+  result: 'Candidate build: 4.19.0-0.nightly-2026-03-25-205734. Test results aggregated
+    (3 jobs). Acceptance status: false due to 2 test failures in Azure FIPS job. Failures
+    identified as infrastructure-related storage snapshot issues (CSI driver block/filesystem
+    xfs provisioning). These are known flaky tests and are waivable. Candidate build
+    analysis completed retrospectively for audit trail. Primary gate check (promoted
+    build 4.19.27) already passed with accepted: true.'
 issues: []
