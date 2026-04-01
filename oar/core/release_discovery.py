@@ -84,8 +84,6 @@ class ReleaseDiscovery:
 
         # Tracking files data (fetched via GraphQL)
         self._tracking_data: Optional[dict] = None
-        # StateBox files data (fetched via GraphQL)
-        self._statebox_data: Optional[dict] = None
 
     def get_supported_ystreams(self) -> List[str]:
         """
@@ -343,14 +341,8 @@ class ReleaseDiscovery:
         Raises:
             ReleaseDiscoveryException: If GraphQL query fails or YAML parsing fails
         """
-        # Return data if already fetched
-        if self._statebox_data is not None:
-            logger.debug("Using already fetched StateBox files data")
-            return self._statebox_data
-
         if not releases:
-            self._statebox_data = {}
-            return self._statebox_data
+            return {}
 
         logger.info(f"Fetching StateBox files for {len(releases)} releases via GraphQL")
 
@@ -410,11 +402,9 @@ class ReleaseDiscovery:
                 else:
                     logger.debug(f"StateBox file not found for release {release}")
 
-            # Store the result for reuse
-            self._statebox_data = statebox_data
             logger.info(f"Fetched StateBox files for {len(statebox_data)} releases via GraphQL")
 
-            return self._statebox_data
+            return statebox_data
 
         except ReleaseDiscoveryException:
             raise
