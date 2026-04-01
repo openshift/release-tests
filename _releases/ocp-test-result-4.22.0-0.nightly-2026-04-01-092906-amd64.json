@@ -6,9 +6,47 @@
         "jobStartTime": "2026-04-01T18:25:02Z",
         "jobID": "053323d0-6057-4e52-80a4-b89e695d0660",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2039408714393325568",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-04-01T21:26:35Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 113,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 27
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-25763:UserInterface Users management on console",
+              "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-04-01T22:27:29Z",
+          "jobID": "40c9ca88-565b-494b-bd3e-46eb128dbe3c",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2039469730984628224",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-04-01T22:27:35Z",
+          "jobID": "421c189b-0e77-4445-96cf-4c9f038ba003",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2039469752627236864",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999",
@@ -72,13 +110,71 @@
           "jobStartTime": "2026-04-01T18:31:03Z",
           "jobID": "9d91a7a5-7641-4cfe-86e1-df73568dffb9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2039410227765317632",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-01T21:47:14Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-25763:UserInterface Users management on console",
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-01T18:31:08Z",
           "jobID": "98c8e53f-fb45-43e3-b254-b92ac8db8ab9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2039410249009467392",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-01T21:55:00Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]",
+                "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-52743-[Storageclass] OCP Cluster should have no more than one default storageclass defined, PVC without specifying storagclass should succeed while only one default storageclass present"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-25763:UserInterface Users management on console",
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -118,9 +214,23 @@
         "jobStartTime": "2026-04-01T18:25:28Z",
         "jobID": "6f1b1d9b-eca9-4507-871b-a0cb20e26935",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2039408824053403648",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-04-01T22:11:40Z"
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-04-01T22:27:51Z",
+          "jobID": "259fb6b7-9d91-40ce-87c4-094420944556",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2039469819799015424",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-04-01T22:27:56Z",
+          "jobID": "f801d7ef-1e64-4a84-bcb2-fc5662cd57f6",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2039469842993516544",
+          "jobState": "pending"
+        }
+      ]
     }
   ],
   "build": {
