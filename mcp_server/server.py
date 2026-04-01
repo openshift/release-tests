@@ -1312,17 +1312,26 @@ async def oar_update_task_status(release: str, task_name: str, status: str, resu
 # Release Discovery Tool
 # ============================================================================
 
+def _discover_active_releases_sync() -> list[str]:
+    """
+    Synchronous helper for discover_active_releases().
+    Runs blocking GitHub API calls in thread pool to avoid blocking event loop.
+    """
+    discovery = ReleaseDiscovery()
+    return discovery.get_active_releases()
+
+
 @mcp.tool()
 async def discover_active_releases() -> str:
     """
-    Discover active releases using cached ConfigStore.
+    Discover active releases using ReleaseDiscovery.
 
-    This is a READ-ONLY operation - queries tracking files from GitHub and uses cached ConfigStore.
+    This is a READ-ONLY operation - queries tracking files and StateBox files from GitHub.
 
     Discovery logic:
     - Auto-discovers y-streams from _releases directory
     - For each y-stream: fetches tracking file, gets latest release
-    - Uses ConfigStore (cached) to get release_date
+    - Fetches StateBox files to get release_date
     - Returns releases within date window (default: 1 day after release_date)
 
     Returns:
@@ -1331,9 +1340,12 @@ async def discover_active_releases() -> str:
         - Error: {"error": "...", "releases": []}
     """
     try:
-        # Use ReleaseDiscovery class with authenticated GitHub API
-        discovery = ReleaseDiscovery()
-        active_releases = discovery.get_active_releases()
+        # Run blocking GitHub API operations in thread pool
+        loop = asyncio.get_running_loop()
+        active_releases = await loop.run_in_executor(
+            CLI_THREAD_POOL,
+            _discover_active_releases_sync,
+        )
 
         return json.dumps({"releases": active_releases})
 
