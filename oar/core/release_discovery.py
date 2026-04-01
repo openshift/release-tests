@@ -457,6 +457,6 @@ class ReleaseDiscovery:
             logger.debug(f"Release {release} {'active' if is_active else 'past visibility window'} (release_date: {release_date_str})")
             return is_active
 
-        except (ValueError, KeyError) as e:
+        except (AttributeError, TypeError, ValueError, KeyError) as e:
             logger.debug(f"Failed to parse release_date for {release}: {e}")
             return False

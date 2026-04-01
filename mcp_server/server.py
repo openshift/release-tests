@@ -1883,8 +1883,8 @@ async def health_check(request):
         cache_stats = _configstore_cache.stats()
 
         # Count tools (fast, just counts registered tools)
-        # Based on server.py: 28 total tools
-        tool_count = 28
+        # Based on server.py: 29 total tools
+        tool_count = 29
 
         # Determine overall health status
         # Degraded if env invalid OR kerberos ticket missing
@@ -1899,7 +1899,7 @@ async def health_check(request):
             "tools": {
                 "total": tool_count,
                 "cli": 17,  # 8 OAR + 2 oarctl + 6 jobctl + 1 job
-                "api": 11   # 4 config + 4 issue + 3 cache
+                "api": 12   # 4 config + 4 issue + 1 discovery + 3 cache
             },
             "environment": {
                 "valid": env_valid,
@@ -1987,9 +1987,9 @@ if __name__ == "__main__":
     logger.info(f"✓ All required credentials configured")
     logger.info(f"✓ Performance: 100% optimized (NO subprocess)")
     logger.info(f"✓ ConfigStore caching: Enabled (TTL=7 days)")
-    logger.info(f"✓ Total tools: 28 (17 CLI + 11 direct API)")
+    logger.info(f"✓ Total tools: 29 (17 CLI + 12 direct API)")
     logger.info(f"✓ CLI tools: 8 OAR + 2 oarctl + 6 jobctl + 1 job")
-    logger.info(f"✓ Direct API tools: 4 config + 4 issue + 3 cache")
+    logger.info(f"✓ Direct API tools: 4 config + 4 issue + 1 discovery + 3 cache")
     logger.info(f"✓ Thread pool: {CLI_THREAD_POOL_SIZE} workers")
     logger.info("=" * 60)
 
