@@ -10,6 +10,88 @@ from oar.core.exceptions import ReleaseDiscoveryException
 from oar.core.release_discovery import ReleaseDiscovery
 
 
+# Common test data for GraphQL mocking
+MOCK_GRAPHQL_RESPONSE = {
+    "data": {
+        "repository": {
+            "object": {
+                "entries": [
+                    {
+                        "name": "4.20",
+                        "type": "tree",
+                        "object": {
+                            "entries": [
+                                {
+                                    "name": "4.20.z.yaml",
+                                    "type": "blob",
+                                    "object": {
+                                        "text": "releases:\n  4.20.15: {}\n  4.20.17: {}\n  4.20.16: {}\n"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "4.21",
+                        "type": "tree",
+                        "object": {
+                            "entries": [
+                                {
+                                    "name": "4.21.z.yaml",
+                                    "type": "blob",
+                                    "object": {
+                                        "text": "releases:\n  4.21.8: {}\n"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "4.19",
+                        "type": "tree",
+                        "object": {
+                            "entries": [
+                                {
+                                    "name": "4.19.z.yaml",
+                                    "type": "blob",
+                                    "object": {
+                                        "text": "releases:\n  4.19.10: {}\n"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "test.txt",
+                        "type": "blob"
+                    }
+                ]
+            }
+        }
+    }
+}
+
+
+def setup_graphql_mock(mock_github_instance):
+    """
+    Helper to setup GraphQL mock response.
+
+    Args:
+        mock_github_instance: Mocked Github instance
+
+    Returns:
+        Tuple of (mock_repo, mock_requester)
+    """
+    mock_repo = MagicMock()
+    mock_github_instance.get_repo.return_value = mock_repo
+
+    mock_requester = MagicMock()
+    mock_github_instance._Github__requester = mock_requester
+    mock_requester.requestJsonAndCheck.return_value = ({}, MOCK_GRAPHQL_RESPONSE)
+
+    return mock_repo, mock_requester
+
+
 class TestReleaseDiscovery(unittest.TestCase):
     """Test ReleaseDiscovery class"""
 
@@ -41,29 +123,9 @@ class TestReleaseDiscovery(unittest.TestCase):
     @patch.dict('os.environ', {'GITHUB_TOKEN': 'fake_token'})
     @patch('oar.core.release_discovery.Github')
     def test_get_supported_ystreams(self, mock_github):
-        """Test getting supported y-streams"""
-        # Mock GitHub API response
-        mock_repo = MagicMock()
-        mock_github.return_value.get_repo.return_value = mock_repo
-
-        # Mock directory contents with proper string attributes
-        mock_item1 = MagicMock()
-        mock_item1.type = "dir"
-        mock_item1.name = "4.20"
-
-        mock_item2 = MagicMock()
-        mock_item2.type = "dir"
-        mock_item2.name = "4.21"
-
-        mock_item3 = MagicMock()
-        mock_item3.type = "dir"
-        mock_item3.name = "4.19"
-
-        mock_item4 = MagicMock()
-        mock_item4.type = "file"
-        mock_item4.name = "test.txt"
-
-        mock_repo.get_contents.return_value = [mock_item1, mock_item2, mock_item3, mock_item4]
+        """Test getting supported y-streams using GraphQL"""
+        # Setup GraphQL mock using common test data
+        setup_graphql_mock(mock_github.return_value)
 
         discovery = ReleaseDiscovery()
         y_streams = discovery.get_supported_ystreams()
@@ -73,86 +135,57 @@ class TestReleaseDiscovery(unittest.TestCase):
 
     @patch.dict('os.environ', {'GITHUB_TOKEN': 'fake_token'})
     @patch('oar.core.release_discovery.Github')
-    @patch('oar.core.release_discovery.yaml')
-    def test_get_latest_release_for_ystream(self, mock_yaml, mock_github):
-        """Test getting latest release for y-stream"""
-        # Mock GitHub API response
-        mock_repo = MagicMock()
-        mock_github.return_value.get_repo.return_value = mock_repo
-
-        # Mock GitHub file object (yaml.safe_load is mocked, so content doesn't matter)
-        mock_file = MagicMock()
-        mock_repo.get_contents.return_value = mock_file
-
-        # Mock YAML parsing
-        mock_yaml.safe_load.return_value = {
-            "releases": {
-                "4.20.15": {},
-                "4.20.17": {},
-                "4.20.16": {}
-            }
-        }
+    def test_get_latest_release_for_ystream(self, mock_github):
+        """Test getting latest release for y-stream using GraphQL"""
+        # Setup GraphQL mock using common test data
+        setup_graphql_mock(mock_github.return_value)
 
         discovery = ReleaseDiscovery()
         latest = discovery.get_latest_release_for_ystream("4.20")
 
-        # Should return the highest version
+        # Should return the highest version (4.20.17 > 4.20.16 > 4.20.15)
         self.assertEqual(latest, "4.20.17")
 
     @patch.dict('os.environ', {'GITHUB_TOKEN': 'fake_token'})
     @patch('oar.core.release_discovery.Github')
-    @patch('oar.core.release_discovery.yaml')
-    def test_get_active_releases(self, mock_yaml, mock_github):
-        """Test getting active releases"""
-        # Mock GitHub API
-        mock_repo = MagicMock()
-        mock_github.return_value.get_repo.return_value = mock_repo
+    def test_get_active_releases(self, mock_github):
+        """Test getting active releases using GraphQL"""
+        # Setup GraphQL mock for tracking files
+        mock_github_instance = mock_github.return_value
+        setup_graphql_mock(mock_github_instance)
 
-        # Mock y-streams discovery
-        mock_item1 = MagicMock()
-        mock_item1.type = "dir"
-        mock_item1.name = "4.20"
+        # Mock StateBox GraphQL responses
+        mock_requester = mock_github_instance._Github__requester
 
-        mock_item2 = MagicMock()
-        mock_item2.type = "dir"
-        mock_item2.name = "4.21"
+        # First call: tracking files (already mocked)
+        # Second call: StateBox files
+        tomorrow = (datetime.now().date() + timedelta(days=1)).strftime("%Y-%b-%d")
+        past = (datetime.now().date() - timedelta(days=5)).strftime("%Y-%b-%d")
 
-        # Mock get_contents to handle two types of GitHub API calls:
-        # 1. get_contents("_releases", ref="z-stream") -> returns list of directories (y-streams)
-        # 2. get_contents("_releases/4.20/4.20.z.yaml", ref="z-stream") -> returns file object
-        def mock_get_contents(path, ref):
-            # Determine return value based on path only
-            if path == "_releases":
-                # Return list of y-stream directories
-                return [mock_item1, mock_item2]
-            else:
-                # Return tracking file object (yaml.safe_load is mocked, so content doesn't matter)
-                return MagicMock()
+        statebox_response = {
+            "data": {
+                "repository": {
+                    "release_0": {
+                        "text": f"metadata:\n  release_date: {past}\n"  # 4.19.10 - past window
+                    },
+                    "release_1": {
+                        "text": f"metadata:\n  release_date: {tomorrow}\n"  # 4.20.17 - active
+                    },
+                    "release_2": {
+                        "text": f"metadata:\n  release_date: {past}\n"  # 4.21.8 - past window
+                    }
+                }
+            }
+        }
 
-        mock_repo.get_contents.side_effect = mock_get_contents
-
-        # Mock YAML parsing - return different releases for each y-stream
-        mock_yaml.safe_load.side_effect = [
-            {"releases": {"4.20.17": {}}},  # First call: 4.20.z.yaml
-            {"releases": {"4.21.8": {}}}     # Second call: 4.21.z.yaml
+        # Mock requestJsonAndCheck to return tracking files first, then StateBox files
+        mock_requester.requestJsonAndCheck.side_effect = [
+            ({}, MOCK_GRAPHQL_RESPONSE),  # First call: tracking files
+            ({}, statebox_response)       # Second call: StateBox files
         ]
 
-        # Mock ConfigStore factory - one release is active, one is past active window
-        def mock_configstore_factory(release):
-            cs_mock = MagicMock()
-            if release == "4.20.17":
-                # Release date: tomorrow (active)
-                tomorrow = (datetime.now().date() + timedelta(days=1)).strftime("%Y-%b-%d")
-                cs_mock.get_release_date.return_value = tomorrow
-            else:
-                # Release date: 5 days ago (past window)
-                past = (datetime.now().date() - timedelta(days=5)).strftime("%Y-%b-%d")
-                cs_mock.get_release_date.return_value = past
-            return cs_mock
-
-        # Create ReleaseDiscovery with mock factory
-        discovery = ReleaseDiscovery(configstore_factory=mock_configstore_factory)
-        active_releases = discovery.get_active_releases(keep_days_after_release=1)
+        discovery = ReleaseDiscovery()
+        active_releases = discovery.get_active_releases()
 
         # Only 4.20.17 should be active (tomorrow's date)
         self.assertEqual(active_releases, ["4.20.17"])

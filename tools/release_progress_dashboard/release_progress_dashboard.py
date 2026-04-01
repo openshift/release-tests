@@ -789,7 +789,11 @@ def main():
                     st.sidebar.success(f"✅ Added {added_count} active release(s)")
                     st.rerun()
                 else:
-                    st.sidebar.info("All active releases already tracked")
+                    # Distinguish: no releases found vs all already tracked
+                    if len(active_releases) == 0:
+                        st.sidebar.info("ℹ️ No active releases found")
+                    else:
+                        st.sidebar.info(f"All {len(active_releases)} active release(s) already tracked")
 
         except Exception as e:
             st.sidebar.error(f"Error discovering releases: {str(e)}")

@@ -1332,8 +1332,7 @@ async def discover_active_releases() -> str:
     """
     try:
         # Use ReleaseDiscovery class with authenticated GitHub API
-        # Configure ReleaseDiscovery with cached ConfigStore factory
-        discovery = ReleaseDiscovery(configstore_factory=get_cached_configstore)
+        discovery = ReleaseDiscovery()
         active_releases = discovery.get_active_releases()
 
         return json.dumps({"releases": active_releases})
