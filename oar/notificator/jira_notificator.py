@@ -1,6 +1,7 @@
 import click
 import logging
 import os
+import re
 
 from enum import Enum
 from typing import List, Optional, Dict
@@ -8,6 +9,7 @@ from jira import JIRA, Issue
 from jira.resources import User
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
+from github import Auth, Github
 from oar.core.jira import JiraIssue
 from oar.core.ldap import LdapHelper
 
@@ -71,6 +73,8 @@ class NotificationService:
         self.jira = jira
         self.dry_run = dry_run
         self.ldap = LdapHelper()
+        github_token = os.environ.get("GITHUB_TOKEN", "")
+        self.github = Github(auth=Auth.Token(github_token)) if github_token else None
 
     def get_user_email(self, user: User) -> Optional[str]:
         """
@@ -579,6 +583,10 @@ class NotificationService:
             Optional[Notification]: The created notification if sent, otherwise None.
         """
 
+        if self.is_pre_merge_verified(issue):
+            logger.info(f"Issue {issue.key} is pre-merge verified. Skipping notification.")
+            return None
+
         on_qa_datetime = self.get_latest_on_qa_transition_datetime(issue)
         if not on_qa_datetime:
             logger.error(f"Issue {issue.key} does not have ON_QA transition date")
@@ -620,6 +628,58 @@ class NotificationService:
                 logger.info("Skipping adding ON_QA pending label - less than 24 hour from Manager notification.")
 
         return None
+
+    def is_pre_merge_verified(self, issue: Issue) -> bool:
+        """
+        Check if all linked GitHub PRs from the openshift org are pre-merge verified.
+
+        A bug is considered pre-merge verified only when:
+        - There is at least one valid PR (github.com/openshift org)
+        - Every valid PR has the 'verified' label
+        - No valid PR has the 'verified-later' label (which indicates post-merge verification is needed)
+
+        Args:
+            issue (Issue): The JIRA issue to inspect.
+
+        Returns:
+            bool: True if all valid PRs are pre-merge verified, False otherwise.
+        """
+        if not self.github:
+            logger.warning("GITHUB_TOKEN not set, skipping pre-merge verification check.")
+            return False
+
+        try:
+            remote_links = self.jira.remote_links(issue)
+        except Exception as e:
+            logger.warning(f"Failed to fetch remote links for {issue.key}: {e}")
+            return False
+
+        valid_prs = []
+        for link in remote_links:
+            url = getattr(link.object, "url", "")
+            match = re.match(r"https://github\.com/(openshift)/([^/]+)/pull/(\d+)", url)
+            if match:
+                valid_prs.append((url, match.group(1), match.group(2), int(match.group(3))))
+
+        if not valid_prs:
+            return False
+
+        for url, org, repo, pr_number in valid_prs:
+            try:
+                pr = self.github.get_repo(f"{org}/{repo}").get_pull(pr_number)
+                labels = {label.name for label in pr.get_labels()}
+                if "verified-later" in labels:
+                    logger.info(f"Issue {issue.key} PR {url} has 'verified-later' label, post-merge verification needed.")
+                    return False
+                if "verified" not in labels:
+                    logger.info(f"Issue {issue.key} PR {url} has neither 'verified' nor 'verified-later' label.")
+                    return False
+            except Exception as e:
+                logger.warning(f"Failed to check PR labels for {url}: {e}")
+                return False
+
+        logger.info(f"Issue {issue.key} is pre-merge verified across all {len(valid_prs)} linked PR(s).")
+        return True
 
     def get_on_qa_filter(self, from_date: Optional[datetime] = None) -> str:
         """
