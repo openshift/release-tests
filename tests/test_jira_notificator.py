@@ -407,6 +407,28 @@ class TestJiraNotificator(unittest.TestCase):
             self.assertEqual(notification.issue, self.test_issue_on_qa)
             self.assertIn(ERT_NOTIFICATION_PREFIX, notification.text)
 
+    def test_is_pre_merge_verified(self):
+        # OCPBUGS-76269: linked PR openshift/cluster-olm-operator#170 has 'verified' label only -> pre-merge verified
+        issue_pre_merge_verified = self.jira.issue("OCPBUGS-76269")
+        self.assertTrue(self.ns.is_pre_merge_verified(issue_pre_merge_verified))
+
+        # OCPBUGS-81573: linked PR openshift/insights-operator#1266 has both 'verified' and 'verified-later' -> post-merge verified
+        issue_verified_later = self.jira.issue("OCPBUGS-81573")
+        self.assertFalse(self.ns.is_pre_merge_verified(issue_verified_later))
+
+        # OCPBUGS-81481: linked PR openshift/linuxptp-daemon#581 has both 'verified' and 'verified-later' -> post-merge verified
+        issue_verified_later_2 = self.jira.issue("OCPBUGS-81481")
+        self.assertFalse(self.ns.is_pre_merge_verified(issue_verified_later_2))
+
+        # OCPBUGS-59288: no remote links -> no valid PRs -> not pre-merge verified
+        issue_no_links = self.jira.issue("OCPBUGS-59288")
+        self.assertFalse(self.ns.is_pre_merge_verified(issue_no_links))
+
+        # No GITHUB_TOKEN -> skip check, return False
+        ns_no_token = NotificationService(self.jira, True)
+        ns_no_token.github = None
+        self.assertFalse(ns_no_token.is_pre_merge_verified(issue_pre_merge_verified))
+
     def test_process_on_qa_issues(self):
         day_ago = datetime.now() - timedelta(hours=24)
         self.assertEqual(len(self.ns.process_on_qa_issues(day_ago)), 0)
