@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.37
 created_at: '2026-04-03T15:02:27Z'
-updated_at: '2026-04-03T18:02:45Z'
+updated_at: '2026-04-03T18:03:04Z'
 metadata:
   jira_ticket: ART-14836
   advisory_ids:
@@ -11,7 +11,14 @@ metadata:
   candidate_builds:
     x86_64: 4.18.0-0.nightly-2026-04-01-102617
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/458
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-04-03T18:03:04Z'
+  completed_at: '2026-04-03T18:03:04Z'
+  result: 'Partial success: Advisory ownership updated (165411, 165412 → [EMAIL_REDACTED]),
+    GitLab MR #458 commented. Jira subtask assignment failed due to ConfigStore corruption
+    (ART-0 instead of ART-14836).'
 issues:
 - issue: ConfigStore has corrupted Jira ticket (ART-0 instead of ART-14836) - Jira
     subtask assignment failed but advisory ownership succeeded
