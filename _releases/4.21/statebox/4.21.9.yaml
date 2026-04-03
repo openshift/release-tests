@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.9
 created_at: '2026-04-03T10:02:18Z'
-updated_at: '2026-04-03T11:25:44Z'
+updated_at: '2026-04-03T11:25:53Z'
 metadata:
   jira_ticket: ART-14834
   advisory_ids:
@@ -55,4 +55,13 @@ tasks:
     on console. Failed on AWS (0/3), Azure (0/3), GCP (0/3). Total: 0/9 attempts passed.
     Recommendation: REJECT - investigate Web Console Users management feature. This
     is informational - does not block promoted build gate check.'
-issues: []
+issues:
+- issue: 'Candidate build test failure: OCP-25763 (Web Console Users management) failed
+    consistently across all platforms (AWS, Azure, GCP) with 0/9 success rate. Requires
+    investigation before promoted build.'
+  reported_at: '2026-04-03T11:25:53Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-candidate-build
