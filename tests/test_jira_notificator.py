@@ -207,9 +207,70 @@ class TestJiraNotificator(unittest.TestCase):
             )
         )
 
-        with self.assertRaises(Exception) as context:
-            self.ns.notify_assignees(self.test_issue_without_assignee, Contact.QA_CONTACT)
-        self.assertEqual(str(context.exception), f"No contact is available. Issue {self.test_issue_without_assignee.key} does not have assignee.")
+        mock_issue = self._make_issue_without_assignee_or_qa()
+        reporter_mention = f"[~{mock_issue.fields.reporter.name}] "
+        reporter_notification = self.ns.notify_assignees(mock_issue, Contact.QA_CONTACT)
+        self.assertEqual(reporter_notification.issue, mock_issue)
+        self.assertEqual(reporter_notification.type, NotificationType.REPORTER)
+        self.assertEqual(reporter_notification.text, (
+                "Errata Reliability Team Notification - Reporter Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                f"{reporter_mention}"
+                "This issue has no QA contact or assignee. "
+                "Could you please assign someone who can verify the issue?"
+            )
+        )
+
+    def _make_issue_without_assignee_or_qa(self):
+        """Creates a mock issue with no assignee, no QA contact, but with a reporter."""
+        reporter = Mock()
+        reporter.name = "reporter-username"
+        reporter.emailAddress = "reporter@redhat.com"
+
+        fields = Mock()
+        fields.assignee = None
+        fields.customfield_12315948 = None  # QA contact field used by get_qa_contact()
+        fields.reporter = reporter
+        fields.comment.comments = []
+
+        issue = Mock()
+        issue.key = "OCPBUGS-99999"
+        issue.fields = fields
+        return issue
+
+    def test_has_reporter_notification(self):
+        issue = self._make_issue_without_assignee_or_qa()
+
+        # No comments -> no reporter notification
+        self.assertFalse(self.ns.has_reporter_notification(issue))
+
+        # Add a matching reporter notification comment
+        comment = Mock()
+        comment.body = self.ns.create_notification_title(NotificationType.REPORTER) + "some text"
+        issue.fields.comment.comments = [comment]
+        self.assertTrue(self.ns.has_reporter_notification(issue))
+
+    def test_notify_reporter(self):
+        issue = self._make_issue_without_assignee_or_qa()
+        reporter_mention = f"[~{issue.fields.reporter.name}] "
+
+        notification = self.ns.notify_reporter(issue)
+        self.assertEqual(notification.issue, issue)
+        self.assertEqual(notification.type, NotificationType.REPORTER)
+        self.assertEqual(notification.text, (
+                "Errata Reliability Team Notification - Reporter Action Request\n"
+                "This issue has been in the ON_QA state for over 24 hours.\n"
+                f"{reporter_mention}"
+                "This issue has no QA contact or assignee. "
+                "Could you please assign someone who can verify the issue?"
+            )
+        )
+
+        # Already notified: has_reporter_notification returns True -> return None
+        comment = Mock()
+        comment.body = self.ns.create_notification_title(NotificationType.REPORTER) + "some text"
+        issue.fields.comment.comments = [comment]
+        self.assertIsNone(self.ns.notify_reporter(issue))
 
     def test_create_qa_notification_text(self):
         self.assertEqual(

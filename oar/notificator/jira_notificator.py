@@ -27,6 +27,7 @@ class NotificationType(Enum):
     TEAM_LEAD = (48, "Team Lead Action Request")
     MANAGER = (72, "Manager Action Request")
     ASSIGNEE = (24, "Assignee Action Request")
+    REPORTER = (24, "Reporter Action Request")
 
     def __init__(self, hours: int, label: str):
         self.hours = hours
@@ -322,6 +323,7 @@ class NotificationService:
     def notify_assignees(self, issue: Issue, missing_contact: Contact) -> Optional[Notification]:
         """
         Notifies assignees about a missing contact on an issue, if not already notified.
+        If no assignee exists, falls back to notifying the reporter.
 
         Args:
             issue (Issue): The issue related to the notification.
@@ -329,9 +331,6 @@ class NotificationService:
 
         Returns:
             Optional[Notification]: The created notification if sent, otherwise None.
-
-        Raises:
-            Exception: If no assignee is available on the issue.
         """
 
         if not self.has_assignee_notification(issue):
@@ -344,17 +343,62 @@ class NotificationService:
                     notified_assignees.append(assignee_manager)
                     self.add_user_to_need_info_from(issue, assignee_manager)
                 assignee_notification = Notification(
-                    issue, 
-                    NotificationType.ASSIGNEE, 
+                    issue,
+                    NotificationType.ASSIGNEE,
                     self.create_assignee_notification_text(missing_contact, notified_assignees)
                 )
                 self.process_notification(assignee_notification)
                 return assignee_notification
             else:
-                raise Exception(f"No contact is available. Issue {issue.key} does not have assignee.")
+                logger.warning(f"Issue {issue.key} has no assignee. Falling back to notifying the reporter.")
+                return self.notify_reporter(issue)
         else:
             logger.warning(f"Assignees have already been notified about the missing {missing_contact.value} contact.")
         return None
+
+    def has_reporter_notification(self, issue: Issue) -> bool:
+        """
+        Checks if the issue already contains a reporter notification comment.
+
+        Args:
+            issue (Issue): The JIRA issue to inspect.
+
+        Returns:
+            bool: True if a reporter notification comment is found, False otherwise.
+        """
+
+        for comment in issue.fields.comment.comments:
+            if comment.body.startswith(self.create_notification_title(NotificationType.REPORTER)):
+                return True
+        return False
+
+    def notify_reporter(self, issue: Issue) -> Optional[Notification]:
+        """
+        Notifies the reporter of the issue when no QA contact or assignee is available,
+        asking them to assign someone who can verify the issue.
+
+        Args:
+            issue (Issue): The JIRA issue to notify the reporter on.
+
+        Returns:
+            Optional[Notification]: The created notification if sent, otherwise None.
+        """
+
+        if self.has_reporter_notification(issue):
+            logger.warning(f"Reporter has already been notified for issue {issue.key}.")
+            return None
+
+        reporter = issue.fields.reporter
+        self.add_user_to_need_info_from(issue, reporter)
+        text = (
+            f"{self.create_notification_title(NotificationType.REPORTER)}"
+            f"{self.create_jira_comment_mentions([reporter])}"
+            f"This issue has no QA contact or assignee. "
+            f"Could you please assign someone who can verify the issue?"
+        )
+        reporter_notification = Notification(issue, NotificationType.REPORTER, text)
+        self.process_notification(reporter_notification)
+        return reporter_notification
 
     def create_qa_notification_text(self, qa_contact: User) -> str:
         """
