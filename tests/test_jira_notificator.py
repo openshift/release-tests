@@ -18,7 +18,7 @@ class TestJiraNotificator(unittest.TestCase):
 
         self.test_issue = self.jira.issue("OCPBUGS-59288", expand="changelog")
         self.test_issue_without_qa = self.jira.issue("OCPBUGS-8760", expand="changelog")
-        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-1542", expand="changelog")
+        self.test_issue_without_assignee = self.jira.issue("OCPBUGS-8827", expand="changelog")
         self.test_issue_on_qa = self.jira.issue("OCPBUGS-46472", expand="changelog")
 
         self.test_user = Mock()
@@ -197,7 +197,7 @@ class TestJiraNotificator(unittest.TestCase):
         )
 
         mock_issue = self._make_issue_without_assignee_or_qa()
-        reporter_mention = f"[~accountId:{mock_issue.fields.reporter.accountId}] "
+        reporter_mention = f"[~{mock_issue.fields.reporter.name}] "
         reporter_notification = self.ns.notify_assignees(mock_issue, Contact.QA_CONTACT)
         self.assertEqual(reporter_notification.issue, mock_issue)
         self.assertEqual(reporter_notification.type, NotificationType.REPORTER)
@@ -213,11 +213,12 @@ class TestJiraNotificator(unittest.TestCase):
     def _make_issue_without_assignee_or_qa(self):
         """Creates a mock issue with no assignee, no QA contact, but with a reporter."""
         reporter = Mock()
-        reporter.accountId = "reporter-account-id"
+        reporter.name = "reporter-username"
+        reporter.emailAddress = "reporter@redhat.com"
 
         fields = Mock()
         fields.assignee = None
-        fields.customfield_10470 = None
+        fields.customfield_12315948 = None  # QA contact field used by get_qa_contact()
         fields.reporter = reporter
         fields.comment.comments = []
 
@@ -240,7 +241,7 @@ class TestJiraNotificator(unittest.TestCase):
 
     def test_notify_reporter(self):
         issue = self._make_issue_without_assignee_or_qa()
-        reporter_mention = f"[~accountId:{issue.fields.reporter.accountId}] "
+        reporter_mention = f"[~{issue.fields.reporter.name}] "
 
         notification = self.ns.notify_reporter(issue)
         self.assertEqual(notification.issue, issue)
