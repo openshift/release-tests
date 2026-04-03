@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.9
 created_at: '2026-04-03T10:02:18Z'
-updated_at: '2026-04-03T11:26:27Z'
+updated_at: '2026-04-03T11:37:59Z'
 metadata:
   jira_ticket: ART-14834
   advisory_ids:
@@ -45,13 +45,13 @@ tasks:
     2026-04-03T07:26:27Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-04-03T07:26:27Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: Fail
+  status: Pass
   started_at: '2026-04-03T11:25:44Z'
-  completed_at: '2026-04-03T11:25:44Z'
-  result: 'Cross-platform consistent failure in OCP-25763:UserInterface Users management
-    on console. Failed on AWS (0/3), Azure (0/3), GCP (0/3). Total: 0/9 attempts passed.
-    Recommendation: REJECT - investigate Web Console Users management feature. This
-    is informational - does not block promoted build gate check.'
+  completed_at: '2026-04-03T11:37:59Z'
+  result: 'WAIVED: OCP-25763 (Web Console Users management) failed across all platforms
+    (0/9 attempts) due to known automation issue OCPQE-31900. Test failure is not
+    a product bug - test code issue in verification-tests/cucushift repository. Candidate
+    build accepted with waiver.'
 issues:
 - issue: 'Candidate build test failure: OCP-25763 (Web Console Users management) failed
     consistently across all platforms (AWS, Azure, GCP) with 0/9 success rate. Requires
