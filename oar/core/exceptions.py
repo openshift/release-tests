@@ -47,3 +47,7 @@ class GitException(Exception):
 
 class StateBoxException(Exception):
     """Exception class to raise error in StateBox"""
+
+
+class ReleaseDiscoveryException(Exception):
+    """Exception class to raise error in ReleaseDiscovery"""

@@ -9,15 +9,15 @@ Usage:
     streamlit run tools/release_progress_dashboard_new.py
 """
 
-import streamlit as st
-import pandas as pd
-import plotly.graph_objects as go
-from datetime import datetime
 import logging
+import os
+import sys
+from datetime import datetime
 from typing import Dict, List, Any
 
-import sys
-import os
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
 
 # Add parent directory to path to import mcp_data_collector from tools/
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -765,6 +765,38 @@ def main():
                 st.rerun()
             else:
                 st.sidebar.warning(f"{new_release} already added")
+
+    # Auto-discover active releases button
+    if st.sidebar.button("🔍 Load Active Releases", use_container_width=True):
+        try:
+            # Use MCP data collector to discover active releases
+            collector = get_data_collector()
+            result = collector.discover_active_releases()
+
+            # Check for error
+            if "error" in result:
+                st.sidebar.error(f"❌ Discovery failed: {result['error']}")
+            else:
+                active_releases = result["releases"]
+                added_count = 0
+
+                for version in active_releases:
+                    if version not in st.session_state.releases:
+                        st.session_state.releases.append(version)
+                        added_count += 1
+
+                if added_count > 0:
+                    st.sidebar.success(f"✅ Added {added_count} active release(s)")
+                    st.rerun()
+                else:
+                    # Distinguish: no releases found vs all already tracked
+                    if len(active_releases) == 0:
+                        st.sidebar.info("ℹ️ No active releases found")
+                    else:
+                        st.sidebar.info(f"All {len(active_releases)} active release(s) already tracked")
+
+        except Exception as e:
+            st.sidebar.error(f"Error discovering releases: {str(e)}")
 
     # Show current releases
     st.sidebar.divider()
