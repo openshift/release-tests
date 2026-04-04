@@ -37,13 +37,55 @@
           "jobStartTime": "2026-04-04T18:28:39Z",
           "jobID": "378e4e35-7d87-4cb5-b452-04c92774b5ee",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2040496786652532736",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-04-04T21:08:36Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 20
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-04T18:28:44Z",
           "jobID": "944464ee-86d7-47ec-b943-b3bccf44ab37",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2040496808433553408",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-04-04T21:05:15Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 20
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -92,7 +134,31 @@
           "jobStartTime": "2026-04-04T17:24:13Z",
           "jobID": "56bdfd0a-8001-4b20-9ece-e4b6ae0222f3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2040480572945469440",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-04T20:34:59Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-04T17:24:13Z",
@@ -170,5 +236,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.17.0-0.nightly-2026-04-04-093430",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.17.0-0.nightly-2026-04-04-093430"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
