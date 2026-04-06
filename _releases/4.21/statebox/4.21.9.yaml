@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.9
 created_at: '2026-04-03T10:02:18Z'
-updated_at: '2026-04-06T08:15:35Z'
+updated_at: '2026-04-06T08:40:49Z'
 metadata:
   jira_ticket: ART-14834
   advisory_ids:
@@ -74,6 +74,18 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Test results: AWS upgrade (4.20→4.21):
     success, Azure FIPS upgrade (4.21→4.21): success, GCP upgrade (4.21→4.21): passed
     BO3 (2/3 retries succeeded). Build accepted by test aggregator.'
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-04-06T04:40:47Z'
+  completed_at: null
+  result: |-
+    2026-04-06T04:40:47Z: INFO: Initialized StateBox for release 4.21.9 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.9.yaml
+    2026-04-06T04:40:47Z: INFO: job id is not set, will trigger stage testing
+    2026-04-06T04:40:47Z: INFO: Loaded state from _releases/4.21/statebox/4.21.9.yaml (SHA: 7665816e)
+    2026-04-06T04:40:47Z: INFO: Stage release succeeded (verified by label)
+    2026-04-06T04:40:47Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-04-06T04:40:47Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1564/>
+    2026-04-06T04:40:49Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Candidate build test failure: OCP-25763 (Web Console Users management) failed
     consistently across all platforms (AWS, Azure, GCP) with 0/9 success rate. Requires
