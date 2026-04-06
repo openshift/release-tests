@@ -37,13 +37,59 @@
           "jobStartTime": "2026-04-06T07:22:45Z",
           "jobID": "8e52663f-9a96-489c-bada-dd23cae251dc",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-f999/2041053983174299648",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-04-06T09:48:17Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 80,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 17
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-06T07:22:45Z",
           "jobID": "45cf54ac-4765-41e6-82b9-ec4710c5ce78",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-f999/2041053983853776896",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-06T10:04:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 80,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 18,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+                "[sig-network-edge] Network_Edge Component_ExtDNS Author:hongli-ConnectedOnly-ROSA-OSD_CCS-LEVEL0-High-48138-Support External DNS on AWS platform"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -108,7 +154,34 @@
           "jobStartTime": "2026-04-06T06:23:23Z",
           "jobID": "642b3a1b-83e3-49a2-8b84-4f8f7e1ca5c2",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2041039045684891648",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-06T09:41:35Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 80,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 23
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-06T06:23:23Z",
