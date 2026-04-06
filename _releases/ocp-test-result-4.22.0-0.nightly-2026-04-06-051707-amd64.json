@@ -37,7 +37,31 @@
           "jobStartTime": "2026-04-06T14:33:10Z",
           "jobID": "74eafb4f-bb15-47fd-95b4-4c51083da196",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2041162303671373824",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-06T18:54:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-06T14:33:15Z",
@@ -129,7 +153,34 @@
           "jobStartTime": "2026-04-06T15:32:30Z",
           "jobID": "433a6d39-cee7-4a55-9e13-908bbc223a87",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2041177250518274048",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-06T19:10:24Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-33125:UserInterface Check subscription link and channel helper text with links"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
