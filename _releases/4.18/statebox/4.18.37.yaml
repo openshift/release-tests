@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.37
 created_at: '2026-04-03T15:02:27Z'
-updated_at: '2026-04-06T23:58:43Z'
+updated_at: '2026-04-06T23:59:56Z'
 metadata:
   jira_ticket: ART-14836
   advisory_ids:
@@ -80,6 +80,17 @@ tasks:
     2026-04-06T19:58:43Z: INFO: check stage job status according to job id: 1562
     2026-04-06T19:58:43Z: INFO: build status of zstreams/Stage-Pipeline/1562 is SUCCESS
     2026-04-06T19:58:43Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-04-06T19:58:58Z'
+  completed_at: '2026-04-06T19:59:56Z'
+  result: |-
+    2026-04-06T19:58:58Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-04-06T19:58:58Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.37
+    2026-04-06T19:58:59Z: INFO: Image Digest: sha256:9b7068aa6f6087c2f0a7cefa241c5dbb0ede0efaad783607dff0da98cac432d2
+    2026-04-06T19:58:59Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=9b7068aa6f6087c2f0a7cefa241c5dbb0ede0efaad783607dff0da98cac432d2/signature-1
+    2026-04-06T19:59:56Z: INFO: Signature check PASSED
+    2026-04-06T19:59:56Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: ConfigStore has corrupted Jira ticket (ART-0 instead of ART-14836) - Jira
     subtask assignment failed but advisory ownership succeeded
