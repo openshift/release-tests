@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.10
 created_at: '2026-04-09T20:03:28Z'
-updated_at: '2026-04-10T09:46:27Z'
+updated_at: '2026-04-10T09:46:49Z'
 metadata:
   jira_ticket: ART-14873
   advisory_ids:
@@ -72,3 +72,14 @@ issues:
   blocker: true
   related_tasks:
   - push-to-cdn-staging
+- issue: 'GCP platform testing blocked by CI infrastructure network restrictions.
+    Organization firewall blocks all ingress/egress on QE cloud accounts, preventing
+    cluster installation. Service accounts disabled. Cannot validate 4.21 quality
+    on GCP until network access restored and tests re-run successfully. Expected resolution:
+    Account rotation work in progress (ETA: early next week).'
+  reported_at: '2026-04-10T09:46:49Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-candidate-build
