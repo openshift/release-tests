@@ -233,10 +233,10 @@ Active Z-Stream Releases:
 ## Important Notes
 
 - **Auto-discovery**: Automatically finds releases from tracking files (no hardcoded lists)
-- **Date filtering**: Excludes releases with release_date older than 2 days
+- **Date filtering**: Excludes releases more than 1 day past `release_date`
 - **StateBox required**: Only shows releases with StateBox (ready for QE work)
 - **Timing**: Releases appear 1-2 days after cut-off when ART creates StateBox
-- **Single MCP call per release**: Only `oar_get_release_status()` - contains all needed data
+- **Per-release MCP calls**: Use `oar_get_release_status()` for task/issue data and `oar_is_release_shipped()` for live shipment state
 - **Parallel execution**: Call MCP tools in parallel for all releases for performance
 - **Sorting**: Priority order: blocked → overdue → in-progress → not started → complete
 - **StateBox link**: Single source of truth for all release details (advisories, MR, Jira, builds, task history)

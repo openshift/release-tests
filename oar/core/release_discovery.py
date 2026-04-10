@@ -80,7 +80,6 @@ class ReleaseDiscovery:
 
         auth = Auth.Token(token)
         self._github = Github(auth=auth)
-        self.repo = self._github.get_repo(self.repo_name)
 
         # Tracking files data (fetched via GraphQL)
         self._tracking_data: Optional[dict] = None
