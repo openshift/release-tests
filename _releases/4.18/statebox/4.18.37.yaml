@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.37
 created_at: '2026-04-03T15:02:27Z'
-updated_at: '2026-04-09T07:07:07Z'
+updated_at: '2026-04-13T07:10:12Z'
 metadata:
   jira_ticket: ART-14836
   advisory_ids:
@@ -92,22 +92,12 @@ tasks:
     2026-04-06T19:59:56Z: INFO: Signature check PASSED
     2026-04-06T19:59:56Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: Fail
+  status: Pass
   started_at: '2026-04-09T01:50:19Z'
-  completed_at: '2026-04-09T03:07:06Z'
-  result: |-
-    2026-04-09T03:06:44Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-04-09T03:06:47Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-04-09T03:06:48Z: INFO: RHCOS nvr is rhcos-x86_64-418.94.202603261158-0
-    2026-04-09T03:06:48Z: INFO: The commit metadata is kernel-5.14.0-427.117.1.el9_4
-    2026-04-09T03:06:48Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 183318, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:6310-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-04-09T03:06:48Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 458
-    2026-04-09T03:06:48Z: INFO: Successfully added QE approval to MR 458
-    2026-04-09T03:06:49Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:6554
-    2026-04-09T03:07:06Z: ERROR: Failed to check metadata URL accessibility: HTTPSConnectionPool(host='access.redhat.com', port=443): Read timed out. (read timeout=10)
-    2026-04-09T03:07:06Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-04-09T03:07:06Z: WARNING: Scheduler is already running for release 4.18 (lock file exists), skipping additional instance
-    2026-04-09T03:07:06Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
+  completed_at: '2026-04-13T07:10:12Z'
+  result: Successfully completed on re-trigger. Initial attempt failed due to metadata
+    URL timeout (access.redhat.com), but retry succeeded. Advisory status changed
+    to REL_PREP, MR approved, all release resources verified.
 issues:
 - issue: ConfigStore has corrupted Jira ticket (ART-0 instead of ART-14836) - Jira
     subtask assignment failed but advisory ownership succeeded
