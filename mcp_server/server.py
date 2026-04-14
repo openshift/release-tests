@@ -47,9 +47,10 @@ Tools exposed:
 - 1 job command (run)
 - 4 configuration tools (get-release-metadata, is-release-shipped, get-release-status, update-task-status)
 - 4 issue management tools (add-issue, resolve-issue, get-issues, get-task-blocker)
+- 1 discovery tool (discover-active-releases)
 - 3 cache management tools (mcp_cache_stats, mcp_cache_invalidate, mcp_cache_warm)
 
-Total: 28 tools (100% optimized - all CLI commands use direct Click invocation)
+Total: 29 tools (100% optimized - all CLI commands use direct Click invocation)
 
 Performance Characteristics:
 - ConfigStore cache hit: <10ms (3x-100x faster than miss)
@@ -59,24 +60,22 @@ Performance Characteristics:
 - Memory: Shared ConfigStore instances across workers (cache efficiency)
 """
 
-import sys
-import os
-import logging
-import json
-import time
-import threading
-import io
 import asyncio
+import json
+import logging
+import os
+import sys
+import time
 import traceback
-from typing import Optional
-from threading import RLock
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from concurrent.futures import ThreadPoolExecutor
-from functools import partial
-from fastmcp import FastMCP
+from threading import RLock
+from typing import Optional
+
 from cachetools import TTLCache
 from click.testing import CliRunner
+from fastmcp import FastMCP
 from starlette.responses import JSONResponse
 
 # Import OAR validation
@@ -86,11 +85,11 @@ from oar.core.configstore import ConfigStore
 from oar.core.operators import ReleaseShipmentOperator
 from oar.core.worksheet import WorksheetManager
 from oar.core.statebox import StateBox
+from oar.core.release_discovery import ReleaseDiscovery, ReleaseDiscoveryException
 from oar.core.exceptions import StateBoxException, WorksheetException, ConfigStoreException
 from oar.core.log_capture import capture_logs, merge_output
 from gspread.exceptions import WorksheetNotFound
 from oar.core.const import (
-    LABEL_OVERALL_STATUS,
     LABEL_TASK_OWNERSHIP,
     LABEL_TASK_IMAGE_CONSISTENCY_TEST,
     LABEL_TASK_NIGHTLY_BUILD_TEST,
@@ -1313,6 +1312,62 @@ async def oar_update_task_status(release: str, task_name: str, status: str, resu
 
 
 # ============================================================================
+# Release Discovery Tool
+# ============================================================================
+
+def _discover_active_releases_sync() -> list[str]:
+    """
+    Synchronous helper for discover_active_releases().
+    Runs blocking GitHub API calls in thread pool to avoid blocking event loop.
+    """
+    discovery = ReleaseDiscovery()
+    return discovery.get_active_releases()
+
+
+@mcp.tool()
+async def discover_active_releases() -> str:
+    """
+    Discover active releases using ReleaseDiscovery.
+
+    This is a READ-ONLY operation - queries tracking files and StateBox files from GitHub.
+
+    Discovery logic:
+    - Auto-discovers y-streams from _releases directory
+    - For each y-stream: fetches tracking file, gets latest release
+    - Fetches StateBox files to get release_date
+    - Returns releases within date window (default: 1 day after release_date)
+
+    Returns:
+        JSON string with discovery results:
+        - Success: {"releases": ["4.14.63", "4.18.36", "4.20.17"]}
+        - Error: {"error": "...", "releases": []}
+    """
+    try:
+        # Run blocking GitHub API operations in thread pool
+        loop = asyncio.get_running_loop()
+        active_releases = await loop.run_in_executor(
+            CLI_THREAD_POOL,
+            _discover_active_releases_sync,
+        )
+
+        return json.dumps({"releases": active_releases})
+
+    except ReleaseDiscoveryException as e:
+        logger.error(f"Failed to discover active releases: {e}")
+        return json.dumps({
+            "error": str(e),
+            "releases": []
+        })
+    except Exception as e:
+        logger.error(f"Unexpected error in discover_active_releases: {e}")
+        logger.error(traceback.format_exc())
+        return json.dumps({
+            "error": str(e),
+            "releases": []
+        })
+
+
+# ============================================================================
 # Cache Management Tools
 # ============================================================================
 
@@ -1831,8 +1886,8 @@ async def health_check(request):
         cache_stats = _configstore_cache.stats()
 
         # Count tools (fast, just counts registered tools)
-        # Based on server.py: 28 total tools
-        tool_count = 28
+        # Based on server.py: 29 total tools
+        tool_count = 29
 
         # Determine overall health status
         # Degraded if env invalid OR kerberos ticket missing
@@ -1847,7 +1902,7 @@ async def health_check(request):
             "tools": {
                 "total": tool_count,
                 "cli": 17,  # 8 OAR + 2 oarctl + 6 jobctl + 1 job
-                "api": 11   # 4 config + 4 issue + 3 cache
+                "api": 12   # 4 config + 4 issue + 1 discovery + 3 cache
             },
             "environment": {
                 "valid": env_valid,
@@ -1935,9 +1990,9 @@ if __name__ == "__main__":
     logger.info(f"✓ All required credentials configured")
     logger.info(f"✓ Performance: 100% optimized (NO subprocess)")
     logger.info(f"✓ ConfigStore caching: Enabled (TTL=7 days)")
-    logger.info(f"✓ Total tools: 28 (17 CLI + 11 direct API)")
+    logger.info(f"✓ Total tools: 29 (17 CLI + 12 direct API)")
     logger.info(f"✓ CLI tools: 8 OAR + 2 oarctl + 6 jobctl + 1 job")
-    logger.info(f"✓ Direct API tools: 4 config + 4 issue + 3 cache")
+    logger.info(f"✓ Direct API tools: 4 config + 4 issue + 1 discovery + 3 cache")
     logger.info(f"✓ Thread pool: {CLI_THREAD_POOL_SIZE} workers")
     logger.info("=" * 60)
 

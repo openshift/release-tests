@@ -16,16 +16,17 @@ Usage:
     metadata = collector.get_release_metadata("4.19.1")
 """
 
+import asyncio
+import concurrent.futures
 import json
 import logging
 import os
 import sys
-import asyncio
-import concurrent.futures
 from typing import Dict, Any, Optional
+
 import httpx
-from mcp.client.streamable_http import streamable_http_client
 from mcp import ClientSession
+from mcp.client.streamable_http import streamable_http_client
 
 logger = logging.getLogger(__name__)
 
@@ -287,6 +288,17 @@ class MCPDataCollector:
             'shipped': shipped
         }
 
+    async def discover_active_releases_async(self) -> Dict[str, Any]:
+        """
+        Discover active releases using MCP discovery tool (async)
+
+        Returns:
+            Dict with discovery results:
+            - Success: {"releases": ["4.14.63", "4.16.59", ...]}
+            - Error: {"error": "...", "releases": []}
+        """
+        return await self._call_mcp_tool_async("discover_active_releases")
+
     def _run_async(self, coro):
         """
         Run async coroutine using the persistent event loop.
@@ -331,6 +343,10 @@ class MCPDataCollector:
     def get_all_release_data(self, release: str) -> Dict[str, Any]:
         """Get all release data (sync wrapper)"""
         return self._run_async(self.get_all_release_data_async(release))
+
+    def discover_active_releases(self) -> Dict[str, Any]:
+        """Discover active releases (sync wrapper)"""
+        return self._run_async(self.discover_active_releases_async())
 
 
 if __name__ == "__main__":
