@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.10
 created_at: '2026-04-09T20:03:28Z'
-updated_at: '2026-04-15T14:16:57Z'
+updated_at: '2026-04-15T14:17:01Z'
 metadata:
   jira_ticket: ART-14873
   advisory_ids:
@@ -78,18 +78,13 @@ tasks:
     2026-04-15T10:08:30Z: INFO: sent slack message to <#team-qe-release>
 - name: image-consistency-check
   status: In Progress
-  started_at: '2026-04-15T14:08:03Z'
+  started_at: '2026-04-15T10:17:00Z'
   completed_at: null
   result: |-
-    Prow job successfully triggered: 48ef46a1-b221-48c3-868b-1bd2254f3367
-
-    Job details:
-    - Job name: periodic-ci-openshift-release-tests-main-image-consistency-check
-    - Job ID: 48ef46a1-b221-48c3-868b-1bd2254f3367
-    - Start time: 2026-04-15T14:08:03Z
-    - State: triggered (waiting for pod assignment)
-
-    Note: Initial polling timed out waiting for job URL (transient Prow scheduling delay). Job is in queue and will run.
+    2026-04-15T10:17:00Z: INFO: Initialized StateBox for release 4.21.10 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.10.yaml
+    2026-04-15T10:17:00Z: INFO: Checking image consistency check Prow job status for job ID: 48ef46a1-b221-48c3-868b-1bd2254f3367
+    2026-04-15T10:17:00Z: INFO: Job state: triggered, URL: None
+    2026-04-15T10:17:00Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-04-15T14:16:36Z'
