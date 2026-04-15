@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.10
 created_at: '2026-04-09T20:03:28Z'
-updated_at: '2026-04-15T15:15:26Z'
+updated_at: '2026-04-15T15:20:52Z'
 metadata:
   jira_ticket: ART-14873
   advisory_ids:
@@ -75,14 +75,20 @@ tasks:
     2026-04-15T10:17:04Z: INFO: build status of zstreams/Stage-Pipeline/1571 is In Progress
     2026-04-15T10:17:04Z: INFO: task [Stage Testing] status is changed to [In Progress]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-04-15T10:17:00Z'
-  completed_at: null
+  completed_at: '2026-04-15T11:20:51Z'
   result: |-
-    2026-04-15T10:17:00Z: INFO: Initialized StateBox for release 4.21.10 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.10.yaml
-    2026-04-15T10:17:00Z: INFO: Checking image consistency check Prow job status for job ID: 48ef46a1-b221-48c3-868b-1bd2254f3367
-    2026-04-15T10:17:00Z: INFO: Job state: triggered, URL: None
-    2026-04-15T10:17:00Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-04-15T11:15:30Z: INFO: Initialized StateBox for release 4.21.10 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.10.yaml
+    2026-04-15T11:15:30Z: INFO: Checking image consistency check Prow job status for job ID: 48ef46a1-b221-48c3-868b-1bd2254f3367
+    2026-04-15T11:15:30Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2044420280188669952
+    2026-04-15T11:15:30Z: INFO: Starting image health check for shipment MR 462
+    2026-04-15T11:15:30Z: INFO: Stage release succeeded (verified by label)
+    2026-04-15T11:15:30Z: INFO: Processing MR 462
+    2026-04-15T11:15:33Z: INFO: Found 860 images to check
+    2026-04-15T11:20:51Z: INFO: Completed image health check. Scanned 860 images, found 0 unhealthy
+    2026-04-15T11:20:51Z: INFO: Added image health summary to MR 462
+    2026-04-15T11:20:51Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-04-15T14:16:36Z'
