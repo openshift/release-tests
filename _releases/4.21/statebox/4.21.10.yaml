@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.10
 created_at: '2026-04-09T20:03:28Z'
-updated_at: '2026-04-15T14:17:05Z'
+updated_at: '2026-04-15T15:15:26Z'
 metadata:
   jira_ticket: ART-14873
   advisory_ids:
@@ -55,15 +55,16 @@ tasks:
     \ risk due to external infrastructure incident.\n\nExpected GCP resolution: Account\
     \ rotation work in progress (ETA: early next week)"
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-04-15T10:16:54Z'
-  completed_at: null
+  completed_at: '2026-04-15T11:15:25Z'
   result: |-
-    2026-04-15T10:16:54Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-04-15T10:16:56Z: INFO: checking push job status for advisory 165553 ...
-    2026-04-15T10:16:56Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
-    2026-04-15T10:16:57Z: INFO: checking push job status for advisory 165555 ...
-    2026-04-15T10:16:57Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
+    2026-04-15T11:15:21Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-04-15T11:15:25Z: INFO: checking push job status for advisory 165553 ...
+    2026-04-15T11:15:25Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-04-15T11:15:25Z: INFO: checking push job status for advisory 165555 ...
+    2026-04-15T11:15:25Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-04-15T11:15:25Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-04-15T10:17:04Z'
