@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.19
 created_at: '2026-04-16T15:03:10Z'
-updated_at: '2026-04-17T06:11:43Z'
+updated_at: '2026-04-17T06:12:28Z'
 metadata:
   jira_ticket: ART-15998
   advisory_ids:
@@ -18,6 +18,16 @@ tasks:
   completed_at: '2026-04-17T06:11:43Z'
   result: 'Ownership assigned successfully to [EMAIL_REDACTED]. Advisory 165869 and
     165870 updated, MR comment added. Note: Slack notification failed (non-blocking).'
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-04-17T02:12:06Z'
+  completed_at: '2026-04-17T02:12:28Z'
+  result: |-
+    2026-04-17T02:12:06Z: INFO: Initialized StateBox for release 4.20.19 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.19.yaml
+    2026-04-17T02:12:06Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-04-17T02:12:25Z: INFO: Processing MR 469 for Jira issues
+    2026-04-17T02:12:28Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2026-04-17T02:12:28Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues:
 - issue: 'Slack notification failed during take-ownership: invalid_auth error for
     usergroups.list API'
