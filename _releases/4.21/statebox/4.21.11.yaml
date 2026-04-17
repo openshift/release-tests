@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.11
 created_at: '2026-04-16T16:03:02Z'
-updated_at: '2026-04-17T09:01:34Z'
+updated_at: '2026-04-17T09:05:06Z'
 metadata:
   jira_ticket: ART-15997
   advisory_ids:
@@ -38,6 +38,15 @@ tasks:
     2026-04-17T05:01:31Z: INFO: sent slack message to <#team-qe-release>
     2026-04-17T05:01:34Z: INFO: sent slack message to <#forum-ocp-release>
     2026-04-17T05:01:34Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: Fail
+  started_at: '2026-04-17T09:05:06Z'
+  completed_at: '2026-04-17T09:05:06Z'
+  result: 'Advisory 165858 blocked by two issues: (1) State is NEW_FILES instead of
+    QE, (2) Security alert - rpminspect found a potential security issue. Error: Can''t
+    push advisory to Cdn Stage now due to: State invalid. Must be one of: QE, REL_PREP,
+    PUSH_READY, SHIPPED_LIVE, Advisory is blocked: secalert - rpminspect found a potential
+    security issue'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 165858'
   reported_at: '2026-04-17T07:02:16Z'
