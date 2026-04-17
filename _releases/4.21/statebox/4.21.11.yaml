@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.11
 created_at: '2026-04-16T16:03:02Z'
-updated_at: '2026-04-17T07:02:50Z'
+updated_at: '2026-04-17T09:01:34Z'
 metadata:
   jira_ticket: ART-15997
   advisory_ids:
@@ -22,6 +22,22 @@ tasks:
     2026-04-17T03:02:47Z: INFO: Processing MR 468 for Jira issues
     2026-04-17T03:02:49Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-04-17T03:02:49Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: take-ownership
+  status: Pass
+  started_at: '2026-04-17T05:01:22Z'
+  completed_at: '2026-04-17T05:01:34Z'
+  result: |-
+    2026-04-17T05:01:22Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-04-17T05:01:24Z: WARNING: advisory state is not QE, it is NEW_FILES
+    2026-04-17T05:01:25Z: INFO: QA Owner of advisory 165858 is updated to [EMAIL_REDACTED]
+    2026-04-17T05:01:26Z: INFO: QA Owner of advisory 165859 is updated to [EMAIL_REDACTED]
+    2026-04-17T05:01:27Z: INFO: Added QE release lead comment to MR 468
+    2026-04-17T05:01:27Z: INFO: Initialized StateBox for release 4.21.11 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.11.yaml
+    2026-04-17T05:01:27Z: INFO: Loaded state from _releases/4.21/statebox/4.21.11.yaml (SHA: c697714c)
+    2026-04-17T05:01:27Z: ERROR: Failed to create StateBox blocker issue: Task 'push-to-cdn-staging' already has unresolved blocker: Advisories in abnormal state (NEW_FILES instead of QE): 165858
+    2026-04-17T05:01:31Z: INFO: sent slack message to <#team-qe-release>
+    2026-04-17T05:01:34Z: INFO: sent slack message to <#forum-ocp-release>
+    2026-04-17T05:01:34Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 165858'
   reported_at: '2026-04-17T07:02:16Z'
