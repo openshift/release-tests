@@ -120,13 +120,55 @@
           "jobStartTime": "2026-04-18T14:38:22Z",
           "jobID": "c7faa2d1-6943-4cd6-8529-6b3846ee1aec",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2045512266241019904",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-18T17:40:12Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 34
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-18T14:38:27Z",
           "jobID": "5ff7907a-859e-4d59-9b4c-1fd8f4b70a49",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2045512287640358912",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-18T17:37:53Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 34
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -144,7 +186,43 @@
           "jobStartTime": "2026-04-18T13:25:25Z",
           "jobID": "4b730518-9ac4-4251-9287-6f327dfa70b0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2045493906715447296",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-18T17:04:45Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:xiuwang-LEVEL0-Critical-12400-Prune images by command 'oc adm prune images' [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 10,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+                "OCP-12482:Workloads Fixed predicates rules testing - PodFitsResources",
+                "OCP-14484:Workloads pod will be scheduled to the node which matches node anti-affinity",
+                "OCP-14556:Workloads pod will not be scheduled if node affinity or node selector is not satisfied - node affinity",
+                "OCP-14557:Workloads pod will not be scheduled if node affinity or node selector is not satisfied - node selector",
+                "OCP-14603:Workloads pod will not be scheduled if pod affinity not match",
+                "OCP-19717:UserInterface Check configmap on console",
+                "OCP-20020:UserInterface Source Secret",
+                "OCP-20800:UserInterface Key/Value Secret",
+                "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-18T13:25:30Z",
@@ -245,13 +323,15 @@
           "jobStartTime": "2026-04-18T14:38:39Z",
           "jobID": "86e8b575-12ac-474d-bfed-7957272fcd01",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-nightly-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2045512334910164992",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-18T17:37:27Z"
         },
         {
           "jobStartTime": "2026-04-18T14:38:44Z",
           "jobID": "9f3b6fc8-c136-425c-8532-39218ce39784",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-nightly-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2045512357819453440",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-18T17:34:48Z"
         }
       ]
     }
@@ -261,5 +341,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-04-18-032544",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-04-18-032544"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
