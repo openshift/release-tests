@@ -37,9 +37,50 @@
         "jobStartTime": "2026-04-20T14:22:38Z",
         "jobID": "d5164688-1979-4d4f-bb4c-5a5550b23997",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-azure-ipi-fips-f999/2046233079831334912",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-04-20T18:06:03Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 33,
+            "failingScenarios": [
+              "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges",
+              "[sig-networking] SDN udn/default multicast Author:yingwang-LEVEL0-High-78447-udn pods should/should not receive multicast traffic when enable/disable multicast."
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 24,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14688:Workloads pod will be scheduled on the node which meets pod affinity - In"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-04-20T18:40:38Z",
+          "jobID": "9ca18fb2-628f-4004-8c5f-15f6c08dc9dc",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-azure-ipi-fips-f999/2046298009246896128",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-04-20T18:40:43Z",
+          "jobID": "a85aafac-2abb-45e4-b44d-9566570fd5f7",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-azure-ipi-fips-f999/2046298030834978816",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-gcp-ipi-f999",
@@ -101,7 +142,16 @@
           "jobStartTime": "2026-04-20T14:29:27Z",
           "jobID": "2ad3ebd6-fad7-4fba-8999-53435f708f5b",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-disruptive-f999/2046234795385556992",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-04-20T18:03:27Z",
+          "testResultSummary": {
+            "openshift-extended-test-disruptive": {
+              "total": 9,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 5
+            }
+          }
         }
       ]
     },
@@ -122,7 +172,8 @@
         "jobStartTime": "2026-04-20T14:22:54Z",
         "jobID": "97815ac3-2aca-482e-8263-4c0cd71b2553",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-stable-4.21-upgrade-from-stable-4.21-aws-ipi-f999/2046233147414155264",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-04-20T18:14:46Z"
       },
       "retriedJobs": []
     }
