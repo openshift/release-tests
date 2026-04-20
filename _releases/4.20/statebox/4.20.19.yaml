@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.19
 created_at: '2026-04-16T15:03:10Z'
-updated_at: '2026-04-20T05:09:45Z'
+updated_at: '2026-04-20T05:09:51Z'
 metadata:
   jira_ticket: ART-15998
   advisory_ids:
@@ -51,10 +51,14 @@ tasks:
   result: 'Triggered image consistency check Prow job: 2815d32a-1062-4d9c-9c5c-aed43a24f820.
     Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2045023381631275008'
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-04-17T06:15:14Z'
-  completed_at: null
-  result: 'Build number: 1573. Jenkins URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1573/'
+  completed_at: '2026-04-20T01:09:51Z'
+  result: |-
+    2026-04-20T01:09:51Z: INFO: Initialized StateBox for release 4.20.19 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.19.yaml
+    2026-04-20T01:09:51Z: INFO: check stage job status according to job id: 1573
+    2026-04-20T01:09:51Z: INFO: build status of zstreams/Stage-Pipeline/1573 is SUCCESS
+    2026-04-20T01:09:51Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: 'Slack notification failed during take-ownership: invalid_auth error for
     usergroups.list API'
