@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.11
 created_at: '2026-04-16T16:03:02Z'
-updated_at: '2026-04-21T10:36:24Z'
+updated_at: '2026-04-21T10:42:48Z'
 metadata:
   jira_ticket: ART-15997
   advisory_ids:
@@ -71,16 +71,20 @@ tasks:
     - Retry runs (04-20): Failed due to QE automation bug in cucushift-upgrade-check-not-recommended step (overly strict validation when Cincinnati cannot evaluate risks due to monitoring infrastructure issues)
     - Conclusion: Build 4.21.11 is functional and ready for release - all failures are infrastructure/automation issues
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-04-21T06:02:52Z'
-  completed_at: null
+  completed_at: '2026-04-21T06:42:48Z'
   result: |-
-    2026-04-21T06:02:52Z: INFO: Initialized StateBox for release 4.21.11 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.11.yaml
-    2026-04-21T06:02:52Z: INFO: Loaded state from _releases/4.21/statebox/4.21.11.yaml (SHA: 5f684cb0)
-    2026-04-21T06:02:52Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-04-21T06:02:57Z: INFO: Triggered image consistency check Prow job: 89327d88-6a9b-4cea-92bb-dda244276d9b
-    2026-04-21T06:02:57Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2046530448720400384
-    2026-04-21T06:02:58Z: INFO: sent slack message to <#team-qe-release>
+    2026-04-21T06:36:27Z: INFO: Initialized StateBox for release 4.21.11 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.11.yaml
+    2026-04-21T06:36:27Z: INFO: Checking image consistency check Prow job status for job ID: 89327d88-6a9b-4cea-92bb-dda244276d9b
+    2026-04-21T06:36:27Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2046530448720400384
+    2026-04-21T06:36:27Z: INFO: Starting image health check for shipment MR 468
+    2026-04-21T06:36:27Z: INFO: Stage release succeeded (verified by label)
+    2026-04-21T06:36:27Z: INFO: Processing MR 468
+    2026-04-21T06:36:33Z: INFO: Found 855 images to check
+    2026-04-21T06:42:47Z: INFO: Completed image health check. Scanned 855 images, found 0 unhealthy
+    2026-04-21T06:42:48Z: INFO: Added image health summary to MR 468
+    2026-04-21T06:42:48Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-04-21T06:03:02Z'
