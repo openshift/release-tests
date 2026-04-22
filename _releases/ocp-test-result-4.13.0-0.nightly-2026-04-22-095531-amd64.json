@@ -65,7 +65,25 @@
           "jobStartTime": "2026-04-22T15:24:08Z",
           "jobID": "2aca3859-aa05-44f2-ac9d-aa109f3c7a59",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2046973334997962752",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-22T18:13:16Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 19,
+              "failingScenarios": [
+                "[sig-operators] OLM for an end user handle within a namespace Author:bandrade-LEVEL0-Critical-41026-OCS should only one installplan generated when creating subscription"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 28,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-22T15:24:13Z",
@@ -119,5 +137,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-04-22-095531",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-04-22-095531"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
