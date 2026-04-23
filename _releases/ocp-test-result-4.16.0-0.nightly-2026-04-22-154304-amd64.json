@@ -37,9 +37,51 @@
         "jobStartTime": "2026-04-23T00:42:13Z",
         "jobID": "beb4efbc-6d81-4033-9e97-d0a44ae56805",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2047113780361433088",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-04-23T03:54:29Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-network-edge] Network_Edge Component_Router Author:aiyengar-LEVEL0-Critical-43112-Timeout tunnel parameter for the haproxy pods an be modified with TuningOptions option in the ingresscontroller",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-operators] OLM for an end user handle within a namespace Author:bandrade-LEVEL0-Critical-41026-OCS should only one installplan generated when creating subscription"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14521:Workloads pod will be scheduled to the node which matches node anti-affinity - DoesNotExist"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-04-23T04:37:18Z",
+          "jobID": "adc69c9b-14aa-451c-95ae-caf1663f66c0",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2047172948174835712",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-04-23T04:37:23Z",
+          "jobID": "e8d7bda4-3aee-4476-9001-6363aa3092ba",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2047172967464439808",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
@@ -97,7 +139,8 @@
         "jobStartTime": "2026-04-23T00:42:23Z",
         "jobID": "754b9c49-b9bd-4210-8dbf-b498dca783f1",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.15-gcp-ipi-f999/2047113823566958592",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-04-23T03:23:57Z"
       },
       "retriedJobs": []
     },
