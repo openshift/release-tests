@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.29
 created_at: '2026-04-23T11:02:53Z'
-updated_at: '2026-04-23T13:35:43Z'
+updated_at: '2026-04-23T13:49:08Z'
 metadata:
   jira_ticket: ART-18131
   advisory_ids:
@@ -40,6 +40,13 @@ tasks:
     2026-04-23T09:35:40Z: INFO: Processing MR 479 for Jira issues
     2026-04-23T09:35:42Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-04-23T09:35:42Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-04-23T13:49:08Z'
+  completed_at: null
+  result: 'Blocked by 2 issues: (1) Advisory 166190 in NEW_FILES state (should be
+    QE), (2) Advisory blocked by secalert - rpminspect security issue. Waiting for
+    ART to resolve.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166190'
   reported_at: '2026-04-23T13:34:54Z'
