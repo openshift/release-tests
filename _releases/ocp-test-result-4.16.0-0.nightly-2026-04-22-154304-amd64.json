@@ -73,13 +73,64 @@
           "jobStartTime": "2026-04-23T04:37:18Z",
           "jobID": "adc69c9b-14aa-451c-95ae-caf1663f66c0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2047172948174835712",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-23T07:40:37Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-20020:UserInterface Source Secret"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-04-23T04:37:23Z",
           "jobID": "e8d7bda4-3aee-4476-9001-6363aa3092ba",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2047172967464439808",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-04-23T07:55:13Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 26
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14697:Workloads pod will be scheduled on the node which meets pod affinity specified namespace"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -161,5 +212,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2026-04-22-154304",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2026-04-22-154304"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
