@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.29
 created_at: '2026-04-23T11:02:53Z'
-updated_at: '2026-04-24T08:37:14Z'
+updated_at: '2026-04-24T08:37:48Z'
 metadata:
   jira_ticket: ART-18131
   advisory_ids:
@@ -69,6 +69,17 @@ tasks:
     (1) upgrade-from-4.18-aws: BO3 PASS (1F,2S), (2) upgrade-from-4.19-azure-fips:
     BO3 PASS (1S), (3) upgrade-from-4.19-gcp: BO3 PASS (1S). Test aggregation complete
     (aggregated: true, accepted: true).'
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-04-24T04:37:40Z'
+  completed_at: null
+  result: |-
+    2026-04-24T04:37:40Z: INFO: Initialized StateBox for release 4.19.29 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.29.yaml
+    2026-04-24T04:37:41Z: INFO: Loaded state from _releases/4.19/statebox/4.19.29.yaml (SHA: c21d5588)
+    2026-04-24T04:37:41Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-04-24T04:37:46Z: INFO: Triggered image consistency check Prow job: 5ac6f4ca-a274-48a0-bb49-4d4eac160ce4
+    2026-04-24T04:37:46Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2047596214299398144
+    2026-04-24T04:37:48Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166190'
   reported_at: '2026-04-23T13:34:54Z'
