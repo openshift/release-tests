@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.60
 created_at: '2026-04-23T13:02:20Z'
-updated_at: '2026-04-24T06:08:50Z'
+updated_at: '2026-04-24T06:25:30Z'
 metadata:
   jira_ticket: ART-18134
   advisory_ids:
@@ -55,4 +55,12 @@ tasks:
     2026-04-24T02:08:48Z: INFO: Triggered image consistency check Prow job: c1a4265a-ea5c-42ad-a653-489087e1ad11
     2026-04-24T02:08:48Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2047558723353710592
     2026-04-24T02:08:50Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-04-24T06:25:30Z'
+  completed_at: '2026-04-24T06:25:30Z'
+  result: 'Candidate build test failures analyzed. 7 unique flaky tests detected on
+    Azure FIPS only (all different across 3 BO3 attempts). Root cause: FIPS crypto
+    overhead causing timing issues in tests. AWS/GCP passed first attempt. Recommend
+    accepting build - no product bugs found.'
 issues: []
