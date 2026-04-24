@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.29
 created_at: '2026-04-23T11:02:53Z'
-updated_at: '2026-04-24T08:34:25Z'
+updated_at: '2026-04-24T08:34:35Z'
 metadata:
   jira_ticket: ART-18131
   advisory_ids:
@@ -42,11 +42,18 @@ tasks:
     2026-04-23T09:35:42Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: push-to-cdn-staging
   status: In Progress
-  started_at: '2026-04-23T13:49:08Z'
+  started_at: '2026-04-24T04:34:30Z'
   completed_at: null
-  result: 'Blocked by 2 issues: (1) Advisory 166190 in NEW_FILES state (should be
-    QE), (2) Advisory blocked by secalert - rpminspect security issue. Waiting for
-    ART to resolve.'
+  result: |-
+    2026-04-24T04:34:30Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-04-24T04:34:33Z: INFO: checking push job status for advisory 166190 ...
+    2026-04-24T04:34:33Z: INFO: no push job found for advisory 166190
+    2026-04-24T04:34:33Z: INFO: advisory 166190 has blocking advisory []
+    2026-04-24T04:34:34Z: INFO: push job for advisory 166190 is triggered
+    2026-04-24T04:34:34Z: INFO: checking push job status for advisory 166191 ...
+    2026-04-24T04:34:34Z: INFO: no push job found for advisory 166191
+    2026-04-24T04:34:34Z: INFO: advisory 166191 has blocking advisory []
+    2026-04-24T04:34:35Z: INFO: push job for advisory 166191 is triggered
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166190'
   reported_at: '2026-04-23T13:34:54Z'
