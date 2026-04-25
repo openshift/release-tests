@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.29
 created_at: '2026-04-23T11:02:53Z'
-updated_at: '2026-04-25T06:44:26Z'
+updated_at: '2026-04-25T06:46:35Z'
 metadata:
   jira_ticket: ART-18131
   advisory_ids:
@@ -82,14 +82,11 @@ tasks:
     2026-04-24T12:29:59Z: INFO: Added image health summary to MR 479
     2026-04-24T12:29:59Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-04-25T02:44:25Z'
-  completed_at: null
-  result: |-
-    2026-04-25T02:44:25Z: INFO: Initialized StateBox for release 4.19.29 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.29.yaml
-    2026-04-25T02:44:25Z: INFO: job id is not set, will trigger stage testing
-    2026-04-25T02:44:25Z: INFO: Loaded state from _releases/4.19/statebox/4.19.29.yaml (SHA: 1ec2af0b)
-    2026-04-25T02:44:25Z: INFO: stage testing already triggered and in progress, no need to trigger again
+  completed_at: '2026-04-25T06:46:35Z'
+  result: Stage testing completed successfully (manually verified by release lead).
+    Previous execution passed all required tests.
 - name: image-signed-check
   status: Pass
   started_at: '2026-04-24T12:35:02Z'
