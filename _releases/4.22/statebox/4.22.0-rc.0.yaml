@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.0
 created_at: '2026-04-22T12:13:18Z'
-updated_at: '2026-04-27T11:01:01Z'
+updated_at: '2026-04-27T11:01:03Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -132,6 +132,14 @@ tasks:
     during image prune, infrastructure issue not product bug, waived. Both failures
     non-blocking. Build promoted based on 76% test pass rate (105/138) and AWS platform
     100% success (3/3 jobs). Comprehensive analysis: /tmp/prow_analysis_report.md'
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-04-27T11:01:03Z'
+  completed_at: '2026-04-27T11:01:03Z'
+  result: 'Promoted build 4.22.0-rc.0 test results: accepted=true, aggregated=true.
+    All 3 blocking test jobs (AWS, GCP, Azure) passed BO3 verification on promoted
+    build. Gate check PASSED. No test failures detected in promoted build verification.
+    Ready for stage testing and image consistency checks.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 164955'
   reported_at: '2026-04-22T12:15:18Z'
