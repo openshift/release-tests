@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.88
 created_at: '2026-05-01T05:01:17Z'
-updated_at: '2026-05-01T18:16:54Z'
+updated_at: '2026-05-03T06:50:53Z'
 metadata:
   jira_ticket: ART-18305
   advisory_ids:
@@ -39,6 +39,20 @@ tasks:
   completed_at: null
   result: 'Waiting for test result file: ocp-test-result-4.12.88-amd64.json does not
     exist in GitHub record branch yet. Tests may still be running or awaiting aggregation.'
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-05-03T02:50:49Z'
+  completed_at: null
+  result: |-
+    2026-05-03T02:50:49Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-03T02:50:51Z: INFO: checking push job status for advisory 166581 ...
+    2026-05-03T02:50:51Z: INFO: no push job found for advisory 166581
+    2026-05-03T02:50:51Z: INFO: advisory 166581 has blocking advisory []
+    2026-05-03T02:50:52Z: INFO: push job for advisory 166581 is triggered
+    2026-05-03T02:50:52Z: INFO: checking push job status for advisory 166582 ...
+    2026-05-03T02:50:52Z: INFO: no push job found for advisory 166582
+    2026-05-03T02:50:52Z: INFO: advisory 166582 has blocking advisory []
+    2026-05-03T02:50:53Z: INFO: push job for advisory 166582 is triggered
 issues:
 - issue: 'RHCOS advisory 166582 has 9 blocking security alerts: trackers OCPBUGS-75955,
     OCPBUGS-76435, OCPBUGS-76502, OCPBUGS-76631, OCPBUGS-78332, OCPBUGS-78340, OCPBUGS-78916,
