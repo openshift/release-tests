@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.13
 created_at: '2026-05-01T05:03:56Z'
-updated_at: '2026-05-04T13:20:02Z'
+updated_at: '2026-05-04T13:21:12Z'
 metadata:
   jira_ticket: ART-18301
   advisory_ids:
@@ -89,9 +89,14 @@ issues:
     cause: Transient job controller failure - only 4/6 nightly jobs and 2/3 stable
     jobs were triggered.'
   reported_at: '2026-05-04T13:20:02Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Manually triggered all missing tests using jobctl trigger-jobs-for-build.
+    Triggered jobs: (1) GCP upgrade 4.21→4.21 for stable 4.21.13 (Job ID: 0d417d90-40f2-47ee-bd89-4b1e88da900f),
+    (2) AWS disruptive for nightly (Job ID: 191b3b6f-44fe-44bc-b7e8-6744df39cc28),
+    (3) GCP upgrade 4.20→4.21 for nightly (Job ID: efa93aa3-d231-4809-a481-8226237d72c9).
+    All jobs started successfully at 2026-05-04T13:17-13:20Z.'
   blocker: false
   related_tasks:
   - analyze-candidate-build
   - analyze-promoted-build
+  resolved_at: '2026-05-04T13:21:12Z'
