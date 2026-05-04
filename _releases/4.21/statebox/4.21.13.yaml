@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.13
 created_at: '2026-05-01T05:03:56Z'
-updated_at: '2026-05-04T12:54:11Z'
+updated_at: '2026-05-04T13:20:02Z'
 metadata:
   jira_ticket: ART-18301
   advisory_ids:
@@ -83,3 +83,15 @@ issues:
   related_tasks:
   - push-to-cdn-staging
   resolved_at: '2026-05-04T12:36:25Z'
+- issue: 'Job controller failed to trigger all blocking tests on April 30, 2026. Missing
+    tests: (1) GCP upgrade 4.21→4.21 for stable build 4.21.13, (2) AWS disruptive
+    test for candidate build, (3) GCP upgrade 4.20→4.21 for candidate build. Root
+    cause: Transient job controller failure - only 4/6 nightly jobs and 2/3 stable
+    jobs were triggered.'
+  reported_at: '2026-05-04T13:20:02Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-candidate-build
+  - analyze-promoted-build
