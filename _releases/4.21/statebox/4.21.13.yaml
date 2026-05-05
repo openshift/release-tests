@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.13
 created_at: '2026-05-01T05:03:56Z'
-updated_at: '2026-05-05T07:10:06Z'
+updated_at: '2026-05-05T07:13:36Z'
 metadata:
   jira_ticket: ART-18301
   advisory_ids:
@@ -75,6 +75,15 @@ tasks:
     2026-05-05T03:10:05Z: INFO: check stage job status according to job id: 1589
     2026-05-05T03:10:06Z: INFO: build status of zstreams/Stage-Pipeline/1589 is SUCCESS
     2026-05-05T03:10:06Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-05-05T07:13:36Z'
+  completed_at: '2026-05-05T07:13:36Z'
+  result: 'Promoted build 4.21.13 accepted by test aggregator. Test results: aggregated=true,
+    accepted=true, 3/3 blocking tests completed (2 passed, 1 GCP upgrade failed but
+    build accepted). AWS upgrade 4.20→4.21: SUCCESS, Azure upgrade 4.21→4.21: SUCCESS,
+    GCP upgrade 4.21→4.21: FAILURE (manually triggered test, infrastructure issue
+    during retry - see GCP install analysis).'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166564'
   reported_at: '2026-05-04T07:39:48Z'
