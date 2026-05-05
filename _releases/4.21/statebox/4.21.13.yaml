@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.13
 created_at: '2026-05-01T05:03:56Z'
-updated_at: '2026-05-05T07:22:17Z'
+updated_at: '2026-05-05T07:26:18Z'
 metadata:
   jira_ticket: ART-18301
   advisory_ids:
@@ -96,6 +96,17 @@ tasks:
     3rd retry succeeded). All AWS and Azure tests passed. Upgrade functionally worked
     in all attempts; failures were in post-test cleanup/reporting steps. Classification:
     Infrastructure failures, not product bugs. Confidence: HIGH.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-05T03:25:37Z'
+  completed_at: '2026-05-05T03:26:17Z'
+  result: |-
+    2026-05-05T03:25:37Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-05T03:25:37Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.13
+    2026-05-05T03:25:39Z: INFO: Image Digest: sha256:987db16d72f3748b61aca7f176b81da4c9bd2ea8ffac1c320ae672463567b0fc
+    2026-05-05T03:25:39Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=987db16d72f3748b61aca7f176b81da4c9bd2ea8ffac1c320ae672463567b0fc/signature-1
+    2026-05-05T03:26:17Z: INFO: Signature check PASSED
+    2026-05-05T03:26:17Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166564'
   reported_at: '2026-05-04T07:39:48Z'
