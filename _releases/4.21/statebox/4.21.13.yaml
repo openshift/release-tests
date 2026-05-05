@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.13
 created_at: '2026-05-01T05:03:56Z'
-updated_at: '2026-05-05T07:13:36Z'
+updated_at: '2026-05-05T07:22:17Z'
 metadata:
   jira_ticket: ART-18301
   advisory_ids:
@@ -84,6 +84,18 @@ tasks:
     build accepted). AWS upgrade 4.20→4.21: SUCCESS, Azure upgrade 4.21→4.21: SUCCESS,
     GCP upgrade 4.21→4.21: FAILURE (manually triggered test, infrastructure issue
     during retry - see GCP install analysis).'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-05-05T07:22:17Z'
+  completed_at: '2026-05-05T07:22:17Z'
+  result: 'Candidate build 4.21.0-0.nightly-2026-04-30-032311 accepted with waivable
+    failures. Test results: aggregated=true, accepted=false, 6 blocking jobs (4 passed,
+    2 failed BO3). Failures: (1) GCP install test 1/3 BO3 - GCP IAM policy limit 1,504/1,500
+    members (infrastructure issue, retry succeeded), (2) GCP upgrade 4.20→4.21 test
+    1/3 BO3 - Image registry timeout during post-upgrade steps (infrastructure issue,
+    3rd retry succeeded). All AWS and Azure tests passed. Upgrade functionally worked
+    in all attempts; failures were in post-test cleanup/reporting steps. Classification:
+    Infrastructure failures, not product bugs. Confidence: HIGH.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166564'
   reported_at: '2026-05-04T07:39:48Z'
