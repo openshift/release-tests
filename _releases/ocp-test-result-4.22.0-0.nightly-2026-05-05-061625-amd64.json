@@ -14,13 +14,63 @@
           "jobStartTime": "2026-05-05T16:37:33Z",
           "jobID": "40a8326d-98ee-4b1d-8e52-be499bb77ad2",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2051702851473772544",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-05T19:45:32Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-05-05T16:37:38Z",
           "jobID": "f992765b-c1e2-488c-8628-e5c28848dad6",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2051702873019912192",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-05T19:33:06Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -140,13 +190,15 @@
           "jobStartTime": "2026-05-05T16:38:10Z",
           "jobID": "9fd24fb4-58a5-43d9-982e-29f7dde63fd8",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-nightly-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2051703007107616768",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-05-05T19:17:08Z"
         },
         {
           "jobStartTime": "2026-05-05T16:38:15Z",
           "jobID": "1a6db1e9-fded-4027-8726-736586794caa",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-nightly-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2051703045674242048",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-05-05T19:16:58Z"
         }
       ]
     }
@@ -156,5 +208,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-05-05-061625",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-05-05-061625"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
