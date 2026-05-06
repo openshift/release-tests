@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.21
 created_at: '2026-05-05T20:03:01Z'
-updated_at: '2026-05-06T11:23:43Z'
+updated_at: '2026-05-06T13:57:17Z'
 metadata:
   jira_ticket: ART-18333
   advisory_ids:
@@ -71,22 +71,24 @@ tasks:
     2026-05-06T07:19:36Z: INFO: Signature check PASSED
     2026-05-06T07:19:36Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-05-06T07:20:34Z'
-  completed_at: null
+  completed_at: '2026-05-06T09:57:17Z'
   result: |-
-    2026-05-06T07:20:34Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-05-06T07:20:36Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-05-06T07:20:37Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202605051409-0
-    2026-05-06T07:20:37Z: INFO: The commit metadata is kernel-5.14.0-570.112.1.el9_6
-    2026-05-06T07:20:37Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147774, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 166202, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-hotfix-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 185576, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:166284-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185928, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13689-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185972, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13810-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185988, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13861-pending', 'perm': 'trusted', 'perm_id': 6}]
-    2026-05-06T07:20:38Z: INFO: Successfully approved MR 505
-    2026-05-06T07:20:38Z: INFO: Successfully added QE approval to MR 505
-    2026-05-06T07:20:39Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2026:13863
-    2026-05-06T07:20:46Z: INFO: The metadata url is not accessible
-    2026-05-06T07:20:46Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-05-06T07:20:46Z: WARNING: Scheduler is already running for release 4.20 (lock file exists), skipping additional instance
-    2026-05-06T07:20:47Z: INFO: Not all the release resources are approved e.g. ET advisories are not updated yet. Please try again later
+    2026-05-06T09:56:39Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-05-06T09:56:40Z: INFO: ShipmentData initialization failed (MR likely merged): Gitlab MR 505 state is not open
+    2026-05-06T09:56:42Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-05-06T09:56:43Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202605051409-0
+    2026-05-06T09:56:43Z: INFO: The commit metadata is kernel-5.14.0-570.112.1.el9_6
+    2026-05-06T09:56:43Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147774, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 166202, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-hotfix-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171957, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 185576, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:166284-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185928, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13689-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185972, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13810-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185988, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13861-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-05-06T09:56:43Z: INFO: Shipment MR for 4.20.21 already merged, skipping QE approval step
+    2026-05-06T09:56:44Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2026:13863
+    2026-05-06T09:56:56Z: INFO: The metadata url is accessible
+    2026-05-06T09:56:58Z: WARNING: RHBA advisory 166769 does not have secalerts
+    2026-05-06T09:57:00Z: INFO: advisory 166769 state is updated to REL_PREP
+    2026-05-06T09:57:15Z: INFO: RHSA advisory 166770 does not have blocking secalert
+    2026-05-06T09:57:16Z: INFO: advisory 166770 state is updated to REL_PREP
+    2026-05-06T09:57:17Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: OCPBUGS-84792 cannot be fetched from Jira (explicitly required by assembly
     config)
