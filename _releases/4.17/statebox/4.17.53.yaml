@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.53
 created_at: '2026-05-06T03:02:39Z'
-updated_at: '2026-05-06T08:47:48Z'
+updated_at: '2026-05-06T12:45:41Z'
 metadata:
   jira_ticket: ART-14783
   advisory_ids:
@@ -30,19 +30,16 @@ tasks:
     not be fetched from JIRA. This is an informational check per spec - does not block
     release. ART should verify assembly config correctness.'
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-05-06T04:45:35Z'
-  completed_at: null
+  completed_at: '2026-05-06T08:45:41Z'
   result: |-
-    2026-05-06T04:45:35Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-05-06T04:45:37Z: INFO: checking push job status for advisory 166779 ...
-    2026-05-06T04:45:37Z: INFO: no push job found for advisory 166779
-    2026-05-06T04:45:37Z: INFO: advisory 166779 has blocking advisory []
-    2026-05-06T04:45:38Z: INFO: push job for advisory 166779 is triggered
-    2026-05-06T04:45:39Z: INFO: checking push job status for advisory 166780 ...
-    2026-05-06T04:45:39Z: INFO: no push job found for advisory 166780
-    2026-05-06T04:45:39Z: INFO: advisory 166780 has blocking advisory []
-    2026-05-06T04:45:39Z: INFO: push job for advisory 166780 is triggered
+    2026-05-06T08:45:39Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-06T08:45:41Z: INFO: checking push job status for advisory 166779 ...
+    2026-05-06T08:45:41Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-06T08:45:41Z: INFO: checking push job status for advisory 166780 ...
+    2026-05-06T08:45:41Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-06T08:45:41Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
   started_at: '2026-05-06T04:47:22Z'
