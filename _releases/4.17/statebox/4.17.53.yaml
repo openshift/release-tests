@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.53
 created_at: '2026-05-06T03:02:39Z'
-updated_at: '2026-05-06T08:35:19Z'
+updated_at: '2026-05-06T08:39:44Z'
 metadata:
   jira_ticket: ART-14783
   advisory_ids:
@@ -22,6 +22,13 @@ tasks:
     2026-05-06T04:34:10Z: INFO: Added QE release lead comment to MR 507
     2026-05-06T04:34:13Z: INFO: sent slack message to <#team-qe-release>
     2026-05-06T04:34:13Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-05-06T08:39:44Z'
+  completed_at: '2026-05-06T08:39:44Z'
+  result: 'Task passed with note: OCPBUGS-84780 referenced in assembly config could
+    not be fetched from JIRA. This is an informational check per spec - does not block
+    release. ART should verify assembly config correctness.'
 issues:
 - issue: 'check-cve-tracker-bug failed: Bug OCPBUGS-84780 referenced in assembly config
     cannot be fetched from JIRA'
