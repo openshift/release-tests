@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.21
 created_at: '2026-05-05T20:03:01Z'
-updated_at: '2026-05-06T09:36:16Z'
+updated_at: '2026-05-06T10:51:43Z'
 metadata:
   jira_ticket: ART-18333
   advisory_ids:
@@ -23,15 +23,16 @@ tasks:
     2026-05-06T01:25:21Z: INFO: sent slack message to <#team-qe-release>
     2026-05-06T01:25:21Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-05-06T04:35:20Z'
-  completed_at: null
+  completed_at: '2026-05-06T06:51:42Z'
   result: |-
-    2026-05-06T04:35:20Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-05-06T04:35:24Z: INFO: checking push job status for advisory 166769 ...
-    2026-05-06T04:35:24Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
-    2026-05-06T04:35:24Z: INFO: checking push job status for advisory 166770 ...
-    2026-05-06T04:35:24Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
+    2026-05-06T06:51:40Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-06T06:51:42Z: INFO: checking push job status for advisory 166769 ...
+    2026-05-06T06:51:42Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-06T06:51:42Z: INFO: checking push job status for advisory 166770 ...
+    2026-05-06T06:51:42Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-06T06:51:42Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
   started_at: '2026-05-06T04:35:28Z'
