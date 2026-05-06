@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.30
 created_at: '2026-05-05T20:02:30Z'
-updated_at: '2026-05-06T07:54:11Z'
+updated_at: '2026-05-06T07:55:02Z'
 metadata:
   jira_ticket: ART-18131
   advisory_ids:
@@ -59,6 +59,17 @@ tasks:
     2026-05-06T03:54:09Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-05-06T03:54:09Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1590/>
     2026-05-06T03:54:10Z: INFO: sent slack message to <#team-qe-release>
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-06T03:54:22Z'
+  completed_at: '2026-05-06T03:55:02Z'
+  result: |-
+    2026-05-06T03:54:22Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-06T03:54:22Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.30
+    2026-05-06T03:54:24Z: INFO: Image Digest: sha256:7a772b30ed4234520e722cbdf2078d05254a7bc38735abc11f7019fb507deeda
+    2026-05-06T03:54:24Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7a772b30ed4234520e722cbdf2078d05254a7bc38735abc11f7019fb507deeda/signature-1
+    2026-05-06T03:55:02Z: INFO: Signature check PASSED
+    2026-05-06T03:55:02Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'CVE tracker bug check failed: OCPBUGS-84782 cannot be fetched from Jira
     (ValueError: Some bugs could not be fetched)'
