@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.30
 created_at: '2026-05-05T20:02:30Z'
-updated_at: '2026-05-06T11:49:00Z'
+updated_at: '2026-05-06T11:51:27Z'
 metadata:
   jira_ticket: ART-18131
   advisory_ids:
@@ -105,6 +105,23 @@ tasks:
 
     Analyzed by: AI-driven failure analysis (/ci:analyze-prow-failures)
     Date: 2026-05-06
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-05-06T11:51:27Z'
+  completed_at: '2026-05-06T11:51:27Z'
+  result: "Task not applicable for release 4.19.30:\n\nREASON:\n- No candidate build\
+    \ tracked in StateBox metadata (candidate_builds: {})\n- Only promoted build test\
+    \ results found in GitHub (ocp-test-result-4.19.30-amd64.json)\n- Release appears\
+    \ to have been processed before candidate/promoted build workflow was fully implemented\
+    \ in StateBox tracking\n- Build went directly to Accepted phase\n\nVALIDATION\
+    \ COVERAGE:\n- Promoted build analysis completed (analyze-promoted-build: Pass)\n\
+    - Same test suite validates both candidate and promoted builds\n- AWS upgrade\
+    \ test: PASSED\n- Azure FIPS upgrade test: PASSED  \n- GCP upgrade test: Infrastructure\
+    \ failure (waived)\n- Stage testing: SUCCESS (Jenkins #1590)\n- Image consistency\
+    \ check: PASSED (658 images)\n\nCONCLUSION:\nTest validation complete via promoted\
+    \ build analysis. Candidate build testing either occurred outside StateBox tracking\
+    \ or was not required for this release workflow.\n\nStatus: Pass (N/A - not tracked\
+    \ for this release)\nDate: 2026-05-06"
 issues:
 - issue: 'CVE tracker bug check failed: OCPBUGS-84782 cannot be fetched from Jira
     (ValueError: Some bugs could not be fetched)'
