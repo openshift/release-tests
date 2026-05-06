@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.14
 created_at: '2026-05-05T19:02:50Z'
-updated_at: '2026-05-06T11:04:17Z'
+updated_at: '2026-05-06T11:04:50Z'
 metadata:
   jira_ticket: ART-18332
   advisory_ids:
@@ -92,6 +92,25 @@ tasks:
     2026-05-06T07:03:54Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=fdb974e48a9474653af29e68c3d42285b4f5fbd157fdf7e5af10d25c09f39f6a/signature-1
     2026-05-06T07:04:17Z: INFO: Signature check PASSED
     2026-05-06T07:04:17Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-05-06T07:04:37Z'
+  completed_at: null
+  result: |-
+    2026-05-06T07:04:37Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-05-06T07:04:40Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-05-06T07:04:40Z: INFO: RHCOS nvr is rhcos-x86_64-4.21.9.6.202605051105-0
+    2026-05-06T07:04:40Z: INFO: The commit metadata is kernel-5.14.0-570.112.1.el9_6
+    2026-05-06T07:04:40Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147774, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 166202, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-hotfix-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 185576, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:166284-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185928, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13689-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185972, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13810-pending', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 185988, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:13861-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-05-06T07:04:41Z: INFO: Successfully approved MR 504
+    2026-05-06T07:04:41Z: INFO: Successfully added QE approval to MR 504
+    2026-05-06T07:04:42Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2026:13813
+    2026-05-06T07:04:48Z: INFO: The metadata url is not accessible
+    2026-05-06T07:04:48Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-05-06T07:04:48Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-05-06T07:04:48Z: INFO: Background metadata checker process started (PID: 189884) - running independently after parent exit
+    2026-05-06T07:04:48Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.21_20260506_070448.log
+    2026-05-06T07:04:49Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: Elliott cannot fetch OCPBUGS-84791 (defined in assembly config) - bug may
     not exist, be deleted, or have permission issues
