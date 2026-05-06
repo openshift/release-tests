@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.14
 created_at: '2026-05-05T19:02:50Z'
-updated_at: '2026-05-06T10:23:31Z'
+updated_at: '2026-05-06T10:34:14Z'
 metadata:
   jira_ticket: ART-18332
   advisory_ids:
@@ -85,6 +85,24 @@ tasks:
     2026-05-06T10:28:20Z: DEBUG: Processing file shipment/ocp/openshift-4.21/openshift-4-21/prod/4.21.14.image.20260505155409.yaml
     2026-05-06T10:28:21Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-05-06T10:28:21Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-05-06T10:34:14Z'
+  completed_at: '2026-05-06T10:34:14Z'
+  result: "Build test analysis completed - WAIVED GCP failures (infrastructure issues).\n\
+    \nTest Results:\n- AWS upgrade from 4.20: PASSED ✓\n- Azure FIPS upgrade from\
+    \ 4.21: PASSED ✓  \n- GCP upgrade from 4.21: FAILED (0/3 BO3) - WAIVED ✓\n\nGCP\
+    \ Failure Root Causes (All Infrastructure/CI Issues):\n1. Attempt 1: Bootstrap\
+    \ timeout - worker scheduling failure (CI capacity)\n2. Attempt 2: GCP IAM policy\
+    \ size limit exceeded (1,503 vs 1,500 max) - CI infrastructure cleanup needed\n\
+    3. Attempt 3: Bootstrap timeout - API server unavailable (infrastructure instability)\n\
+    \nWaiver Justification:\n- Product functionality validated on AWS and Azure platforms\n\
+    - All GCP failures are CI infrastructure issues, not product bugs\n- Different\
+    \ failure modes across attempts (not consistent product behavior)\n- No test execution\
+    \ reached (all failed during cluster installation)\n- This is an Important RHSA\
+    \ security release (Advisory 166758) with release date 2026-May-07\n- Blocking\
+    \ on CI infrastructure would delay critical security fixes\n\nConfidence: HIGH\n\
+    Decision: ACCEPT build 4.21.14"
 issues:
 - issue: Elliott cannot fetch OCPBUGS-84791 (defined in assembly config) - bug may
     not exist, be deleted, or have permission issues
