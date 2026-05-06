@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.88
 created_at: '2026-05-01T05:01:17Z'
-updated_at: '2026-05-04T13:21:16Z'
+updated_at: '2026-05-06T04:00:55Z'
 metadata:
   jira_ticket: ART-18305
   advisory_ids:
@@ -80,6 +80,17 @@ tasks:
     2026-05-04T09:21:15Z: INFO: check stage job status according to job id: 1587
     2026-05-04T09:21:15Z: INFO: build status of zstreams/Stage-Pipeline/1587 is SUCCESS
     2026-05-04T09:21:15Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-06T00:00:28Z'
+  completed_at: '2026-05-06T00:00:54Z'
+  result: |-
+    2026-05-06T00:00:28Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-06T00:00:28Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.12.88
+    2026-05-06T00:00:30Z: INFO: Image Digest: sha256:3e68f1c5d392780d1e848c2b98dbfd9965b3dfc85b4279ca894003c6495420fd
+    2026-05-06T00:00:30Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=3e68f1c5d392780d1e848c2b98dbfd9965b3dfc85b4279ca894003c6495420fd/signature-1
+    2026-05-06T00:00:54Z: INFO: Signature check PASSED
+    2026-05-06T00:00:54Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 166582 has 9 blocking security alerts: trackers OCPBUGS-75955,
     OCPBUGS-76435, OCPBUGS-76502, OCPBUGS-76631, OCPBUGS-78332, OCPBUGS-78340, OCPBUGS-78916,
