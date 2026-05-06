@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.88
 created_at: '2026-05-01T05:01:17Z'
-updated_at: '2026-05-06T04:00:55Z'
+updated_at: '2026-05-06T04:27:47Z'
 metadata:
   jira_ticket: ART-18305
   advisory_ids:
@@ -34,11 +34,35 @@ tasks:
     2026-05-01T13:50:13Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-05-01T13:50:13Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: In Progress
+  status: Pass
   started_at: '2026-05-01T18:16:54Z'
-  completed_at: null
-  result: 'Waiting for test result file: ocp-test-result-4.12.88-amd64.json does not
-    exist in GitHub record branch yet. Tests may still be running or awaiting aggregation.'
+  completed_at: '2026-05-06T04:27:47Z'
+  result: |-
+    Candidate build 4.12.0-0.nightly-2026-04-29-035914 analysis completed.
+
+    QE Test Results: aggregated=true, accepted=false (REJECTED)
+    BO3 Pass Rate: 3/5 jobs (60%)
+
+    Failures:
+    1. Azure FIPS install (1/3 BO3):
+       - Attempt 1: Infrastructure failure (no tests ran)
+       - Attempt 2: Infrastructure failure (no tests ran)
+       - Attempt 3: SUCCESS (all 82 tests passed)
+       - Root Cause: Persistent Azure platform infrastructure issues
+
+    2. GCP Custom Type install (1/3 BO3):
+       - Attempt 1: Infrastructure failure
+       - Attempt 2: SUCCESS (all 82 tests passed)
+       - Attempt 3: Test failure (Network Observability sig-netobserv)
+       - Root Cause: Mixed infra instability + platform-specific test flake
+
+    Passed:
+    - AWS install: 1/1 (all 82 tests passed)
+    - AWS upgrade (4.12→4.12): 1/1
+    - GCP upgrade (4.12→4.12): 2/3 (1 infra failure, 2 successes)
+
+    Note: Release Controller promoted build to 4.12.88 (different quality gates).
+    Promoted build passed QE verification (accepted=true).
 - name: push-to-cdn-staging
   status: Pass
   started_at: '2026-05-03T02:50:49Z'
