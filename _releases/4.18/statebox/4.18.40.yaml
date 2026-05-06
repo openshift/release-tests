@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.40
 created_at: '2026-05-05T20:01:58Z'
-updated_at: '2026-05-06T05:01:31Z'
+updated_at: '2026-05-06T08:37:45Z'
 metadata:
   jira_ticket: ART-18302
   advisory_ids:
@@ -22,6 +22,20 @@ tasks:
     2026-05-06T01:01:00Z: INFO: Added QE release lead comment to MR 503
     2026-05-06T01:01:03Z: INFO: sent slack message to <#team-qe-release>
     2026-05-06T01:01:03Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-05-06T04:37:41Z'
+  completed_at: null
+  result: |-
+    2026-05-06T04:37:41Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-06T04:37:43Z: INFO: checking push job status for advisory 166728 ...
+    2026-05-06T04:37:43Z: INFO: no push job found for advisory 166728
+    2026-05-06T04:37:43Z: INFO: advisory 166728 has blocking advisory []
+    2026-05-06T04:37:43Z: INFO: push job for advisory 166728 is triggered
+    2026-05-06T04:37:43Z: INFO: checking push job status for advisory 166729 ...
+    2026-05-06T04:37:43Z: INFO: no push job found for advisory 166729
+    2026-05-06T04:37:43Z: INFO: advisory 166729 has blocking advisory []
+    2026-05-06T04:37:44Z: INFO: push job for advisory 166729 is triggered
 issues:
 - issue: CVE tracker bug OCPBUGS-84781 in assembly config cannot be fetched from Jira
     - elliott validation failed
