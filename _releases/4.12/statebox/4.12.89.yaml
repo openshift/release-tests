@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.89
 created_at: '2026-05-06T15:00:42Z'
-updated_at: '2026-05-06T17:39:15Z'
+updated_at: '2026-05-06T17:39:17Z'
 metadata:
   jira_ticket: ART-18356
   advisory_ids:
@@ -22,6 +22,25 @@ tasks:
     2026-05-06T13:34:29Z: INFO: Added QE release lead comment to MR 510
     2026-05-06T13:34:32Z: INFO: sent slack message to <#team-qe-release>
     2026-05-06T13:34:32Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Fail
+  started_at: '2026-05-06T13:38:47Z'
+  completed_at: '2026-05-06T13:39:16Z'
+  result: |-
+    2026-05-06T13:38:47Z: INFO: Initialized StateBox for release 4.12.89 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.89.yaml
+    2026-05-06T13:38:47Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-05-06T13:39:14Z: INFO: Processing MR 510 for Jira issues
+    2026-05-06T13:39:15Z: INFO: Missed CVE tracker bug OCPBUGS-84775 is not found in shipment data
+    2026-05-06T13:39:15Z: INFO: Found 1 missed CVE tracker bugs in shipments: ['OCPBUGS-84775']
+    2026-05-06T13:39:15Z: INFO: Loaded state from _releases/4.12/statebox/4.12.89.yaml (SHA: e4da07ab)
+    2026-05-06T13:39:15Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 1 missed CVE tracker bugs in shipments
+
+    Missed CVE tracker bugs:
+    - OCPBUGS-84775
+
+    2026-05-06T13:39:16Z: INFO: Updated state file _releases/4.12/statebox/4.12.89.yaml (attempt 1)
+    2026-05-06T13:39:16Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
+    2026-05-06T13:39:16Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
