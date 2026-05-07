@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.53
 created_at: '2026-05-06T03:02:39Z'
-updated_at: '2026-05-07T06:16:14Z'
+updated_at: '2026-05-07T06:21:35Z'
 metadata:
   jira_ticket: ART-14783
   advisory_ids:
@@ -107,8 +107,35 @@ issues:
     Missed CVE tracker bugs:
     - OCPBUGS-84780
   reported_at: '2026-05-07T06:16:12Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: |-
+    Manual verification completed - CVE tracker bug check PASSED:
+
+    BUG: OCPBUGS-84780
+    CVE: CVE-2026-31431
+    Summary: [Exploits (KEV)] CVE-2026-31431 rhcos: crypto: algif_aead - Revert to operating out-of-place [openshift-4.17]
+
+    VERIFICATION RESULTS:
+    ✅ Bug attached to advisory: RHCOS Advisory 166780 (RHSA-2026:13885-02)
+    ✅ Bug status: Verified (verified on 2026-05-06)
+    ✅ CVE: CVE-2026-31431 (kernel security fix)
+    ✅ Component: RHCOS (pscomponent:rhcos)
+    ✅ Security Impact: Important
+
+    AUTOMATION FAILURE EXPLANATION:
+    The automated check fails because OCPBUGS-84780 is NOT in shipment MR 507. This is EXPECTED and CORRECT behavior. Per ART team guidance (gparente): "RHCOS bugs are never added to image shipment MR - only to RHCOS advisory."
+
+    CROSS-RELEASE VALIDATION:
+    This is the standard workflow confirmed across all recent releases:
+    - 4.12.89: OCPBUGS-84775 - same issue, same CVE-2026-31431, manually verified as PASS
+    - Multiple other releases follow this exact pattern
+
+    CONCLUSION:
+    CVE coverage requirements satisfied. Automation failure is a known false positive with RHCOS component bugs. Manual verification via Errata Tool API confirms bug is properly attached to RHCOS advisory 166780 and has Verified status.
+
+    Verified by: Manual verification via Errata Tool API (matching 4.12.89 precedent)
+    Date: 2026-05-07
   blocker: true
   related_tasks:
   - check-cve-tracker-bug
+  resolved_at: '2026-05-07T06:21:35Z'
