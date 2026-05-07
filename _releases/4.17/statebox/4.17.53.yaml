@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.53
 created_at: '2026-05-06T03:02:39Z'
-updated_at: '2026-05-07T06:22:09Z'
+updated_at: '2026-05-07T08:53:46Z'
 metadata:
   jira_ticket: ART-14783
   advisory_ids:
@@ -63,17 +63,14 @@ tasks:
     verified image consistency across architectures. Shipment data health check skipped
     due to blocked stage-release pipeline (this check is redundant when Prow job passes).
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-05-07T02:07:58Z'
-  completed_at: null
+  completed_at: '2026-05-07T04:53:45Z'
   result: |-
-    2026-05-07T02:07:58Z: INFO: Initialized StateBox for release 4.17.53 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.53.yaml
-    2026-05-07T02:07:58Z: INFO: job id is not set, will trigger stage testing
-    2026-05-07T02:07:58Z: INFO: Loaded state from _releases/4.17/statebox/4.17.53.yaml (SHA: bf8ecece)
-    2026-05-07T02:07:58Z: INFO: Stage release succeeded (verified by label)
-    2026-05-07T02:07:58Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-05-07T02:07:58Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1596/>
-    2026-05-07T02:07:59Z: INFO: sent slack message to <#team-qe-release>
+    2026-05-07T04:53:45Z: INFO: Initialized StateBox for release 4.17.53 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.53.yaml
+    2026-05-07T04:53:45Z: INFO: check stage job status according to job id: 1596
+    2026-05-07T04:53:45Z: INFO: build status of zstreams/Stage-Pipeline/1596 is SUCCESS
+    2026-05-07T04:53:45Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-05-06T18:14:35Z'
