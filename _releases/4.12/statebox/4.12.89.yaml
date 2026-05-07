@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.89
 created_at: '2026-05-06T15:00:42Z'
-updated_at: '2026-05-07T09:25:05Z'
+updated_at: '2026-05-07T09:38:02Z'
 metadata:
   jira_ticket: ART-18356
   advisory_ids:
@@ -83,16 +83,25 @@ tasks:
     2026-05-07T05:11:40Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
-  started_at: '2026-05-07T05:25:03Z'
+  started_at: '2026-05-07T09:38:02Z'
   completed_at: null
   result: |-
-    2026-05-07T05:25:03Z: INFO: Initialized StateBox for release 4.12.89 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.89.yaml
-    2026-05-07T05:25:03Z: INFO: job id is not set, will trigger stage testing
-    2026-05-07T05:25:03Z: INFO: Loaded state from _releases/4.12/statebox/4.12.89.yaml (SHA: 2c9d20e1)
-    2026-05-07T05:25:03Z: INFO: Stage release succeeded (verified by label)
-    2026-05-07T05:25:03Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-05-07T05:25:03Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1597/>
-    2026-05-07T05:25:04Z: INFO: sent slack message to <#team-qe-release>
+    Stage testing rebuild in progress:
+
+    Build #1597 - FAILED (2026-05-07 14:57-15:00 UTC)
+    - Failure: Flexy-install job failed during cluster installation phase
+    - Root cause: Infrastructure issue - "Flexy build failed!" (not a product bug)
+    - Duration: ~2 minutes (failed before actual testing began)
+    - Flexy-install job: ocp-common » Flexy-install #374598
+    - Error: Cluster installation failed, all subsequent test stages skipped
+
+    Build #1598 - IN PROGRESS (triggered manually as rebuild)
+    - Started: 2026-05-07 ~15:00 UTC
+    - URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1598/
+    - Reason for rebuild: Infrastructure failure in #1597, standard retry practice for Flexy installation issues
+    - Expected duration: 30-60 minutes
+
+    Awaiting #1598 completion...
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
