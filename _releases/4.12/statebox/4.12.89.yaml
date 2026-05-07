@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.89
 created_at: '2026-05-06T15:00:42Z'
-updated_at: '2026-05-07T08:22:57Z'
+updated_at: '2026-05-07T09:11:40Z'
 metadata:
   jira_ticket: ART-18356
   advisory_ids:
@@ -67,16 +67,20 @@ tasks:
     2026-05-07T00:26:35Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-05-07T00:26:35Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-05-07T04:22:50Z'
-  completed_at: null
+  completed_at: '2026-05-07T05:11:40Z'
   result: |-
-    2026-05-07T04:22:50Z: INFO: Initialized StateBox for release 4.12.89 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.89.yaml
-    2026-05-07T04:22:50Z: INFO: Loaded state from _releases/4.12/statebox/4.12.89.yaml (SHA: 7f0ec275)
-    2026-05-07T04:22:50Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-05-07T04:22:56Z: INFO: Triggered image consistency check Prow job: 8799343b-7755-4d93-9585-74b5cfff66d9
-    2026-05-07T04:22:56Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2052303696133361664
-    2026-05-07T04:22:56Z: INFO: sent slack message to <#team-qe-release>
+    2026-05-07T05:10:25Z: INFO: Initialized StateBox for release 4.12.89 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.89.yaml
+    2026-05-07T05:10:25Z: INFO: Checking image consistency check Prow job status for job ID: 8799343b-7755-4d93-9585-74b5cfff66d9
+    2026-05-07T05:10:25Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2052303696133361664
+    2026-05-07T05:10:25Z: INFO: Starting image health check for shipment MR 510
+    2026-05-07T05:10:25Z: INFO: Stage release succeeded (verified by label)
+    2026-05-07T05:10:25Z: INFO: Processing MR 510
+    2026-05-07T05:10:27Z: INFO: Found 190 images to check
+    2026-05-07T05:11:39Z: INFO: Completed image health check. Scanned 190 images, found 0 unhealthy
+    2026-05-07T05:11:40Z: INFO: Added image health summary to MR 510
+    2026-05-07T05:11:40Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
