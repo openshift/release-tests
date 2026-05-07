@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.89
 created_at: '2026-05-06T15:00:42Z'
-updated_at: '2026-05-07T11:58:19Z'
+updated_at: '2026-05-07T11:59:04Z'
 metadata:
   jira_ticket: ART-18356
   advisory_ids:
@@ -119,6 +119,29 @@ tasks:
     \ completed: 2026-05-07 (aggregated=true)\n- Jobs ran for ~2-4 hours as expected\n\
     \nConfidence: HIGH\nDecision: ACCEPT build 4.12.89\n\nDate: 2026-05-07\nVerified\
     \ by: Automated aggregator + QE validation"
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-05-07T11:59:04Z'
+  completed_at: '2026-05-07T11:59:04Z'
+  result: |-
+    Task not applicable for release 4.12.89:
+
+    REASON:
+    - No candidate build tracked in StateBox metadata (candidate_builds: {})
+    - Build 4.12.89 went directly from "Rejected" to "Accepted" phase after ART review
+    - Promoted build test results analyzed instead (analyze-promoted-build task)
+
+    VALIDATION COVERAGE:
+    - Promoted build 4.12.89 test analysis completed (analyze-promoted-build: Pass)
+    - All 3 QE blocking tests passed: AWS upgrade ✓, GCP upgrade ✓, Azure upgrade ✓
+    - Test result file: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.12.89-amd64.json
+    - Aggregator status: accepted=true, aggregated=true
+
+    CONCLUSION:
+    Test validation complete via promoted build analysis. Candidate build testing not required for this CVE hotfix release workflow.
+
+    Status: Pass (N/A - not tracked for this release)
+    Date: 2026-05-07
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
