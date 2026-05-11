@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.64
 created_at: '2026-05-08T12:01:55Z'
-updated_at: '2026-05-11T11:56:25Z'
+updated_at: '2026-05-11T12:52:24Z'
 metadata:
   jira_ticket: ART-18367
   advisory_ids:
@@ -24,12 +24,18 @@ tasks:
     2026-05-11T04:22:55Z: INFO: sent slack message to <#team-qe-release>
     2026-05-11T04:22:55Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: image-consistency-check
-  status: Fail
+  status: Pass
   started_at: '2026-05-11T05:31:06Z'
-  completed_at: '2026-05-11T07:56:24Z'
+  completed_at: '2026-05-11T08:52:24Z'
   result: |-
-    2026-05-11T07:56:24Z: INFO: Initialized StateBox for release 4.15.64 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.64.yaml
-    2026-05-11T07:56:24Z: INFO: Checking image consistency check Prow job status for job ID: 56c11ba5-f1bd-4075-9910-24accb9b9ed2
-    2026-05-11T07:56:24Z: INFO: Job state: scheduling, URL: None
-    2026-05-11T07:56:24Z: INFO: task [Image Consistency Check] status is changed to [Fail]
+    2026-05-11T08:46:45Z: INFO: Initialized StateBox for release 4.15.64 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.64.yaml
+    2026-05-11T08:46:45Z: INFO: Checking image consistency check Prow job status for job ID: 56c11ba5-f1bd-4075-9910-24accb9b9ed2
+    2026-05-11T08:46:45Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2053809262454378496
+    2026-05-11T08:46:45Z: INFO: Starting image health check for shipment MR 518
+    2026-05-11T08:46:45Z: INFO: Stage release succeeded (verified by label)
+    2026-05-11T08:46:45Z: INFO: Processing MR 518
+    2026-05-11T08:46:50Z: INFO: Found 831 images to check
+    2026-05-11T08:52:23Z: INFO: Completed image health check. Scanned 831 images, found 0 unhealthy
+    2026-05-11T08:52:24Z: INFO: Added image health summary to MR 518
+    2026-05-11T08:52:24Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 issues: []
