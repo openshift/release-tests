@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.64
 created_at: '2026-05-08T12:01:55Z'
-updated_at: '2026-05-11T16:00:49Z'
+updated_at: '2026-05-11T16:01:43Z'
 metadata:
   jira_ticket: ART-18367
   advisory_ids:
@@ -62,6 +62,18 @@ tasks:
     2026-05-11T18:00:45Z: INFO: no push job found for advisory 166848
     2026-05-11T18:00:45Z: INFO: advisory 166848 has blocking advisory []
     2026-05-11T18:00:47Z: INFO: push job for advisory 166848 is triggered
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-05-11T18:01:37Z'
+  completed_at: null
+  result: |-
+    2026-05-11T18:01:37Z: INFO: Initialized StateBox for release 4.15.64 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.64.yaml
+    2026-05-11T18:01:37Z: INFO: job id is not set, will trigger stage testing
+    2026-05-11T18:01:39Z: INFO: Loaded state from _releases/4.15/statebox/4.15.64.yaml (SHA: fac5d370)
+    2026-05-11T18:01:39Z: INFO: Stage release succeeded (verified by label)
+    2026-05-11T18:01:40Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-05-11T18:01:40Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1600/>
+    2026-05-11T18:01:42Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: CVE tracker bug OCPBUGS-75038 (openshift-golang-builder-container) has no
     attached build in shipment advisories. ART must either attach the build or explicitly
