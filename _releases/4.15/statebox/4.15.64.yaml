@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.64
 created_at: '2026-05-08T12:01:55Z'
-updated_at: '2026-05-11T16:01:06Z'
+updated_at: '2026-05-11T16:01:24Z'
 metadata:
   jira_ticket: ART-18367
   advisory_ids:
@@ -83,6 +83,14 @@ tasks:
     Failures: 1) Storage test: [sig-storage] ROSA-OSD_CCS-ARO provisioning snapshot,
     2) UI test: OCP-26910 Check project page. However, promoted build 4.15.64 passed
     all tests, so candidate build analysis is informational only.'
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-05-11T16:01:24Z'
+  completed_at: '2026-05-11T16:01:24Z'
+  result: 'Promoted build (4.15.64) PASSED BO3 verification. All 3 blocking upgrade
+    tests passed: 1) upgrade-from-stable-4.14-aws (SUCCESS), 2) upgrade-from-stable-4.15-azure-fips
+    (SUCCESS), 3) upgrade-from-stable-4.15-gcp (1 FAILURE + 2 SUCCESSES = BO3 passed).
+    Test aggregation confirmed accepted=true.'
 issues:
 - issue: CVE tracker bug OCPBUGS-75038 (openshift-golang-builder-container) has no
     attached build in shipment advisories. ART must either attach the build or explicitly
