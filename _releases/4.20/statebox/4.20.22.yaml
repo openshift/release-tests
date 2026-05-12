@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.22
 created_at: '2026-05-12T10:03:25Z'
-updated_at: '2026-05-12T13:39:51Z'
+updated_at: '2026-05-12T13:41:17Z'
 metadata:
   jira_ticket: ART-18725
   advisory_ids:
@@ -29,6 +29,20 @@ tasks:
   result: CVE check passed (waived false positive). OCPBUGS-84792 confirmed in advisory
     166770 (previous release), OCPBUGS-85301 confirmed in advisory 167031. Elliott
     command has assembly inheritance bug.
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-05-12T09:41:12Z'
+  completed_at: null
+  result: |-
+    2026-05-12T09:41:12Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-12T09:41:14Z: INFO: checking push job status for advisory 167030 ...
+    2026-05-12T09:41:14Z: INFO: no push job found for advisory 167030
+    2026-05-12T09:41:14Z: INFO: advisory 167030 has blocking advisory []
+    2026-05-12T09:41:15Z: INFO: push job for advisory 167030 is triggered
+    2026-05-12T09:41:15Z: INFO: checking push job status for advisory 167031 ...
+    2026-05-12T09:41:15Z: INFO: no push job found for advisory 167031
+    2026-05-12T09:41:15Z: INFO: advisory 167031 has blocking advisory []
+    2026-05-12T09:41:16Z: INFO: push job for advisory 167031 is triggered
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
