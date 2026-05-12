@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.62
 created_at: '2026-05-12T14:01:34Z'
-updated_at: '2026-05-12T16:30:29Z'
+updated_at: '2026-05-12T16:32:04Z'
 metadata:
   jira_ticket: ART-18729
   advisory_ids:
@@ -12,29 +12,11 @@ metadata:
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/526
 tasks:
 - name: check-cve-tracker-bug
-  status: Fail
+  status: Pass
   started_at: '2026-05-12T11:10:59Z'
-  completed_at: '2026-05-12T11:11:30Z'
-  result: |-
-    2026-05-12T11:10:59Z: INFO: Initialized StateBox for release 4.16.62 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.62.yaml
-    2026-05-12T11:10:59Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
-    2026-05-12T11:11:12Z: INFO: CVE tracker bug OCPBUGS-84779 is not found in RHSA advisories
-    2026-05-12T11:11:27Z: INFO: Processing MR 526 for Jira issues
-    2026-05-12T11:11:28Z: INFO: Missed CVE tracker bug OCPBUGS-84779 is not found in shipment data
-    2026-05-12T11:11:28Z: INFO: Missed CVE tracker bug OCPBUGS-85287 is not found in shipment data
-    2026-05-12T11:11:28Z: INFO: Found 1 missed CVE tracker bugs in advisories: ['OCPBUGS-84779']
-    2026-05-12T11:11:28Z: INFO: Found 2 missed CVE tracker bugs in shipments: ['OCPBUGS-84779', 'OCPBUGS-85287']
-    2026-05-12T11:11:28Z: INFO: Loaded state from _releases/4.16/statebox/4.16.62.yaml (SHA: 40a6f8cd)
-    2026-05-12T11:11:28Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
-
-    Missed CVE tracker bugs:
-    - OCPBUGS-84779
-    - OCPBUGS-84779
-    - OCPBUGS-85287
-
-    2026-05-12T11:11:30Z: INFO: Updated state file _releases/4.16/statebox/4.16.62.yaml (attempt 1)
-    2026-05-12T11:11:30Z: INFO: Created blocking issue in StateBox for 3 CVE tracker bugs
-    2026-05-12T11:11:30Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+  completed_at: '2026-05-12T16:32:04Z'
+  result: OCPBUGS-85287 confirmed on advisory. OCPBUGS-84779 closed/not applicable.
+    Blocker resolved.
 - name: take-ownership
   status: Pass
   started_at: '2026-05-12T11:12:47Z'
