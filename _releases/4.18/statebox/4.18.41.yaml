@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.41
 created_at: '2026-05-12T10:01:56Z'
-updated_at: '2026-05-12T12:54:28Z'
+updated_at: '2026-05-12T13:24:46Z'
 metadata:
   jira_ticket: ART-18728
   advisory_ids:
@@ -25,8 +25,10 @@ tasks:
 - name: check-cve-tracker-bug
   status: Pass
   started_at: '2026-05-12T12:54:28Z'
-  completed_at: '2026-05-12T12:54:28Z'
-  result: OCPBUGS-80193 for microshift-bootc-rhel9 found but confirmed ignorable by
-    ART team - microshift not shipping with 4.18.41, assembly inheritance bug not
-    being fixed.
+  completed_at: '2026-05-12T13:24:46Z'
+  result: '4 CVE tracker bugs found: (1) OCPBUGS-84781 (rhcos) - already shipped in
+    4.18.40 advisory 166729, (2) OCPBUGS-85292 (rhcos) - in advisory 167034, (3) OCPBUGS-80182
+    (microshift) - skipped (builds attach after promotion), (4) OCPBUGS-80193 (microshift-bootc)
+    - ignored per ART team (not shipping microshift-bootc with 4.18.41, assembly inheritance
+    issue). All CVEs accounted for.'
 issues: []
