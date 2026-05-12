@@ -61,9 +61,47 @@
         "jobStartTime": "2026-05-12T06:31:37Z",
         "jobID": "28531b5e-a1cf-42cf-934b-6081229d1133",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999/2054087081201766400",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-05-12T09:47:59Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 25
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-Longduration-NonPreRelease-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-05-12T10:36:56Z",
+          "jobID": "4ce9124c-1e5c-444e-b243-1258e0cc11b2",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2026-05-12T10:37:21Z",
+          "jobID": "a32d21f3-16bc-411b-b214-46615e6f4c6a",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-aws-ipi-disruptive-f999",
