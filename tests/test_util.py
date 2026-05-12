@@ -1,6 +1,7 @@
 import unittest
+import os
 from unittest.mock import patch
-from oar.core.util import is_payload_metadata_url_accessible
+from oar.core.util import is_payload_metadata_url_accessible, get_elliott_env
 
 class TestPayloadMetadataUrlAccessible(unittest.TestCase):
 
@@ -26,6 +27,38 @@ class TestPayloadMetadataUrlAccessible(unittest.TestCase):
         mock_subprocess.side_effect = FileNotFoundError()
 
         self.assertFalse(is_payload_metadata_url_accessible("4.19"))
+
+
+class TestGetElliottEnv(unittest.TestCase):
+
+    @patch.dict(os.environ, {'JIRA_USERNAME': 'test_user', 'OTHER_VAR': 'value'}, clear=True)
+    def test_happy_path(self):
+        """Test successful case when JIRA_USERNAME is set"""
+        env = get_elliott_env()
+
+        # Should set JIRA_EMAIL to JIRA_USERNAME
+        self.assertEqual(env['JIRA_EMAIL'], 'test_user')
+        # Should preserve existing environment variables
+        self.assertEqual(env['JIRA_USERNAME'], 'test_user')
+        self.assertEqual(env['OTHER_VAR'], 'value')
+
+    @patch.dict(os.environ, {'OTHER_VAR': 'value'}, clear=True)
+    def test_missing_jira_username(self):
+        """Test failure when JIRA_USERNAME is not set"""
+        with self.assertRaises(RuntimeError) as context:
+            get_elliott_env()
+
+        self.assertIn('JIRA_USERNAME environment variable is not set', str(context.exception))
+
+    @patch.dict(os.environ, {'JIRA_USERNAME': 'user@example.com', 'JIRA_EMAIL': 'old@example.com'}, clear=True)
+    def test_overwrite_existing_jira_email(self):
+        """Test that JIRA_EMAIL is overwritten even if it already exists"""
+        env = get_elliott_env()
+
+        # Should overwrite existing JIRA_EMAIL with JIRA_USERNAME
+        self.assertEqual(env['JIRA_EMAIL'], 'user@example.com')
+        self.assertEqual(env['JIRA_USERNAME'], 'user@example.com')
+
 
 if __name__ == '__main__':
     unittest.main()
