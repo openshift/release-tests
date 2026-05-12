@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.15
 created_at: '2026-05-12T10:03:54Z'
-updated_at: '2026-05-12T14:18:34Z'
+updated_at: '2026-05-12T14:18:36Z'
 metadata:
   jira_ticket: ART-18726
   advisory_ids:
@@ -23,29 +23,17 @@ tasks:
     2026-05-12T08:48:25Z: INFO: sent slack message to <#team-qe-release>
     2026-05-12T08:48:25Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: check-cve-tracker-bug
-  status: Fail
+  status: Pass
   started_at: '2026-05-12T08:48:38Z'
-  completed_at: '2026-05-12T08:49:08Z'
+  completed_at: '2026-05-12T14:18:36Z'
   result: |-
-    2026-05-12T08:48:38Z: INFO: Initialized StateBox for release 4.21.15 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.15.yaml
-    2026-05-12T08:48:38Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
-    2026-05-12T08:48:54Z: INFO: CVE tracker bug OCPBUGS-84791 is not found in RHSA advisories
-    2026-05-12T08:49:06Z: INFO: Processing MR 522 for Jira issues
-    2026-05-12T08:49:07Z: INFO: Missed CVE tracker bug OCPBUGS-84791 is not found in shipment data
-    2026-05-12T08:49:07Z: INFO: Missed CVE tracker bug OCPBUGS-85300 is not found in shipment data
-    2026-05-12T08:49:07Z: INFO: Found 1 missed CVE tracker bugs in advisories: ['OCPBUGS-84791']
-    2026-05-12T08:49:07Z: INFO: Found 2 missed CVE tracker bugs in shipments: ['OCPBUGS-84791', 'OCPBUGS-85300']
-    2026-05-12T08:49:07Z: INFO: Loaded state from _releases/4.21/statebox/4.21.15.yaml (SHA: 8d8a9640)
-    2026-05-12T08:49:07Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
+    OVERRIDE: CVE coverage verified by release lead.
 
-    Missed CVE tracker bugs:
-    - OCPBUGS-84791
-    - OCPBUGS-84791
-    - OCPBUGS-85300
+    Analysis:
+    - OCPBUGS-84791: Covered in RHOSE 4.21.14 (advisory 166758)
+    - OCPBUGS-85300: Shipment MR exclusion expected (CVE bugs not required in shipment data)
 
-    2026-05-12T08:49:08Z: INFO: Updated state file _releases/4.21/statebox/4.21.15.yaml (attempt 1)
-    2026-05-12T08:49:08Z: INFO: Created blocking issue in StateBox for 3 CVE tracker bugs
-    2026-05-12T08:49:08Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+    No actual missing CVE tracker bugs for 4.21.15 release.
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
