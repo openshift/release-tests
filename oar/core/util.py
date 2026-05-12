@@ -229,7 +229,10 @@ def get_elliott_env():
     This function sets JIRA_EMAIL to JIRA_USERNAME for elliott to prevent silent failure.
 
     Returns:
-        dict: Copy of os.environ with JIRA_EMAIL set if JIRA_USERNAME exists
+        dict: Copy of os.environ with JIRA_EMAIL set to JIRA_USERNAME
+
+    Raises:
+        RuntimeError: If JIRA_USERNAME environment variable is not set
 
     Example:
         >>> import subprocess
@@ -239,9 +242,15 @@ def get_elliott_env():
     import os
 
     env = os.environ.copy()
-    if "JIRA_USERNAME" in env:
-        env["JIRA_EMAIL"] = env["JIRA_USERNAME"]
-        logger.debug(f"Setting JIRA_EMAIL={env['JIRA_USERNAME']} for elliott")
+    if "JIRA_USERNAME" not in env:
+        raise RuntimeError(
+            "JIRA_USERNAME environment variable is not set. "
+            "This is required for elliott to prevent silent failures when querying JIRA. "
+            "Please set JIRA_USERNAME to your JIRA username."
+        )
+
+    env["JIRA_EMAIL"] = env["JIRA_USERNAME"]
+    logger.debug(f"Setting JIRA_EMAIL={env['JIRA_USERNAME']} for elliott")
 
     return env
 
