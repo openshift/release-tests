@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.65
 created_at: '2026-05-08T18:01:50Z'
-updated_at: '2026-05-12T14:52:52Z'
+updated_at: '2026-05-12T14:53:55Z'
 metadata:
   jira_ticket: ART-18507
   advisory_ids:
@@ -117,23 +117,13 @@ tasks:
     3. Prepare new build (4.14.66)
     4. Re-test upgrade path before proceeding
 - name: analyze-promoted-build
-  status: Fail
+  status: Pass
   started_at: '2026-05-11T15:31:30Z'
-  completed_at: '2026-05-11T15:31:30Z'
-  result: "CRITICAL BLOCKER: Upgrade from 4.13 to 4.14.65 fails on AWS infrastructure\n\
-    \nAnalysis Summary:\n- Test Job: periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-stable-4.14-upgrade-from-stable-4.13-aws-ipi-f999\n\
-    - BO3 Result: 0/3 attempts passed (100% failure rate)\n- Failure Type: Infrastructure/upgrade\
-    \ process failure (not test failures)\n- Root Cause: Abnormal Machine Config Pool\
-    \ state during cucushift-upgrade-toimage step\n\nEvidence:\n- Attempt 1 (2053739900217331712):\
-    \ Failed after 3h34m at MCP check\n- Attempt 2 (2053801436222853120): Failed after\
-    \ 3h39m at MCP check  \n- Attempt 3 (2053801475334737920): Failed after 3h39m\
-    \ at MCP check\n\nAll attempts failed at identical point with \"Describing abnormal\
-    \ mcp...\" before container exit code 1.\n\nClassification: CANNOT WAIVE\n- Not\
-    \ a test failure - upgrade process itself failed\n- Blocks customer upgrades from\
-    \ 4.13 → 4.14.65 on AWS\n- Consistent failure across all retries indicates product\
-    \ bug\n- Requires OCPBUGS issue and fix before release\n\nRecommendation: REJECT\
-    \ build 4.14.65 until upgrade blocker resolved\n\nTest Result File: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.14.65-amd64.json\n\
-    Job URLs: See blocking issue for details"
+  completed_at: '2026-05-12T14:53:55Z'
+  result: |-
+    OVERRIDE: Patch manager is aware of the broken upgrade path from 4.13 -> 4.14. Shipping this update ensures that at least 4.14 can receive critical CVE fixes.
+
+    Original analysis: Upgrade from 4.13 to 4.14.65 fails on AWS with abnormal Machine Config Pool (0/3 BO3). Upgrade from 4.13 to 4.14.65 fails on GCP with all cluster operators unavailable (0/3 BO3). Cross-platform regression accepted by release lead.
 - name: analyze-candidate-build
   status: Fail
   started_at: '2026-05-11T15:34:17Z'
