@@ -2,7 +2,6 @@ import unittest
 import os
 from unittest.mock import patch
 from oar.core.util import is_payload_metadata_url_accessible, get_elliott_env
-from oar.core.exceptions import ConfigStoreException
 
 class TestPayloadMetadataUrlAccessible(unittest.TestCase):
 
@@ -46,7 +45,7 @@ class TestGetElliottEnv(unittest.TestCase):
     @patch.dict(os.environ, {'OTHER_VAR': 'value'}, clear=True)
     def test_missing_jira_username(self):
         """Test failure when JIRA_USERNAME is not set"""
-        with self.assertRaises(ConfigStoreException) as context:
+        with self.assertRaises(RuntimeError) as context:
             get_elliott_env()
 
         self.assertIn('JIRA_USERNAME', str(context.exception))

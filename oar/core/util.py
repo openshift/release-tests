@@ -12,7 +12,6 @@ from subprocess import CalledProcessError
 from requests.exceptions import RequestException
 
 from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT, TASK_DISPLAY_NAMES, ENV_VAR_JIRA_USERNAME
-from oar.core.exceptions import ConfigStoreException
 
 logger = logging.getLogger(__name__)
 
@@ -237,7 +236,7 @@ def get_elliott_env():
         dict: Copy of os.environ with JIRA_EMAIL set to JIRA_USERNAME if JIRA_EMAIL was not present
 
     Raises:
-        ConfigStoreException: If JIRA_USERNAME environment variable is not set
+        RuntimeError: If JIRA_USERNAME environment variable is not set
 
     Example:
         >>> import subprocess
@@ -247,8 +246,10 @@ def get_elliott_env():
     # TODO: Remove this entire function once OCPERT-389 is fixed in Elliott
     env = os.environ.copy()
     if ENV_VAR_JIRA_USERNAME not in env:
-        raise ConfigStoreException(
-            f"system environment variable {ENV_VAR_JIRA_USERNAME} not found"
+        raise RuntimeError(
+            "JIRA_USERNAME environment variable is not set. "
+            "This is required for elliott to prevent silent failures when querying JIRA. "
+            "Please set JIRA_USERNAME to your JIRA username."
         )
 
     if "JIRA_EMAIL" not in env:
