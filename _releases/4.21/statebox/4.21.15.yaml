@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.15
 created_at: '2026-05-12T10:03:54Z'
-updated_at: '2026-05-12T16:16:25Z'
+updated_at: '2026-05-12T16:16:43Z'
 metadata:
   jira_ticket: ART-18726
   advisory_ids:
@@ -46,13 +46,20 @@ tasks:
     2026-05-12T12:15:17Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-05-12T12:15:17Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-05-12T12:16:25Z'
-  completed_at: null
+  completed_at: '2026-05-12T12:16:42Z'
   result: |-
-    2026-05-12T12:16:25Z: INFO: Initialized StateBox for release 4.21.15 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.15.yaml
-    2026-05-12T12:16:25Z: INFO: Loaded state from _releases/4.21/statebox/4.21.15.yaml (SHA: 837239f2)
-    2026-05-12T12:16:25Z: INFO: Image consistency check already passed, skipping
+    2026-05-12T12:12:31Z: INFO: Initialized StateBox for release 4.21.15 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.15.yaml
+    2026-05-12T12:12:31Z: INFO: Checking image consistency check Prow job status for job ID: 6c82abc0-e573-4a08-b7f0-aa75643cfda3
+    2026-05-12T12:12:31Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2054219385312120832
+    2026-05-12T12:12:31Z: INFO: Starting image health check for shipment MR 522
+    2026-05-12T12:12:31Z: INFO: Stage release succeeded (verified by label)
+    2026-05-12T12:12:31Z: INFO: Processing MR 522
+    2026-05-12T12:12:34Z: INFO: Found 651 images to check
+    2026-05-12T12:16:42Z: INFO: Completed image health check. Scanned 651 images, found 0 unhealthy
+    2026-05-12T12:16:42Z: INFO: Added image health summary to MR 522
+    2026-05-12T12:16:42Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-05-12T11:14:57Z'
