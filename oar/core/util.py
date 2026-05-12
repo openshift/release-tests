@@ -11,7 +11,8 @@ from urllib.parse import urlparse
 from subprocess import CalledProcessError
 from requests.exceptions import RequestException
 
-from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT, TASK_DISPLAY_NAMES
+from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT, TASK_DISPLAY_NAMES, ENV_VAR_JIRA_USERNAME
+from oar.core.exceptions import ConfigStoreException
 
 logger = logging.getLogger(__name__)
 
@@ -227,29 +228,32 @@ def get_elliott_env():
     """Get environment dict with Elliott JIRA workaround applied.
 
     WORKAROUND: OCPERT-389 - Elliott silently returns empty results when JIRA_EMAIL is not set.
-    This function sets JIRA_EMAIL to JIRA_USERNAME for elliott to prevent silent failure.
+    This function sets JIRA_EMAIL to JIRA_USERNAME as a fallback when JIRA_EMAIL is not already set.
+
+    TODO: Remove this workaround once OCPERT-389 is fixed in Elliott.
+          After the fix, callers should use os.environ.copy() directly instead of this function.
 
     Returns:
-        dict: Copy of os.environ with JIRA_EMAIL set to JIRA_USERNAME
+        dict: Copy of os.environ with JIRA_EMAIL set to JIRA_USERNAME if JIRA_EMAIL was not present
 
     Raises:
-        RuntimeError: If JIRA_USERNAME environment variable is not set
+        ConfigStoreException: If JIRA_USERNAME environment variable is not set
 
     Example:
         >>> import subprocess
         >>> cmd = ['elliott', 'find-bugs', '--cve-only']
         >>> p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=get_elliott_env())
     """
+    # TODO: Remove this entire function once OCPERT-389 is fixed in Elliott
     env = os.environ.copy()
-    if "JIRA_USERNAME" not in env:
-        raise RuntimeError(
-            "JIRA_USERNAME environment variable is not set. "
-            "This is required for elliott to prevent silent failures when querying JIRA. "
-            "Please set JIRA_USERNAME to your JIRA username."
+    if ENV_VAR_JIRA_USERNAME not in env:
+        raise ConfigStoreException(
+            f"system environment variable {ENV_VAR_JIRA_USERNAME} not found"
         )
 
-    env["JIRA_EMAIL"] = env["JIRA_USERNAME"]
-    logger.debug(f"Setting JIRA_EMAIL={env['JIRA_USERNAME']} for elliott")
+    if "JIRA_EMAIL" not in env:
+        env["JIRA_EMAIL"] = env[ENV_VAR_JIRA_USERNAME]
+        logger.debug("Using JIRA_USERNAME as fallback for JIRA_EMAIL")
 
     return env
 
