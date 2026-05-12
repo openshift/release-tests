@@ -14,7 +14,7 @@ from gitlab.exceptions import (
     GitlabCreateError,
     GitlabListError
 )
-from oar.core.util import is_valid_email, parse_mr_url, get_y_release, get_release_key
+from oar.core.util import is_valid_email, parse_mr_url, get_y_release, get_release_key, get_elliott_env
 from typing import List, Optional, Set
 from glom import glom
 from oar.core.configstore import ConfigStore
@@ -1526,14 +1526,7 @@ class ShipmentData:
 
         logger.debug(f"elliott cmd {cmd}")
 
-        # WORKAROUND: OCPERT-389 - Elliott silently returns empty results when JIRA_EMAIL is not set
-        # Set JIRA_EMAIL to JIRA_USERNAME for elliott to prevent silent failure
-        env = os.environ.copy()
-        if "JIRA_USERNAME" in env:
-            env["JIRA_EMAIL"] = env["JIRA_USERNAME"]
-            logger.debug(f"Setting JIRA_EMAIL={env['JIRA_USERNAME']} for elliott")
-
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=get_elliott_env())
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise ShipmentDataException(f"elliott cmd error:\n {stderr}")

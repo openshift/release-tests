@@ -222,21 +222,44 @@ def split_large_message(message: str, max_size: int = 4000, chunk_size: int = 25
     
     return chunks
 
+def get_elliott_env():
+    """Get environment dict with Elliott JIRA workaround applied.
+
+    WORKAROUND: OCPERT-389 - Elliott silently returns empty results when JIRA_EMAIL is not set.
+    This function sets JIRA_EMAIL to JIRA_USERNAME for elliott to prevent silent failure.
+
+    Returns:
+        dict: Copy of os.environ with JIRA_EMAIL set if JIRA_USERNAME exists
+
+    Example:
+        >>> import subprocess
+        >>> cmd = ['elliott', 'find-bugs', '--cve-only']
+        >>> p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=get_elliott_env())
+    """
+    import os
+
+    env = os.environ.copy()
+    if "JIRA_USERNAME" in env:
+        env["JIRA_EMAIL"] = env["JIRA_USERNAME"]
+        logger.debug(f"Setting JIRA_EMAIL={env['JIRA_USERNAME']} for elliott")
+
+    return env
+
 def is_payload_metadata_url_accessible(release: str) -> bool:
     """Check if the metadata URL for a given OCP release payload is accessible.
-    
+
     This function verifies accessibility by:
     1. Getting the image pullspec from release stream API
     2. Checking if oc client is available
     3. Extracting metadata URL from release payload
     4. Verifying the metadata URL returns HTTP 200
-    
+
     Args:
         release: The OCP Y-stream release version to check (e.g. "4.19")
-        
+
     Returns:
         bool: True if metadata URL is accessible, False otherwise
-        
+
     Raises:
         requests.exceptions.RequestException: If any HTTP request fails
         subprocess.CalledProcessError: If oc command execution fails
@@ -250,7 +273,7 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
     else:
         logger.error(f"Can not get payload pullspec from release stream 4-stable, http error {resp.status_code}")
         return False
-    
+
     # get metadata url from release payload
     # this logic replies on oc client, so need to check oc installation first.
     try:
@@ -259,7 +282,7 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
     except (CalledProcessError, FileNotFoundError):
         logger.error("Cannot find oc client from localhost, please make sure it is installed")
         return False
-    
+
     metadata_url = None
     try:
         cmd = ['oc', 'adm', 'release', 'info', pullspec, '-o', 'json']
@@ -268,7 +291,7 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
     except CalledProcessError as cpe:
         logger.error(f"Execute oc command failed: {str(cpe)}")
         return False
-    
+
     # check if the metadata url is accessible, expected is 200 ok
     logger.info(f"Checking accessiblity of metadata url {metadata_url}")
     try:
