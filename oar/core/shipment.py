@@ -1526,7 +1526,14 @@ class ShipmentData:
 
         logger.debug(f"elliott cmd {cmd}")
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # WORKAROUND: OCPERT-389 - Elliott silently returns empty results when JIRA_EMAIL is not set
+        # Set JIRA_EMAIL to JIRA_USERNAME for elliott to prevent silent failure
+        env = os.environ.copy()
+        if "JIRA_USERNAME" in env:
+            env["JIRA_EMAIL"] = env["JIRA_USERNAME"]
+            logger.debug(f"Setting JIRA_EMAIL={env['JIRA_USERNAME']} for elliott")
+
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=env)
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise ShipmentDataException(f"elliott cmd error:\n {stderr}")
