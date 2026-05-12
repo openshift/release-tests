@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.22
 created_at: '2026-05-12T10:03:25Z'
-updated_at: '2026-05-12T13:38:29Z'
+updated_at: '2026-05-12T13:39:51Z'
 metadata:
   jira_ticket: ART-18725
   advisory_ids:
@@ -23,30 +23,12 @@ tasks:
     2026-05-12T06:05:25Z: INFO: sent slack message to <#team-qe-release>
     2026-05-12T06:05:25Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: check-cve-tracker-bug
-  status: Fail
+  status: Pass
   started_at: '2026-05-12T06:18:10Z'
-  completed_at: '2026-05-12T07:44:19Z'
-  result: |-
-    2026-05-12T07:43:51Z: INFO: Initialized StateBox for release 4.20.22 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.22.yaml
-    2026-05-12T07:43:51Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
-    2026-05-12T07:44:04Z: INFO: CVE tracker bug OCPBUGS-84792 is not found in RHSA advisories
-    2026-05-12T07:44:16Z: INFO: Processing MR 523 for Jira issues
-    2026-05-12T07:44:17Z: INFO: Missed CVE tracker bug OCPBUGS-84792 is not found in shipment data
-    2026-05-12T07:44:17Z: INFO: Missed CVE tracker bug OCPBUGS-85301 is not found in shipment data
-    2026-05-12T07:44:17Z: INFO: Found 1 missed CVE tracker bugs in advisories: ['OCPBUGS-84792']
-    2026-05-12T07:44:17Z: INFO: Found 2 missed CVE tracker bugs in shipments: ['OCPBUGS-84792', 'OCPBUGS-85301']
-    2026-05-12T07:44:17Z: INFO: Loaded state from _releases/4.20/statebox/4.20.22.yaml (SHA: 33b99d1f)
-    2026-05-12T07:44:17Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
-
-    Missed CVE tracker bugs:
-    - OCPBUGS-84792
-    - OCPBUGS-84792
-    - OCPBUGS-85301
-
-    2026-05-12T07:44:18Z: INFO: Updated state file _releases/4.20/statebox/4.20.22.yaml (attempt 1)
-    2026-05-12T07:44:18Z: INFO: Created blocking issue in StateBox for 3 CVE tracker bugs
-    2026-05-12T07:44:19Z: INFO: sent slack message to <#forum-ocp-release>
-    2026-05-12T07:44:19Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+  completed_at: '2026-05-12T13:39:51Z'
+  result: CVE check passed (waived false positive). OCPBUGS-84792 confirmed in advisory
+    166770 (previous release), OCPBUGS-85301 confirmed in advisory 167031. Elliott
+    command has assembly inheritance bug.
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
