@@ -1,4 +1,5 @@
 import logging
+import os
 import requests
 import warnings
 import re
@@ -10,7 +11,7 @@ from urllib.parse import urlparse
 from subprocess import CalledProcessError
 from requests.exceptions import RequestException
 
-from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT, TASK_DISPLAY_NAMES
+from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT, TASK_DISPLAY_NAMES, ENV_VAR_JIRA_USERNAME
 
 logger = logging.getLogger(__name__)
 
@@ -129,28 +130,28 @@ def is_valid_email(email):
 
 def parse_mr_url(url: str) -> tuple:
     """Parse MR URL to extract project and MR ID
-    
+
     Args:
         url: MR URL in format https://gitlab.cee.redhat.com/namespace/project/-/merge_requests/123
-        
+
     Returns:
         tuple: (project_path, mr_id)
-        
+
     Raises:
         ValueError: If URL is invalid
     """
     parsed = urlparse(url)
     if not parsed.netloc or not parsed.path:
         raise ValueError("Invalid MR URL")
-        
+
     # Extract project path (namespace/project)
     path_parts = parsed.path.split('/-/merge_requests/')
     if len(path_parts) != 2:
         raise ValueError("Invalid MR URL format")
-        
+
     project_path = path_parts[0].strip('/')
     mr_id = int(path_parts[1].split('/')[0])
-    
+
     return (project_path, mr_id)
 
 def get_ocp_test_result_url(release: str) -> str:
@@ -222,21 +223,56 @@ def split_large_message(message: str, max_size: int = 4000, chunk_size: int = 25
     
     return chunks
 
+def get_elliott_env():
+    """Get environment dict with Elliott JIRA workaround applied.
+
+    WORKAROUND: OCPERT-389 - Elliott silently returns empty results when JIRA_EMAIL is not set.
+    This function sets JIRA_EMAIL to JIRA_USERNAME as a fallback when JIRA_EMAIL is not already set.
+
+    TODO: Remove this workaround once OCPERT-389 is fixed in Elliott.
+          After the fix, callers should use os.environ.copy() directly instead of this function.
+
+    Returns:
+        dict: Copy of os.environ with JIRA_EMAIL set to JIRA_USERNAME if JIRA_EMAIL was not present
+
+    Raises:
+        RuntimeError: If JIRA_USERNAME environment variable is not set
+
+    Example:
+        >>> import subprocess
+        >>> cmd = ['elliott', 'find-bugs', '--cve-only']
+        >>> p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=get_elliott_env())
+    """
+    # TODO: Remove this entire function once OCPERT-389 is fixed in Elliott
+    env = os.environ.copy()
+    if ENV_VAR_JIRA_USERNAME not in env:
+        raise RuntimeError(
+            "JIRA_USERNAME environment variable is not set. "
+            "This is required for elliott to prevent silent failures when querying JIRA. "
+            "Please set JIRA_USERNAME to your JIRA username."
+        )
+
+    if "JIRA_EMAIL" not in env:
+        env["JIRA_EMAIL"] = env[ENV_VAR_JIRA_USERNAME]
+        logger.debug("Using JIRA_USERNAME as fallback for JIRA_EMAIL")
+
+    return env
+
 def is_payload_metadata_url_accessible(release: str) -> bool:
     """Check if the metadata URL for a given OCP release payload is accessible.
-    
+
     This function verifies accessibility by:
     1. Getting the image pullspec from release stream API
     2. Checking if oc client is available
     3. Extracting metadata URL from release payload
     4. Verifying the metadata URL returns HTTP 200
-    
+
     Args:
         release: The OCP Y-stream release version to check (e.g. "4.19")
-        
+
     Returns:
         bool: True if metadata URL is accessible, False otherwise
-        
+
     Raises:
         requests.exceptions.RequestException: If any HTTP request fails
         subprocess.CalledProcessError: If oc command execution fails
@@ -250,7 +286,7 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
     else:
         logger.error(f"Can not get payload pullspec from release stream 4-stable, http error {resp.status_code}")
         return False
-    
+
     # get metadata url from release payload
     # this logic replies on oc client, so need to check oc installation first.
     try:
@@ -259,7 +295,7 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
     except (CalledProcessError, FileNotFoundError):
         logger.error("Cannot find oc client from localhost, please make sure it is installed")
         return False
-    
+
     metadata_url = None
     try:
         cmd = ['oc', 'adm', 'release', 'info', pullspec, '-o', 'json']
@@ -268,7 +304,7 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
     except CalledProcessError as cpe:
         logger.error(f"Execute oc command failed: {str(cpe)}")
         return False
-    
+
     # check if the metadata url is accessible, expected is 200 ok
     logger.info(f"Checking accessiblity of metadata url {metadata_url}")
     try:

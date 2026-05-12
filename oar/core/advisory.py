@@ -250,7 +250,7 @@ class AdvisoryManager:
 
         logger.debug(f"elliott cmd {cmd}")
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=util.get_elliott_env())
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise AdvisoryException(f"elliott cmd error:\n {stderr}")

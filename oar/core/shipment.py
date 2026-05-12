@@ -14,7 +14,7 @@ from gitlab.exceptions import (
     GitlabCreateError,
     GitlabListError
 )
-from oar.core.util import is_valid_email, parse_mr_url, get_y_release, get_release_key
+from oar.core.util import is_valid_email, parse_mr_url, get_y_release, get_release_key, get_elliott_env
 from typing import List, Optional, Set
 from glom import glom
 from oar.core.configstore import ConfigStore
@@ -1526,7 +1526,7 @@ class ShipmentData:
 
         logger.debug(f"elliott cmd {cmd}")
 
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=get_elliott_env())
         stdout, stderr = p.communicate()
         if p.returncode != 0:
             raise ShipmentDataException(f"elliott cmd error:\n {stderr}")
