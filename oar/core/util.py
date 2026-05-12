@@ -1,4 +1,5 @@
 import logging
+import os
 import requests
 import warnings
 import re
@@ -239,8 +240,6 @@ def get_elliott_env():
         >>> cmd = ['elliott', 'find-bugs', '--cve-only']
         >>> p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=get_elliott_env())
     """
-    import os
-
     env = os.environ.copy()
     if "JIRA_USERNAME" not in env:
         raise RuntimeError(
