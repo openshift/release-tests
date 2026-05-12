@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.15
 created_at: '2026-05-12T10:03:54Z'
-updated_at: '2026-05-12T19:24:24Z'
+updated_at: '2026-05-12T20:06:55Z'
 metadata:
   jira_ticket: ART-18726
   advisory_ids:
@@ -69,6 +69,17 @@ tasks:
     2026-05-12T15:24:23Z: INFO: check stage job status according to job id: 1601
     2026-05-12T15:24:23Z: INFO: build status of zstreams/Stage-Pipeline/1601 is SUCCESS
     2026-05-12T15:24:23Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-12T22:06:50Z'
+  completed_at: '2026-05-12T22:06:53Z'
+  result: |-
+    2026-05-12T22:06:50Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-12T22:06:50Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.15
+    2026-05-12T22:06:53Z: INFO: Image Digest: sha256:05e69ed54453e3d306b136f52493073073b207f57d0562fe1c8a555bde61aa49
+    2026-05-12T22:06:53Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=05e69ed54453e3d306b136f52493073073b207f57d0562fe1c8a555bde61aa49/signature-1
+    2026-05-12T22:06:53Z: INFO: Signature check PASSED
+    2026-05-12T22:06:53Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
