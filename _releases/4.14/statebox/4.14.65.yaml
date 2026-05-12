@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.65
 created_at: '2026-05-08T18:01:50Z'
-updated_at: '2026-05-12T14:53:55Z'
+updated_at: '2026-05-12T15:09:59Z'
 metadata:
   jira_ticket: ART-18507
   advisory_ids:
@@ -125,52 +125,13 @@ tasks:
 
     Original analysis: Upgrade from 4.13 to 4.14.65 fails on AWS with abnormal Machine Config Pool (0/3 BO3). Upgrade from 4.13 to 4.14.65 fails on GCP with all cluster operators unavailable (0/3 BO3). Cross-platform regression accepted by release lead.
 - name: analyze-candidate-build
-  status: Fail
+  status: Pass
   started_at: '2026-05-11T15:34:17Z'
-  completed_at: '2026-05-11T15:34:17Z'
+  completed_at: '2026-05-12T15:09:59Z'
   result: |-
-    CRITICAL CROSS-PLATFORM BLOCKER: Candidate build upgrade from 4.13 fails on GCP with complete cluster failure
+    OVERRIDE: Patch manager is aware of the broken upgrade path from 4.13 -> 4.14. Shipping this update ensures that at least 4.14 can receive critical CVE fixes.
 
-    Analysis Summary:
-    - Candidate Build: 4.14.0-0.nightly-2026-05-07-213817
-    - Test Job: periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-stable-4.14-upgrade-from-stable-4.13-gcp-ipi-f999
-    - BO3 Result: 0/3 attempts passed (100% failure rate)
-    - Failure Type: Complete cluster failure - ALL cluster operators unavailable
-    - Root Cause: Upgrade process causes catastrophic cluster failure on GCP
-
-    Evidence (Attempt 1 - 2052731694540132352):
-    All 30+ cluster operators reported as "not available (<missing>) because <missing>":
-    - authentication, baremetal, cloud-controller-manager, cloud-credential
-    - cluster-autoscaler, config-operator, console, csi-snapshot-controller
-    - dns, etcd, image-registry, ingress, insights, kube-apiserver
-    - kube-controller-manager, kube-scheduler, kube-storage-version-migrator
-    - machine-api, machine-approver, machine-config, marketplace
-    - monitoring, network, node-tuning, openshift-apiserver
-    - openshift-controller-manager, openshift-samples
-    - operator-lifecycle-manager, service-ca, storage
-    Must-gather timed out due to cluster unavailability
-
-    Additional Evidence:
-    - Attempt 2 (2052760673405898752): Failed
-    - Attempt 3 (2052760729995448320): Failed
-
-    CROSS-PLATFORM CORRELATION:
-    This candidate build (GCP) failure + promoted build (AWS) failure = CROSS-PLATFORM upgrade regression
-    - Candidate (GCP): Complete cluster death - all operators unavailable
-    - Promoted (AWS): Abnormal Machine Config Pool during upgrade
-    - Both: Upgrade from 4.13 to 4.14.65 consistently fails (0/3 BO3)
-
-    Classification: CANNOT WAIVE - RELEASE BLOCKER
-    - Affects both AWS and GCP platforms
-    - Complete cluster failure during upgrade (GCP)
-    - Blocks ALL customer upgrades from 4.13 → 4.14.65
-    - Consistent 100% failure rate indicates systemic product bug
-    - Requires immediate OCPBUGS escalation
-
-    Recommendation: REJECT build 4.14.65 - critical upgrade regression affecting multiple platforms
-
-    Candidate Test Result File: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.14.0-0.nightly-2026-05-07-213817-amd64.json
-    Job URLs: See blocking issue for details
+    Original analysis: Candidate build upgrade from 4.13 fails on GCP with complete cluster failure — all 30+ cluster operators unavailable (0/3 BO3). Cross-platform regression accepted by release lead.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 166893'
   reported_at: '2026-05-11T09:06:45Z'
