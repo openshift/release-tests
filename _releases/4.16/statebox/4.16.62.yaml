@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.62
 created_at: '2026-05-12T14:01:34Z'
-updated_at: '2026-05-13T08:53:42Z'
+updated_at: '2026-05-13T09:00:52Z'
 metadata:
   jira_ticket: ART-18729
   advisory_ids:
@@ -63,6 +63,25 @@ tasks:
     2026-05-13T04:53:41Z: INFO: check stage job status according to job id: 1605
     2026-05-13T04:53:41Z: INFO: build status of zstreams/Stage-Pipeline/1605 is In Progress
     2026-05-13T04:53:41Z: INFO: task [Stage Testing] status is changed to [In Progress]
+- name: change-advisory-status
+  status: Pass
+  started_at: '2026-05-13T05:00:19Z'
+  completed_at: '2026-05-13T05:00:51Z'
+  result: |-
+    2026-05-13T05:00:19Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-05-13T05:00:22Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-05-13T05:00:22Z: INFO: RHCOS nvr is rhcos-x86_64-416.94.202605101426-0
+    2026-05-13T05:00:22Z: INFO: The commit metadata is kernel-5.14.0-427.125.1.el9_4
+    2026-05-13T05:00:22Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146339, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 186321, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:16100-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 186456, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:16158-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 186466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:16170-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-05-13T05:00:23Z: INFO: Successfully approved MR 526
+    2026-05-13T05:00:23Z: INFO: Successfully added QE approval to MR 526
+    2026-05-13T05:00:25Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHBA-2026:13735
+    2026-05-13T05:00:31Z: INFO: The metadata url is accessible
+    2026-05-13T05:00:32Z: WARNING: RHBA advisory 167038 does not have secalerts
+    2026-05-13T05:00:34Z: INFO: advisory 167038 state is updated to REL_PREP
+    2026-05-13T05:00:48Z: INFO: RHSA advisory 167039 does not have blocking secalert
+    2026-05-13T05:00:50Z: INFO: advisory 167039 state is updated to REL_PREP
+    2026-05-13T05:00:51Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs: 1 in advisories, 2 in shipments
