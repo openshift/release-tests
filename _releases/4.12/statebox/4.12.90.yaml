@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.90
 created_at: '2026-05-12T22:01:16Z'
-updated_at: '2026-05-13T15:34:38Z'
+updated_at: '2026-05-13T15:36:02Z'
 metadata:
   jira_ticket: ART-18730
   advisory_ids:
@@ -65,6 +65,17 @@ tasks:
     as missing from shipment MR 528 — this is EXPECTED. Per ART team guidance: RHCOS
     bugs are never added to image shipment MR, only to RHCOS advisory. Blocker resolved
     and task manually accepted.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-13T11:35:03Z'
+  completed_at: '2026-05-13T11:36:02Z'
+  result: |-
+    2026-05-13T11:35:03Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-13T11:35:03Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.12.90
+    2026-05-13T11:35:05Z: INFO: Image Digest: sha256:11889df634ac73217bec6dcc925967d32edab1baac168b5cfdd06f2c63c6667e
+    2026-05-13T11:35:05Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=11889df634ac73217bec6dcc925967d32edab1baac168b5cfdd06f2c63c6667e/signature-1
+    2026-05-13T11:36:02Z: INFO: Signature check PASSED
+    2026-05-13T11:36:02Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
