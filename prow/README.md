@@ -90,7 +90,7 @@ Stage testing job url: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.
 
 ### Run image consistency check
 
-Run the image consistency check Prow job for a given release payload and shipment MR.
+Run the image consistency check Prow job for a given release payload and merge request ID (MR) via `-m`/`--mr-id`.
 
 ```console
 $ job run_image_consistency_check -p quay.io/openshift-release-dev/ocp-release:4.19.1-x86_64 -m 189

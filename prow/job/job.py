@@ -24,6 +24,7 @@ class Jobs:
      # Polling configuration for job readiness checks
     POLL_MAX_ATTEMPTS = 5
     POLL_INTERVAL_SECONDS = 5
+    REQUEST_TIMEOUT = 30  # Timeout in seconds for HTTP requests to Gangway API
 
     IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-main-image-consistency-check"
     STAGE_TESTING_JOB_NAME_TEMPLATE = "periodic-ci-openshift-openshift-tests-private-release-{minor_release}-stage-testing-e2e-aws-ipi"
@@ -372,7 +373,8 @@ class Jobs:
         job_run_res = self._get_session().post(
             url=url,
             json=data,
-            headers=self.get_prow_headers()
+            headers=self.get_prow_headers(),
+            timeout=self.REQUEST_TIMEOUT
         )
         if job_run_res.status_code != 200:
             raise Exception(
@@ -425,7 +427,8 @@ class Jobs:
         job_run_res = self._get_session().post(
             url=url,
             json=data,
-            headers=self.get_prow_headers()
+            headers=self.get_prow_headers(),
+            timeout=self.REQUEST_TIMEOUT
         )
         if job_run_res.status_code != 200:
             raise Exception(
