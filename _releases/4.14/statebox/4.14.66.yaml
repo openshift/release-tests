@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.66
 created_at: '2026-05-13T03:01:34Z'
-updated_at: '2026-05-14T05:21:23Z'
+updated_at: '2026-05-14T05:22:44Z'
 metadata:
   jira_ticket: ART-18731
   advisory_ids:
@@ -52,6 +52,18 @@ tasks:
     2026-05-14T01:21:22Z: INFO: Triggered image consistency check Prow job: 0f484797-56ec-48a8-96b4-81ae57686682
     2026-05-14T01:21:22Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2054794815249321984
     2026-05-14T01:21:23Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-05-14T01:22:43Z'
+  completed_at: null
+  result: |-
+    2026-05-14T01:22:43Z: INFO: Initialized StateBox for release 4.14.66 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.66.yaml
+    2026-05-14T01:22:43Z: INFO: job id is not set, will trigger stage testing
+    2026-05-14T01:22:43Z: INFO: Loaded state from _releases/4.14/statebox/4.14.66.yaml (SHA: 8079f77c)
+    2026-05-14T01:22:43Z: INFO: Stage release succeeded (verified by label)
+    2026-05-14T01:22:43Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-05-14T01:22:43Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1607/>
+    2026-05-14T01:22:44Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
