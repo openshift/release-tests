@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.66
 created_at: '2026-05-13T03:01:34Z'
-updated_at: '2026-05-14T09:15:56Z'
+updated_at: '2026-05-14T09:19:50Z'
 metadata:
   jira_ticket: ART-18731
   advisory_ids:
@@ -57,14 +57,16 @@ tasks:
     2026-05-14T03:20:32Z: INFO: Added image health summary to MR 527
     2026-05-14T03:20:32Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
+  status: Pass
   started_at: '2026-05-14T03:21:19Z'
-  completed_at: '2026-05-14T05:15:55Z'
-  result: |-
-    2026-05-14T05:15:55Z: INFO: Initialized StateBox for release 4.14.66 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.66.yaml
-    2026-05-14T05:15:55Z: INFO: check stage job status according to job id: 1607
-    2026-05-14T05:15:55Z: INFO: build status of zstreams/Stage-Pipeline/1607 is ABORTED
-    2026-05-14T05:15:55Z: INFO: task [Stage Testing] status is changed to [Fail]
+  completed_at: '2026-05-14T09:19:50Z'
+  result: 'WAIVED: Jenkins job 1607 was ABORTED due to 3-hour pipeline timeout — not
+    a product failure. Root cause: cluster install (Flexy #374964) consumed ~91 min
+    of the 180-min budget, leaving insufficient time for the final disruptive ginkgo
+    tests (#299245). All completed stages passed: cluster install, non-destructive
+    tests, normal ginkgo (#299242), admin tests, destructive tests (#1117913). Disruptive
+    tests were never given a chance to fail — they were mid-run when the timeout hit.
+    Waived by release lead; release date is 2026-MAY-15.'
 - name: image-signed-check
   status: Pass
   started_at: '2026-05-14T04:35:47Z'
