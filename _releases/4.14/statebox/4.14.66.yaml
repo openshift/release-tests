@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.66
 created_at: '2026-05-13T03:01:34Z'
-updated_at: '2026-05-14T08:32:02Z'
+updated_at: '2026-05-14T08:34:50Z'
 metadata:
   jira_ticket: ART-18731
   advisory_ids:
@@ -57,14 +57,12 @@ tasks:
     2026-05-14T03:20:32Z: INFO: Added image health summary to MR 527
     2026-05-14T03:20:32Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
+  status: Pass
   started_at: '2026-05-14T03:21:19Z'
-  completed_at: '2026-05-14T04:32:02Z'
-  result: |-
-    2026-05-14T04:32:02Z: INFO: Initialized StateBox for release 4.14.66 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.66.yaml
-    2026-05-14T04:32:02Z: INFO: check stage job status according to job id: 1607
-    2026-05-14T04:32:02Z: INFO: build status of zstreams/Stage-Pipeline/1607 is ABORTED
-    2026-05-14T04:32:02Z: INFO: task [Stage Testing] status is changed to [Fail]
+  completed_at: '2026-05-14T08:34:50Z'
+  result: 'OVERRIDE: Stage test job #1607 aborted due to quota issue in disruptive
+    ginkgo tests. Infrastructure failure, not product defect. Release lead approved
+    proceeding without stage testing.'
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
