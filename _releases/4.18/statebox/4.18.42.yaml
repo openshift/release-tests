@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.42
 created_at: '2026-05-14T09:02:48Z'
-updated_at: '2026-05-14T10:16:02Z'
+updated_at: '2026-05-14T17:11:24Z'
 metadata:
   jira_ticket: ART-18761
   advisory_ids:
@@ -30,6 +30,16 @@ tasks:
     2026-05-14T06:01:08Z: INFO: sent slack message to <#team-qe-release>
     2026-05-14T06:01:08Z: INFO: sent slack message to <#forum-ocp-release>
     2026-05-14T06:01:08Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-05-14T13:10:42Z'
+  completed_at: '2026-05-14T13:11:22Z'
+  result: |-
+    2026-05-14T13:10:42Z: INFO: Initialized StateBox for release 4.18.42 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.42.yaml
+    2026-05-14T13:10:42Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-05-14T13:11:20Z: INFO: Processing MR 531 for Jira issues
+    2026-05-14T13:11:22Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2026-05-14T13:11:22Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 167208'
   reported_at: '2026-05-14T10:01:03Z'
