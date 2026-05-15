@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.16
 created_at: '2026-05-14T11:03:13Z'
-updated_at: '2026-05-15T11:41:35Z'
+updated_at: '2026-05-15T12:08:43Z'
 metadata:
   jira_ticket: ART-18763
   advisory_ids:
@@ -52,15 +52,14 @@ tasks:
     2026-05-15T14:47:55Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1608/>
     2026-05-15T14:47:57Z: INFO: sent slack message to <#team-qe-release>
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-05-15T07:41:27Z'
-  completed_at: null
+  completed_at: '2026-05-15T08:08:42Z'
   result: |-
-    2026-05-15T07:41:27Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-05-15T07:41:30Z: INFO: checking push job status for advisory 167214 ...
-    2026-05-15T07:41:30Z: INFO: no push job found for advisory 167214
-    2026-05-15T07:41:30Z: INFO: advisory 167214 has blocking advisory []
-    2026-05-15T07:41:33Z: INFO: push job for advisory 167214 is triggered
+    2026-05-15T08:08:38Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-15T08:08:42Z: INFO: checking push job status for advisory 167214 ...
+    2026-05-15T08:08:42Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-15T08:08:42Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 167214'
   reported_at: '2026-05-14T17:30:11Z'
