@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.42
 created_at: '2026-05-14T09:02:48Z'
-updated_at: '2026-05-15T15:36:14Z'
+updated_at: '2026-05-15T15:38:42Z'
 metadata:
   jira_ticket: ART-18761
   advisory_ids:
@@ -98,6 +98,17 @@ tasks:
     4. aws-ipi-disruptive-f999: 3fd4c1d6-1421-422b-b4bf-58ee415fffcc (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999/2055311002873892864)
 
     Waiting for jobs to complete (~2-4 hours).
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-15T11:38:14Z'
+  completed_at: '2026-05-15T11:38:41Z'
+  result: |-
+    2026-05-15T11:38:14Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-15T11:38:14Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.42
+    2026-05-15T11:38:16Z: INFO: Image Digest: sha256:6d06289d04fe358bc23dcadb3bfdc46b3aaadf2d189a0fecbf3e521bd740378a
+    2026-05-15T11:38:16Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=6d06289d04fe358bc23dcadb3bfdc46b3aaadf2d189a0fecbf3e521bd740378a/signature-1
+    2026-05-15T11:38:41Z: INFO: Signature check PASSED
+    2026-05-15T11:38:41Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 167208'
   reported_at: '2026-05-14T10:01:03Z'
