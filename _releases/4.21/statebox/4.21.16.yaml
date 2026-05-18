@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.16
 created_at: '2026-05-14T11:03:13Z'
-updated_at: '2026-05-15T15:33:59Z'
+updated_at: '2026-05-18T11:08:20Z'
 metadata:
   jira_ticket: ART-18763
   advisory_ids:
@@ -97,6 +97,22 @@ tasks:
   result: 'All blocking tests passed on first attempt (3/3 jobs succeeded). No retries
     needed. No product bugs detected. Build: 4.21.16. Test jobs: upgrade-from-4.20
     (AWS), upgrade-4.21-to-4.21 (Azure FIPS), upgrade-4.21-to-4.21 (GCP)'
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-05-18T07:07:51Z'
+  completed_at: null
+  result: |-
+    2026-05-18T07:07:51Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-05-18T07:07:55Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-05-18T07:07:56Z: INFO: Successfully approved MR 533
+    2026-05-18T07:07:56Z: INFO: Successfully added QE approval to MR 533
+    2026-05-18T07:07:57Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:17474
+    2026-05-18T07:08:19Z: INFO: The metadata url is not accessible
+    2026-05-18T07:08:19Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-05-18T07:08:19Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-05-18T07:08:19Z: INFO: Background metadata checker process started (PID: 246270) - running independently after parent exit
+    2026-05-18T07:08:19Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.21_20260518_070819.log
+    2026-05-18T07:08:19Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 167214'
   reported_at: '2026-05-14T17:30:11Z'
