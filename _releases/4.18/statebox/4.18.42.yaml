@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.42
 created_at: '2026-05-14T09:02:48Z'
-updated_at: '2026-05-18T13:34:38Z'
+updated_at: '2026-05-18T13:46:03Z'
 metadata:
   jira_ticket: ART-18761
   advisory_ids:
@@ -83,56 +83,41 @@ tasks:
     detected.'
 - name: analyze-candidate-build
   status: In Progress
-  started_at: '2026-05-18T12:49:51Z'
+  started_at: '2026-05-18T13:42:44Z'
   completed_at: null
-  result: |-
-    **Supplementary Testing for Missing Candidate Build** (4.18.0-0.nightly-2026-05-12-102359 deleted from release stream)
-
-    **Context**: Candidate nightly build was deleted; ran 5 supplementary Prow jobs against promoted build 4.18.42 for test coverage.
-
-    **Job Results Summary**: 4/5 PASSED, 1/5 FAILED (needs rerun)
-
-    **COMPLETED JOBS**:
-
-    1. **AWS IPI Fresh Install** - ✅ PASSED
-       - Job ID: 2055310935999909888
-       - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/2055310935999909888
-       - Results: 130 tests (109 passed, 0 failed, 21 skipped)
-
-    2. **AWS Disruptive** - ✅ PASSED
-       - Job ID: 2055311002873892864
-       - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999/2055311002873892864
-       - Results: 8 tests (3 passed, 0 failed, 5 skipped)
-
-    3. **Azure IPI FIPS** - ✅ PASSED (on retry)
-       - Original Job ID: 2055310958401687552 (FAILED - 1 test timeout: OCP-73293)
-       - Original URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2055310958401687552
-       - Retry Job ID: 2ab56805-f3e6-412a-be69-d59441868536 (SUCCESS)
-       - Retry URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2056304879437090816
-       - Completed: 2026-05-18T12:49:51Z
-
-    4. **GCP Upgrade 4.17→4.18** - ✅ PASSED (on retry)
-       - Original Job ID: 2055313672435142656 (FAILED - GCP IAM quota)
-       - Original URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2055313672435142656
-       - Retry Job ID: 8328bd63-81f6-4644-8643-458716b3be01 (SUCCESS)
-       - Retry URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2056304924228063232
-       - Completed: 2026-05-18T11:08:03Z
-
-    **FAILED JOB (NEEDS RERUN)**:
-
-    5. **GCP IPI Fresh Install** - ❌ FAILED (retry also failed)
-       - Original Job ID: 2055310980673441792 (FAILED - cloud-credential bootstrap timeout)
-       - Original URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2055310980673441792
-       - Retry Job ID: f95c2021-23b2-4096-b030-cafd6921c1f5 (FAILED - jobState: failure)
-       - Retry URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2056304901826285568
-       - Completed: 2026-05-18T12:24:38Z
-       - **ACTION NEEDED**: Analyze failure and retrigger again (2nd retry)
-
-    **Next Steps**:
-    1. Analyze GCP IPI Fresh Install failure (job f95c2021-23b2-4096-b030-cafd6921c1f5)
-    2. If infrastructure failure: Retrigger again (2nd retry attempt)
-    3. If product bug: Investigate and report
-    4. Once all 5 jobs pass, mark task as Pass
+  result: "**Supplementary Testing for Missing Candidate Build** (4.18.0-0.nightly-2026-05-12-102359\
+    \ deleted from release stream)\n\n**Context**: Candidate nightly build was deleted;\
+    \ ran 5 supplementary Prow jobs against promoted build 4.18.42 for test coverage.\n\
+    \n**Job Results Summary**: 4/5 PASSED, 1/5 IN PROGRESS (2nd retry)\n\n**COMPLETED\
+    \ JOBS**:\n\n1. **AWS IPI Fresh Install** - ✅ PASSED\n   - Job ID: 2055310935999909888\n\
+    \   - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/2055310935999909888\n\
+    \   - Results: 130 tests (109 passed, 0 failed, 21 skipped)\n\n2. **AWS Disruptive**\
+    \ - ✅ PASSED\n   - Job ID: 2055311002873892864\n   - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999/2055311002873892864\n\
+    \   - Results: 8 tests (3 passed, 0 failed, 5 skipped)\n\n3. **Azure IPI FIPS**\
+    \ - ✅ PASSED (on retry)\n   - Original: 2055310958401687552 (FAILED - 1 test timeout:\
+    \ OCP-73293 OAP subscription)\n   - Retry: 2ab56805-f3e6-412a-be69-d59441868536\
+    \ (SUCCESS)\n   - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2056304879437090816\n\
+    \n4. **GCP Upgrade 4.17→4.18** - ✅ PASSED (on retry)\n   - Original: 2055313672435142656\
+    \ (FAILED - GCP IAM quota exceeded)\n   - Retry: 8328bd63-81f6-4644-8643-458716b3be01\
+    \ (SUCCESS)\n   - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2056304924228063232\n\
+    \n**IN PROGRESS (2nd Retry)**:\n\n5. **GCP IPI Fresh Install** - ⏳ RUNNING (2nd\
+    \ retry)\n   - Original: 2055310980673441792 (FAILED - cloud-credential bootstrap\
+    \ timeout, no tests ran)\n   \n   - **1st Retry**: f95c2021-23b2-4096-b030-cafd6921c1f5\
+    \ (FAILED - 1 test failure)\n     - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2056304901826285568\n\
+    \     - Results: 130 tests (102 passed, 1 failed, 27 skipped) - 99.2% pass rate\n\
+    \     - **Failed Test**: OCP-69123:xzha:OLM:[sig-operators] OLM v1 opeco should\
+    \ Catalogd clustercatalog offer the operator content through http server\n   \
+    \  - **Error**: \"no any bundle, channel or package are got\"\n     - **Analysis**:\
+    \ Single OLM v1 catalog test couldn't find operator bundles/channels/packages\
+    \ from HTTP server. Likely transient catalog sync issue or test flakiness (similar\
+    \ pattern to Azure job's single timeout). Test code location: github.com/openshift/openshift-tests-private/test/extended/operators/olmv1_opeco.go:150\n\
+    \     - **Waivability**: ✅ High - only 1/130 tests failed (99.2% pass rate), similar\
+    \ to Azure single timeout\n   \n   - **2nd Retry**: 08df3728-34b5-42d1-be10-56b5ec601123\
+    \ (PENDING)\n     - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2056369899348955136\n\
+    \     - Started: 2026-05-18T13:42:44Z\n     - Expected completion: ~2-3 hours\n\
+    \n**Next Steps**:\n1. Wait for 2nd retry to complete\n2. If passes: Mark task\
+    \ as Pass\n3. If fails with same OCP-69123: Likely waivable (flaky test)\n4. If\
+    \ fails with different error: Investigate further"
 - name: image-signed-check
   status: Pass
   started_at: '2026-05-15T11:38:14Z'
