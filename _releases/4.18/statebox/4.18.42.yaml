@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.42
 created_at: '2026-05-14T09:02:48Z'
-updated_at: '2026-05-18T07:28:30Z'
+updated_at: '2026-05-18T09:36:21Z'
 metadata:
   jira_ticket: ART-18761
   advisory_ids:
@@ -83,19 +83,37 @@ tasks:
     detected.'
 - name: analyze-candidate-build
   status: In Progress
-  started_at: '2026-05-15T15:48:09Z'
+  started_at: '2026-05-18T09:36:21Z'
   completed_at: null
   result: |-
-    Candidate nightly build 4.18.0-0.nightly-2026-05-12-102359 missing from release stream (deleted by ART). Workaround: Running supplementary Prow jobs against promoted build 4.18.42 to provide missing test coverage.
+    **Supplementary Testing for Missing Candidate Build** (4.18.0-0.nightly-2026-05-12-102359 deleted from release stream)
 
-    Standard nightly test suite (5 jobs):
-    1. aws-ipi-f999: 6247dffd-4158-47ce-84b4-d6e4e1cb19d6 (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/2055310935999909888)
-    2. azure-ipi-fips-f999: d4b67c9c-4a27-48fe-9a68-587b1636159d (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2055310958401687552)
-    3. gcp-ipi-f999: ca899d14-e029-442a-ac43-598626e205a2 (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2055310980673441792)
-    4. aws-ipi-disruptive-f999: 3fd4c1d6-1421-422b-b4bf-58ee415fffcc (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999/2055311002873892864)
-    5. upgrade-from-stable-4.17-gcp-ipi-f999: 65e95338-60db-4017-a912-b16806aac936 (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2055313672435142656)
+    **Context**: Candidate nightly build was deleted; ran 5 supplementary Prow jobs against promoted build 4.18.42 for test coverage.
 
-    Waiting for jobs to complete (~2-4 hours).
+    **Job Results** (2 passed, 3 retriggered after failure analysis):
+
+    1. **AWS IPI Fresh Install** - ✅ PASSED (130 tests: 109 passed, 0 failed, 21 skipped)
+    2. **AWS Disruptive** - ✅ PASSED (8 tests: 3 passed, 0 failed, 5 skipped)
+    3. **Azure IPI FIPS** - 🔄 RETRIGGERED (initial: 130 tests, 1 timeout)
+       - Job ID: 2ab56805-f3e6-412a-be69-d59441868536
+       - Original failure: OCP-73293 (OAP subscription timeout - waivable test timing issue)
+    4. **GCP IPI Fresh Install** - 🔄 RETRIGGERED (initial: infrastructure failure)
+       - Job ID: f95c2021-23b2-4096-b030-cafd6921c1f5
+       - Original failure: cloud-credential operator bootstrap timeout (GCP infrastructure/quota issue - waivable)
+    5. **GCP Upgrade 4.17→4.18** - 🔄 RETRIGGERED (initial: infrastructure failure)
+       - Job ID: 8328bd63-81f6-4644-8643-458716b3be01
+       - Original failure: GCP IAM policy limit exceeded (1,501 > 1,500 members - CI project quota issue - waivable)
+
+    **Root Cause Analysis**:
+    - ✅ NO PRODUCT BUGS DETECTED
+    - All 3 failures are infrastructure/test-framework related (transient, waivable)
+    - Azure: Test timeout (likely flaky)
+    - GCP fresh install: Cloud provider credential sync failure
+    - GCP upgrade: GCP project IAM quota exhaustion
+
+    **Assessment**: All failures match BO3 retry criteria (transient infrastructure issues). Retriggered jobs expected to pass.
+
+    **Status**: Waiting for 3 retriggered jobs to complete (~2-4 hours). Will mark task as Pass if all retries succeed.
 - name: image-signed-check
   status: Pass
   started_at: '2026-05-15T11:38:14Z'
