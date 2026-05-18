@@ -21,7 +21,7 @@ from urllib3.util import Retry
 class Jobs:
     """Class Jobs handle Prow job by calling the API"""
 
-     # Polling configuration for job readiness checks
+    # Polling configuration for job readiness checks
     POLL_MAX_ATTEMPTS = 5
     POLL_INTERVAL_SECONDS = 5
     REQUEST_TIMEOUT = 30  # Timeout in seconds for HTTP requests to Gangway API
@@ -339,8 +339,28 @@ class Jobs:
         pattern = r"^quay\.io/openshift-release-dev/ocp-release:\d+\.\d+\.\d+.*-x86_64$"
         return re.match(pattern, payload_url) is not None
 
-    def _get_minor_release_from_payload_url(self, payload_url):
-        """Extract minor release (e.g. '4.19') from a validated payload URL."""
+    def _is_valid_mr_id(self, mr_id: int) -> bool:
+        """
+        Validate the merge request ID.
+
+        Args:
+            mr_id: The GitLab merge request ID to check
+
+        Returns:
+            True if the merge request ID is valid (positive integer), False otherwise.
+        """
+        return mr_id > 0
+
+    def _get_minor_release_from_payload_url(self, payload_url) -> str:
+        """
+        Extract minor release (e.g. '4.19') from a validated payload URL.
+
+        Args:
+            payload_url: The URL of the release payload to check
+
+        Returns:
+            The minor release (e.g. '4.19')
+        """
         z_version = payload_url.split(":")[1].split("-")[0]
         return ".".join(z_version.split(".")[:2])
 
@@ -357,6 +377,9 @@ class Jobs:
         """
         if not self._is_valid_payload_url(payload_url):
             raise Exception(f"Invalid payload URL: {payload_url}")
+
+        if not self._is_valid_mr_id(mr_id):
+            raise Exception(f"Invalid merge request ID: {mr_id}. Must be a positive integer.")
 
         url = self.gangway_url + Jobs.IMAGE_CONSISTENCY_CHECK_JOB_NAME
         data = {
@@ -531,7 +554,7 @@ class Jobs:
             upgrade_from: The original payload of the Prow job.
             upgrade_to: The target payload of the Prow job.
             poll: Whether to poll the job results.
-        
+
         Returns:
             A dictionary containing the job info.
             If poll=False, returns None if job not ready.
@@ -553,7 +576,7 @@ class Jobs:
                 return result
             print(f"Job {job_id} not ready yet, polling... (attempt {attempt})")
             time.sleep(self.POLL_INTERVAL_SECONDS)
-        
+
         timeout_seconds = self.POLL_MAX_ATTEMPTS * self.POLL_INTERVAL_SECONDS
         raise TimeoutError(f"Job {job_id} not ready after {self.POLL_MAX_ATTEMPTS} attempts ({timeout_seconds}s).")
 
@@ -570,7 +593,7 @@ class Jobs:
         Returns:
             A dictionary containing the job info. None if the job info is not found.
         """
- 
+
         resp = self._get_session().get(url=self.prow_job_url.format(job_id.strip()))
         if resp.status_code == 200 and resp.text:
             job_result = yaml.safe_load(resp.text)
@@ -578,7 +601,7 @@ class Jobs:
                 status = job_result["status"]
                 spec = job_result["spec"]
                 job_name = spec["job"]
-                
+
                 # optional attributes
                 job_url = status.get("url")
                 job_state = status.get("state")
@@ -594,10 +617,10 @@ class Jobs:
                     "jobURL": job_url,
                     "jobState": job_state,
                 }
-                
+
                 if "completionTime" in status:
                     job_info_dict["jobCompletionTime"] = status["completionTime"]
-                
+
                 self.save_job_data(job_info_dict)
                 print(f"Job {job_id} results: {job_info_dict}")
                 return job_info_dict
@@ -647,7 +670,6 @@ class Jobs:
             print("warning:" + res.reason)
 
 
-
 JOB = Jobs()
 
 
@@ -656,7 +678,7 @@ JOB = Jobs()
 @click.option("--debug/--no-debug", default=False, help="output the HTTP log info.")
 def cli(debug):
     """
-    This job tool based on the Prow REST API(https://github.com/kubernetes/test-infra/issues/27824), 
+    This job tool based on the Prow REST API(https://github.com/kubernetes/test-infra/issues/27824),
     used to handle the Prow job.
     """
     click.echo(f'Debug mode is {"on" if debug else "off"}')
@@ -684,7 +706,7 @@ def get_cmd(job_id, poll):
 @click.option("--upgrade_to", help="specify a target payload for upgrade test.")
 def run_cmd(job_name, payload, upgrade_from, upgrade_to):
     """Run a job and save results to /tmp/prow-jobs.csv. \n
-    For ARM test, we hard code a x86 image as the base image. 
+    For ARM test, we hard code a x86 image as the base image.
     Details: https://issues.redhat.com/browse/DPTP-3538
     """
     JOB.run_job(job_name, payload, upgrade_from, upgrade_to)
@@ -735,7 +757,7 @@ def run_payloads(versions, push):
 def run_image_consistency_check(payload_url: str, mr_id: int):
     """
     Run image consistency check job
-    
+
     Args:
         payload_url (str): The URL of the payload
         mr_id (int): The ID of the merge request
@@ -748,7 +770,7 @@ def run_image_consistency_check(payload_url: str, mr_id: int):
 def run_stage_testing(payload_url: str):
     """
     Run stage testing Prow job for a given payload.
-    
+
     Args:
         payload_url (str): The URL of the payload
     """
