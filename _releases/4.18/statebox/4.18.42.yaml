@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.42
 created_at: '2026-05-14T09:02:48Z'
-updated_at: '2026-05-18T09:36:21Z'
+updated_at: '2026-05-18T13:34:38Z'
 metadata:
   jira_ticket: ART-18761
   advisory_ids:
@@ -83,37 +83,56 @@ tasks:
     detected.'
 - name: analyze-candidate-build
   status: In Progress
-  started_at: '2026-05-18T09:36:21Z'
+  started_at: '2026-05-18T12:49:51Z'
   completed_at: null
   result: |-
     **Supplementary Testing for Missing Candidate Build** (4.18.0-0.nightly-2026-05-12-102359 deleted from release stream)
 
     **Context**: Candidate nightly build was deleted; ran 5 supplementary Prow jobs against promoted build 4.18.42 for test coverage.
 
-    **Job Results** (2 passed, 3 retriggered after failure analysis):
+    **Job Results Summary**: 4/5 PASSED, 1/5 FAILED (needs rerun)
 
-    1. **AWS IPI Fresh Install** - ✅ PASSED (130 tests: 109 passed, 0 failed, 21 skipped)
-    2. **AWS Disruptive** - ✅ PASSED (8 tests: 3 passed, 0 failed, 5 skipped)
-    3. **Azure IPI FIPS** - 🔄 RETRIGGERED (initial: 130 tests, 1 timeout)
-       - Job ID: 2ab56805-f3e6-412a-be69-d59441868536
-       - Original failure: OCP-73293 (OAP subscription timeout - waivable test timing issue)
-    4. **GCP IPI Fresh Install** - 🔄 RETRIGGERED (initial: infrastructure failure)
-       - Job ID: f95c2021-23b2-4096-b030-cafd6921c1f5
-       - Original failure: cloud-credential operator bootstrap timeout (GCP infrastructure/quota issue - waivable)
-    5. **GCP Upgrade 4.17→4.18** - 🔄 RETRIGGERED (initial: infrastructure failure)
-       - Job ID: 8328bd63-81f6-4644-8643-458716b3be01
-       - Original failure: GCP IAM policy limit exceeded (1,501 > 1,500 members - CI project quota issue - waivable)
+    **COMPLETED JOBS**:
 
-    **Root Cause Analysis**:
-    - ✅ NO PRODUCT BUGS DETECTED
-    - All 3 failures are infrastructure/test-framework related (transient, waivable)
-    - Azure: Test timeout (likely flaky)
-    - GCP fresh install: Cloud provider credential sync failure
-    - GCP upgrade: GCP project IAM quota exhaustion
+    1. **AWS IPI Fresh Install** - ✅ PASSED
+       - Job ID: 2055310935999909888
+       - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-f999/2055310935999909888
+       - Results: 130 tests (109 passed, 0 failed, 21 skipped)
 
-    **Assessment**: All failures match BO3 retry criteria (transient infrastructure issues). Retriggered jobs expected to pass.
+    2. **AWS Disruptive** - ✅ PASSED
+       - Job ID: 2055311002873892864
+       - URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999/2055311002873892864
+       - Results: 8 tests (3 passed, 0 failed, 5 skipped)
 
-    **Status**: Waiting for 3 retriggered jobs to complete (~2-4 hours). Will mark task as Pass if all retries succeed.
+    3. **Azure IPI FIPS** - ✅ PASSED (on retry)
+       - Original Job ID: 2055310958401687552 (FAILED - 1 test timeout: OCP-73293)
+       - Original URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2055310958401687552
+       - Retry Job ID: 2ab56805-f3e6-412a-be69-d59441868536 (SUCCESS)
+       - Retry URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2056304879437090816
+       - Completed: 2026-05-18T12:49:51Z
+
+    4. **GCP Upgrade 4.17→4.18** - ✅ PASSED (on retry)
+       - Original Job ID: 2055313672435142656 (FAILED - GCP IAM quota)
+       - Original URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2055313672435142656
+       - Retry Job ID: 8328bd63-81f6-4644-8643-458716b3be01 (SUCCESS)
+       - Retry URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999/2056304924228063232
+       - Completed: 2026-05-18T11:08:03Z
+
+    **FAILED JOB (NEEDS RERUN)**:
+
+    5. **GCP IPI Fresh Install** - ❌ FAILED (retry also failed)
+       - Original Job ID: 2055310980673441792 (FAILED - cloud-credential bootstrap timeout)
+       - Original URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2055310980673441792
+       - Retry Job ID: f95c2021-23b2-4096-b030-cafd6921c1f5 (FAILED - jobState: failure)
+       - Retry URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2056304901826285568
+       - Completed: 2026-05-18T12:24:38Z
+       - **ACTION NEEDED**: Analyze failure and retrigger again (2nd retry)
+
+    **Next Steps**:
+    1. Analyze GCP IPI Fresh Install failure (job f95c2021-23b2-4096-b030-cafd6921c1f5)
+    2. If infrastructure failure: Retrigger again (2nd retry attempt)
+    3. If product bug: Investigate and report
+    4. Once all 5 jobs pass, mark task as Pass
 - name: image-signed-check
   status: Pass
   started_at: '2026-05-15T11:38:14Z'
