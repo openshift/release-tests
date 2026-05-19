@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.42
 created_at: '2026-05-14T09:02:48Z'
-updated_at: '2026-05-18T21:48:54Z'
+updated_at: '2026-05-19T11:54:00Z'
 metadata:
   jira_ticket: ART-18761
   advisory_ids:
@@ -140,6 +140,22 @@ tasks:
     2026-05-15T11:38:16Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=6d06289d04fe358bc23dcadb3bfdc46b3aaadf2d189a0fecbf3e521bd740378a/signature-1
     2026-05-15T11:38:41Z: INFO: Signature check PASSED
     2026-05-15T11:38:41Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-05-19T07:53:47Z'
+  completed_at: null
+  result: |-
+    2026-05-19T07:53:47Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-05-19T07:53:49Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-05-19T07:53:50Z: INFO: Successfully approved MR 531
+    2026-05-19T07:53:50Z: INFO: Successfully added QE approval to MR 531
+    2026-05-19T07:53:51Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:17448
+    2026-05-19T07:53:58Z: INFO: The metadata url is not accessible
+    2026-05-19T07:53:58Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-05-19T07:53:58Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-05-19T07:53:58Z: INFO: Background metadata checker process started (PID: 251394) - running independently after parent exit
+    2026-05-19T07:53:58Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.18_20260519_075358.log
+    2026-05-19T07:53:59Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 167208'
   reported_at: '2026-05-14T10:01:03Z'
