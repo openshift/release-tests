@@ -30,9 +30,55 @@
         "jobStartTime": "2026-05-18T20:22:14Z",
         "jobID": "5d932605-90f5-4902-a64d-9fe3a6e1eba6",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2056470440477462528",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-05-19T00:03:07Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 113,
+            "failures": 9,
+            "errors": 0,
+            "skipped": 31,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-50954-Allow the deployment of a dedicated UWM Alertmanager [Serial]",
+              "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+              "[sig-networking] SDN udn/default multicast Author:yingwang-LEVEL0-High-78447-udn pods should/should not receive multicast traffic when enable/disable multicast.",
+              "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-44905-[CSI-Driver] [Dynamic PV] [block volume] volumes should store data",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-Longduration-NonPreRelease-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-05-19T00:37:59Z",
+          "jobID": "aa1a8bed-1c70-44ab-bf49-e2831f72f588",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2056534800914714624",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-05-19T00:37:59Z",
+          "jobID": "45f84de3-8ed1-4dbf-8d10-3631f0df7164",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2056534801556443136",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999",
