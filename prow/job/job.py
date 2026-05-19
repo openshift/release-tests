@@ -351,7 +351,7 @@ class Jobs:
         """
         return mr_id > 0
 
-    def _get_minor_release_from_payload_url(self, payload_url) -> str:
+    def _get_minor_release_from_payload_url(self, payload_url: str) -> str:
         """
         Extract minor release (e.g. '4.19') from a validated payload URL.
 
