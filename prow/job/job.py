@@ -28,7 +28,6 @@ class Jobs:
     IMAGE_CONSISTENCY_CHECK_JOB_NAME = "periodic-ci-openshift-release-tests-main-image-consistency-check"
 
     def __init__(self):
-        self.run = False
         self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
         # config the based URL here
         self.job_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=main"
@@ -192,7 +191,7 @@ class Jobs:
         else:
             print(res.status_code, res.reason)
 
-    def push_versions(self, content, file, run):
+    def push_versions(self, content, file):
         """Function push OCP payload version info to the Github repo"""
         url = f"https://api.github.com/repos/openshift/release-tests/contents/_releases/{file}?ref=record"
         base64_content = base64.b64encode(bytes(content, encoding="utf-8")).decode(
@@ -217,12 +216,7 @@ class Jobs:
                     },
                 }
                 self.push_action(url, data)
-                if run:
-                    default_file = "_releases/required-jobs.json"
-                    channel = content[:-2]
-                    self.run_required_jobs(channel, default_file, content)
             else:
-                self.run = False
                 print(
                     f"No update! since the recored version {old_version} >= the new version {content}")
         elif res.status_code == 404:
@@ -234,12 +228,7 @@ class Jobs:
                 "committer": {"name": "Release Bot", "email": "jianzhanbjz@github.com"},
             }
             self.push_action(url, data)
-            if run:
-                default_file = "_releases/required-jobs.json"
-                channel = content[:-2]
-                self.run_required_jobs(channel, default_file, content)
         else:
-            self.run = False
             print(f"Push error: {res.status_code}, {res.reason}")
 
     def get_recored_version(self, url):
@@ -252,7 +241,7 @@ class Jobs:
             return None
         return (base64.b64decode(json.loads(res.text)["content"]).decode("utf-8").replace("\n", ""))
 
-    def get_payloads(self, versions, push, run):
+    def get_payloads(self, versions, push):
         """Function get the payload info from https://amd64.ocp.releases.ci.openshift.org/"""
         if versions is None:
             print("Please input the correct version info...")
@@ -275,8 +264,7 @@ class Jobs:
                     print(f'The latest version of {channel} is: {tag["name"]}')
                     file = f"Auto-OCP-{version[:-2]}.txt"
                     if push:
-                        self.push_versions(
-                            content=tag["name"], file=file, run=run)
+                        self.push_versions(content=tag["name"], file=file)
                     break
                 # else:
                 #     print("Not in the same Y release: %s" % new)
@@ -602,63 +590,6 @@ class Jobs:
         else:
             print("warning:" + res.reason)
 
-    def run_z_stream_test(self):
-        # get required OCP version info and jobs from JSON file
-        """
-        { 
-            "4.10" : [
-                    "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-aws-ipi-ovn-fips-p2-f28",
-                    "periodic-ci-openshift-openshift-tests-private-release-4.10-amd64-stable-azure-ipi-fips-p2-f28",
-                    ...
-                    ],
-            "4.11" : [...],
-            ...
-        """
-        # get the payload info
-        res = requests.get(url=self.url, timeout=5)
-        if res.status_code != 200:
-            print(f"Fail to get payload info, {res.status_code}:{res.reason}")
-            sys.exit(1)
-        payloads_dict = json.loads(res.text)
-        # get the job info from a JSON file
-        job_dict = self.get_required_jobs("_releases/required-jobs.json")
-        for y_version, jobs in job_dict.items():
-            # z_version is like "4.10.0", and y_version is like "4.10"
-            print(f"getting the latest payload of {y_version}")
-            latest_version = ""
-            self.run = True
-            for tag in payloads_dict["tags"]:
-                if tag["phase"] == "Accepted":
-                    new = VersionInfo.parse(tag["name"])
-                    old = VersionInfo.parse(y_version+".0")
-                    if new >= old:
-                        if new.minor == old.minor:
-                            print(
-                                f'The latest version of {y_version} is: {tag["name"]}')
-                            latest_version = tag["name"]
-                            self.push_versions(
-                                content=latest_version, file=f"Auto-OCP-{y_version}.txt", run=False)
-                            break
-            else:
-                # if no break, that means no new version found, so continue
-                continue
-            if not self.run:
-                continue
-            for prow_job in jobs:
-                print(f"Run job: {prow_job}")
-                # amd64 as default
-                payload = f"quay.io/openshift-release-dev/ocp-release:{latest_version}-x86_64"
-                if "arm64" in prow_job:
-                    payload = f"quay.io/openshift-release-dev/ocp-release:{latest_version}-aarch64"
-                # specify the latest stable payload for upgrade test
-                if "upgrade-from-stable" in prow_job:
-                    self.run_job(prow_job, None, None, upgrade_to=payload)
-                # specify the latest stable payload for e2e test
-                elif "upgrade" not in prow_job:
-                    self.run_job(prow_job, payload, None, None)
-                # as default
-                else:
-                    self.run_job(prow_job, None, None, None)
 
 
 JOB = Jobs()
@@ -723,9 +654,9 @@ def run_list_job(component, branch):
 @click.option("--version", help="OCP version, such as 4.10.63")
 def run_required(channel, file, version):
     """
-    Run required jobs from a file. 
-    Note that: this command only run stable payload, not nightly!
-    For example, $job run_required --channel 4.10 --file _releases/required-jobs.json --version 4.10.63
+    Run required jobs from a file.
+    Note that: this command only runs stable payload, not nightly!
+    For example, $job run_required --channel 4.10 --file my-jobs.json --version 4.10.63
     """
     JOB.run_required_jobs(channel, file, version)
 
@@ -737,22 +668,10 @@ def run_required(channel, file, version):
     default=False,
     help="push the info to the https://api.github.com/repos/openshift/release-tests/contents/_releases/",
 )
-@click.option(
-    "--run",
-    default=False,
-    help="Run the jobs stored in the _releases/required-jobs.json file if any updates. Note that: it won't be executed if --push is False",
-)
-def run_payloads(versions, push, run):
+def run_payloads(versions, push):
     """Check the latest stable payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
-    JOB.get_payloads(versions, push, run)
+    JOB.get_payloads(versions, push)
 
-
-@cli.command("run_z_stream_test")
-def run_z_stream():
-    """Run jobs list in the _releases/required-jobs.json file.
-     It only used for periodic-ci-openshift-release-tests-main-stable-build-test prow job.
-    """
-    JOB.run_z_stream_test()
 
 @cli.command("run_image_consistency_check")
 @click.option("-p", "--payload-url", type=str, required=True, help="Payload URL")
