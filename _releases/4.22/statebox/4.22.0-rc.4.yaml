@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.4
 created_at: '2026-05-19T06:29:18Z'
-updated_at: '2026-05-19T06:34:33Z'
+updated_at: '2026-05-19T06:36:20Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -24,4 +24,17 @@ tasks:
     2026-05-19T02:34:29Z: INFO: Added QE release lead comment to MR 535
     2026-05-19T02:34:32Z: INFO: sent slack message to <#team-qe-release>
     2026-05-19T02:34:32Z: INFO: task [Take Ownership] status is changed to [Pass]
-issues: []
+issues:
+- issue: |
+    Found 3 missed CVE tracker bugs in shipments
+
+    Missed CVE tracker bugs:
+    - OCPBUGS-82177
+    - OCPBUGS-82188
+    - OCPBUGS-82494
+  reported_at: '2026-05-19T06:36:20Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - check-cve-tracker-bug
