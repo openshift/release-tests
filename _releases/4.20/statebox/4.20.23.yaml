@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.23
 created_at: '2026-05-14T10:02:49Z'
-updated_at: '2026-05-18T22:24:16Z'
+updated_at: '2026-05-19T07:36:31Z'
 metadata:
   jira_ticket: ART-18762
   advisory_ids:
@@ -86,12 +86,13 @@ tasks:
     2026-05-15T11:34:44Z: INFO: Signature check PASSED
     2026-05-15T11:34:44Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-05-18T22:24:16Z'
-  completed_at: null
-  result: 'GCP upgrade test retries triggered. Job IDs: 79afe272-a73e-470b-9b8c-3b38248fa958,
-    d3c9b9f6-1f83-427e-b643-f353b0b87ad7. Initial attempts failed due to infrastructure
-    and configuration issues. Waiting for new job completion (~3-4 hours).'
+  completed_at: '2026-05-19T07:36:31Z'
+  result: 'GCP upgrade tests passed (2/2 successful). AWS upgrade: not run. Azure
+    upgrade: not run. GCP upgrade (4.20.22→4.20.23): ✅ PASSED. Build accepted: true.
+    Job IDs: 79afe272-a73e-470b-9b8c-3b38248fa958 (success), d3c9b9f6-1f83-427e-b643-f353b0b87ad7
+    (success).'
 issues:
 - issue: No attached builds found in shipment advisories for image tracker bug OCPBUGS-80552
     (openshift4/o-cloud-manager-rhel9-operator). Either attach builds or explicitly
