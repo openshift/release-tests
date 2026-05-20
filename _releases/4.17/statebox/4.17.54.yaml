@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.54
 created_at: '2026-05-14T21:02:34Z'
-updated_at: '2026-05-20T10:01:22Z'
+updated_at: '2026-05-20T13:03:33Z'
 metadata:
   jira_ticket: ART-18765
   advisory_ids:
@@ -81,22 +81,31 @@ tasks:
     2026-05-18T07:59:44Z: INFO: Signature check PASSED
     2026-05-18T07:59:44Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Pass
   started_at: '2026-05-20T06:01:08Z'
-  completed_at: null
+  completed_at: '2026-05-20T13:03:33Z'
   result: |-
-    2026-05-20T06:01:08Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-05-20T06:01:11Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-05-20T06:01:11Z: INFO: RHCOS nvr is rhcos-x86_64-417.94.202605112123-0
-    2026-05-20T06:01:11Z: INFO: The commit metadata is kernel-5.14.0-427.125.1.el9_4
-    2026-05-20T06:01:11Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 128176, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 128179, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.4.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 132993, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 132994, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.16-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 141776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.17-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 146339, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 146340, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.18-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 186321, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:16100-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 186456, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:16158-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 186466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:16170-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-05-20T06:01:12Z: INFO: Successfully approved MR 534
-    2026-05-20T06:01:12Z: INFO: Successfully added QE approval to MR 534
-    2026-05-20T06:01:13Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:17598
-    2026-05-20T06:01:20Z: INFO: The metadata url is not accessible
-    2026-05-20T06:01:20Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-05-20T06:01:20Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-05-20T06:01:20Z: INFO: Background metadata checker process started (PID: 256944) - running independently after parent exit
-    2026-05-20T06:01:20Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.17_20260520_060120.log
-    2026-05-20T06:01:21Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-05-20 06:01:50,302 - INFO - Google Sheets worksheet not found (expected for StateBox releases): cannot find worksheet 4.17.54 in report doc
+    2026-05-20 06:01:50,306 - INFO - Scheduler lock acquired
+    2026-05-20 06:01:50,306 - INFO - Scheduler started: Checking payload metadata URL every 30 minutes
+    2026-05-20 06:01:50,306 - INFO - Scheduler will run until 2026-05-22 06:01:50 or until URL becomes accessible
+    2026-05-20 06:01:50,306 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999938)
+    2026-05-20 06:31:50,307 - INFO - Scheduler check #1: Checking payload metadata URL accessibility for release 4.17
+    2026-05-20 06:32:05,647 - INFO - Scheduler check #1: Payload metadata URL still not accessible
+    2026-05-20 06:32:05,647 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:44.658556)
+    2026-05-20 07:02:05,648 - INFO - Scheduler check #2: Checking payload metadata URL accessibility for release 4.17
+    2026-05-20 07:02:11,441 - INFO - Scheduler check #2: Payload metadata URL still not accessible
+    2026-05-20 07:02:11,441 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:38.864984)
+    2026-05-20 07:32:11,441 - INFO - Scheduler check #3: Checking payload metadata URL accessibility for release 4.17
+    2026-05-20 07:32:26,220 - INFO - Scheduler check #3: Payload metadata URL still not accessible
+    2026-05-20 07:32:26,220 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:29:24.086172)
+    2026-05-20 08:02:26,220 - INFO - Scheduler check #4: Checking payload metadata URL accessibility for release 4.17
+    2026-05-20 08:02:33,237 - INFO - Scheduler check #4: Payload metadata URL still not accessible
+    2026-05-20 08:02:33,238 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:59:17.068352)
+    2026-05-20 08:32:33,238 - INFO - Scheduler check #5: Checking payload metadata URL accessibility for release 4.17
+    2026-05-20 08:32:48,411 - INFO - Scheduler check #5: Payload metadata URL still not accessible
+    2026-05-20 08:32:48,411 - INFO - Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:29:01.895047)
+    2026-05-20 09:02:48,411 - INFO - Scheduler check #6: Checking payload metadata URL accessibility for release 4.17
+    2026-05-20 09:02:58,413 - INFO - Payload metadata URL is now accessible
+    2026-05-20 09:03:33,165 - INFO - Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.
 issues: []
