@@ -11,12 +11,9 @@ from prow.job.sippy import (
     FilterBuilder,
     DatetimePicker,
     StartEndTimePicker)
+from tests import test_util
 
-logging.basicConfig(
-    format="%(asctime)s: %(levelname)s: %(message)s",
-    datefmt="%Y-%m-%dT%H:%M:%SZ",
-    level=logging.DEBUG
-)
+test_util.setup_utc_logging()
 logger = logging.getLogger(__name__)
 
 

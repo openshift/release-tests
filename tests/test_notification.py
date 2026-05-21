@@ -6,11 +6,9 @@ import oar.core.util as util
 from oar.core.configstore import ConfigStore
 from oar.core.notification import NotificationManager, NotificationException
 from oar.core.worksheet import WorksheetManager
+from tests import test_util
 
-logging.basicConfig(
-    level=logging.DEBUG,  # Set the minimum log level to DEBUG
-    format="%(asctime)s - %(levelname)s - %(message)s",  # Format for log messages
-)
+test_util.setup_utc_logging()
 
 class TestNotificationManager(unittest.TestCase):
     def setUp(self):

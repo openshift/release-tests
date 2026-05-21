@@ -6,6 +6,7 @@ import os
 import re
 import shlex
 import subprocess
+import time
 from subprocess import CalledProcessError
 
 import click
@@ -939,6 +940,9 @@ def validate_environment(required_env_vars):
 @click.group()
 @click.option("--debug/--no-debug", help="enable debug logging")
 def cli(debug):
+    # Force logging to use UTC time
+    logging.Formatter.converter = time.gmtime
+
     logging.basicConfig(
         format="%(asctime)s: %(levelname)s: %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%SZ",

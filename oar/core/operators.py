@@ -202,7 +202,7 @@ class ApprovalOperator:
 
         # Add the capture handler to the logger
         capture_handler = LogCaptureHandler()
-        capture_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        capture_handler.setFormatter(util.create_utc_formatter())
         capture_handler.setLevel(logging.DEBUG)  # Capture all log levels
         logger.addHandler(capture_handler)
         

@@ -6,11 +6,9 @@ import unittest
 
 from job.selector import AutoReleaseJobs, TestJobRegistryUpdater
 
-logging.basicConfig(
-    format="%(asctime)s: %(levelname)s: %(message)s",
-    datefmt="%Y-%m-%dT%H:%M:%SZ",
-    level=logging.DEBUG
-)
+from tests import test_util
+
+test_util.setup_utc_logging()
 logger = logging.getLogger(__name__)
 
 

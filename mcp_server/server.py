@@ -128,10 +128,13 @@ from job.controller import (
     update_retried_job_run as jobctl_update_retried_cmd
 )
 
-# Setup logging
+# Setup logging with UTC time
+logging.Formatter.converter = time.gmtime
+
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%dT%H:%M:%SZ'
 )
 logger = logging.getLogger(__name__)
 
