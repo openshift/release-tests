@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.17
 created_at: '2026-05-22T15:38:22Z'
-updated_at: '2026-05-22T19:29:53Z'
+updated_at: '2026-05-22T19:31:09Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -30,9 +30,12 @@ issues:
 - issue: ConfigStore has invalid Jira ticket 'ART-0' - blocking multiple tasks (take-ownership,
     check-cve-tracker-bug). ConfigStore needs manual update with actual ART Jira ticket.
   reported_at: '2026-05-22T15:39:27Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: For Konflux flow, check-cve-tracker-bug and update-bug-list tasks are
+    not used. take-ownership already passed with critical functionality (advisory
+    owners + GitLab MR updated). Jira ticket issue is non-blocking for Konflux workflow.
   blocker: true
   related_tasks:
   - take-ownership
   - check-cve-tracker-bug
+  resolved_at: '2026-05-22T19:31:09Z'
