@@ -99,13 +99,64 @@
           "jobStartTime": "2026-05-22T13:27:53Z",
           "jobID": "c8f90378-a651-4908-93d6-5e48d7cc29aa",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2057815715188051968",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-22T16:46:30Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 30
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+                "OCP-14522:Workloads pod will be scheduled to the node which matches node affinity - Gt",
+                "OCP-14556:Workloads pod will not be scheduled if node affinity or node selector is not satisfied - node affinity",
+                "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-05-22T13:27:58Z",
           "jobID": "8f87fd3b-c4cd-4a73-9268-3645e7590157",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2057815736776134656",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-22T16:43:40Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 30
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-20800:UserInterface Key/Value Secret"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -156,5 +207,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-05-22-032547",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-05-22-032547"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
