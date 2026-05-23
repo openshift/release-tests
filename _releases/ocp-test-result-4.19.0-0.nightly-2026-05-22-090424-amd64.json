@@ -68,13 +68,61 @@
           "jobStartTime": "2026-05-22T21:38:14Z",
           "jobID": "78182615-bff8-4f25-85ac-ffda58954036",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2057939114791014400",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-23T01:17:19Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 oprun should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-79770-metrics are collected by default"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-05-22T21:38:19Z",
           "jobID": "cbaa5bc6-22de-44dd-b99b-e771b7d704eb",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-azure-ipi-fips-f999/2057939136370708480",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-23T01:02:58Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -115,5 +163,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.19.0-0.nightly-2026-05-22-090424",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.19.0-0.nightly-2026-05-22-090424"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
