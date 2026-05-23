@@ -83,7 +83,32 @@
           "jobStartTime": "2026-05-22T23:38:39Z",
           "jobID": "aa8514dd-c36f-4a7f-af7e-0e671c8b254f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-automated-release-gcp-ipi-f999/2057969421716033536",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-23T03:17:45Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 107,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 29
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+                "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
