@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.17
 created_at: '2026-05-22T15:38:22Z'
-updated_at: '2026-05-25T09:55:55Z'
+updated_at: '2026-05-25T09:56:11Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -19,19 +19,16 @@ tasks:
   result: Advisory owners updated successfully. GitLab MR comment added. Jira subtasks
     not updated due to invalid Jira ticket (non-blocking).
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-05-22T15:31:18Z'
-  completed_at: null
+  completed_at: '2026-05-25T05:56:10Z'
   result: |-
-    2026-05-22T15:31:18Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-05-22T15:31:20Z: INFO: checking push job status for advisory 167608 ...
-    2026-05-22T15:31:20Z: INFO: no push job found for advisory 167608
-    2026-05-22T15:31:20Z: INFO: advisory 167608 has blocking advisory []
-    2026-05-22T15:31:21Z: INFO: push job for advisory 167608 is triggered
-    2026-05-22T15:31:21Z: INFO: checking push job status for advisory 167609 ...
-    2026-05-22T15:31:21Z: INFO: no push job found for advisory 167609
-    2026-05-22T15:31:21Z: INFO: advisory 167609 has blocking advisory []
-    2026-05-22T15:31:22Z: INFO: push job for advisory 167609 is triggered
+    2026-05-25T05:56:07Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-25T05:56:10Z: INFO: checking push job status for advisory 167608 ...
+    2026-05-25T05:56:10Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-25T05:56:10Z: INFO: checking push job status for advisory 167609 ...
+    2026-05-25T05:56:10Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-25T05:56:10Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-05-22T19:37:47Z'
