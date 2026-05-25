@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.32
 created_at: '2026-05-21T20:02:19Z'
-updated_at: '2026-05-25T17:47:41Z'
+updated_at: '2026-05-25T17:49:47Z'
 metadata:
   jira_ticket: ART-19030
   advisory_ids:
@@ -80,6 +80,17 @@ tasks:
   completed_at: '2026-05-22T13:45:13Z'
   result: 'All blocking tests passed BO3 verification. Test results: aggregated=true,
     accepted=true, blocked_by=null'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-25T17:49:06Z'
+  completed_at: '2026-05-25T17:49:46Z'
+  result: |-
+    2026-05-25T17:49:06Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-25T17:49:06Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.32
+    2026-05-25T17:49:08Z: INFO: Image Digest: sha256:1bd5ad0745f446a798a4038e4d04cf651213f71bc4e76dd9349f5c6968135f9b
+    2026-05-25T17:49:08Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=1bd5ad0745f446a798a4038e4d04cf651213f71bc4e76dd9349f5c6968135f9b/signature-1
+    2026-05-25T17:49:46Z: INFO: Signature check PASSED
+    2026-05-25T17:49:46Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Stage release pipeline 15652104 failed - stage-release-triggers job failed
     with unknown_failure. Pipeline URL: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/pipelines/15652104'
