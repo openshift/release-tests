@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.4
 created_at: '2026-05-19T06:29:18Z'
-updated_at: '2026-05-25T07:02:08Z'
+updated_at: '2026-05-25T07:05:17Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -80,6 +80,14 @@ tasks:
     2026-05-25T03:02:07Z: INFO: checking push job status for advisory 164956 ...
     2026-05-25T03:02:07Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-05-25T03:02:07Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-05-25T07:05:17Z'
+  completed_at: '2026-05-25T07:05:17Z'
+  result: 'Candidate build 4.22.0-0.nightly-2026-05-13-154759 (amd64): ACCEPTED -
+    All 6 blocking test jobs passed BO3 verification. 1 job (AWS IPI) required retries
+    but ultimately passed 2/3 attempts. Test failures on first attempt were flaky
+    (Observability Operator and External DNS tests) - both passed on retries.'
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs in shipments
