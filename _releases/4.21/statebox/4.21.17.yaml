@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.17
 created_at: '2026-05-22T15:38:22Z'
-updated_at: '2026-05-25T14:08:56Z'
+updated_at: '2026-05-25T14:14:24Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -51,17 +51,14 @@ tasks:
     2026-05-25T14:08:55Z: INFO: Added image health summary to MR 545
     2026-05-25T14:08:55Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-05-25T05:55:53Z'
-  completed_at: null
+  completed_at: '2026-05-25T14:14:23Z'
   result: |-
-    2026-05-25T05:55:53Z: INFO: Initialized StateBox for release 4.21.17 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.17.yaml
-    2026-05-25T05:55:53Z: INFO: job id is not set, will trigger stage testing
-    2026-05-25T05:55:53Z: INFO: Loaded state from _releases/4.21/statebox/4.21.17.yaml (SHA: bb4ad9a4)
-    2026-05-25T05:55:53Z: INFO: Stage release succeeded (verified by label)
-    2026-05-25T05:55:53Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-05-25T05:55:53Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1617/>
-    2026-05-25T05:55:54Z: INFO: sent slack message to <#team-qe-release>
+    2026-05-25T14:14:23Z: INFO: Initialized StateBox for release 4.21.17 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.17.yaml
+    2026-05-25T14:14:23Z: INFO: check stage job status according to job id: 1617
+    2026-05-25T14:14:23Z: INFO: build status of zstreams/Stage-Pipeline/1617 is SUCCESS
+    2026-05-25T14:14:23Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: Jira ticket ART-0 not found - ConfigStore has invalid Jira ticket ID. Advisory
     owners updated successfully but Jira subtasks not updated.
