@@ -37,7 +37,7 @@ import threading
 from contextlib import contextmanager
 from typing import Iterator
 
-from oar.core.const import LOG_FORMAT, LOG_DATE_FORMAT
+from oar.core import util
 
 
 class ThreadFilter(logging.Filter):
@@ -126,10 +126,7 @@ def capture_logs(thread_safe: bool = False) -> Iterator[io.StringIO]:
     root_logger = logging.getLogger()
     log_handler.setLevel(root_logger.level)
 
-    log_handler.setFormatter(logging.Formatter(
-        fmt=LOG_FORMAT,
-        datefmt=LOG_DATE_FORMAT
-    ))
+    log_handler.setFormatter(util.create_utc_formatter())
 
     # Add ThreadFilter if thread-safe mode enabled
     if thread_safe:

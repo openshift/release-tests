@@ -18,6 +18,7 @@ import os
 import re
 import shutil
 import sys
+import time
 import tarfile
 from collections import defaultdict
 from typing import Dict, List, Tuple, Optional
@@ -576,7 +577,8 @@ class CIJobFailureFetcher:
 
 def main():
     """Main entry point for CLI usage"""
-    # Initialize logging
+    # Initialize logging with UTC time
+    logging.Formatter.converter = time.gmtime
     logging.basicConfig(
         format="%(asctime)s: %(levelname)s: %(message)s",
         datefmt="%Y-%m-%dT%H:%M:%SZ",

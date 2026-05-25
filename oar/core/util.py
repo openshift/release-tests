@@ -5,6 +5,7 @@ import warnings
 import re
 import subprocess
 import json
+import time
 from datetime import datetime, timezone
 from semver.version import Version
 from urllib.parse import urlparse
@@ -81,7 +82,33 @@ def get_release_key(version):
             return prerelease
     return version
 
+def create_utc_formatter(fmt=None, datefmt=None) -> logging.Formatter:
+    """
+    Create a logging formatter that uses UTC time.
+
+    Use this when creating custom handlers (StreamHandler, custom handlers, etc.)
+    to ensure consistent UTC timestamps across all log outputs.
+
+    Args:
+        fmt: Format string (defaults to LOG_FORMAT from const.py)
+        datefmt: Date format string (defaults to LOG_DATE_FORMAT from const.py)
+
+    Returns:
+        logging.Formatter with UTC time conversion
+    """
+    if fmt is None:
+        fmt = LOG_FORMAT
+    if datefmt is None:
+        datefmt = LOG_DATE_FORMAT
+
+    formatter = logging.Formatter(fmt, datefmt)
+    formatter.converter = time.gmtime  # Force UTC time
+    return formatter
+
 def init_logging(log_level=logging.INFO):
+    # Force logging to use UTC time
+    logging.Formatter.converter = time.gmtime
+
     logging.basicConfig(
         format=LOG_FORMAT,
         datefmt=LOG_DATE_FORMAT,

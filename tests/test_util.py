@@ -1,7 +1,26 @@
 import unittest
 import os
+import logging
+import time
 from unittest.mock import patch
 from oar.core.util import is_payload_metadata_url_accessible, get_elliott_env
+
+
+def setup_utc_logging(level=logging.DEBUG):
+    """
+    Configure logging to use UTC timestamps for test execution.
+
+    Args:
+        level: Logging level (default: logging.DEBUG)
+    """
+    # Force logging to use UTC time
+    logging.Formatter.converter = time.gmtime
+
+    logging.basicConfig(
+        format="%(asctime)s: %(levelname)s: %(message)s",
+        datefmt="%Y-%m-%dT%H:%M:%SZ",
+        level=level
+    )
 
 class TestPayloadMetadataUrlAccessible(unittest.TestCase):
 
