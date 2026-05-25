@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.4
 created_at: '2026-05-19T06:29:18Z'
-updated_at: '2026-05-25T07:05:17Z'
+updated_at: '2026-05-25T07:05:21Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -88,6 +88,13 @@ tasks:
     All 6 blocking test jobs passed BO3 verification. 1 job (AWS IPI) required retries
     but ultimately passed 2/3 attempts. Test failures on first attempt were flaky
     (Observability Operator and External DNS tests) - both passed on retries.'
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-05-25T07:05:21Z'
+  completed_at: '2026-05-25T07:05:21Z'
+  result: 'Promoted build 4.22.0-rc.4 (amd64): ACCEPTED - All 3 upgrade test jobs
+    passed on first attempt with no retries needed. Tested upgrade paths: stable-4.21→stable-4.22
+    (AWS), stable-4.22→stable-4.22 (Azure FIPS, GCP). Clean pass across all platforms.'
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs in shipments
