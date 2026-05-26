@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.63
 created_at: '2026-05-21T17:02:08Z'
-updated_at: '2026-05-26T12:32:29Z'
+updated_at: '2026-05-26T12:33:31Z'
 metadata:
   jira_ticket: ART-19031
   advisory_ids:
@@ -80,4 +80,15 @@ tasks:
   completed_at: '2026-05-25T16:18:34Z'
   result: 'All blocking tests passed BO3 verification. Build: 4.16.63, aggregated:
     true, accepted: true, rejection_reasons: null'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-26T12:32:48Z'
+  completed_at: '2026-05-26T12:33:30Z'
+  result: |-
+    2026-05-26T12:32:48Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-26T12:32:48Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.63
+    2026-05-26T12:32:50Z: INFO: Image Digest: sha256:0a3e0b4e23d509a31b7a58162a4336d24c9b899a6de9aac2f930f6b558f9e4d7
+    2026-05-26T12:32:50Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=0a3e0b4e23d509a31b7a58162a4336d24c9b899a6de9aac2f930f6b558f9e4d7/signature-1
+    2026-05-26T12:33:30Z: INFO: Signature check PASSED
+    2026-05-26T12:33:30Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
