@@ -53,7 +53,28 @@
         "jobStartTime": "2026-05-27T08:22:30Z",
         "jobID": "57eecf15-1a9f-40d1-ad67-e8fa0a825efb",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2059550801419833344",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-05-27T11:36:47Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 100,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 26
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -63,9 +84,45 @@
         "jobStartTime": "2026-05-27T08:22:35Z",
         "jobID": "d04b81c6-6182-4731-9a46-01b8a8f02b34",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2059550834009575424",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-05-27T11:25:50Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 100,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-High-64537-CMO deploys monitoring console-plugin [Serial]",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-05-27T13:58:32Z",
+          "jobID": "70b21979-e1ec-4dee-8cf1-f5f0ee2e620e",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2026-05-27T13:58:57Z",
+          "jobID": "9f1120da-7e6a-43d3-bf39-6e16c095ed1c",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-disruptive-f999",
