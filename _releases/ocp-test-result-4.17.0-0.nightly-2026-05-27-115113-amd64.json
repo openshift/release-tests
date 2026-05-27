@@ -37,9 +37,48 @@
         "jobStartTime": "2026-05-27T19:25:14Z",
         "jobID": "218f6d99-7afd-417e-9951-a74604f3b459",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2059717607753256960",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-05-27T22:57:44Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 100,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 26,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-05-27T23:23:47Z",
+          "jobID": "2d8d9fc4-c0b0-498c-8348-14d650ae90f4",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2059777617959063552",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-05-27T23:23:52Z",
+          "jobID": "071d93bc-6c66-47ff-a836-d3f1ebfd4b9e",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2059777639631032320",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999",
