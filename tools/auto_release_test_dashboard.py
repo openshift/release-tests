@@ -1,10 +1,13 @@
 import json
+import logging
 import os
 
 import pandas as pd
 import streamlit as st
 
 from oar.core.github_app import GitHubApp
+
+logger = logging.getLogger(__name__)
 
 # Define the github access variables
 repository_owner = 'openshift'
@@ -20,8 +23,17 @@ if not github_app_id or not github_app_private_key:
     st.stop()
 
 # Create a GitHub instance with the App installation token
-gh = GitHubApp(github_app_id, github_app_private_key).client_for_repo(
-    repository_owner, repository_name)
+try:
+    gh = GitHubApp(github_app_id, github_app_private_key).client_for_repo(
+        repository_owner, repository_name)
+except Exception:
+    logger.exception("Failed to initialize GitHub App client")
+    st.error(
+        "Failed to initialize GitHub App client. "
+        "Please check `GITHUB_APP_WRITER_ID` and `GITHUB_APP_WRITER_PRIVATE_KEY` "
+        "and verify the app is installed on `openshift/release-tests`."
+    )
+    st.stop()
 
 # Get the repository object
 repo = gh.get_repo(f'{repository_owner}/{repository_name}')
