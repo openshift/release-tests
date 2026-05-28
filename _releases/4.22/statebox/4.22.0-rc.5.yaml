@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.5
 created_at: '2026-05-28T05:01:37Z'
-updated_at: '2026-05-28T12:19:31Z'
+updated_at: '2026-05-28T12:33:24Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -75,6 +75,17 @@ tasks:
     2026-05-28T11:21:29Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-05-28T11:21:29Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1623/>
     2026-05-28T11:21:29Z: INFO: sent slack message to <#team-qe-release>
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-05-28T12:33:16Z'
+  completed_at: '2026-05-28T12:33:23Z'
+  result: |-
+    2026-05-28T12:33:16Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-05-28T12:33:23Z: INFO: checking push job status for advisory 164955 ...
+    2026-05-28T12:33:23Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-28T12:33:23Z: INFO: checking push job status for advisory 164956 ...
+    2026-05-28T12:33:23Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-05-28T12:33:23Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs in shipments
