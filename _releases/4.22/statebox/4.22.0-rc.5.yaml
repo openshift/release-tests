@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.5
 created_at: '2026-05-28T05:01:37Z'
-updated_at: '2026-05-28T14:45:02Z'
+updated_at: '2026-05-28T14:47:52Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -81,6 +81,17 @@ tasks:
   result: 'Promoted build 4.22.0-rc.5 analysis: ALL TESTS PASSED (accepted=true, aggregated=true).
     All 3 blocking jobs succeeded: upgrade-from-4.21-aws, upgrade-from-4.22-azure-fips,
     upgrade-from-4.22-gcp'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-05-28T14:47:26Z'
+  completed_at: '2026-05-28T14:47:51Z'
+  result: |-
+    2026-05-28T14:47:26Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-05-28T14:47:26Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.22.0-rc.5
+    2026-05-28T14:47:27Z: INFO: Image Digest: sha256:59f1edd704211e947040c251732e3e164d3a26b3d538528c0b150140ea4f2c8b
+    2026-05-28T14:47:27Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=59f1edd704211e947040c251732e3e164d3a26b3d538528c0b150140ea4f2c8b/signature-1
+    2026-05-28T14:47:51Z: INFO: Signature check PASSED
+    2026-05-28T14:47:51Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: |
     Found 3 missed CVE tracker bugs in shipments
