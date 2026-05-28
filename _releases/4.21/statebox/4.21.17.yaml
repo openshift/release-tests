@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.17
 created_at: '2026-05-22T15:38:22Z'
-updated_at: '2026-05-26T09:29:12Z'
+updated_at: '2026-05-28T17:06:05Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -194,6 +194,17 @@ tasks:
     2026-05-26T09:28:47Z: INFO: Scheduler check #38: Checking payload metadata URL accessibility for release 4.21
     2026-05-26T09:29:02Z: INFO: Payload metadata URL is now accessible
     2026-05-26T09:29:12Z: INFO: Release approval completed. Payload metadata URL is now accessible and advisories have been moved to REL_PREP.
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-05-28T17:06:05Z'
+  completed_at: '2026-05-28T17:06:05Z'
+  result: 'Post-shipment CVE verification completed. Elliott find-bugs filtering succeeded:
+    0 of 13 VERIFIED bugs qualified for assembly basis cutoff time (2026-05-20 11:45:32).
+    OCPBUGS-82076 excluded by assembly config. No CVE tracker bugs require coverage
+    in this release. Advisory security impact: None. Verification done after shipment
+    MR branch deletion using elliott output analysis, Jira query (50 CVE bugs found
+    for 4.21.z, none targeting 4.21.17), and advisory API verification (RHBA-2026:20032-02,
+    RHBA-2026:20033-02).'
 issues:
 - issue: Jira ticket ART-0 not found - ConfigStore has invalid Jira ticket ID. Advisory
     owners updated successfully but Jira subtasks not updated.
