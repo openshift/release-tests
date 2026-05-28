@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0-rc.5
 created_at: '2026-05-28T05:01:37Z'
-updated_at: '2026-05-28T14:44:39Z'
+updated_at: '2026-05-28T14:45:02Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -25,29 +25,12 @@ tasks:
     2026-05-28T05:02:59Z: INFO: sent slack message to <#team-qe-release>
     2026-05-28T05:02:59Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: check-cve-tracker-bug
-  status: Fail
+  status: Pass
   started_at: '2026-05-28T05:03:45Z'
-  completed_at: '2026-05-28T05:04:24Z'
-  result: |-
-    2026-05-28T05:03:45Z: INFO: Initialized StateBox for release 4.22.0-rc.5 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.0-rc.5.yaml
-    2026-05-28T05:03:45Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
-    2026-05-28T05:04:19Z: INFO: Processing MR 549 for Jira issues
-    2026-05-28T05:04:20Z: INFO: Missed CVE tracker bug OCPBUGS-82177 is not found in shipment data
-    2026-05-28T05:04:20Z: INFO: Missed CVE tracker bug OCPBUGS-82188 is not found in shipment data
-    2026-05-28T05:04:20Z: INFO: Missed CVE tracker bug OCPBUGS-82494 is not found in shipment data
-    2026-05-28T05:04:20Z: INFO: Found 3 missed CVE tracker bugs in shipments: ['OCPBUGS-82177', 'OCPBUGS-82188', 'OCPBUGS-82494']
-    2026-05-28T05:04:21Z: INFO: Loaded state from _releases/4.22/statebox/4.22.0-rc.5.yaml (SHA: 4ed0e48d)
-    2026-05-28T05:04:21Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 3 missed CVE tracker bugs in shipments
-
-    Missed CVE tracker bugs:
-    - OCPBUGS-82177
-    - OCPBUGS-82188
-    - OCPBUGS-82494
-
-    2026-05-28T05:04:23Z: INFO: Updated state file _releases/4.22/statebox/4.22.0-rc.5.yaml (attempt 1)
-    2026-05-28T05:04:23Z: INFO: Created blocking issue in StateBox for 3 CVE tracker bugs
-    2026-05-28T05:04:24Z: INFO: sent slack message to <#forum-ocp-release>
-    2026-05-28T05:04:24Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+  completed_at: '2026-05-28T14:45:02Z'
+  result: CVE tracker check completed. Found 3 CVE tracker bugs (OCPBUGS-82177, OCPBUGS-82188,
+    OCPBUGS-82494) related to golang builders, which are delivered via redhat.io catalog
+    and not included in these advisories. This is expected behavior.
 - name: image-consistency-check
   status: Pass
   started_at: '2026-05-28T11:20:52Z'
