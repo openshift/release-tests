@@ -116,7 +116,8 @@ analyze-candidate-build (conditionally - only if accepted == false)
 
 **API Endpoint:**
 ```
-https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/{release}
+https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/{major_version}-stable/release/{release}
+# Where {major_version} is extracted from {release} (e.g., "4" from "4.20.1", "5" from "5.0.1")
 ```
 
 **Success Criteria:**

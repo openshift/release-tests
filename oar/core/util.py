@@ -36,6 +36,20 @@ def get_y_release(version):
 
     return None
 
+def get_major_version(version):
+    """
+    Get major version from release string.
+
+    Supports both Y-stream (e.g., "4.19") and Z-stream (e.g., "5.0.1") formats.
+
+    Args:
+        version: Release version string
+
+    Returns:
+        str: Major version (e.g., "4", "5")
+    """
+    return version.split(".")[0]
+
 def validate_release_version(version):
     try:
         Version.parse(version)
@@ -304,14 +318,15 @@ def is_payload_metadata_url_accessible(release: str) -> bool:
         requests.exceptions.RequestException: If any HTTP request fails
         subprocess.CalledProcessError: If oc command execution fails
     """
-    # get image pullspec from release stream 4-stable
+    # Get image pullspec from release stream (e.g., 4-stable, 5-stable)
     pullspec = None
-    url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/latest?prefix={release}"
+    major_version = get_major_version(release)
+    url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/{major_version}-stable/latest?prefix={release}"
     resp = requests.get(url)
     if resp.ok:
         pullspec = resp.json()['pullSpec']
     else:
-        logger.error(f"Can not get payload pullspec from release stream 4-stable, http error {resp.status_code}")
+        logger.error(f"Can not get payload pullspec from release stream {major_version}-stable, http error {resp.status_code}")
         return False
 
     # get metadata url from release payload

@@ -30,7 +30,7 @@ class Jobs:
     STAGE_TESTING_JOB_NAME_TEMPLATE = "periodic-ci-openshift-openshift-tests-private-release-{minor_release}-stage-testing-e2e-aws-ipi"
 
     def __init__(self):
-        self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags"
+        self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags" # TODO to be updated to support 5-stable, or to be removed
         # config the based URL here
         self.job_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=main"
         self.gangway_url = "https://gangway-ci.apps.ci.l2s4.p1.openshiftapps.com/v1/executions/"
@@ -66,7 +66,7 @@ class Jobs:
     # see bug: https://issues.redhat.com/browse/DPTP-3538, https://issues.redhat.com/browse/OCPQE-17600
     def get_amd_image_for_arm(self, payload):
         """Function get amd64 image as the ARM platform base image"""
-        version_pattern = re.compile(r':(\d*\.\d{2}\.\d)(-.*)?-')
+        version_pattern = re.compile(r':(\d+\.\d+\.\d+)(-.*)?-')
         version = version_pattern.findall(payload)
         if len(version) > 0:
             version_string = "".join(version[0])
@@ -747,6 +747,7 @@ def run_required(channel, file, version):
     help="push the info to the https://api.github.com/repos/openshift/release-tests/contents/_releases/",
 )
 def run_payloads(versions, push):
+    # TODO Remove if not used, ref: https://redhat.atlassian.net/browse/OCPERT-418
     """Check the latest stable payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
     JOB.get_payloads(versions, push)
 

@@ -61,9 +61,10 @@ def image_signed_check(ctx):
         # Log in-progress status for cli_result_callback parsing
         util.log_task_status(TASK_IMAGE_SIGNED_CHECK, TASK_STATUS_INPROGRESS)
 
+        major_version = util.get_major_version(cs.release)
         release_url = (
             cs.get_release_url()
-            + "api/v1/releasestream/4-stable/release/"
+            + f"api/v1/releasestream/{major_version}-stable/release/"
             + cs.release
         )
         digest_sha = get_image_digest(release_url)

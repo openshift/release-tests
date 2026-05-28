@@ -262,7 +262,8 @@ For complete step-by-step logic, refer to the **`release-workflow` skill** (`.cl
 
 **Check promotion status:**
 ```bash
-curl -s "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/{release}" | jq -r '.phase'
+MAJOR_VERSION=$(echo "{release}" | cut -d. -f1)
+curl -s "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/${MAJOR_VERSION}-stable/release/{release}" | jq -r '.phase'
 ```
 
 **Expected output:**

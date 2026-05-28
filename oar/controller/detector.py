@@ -8,6 +8,7 @@ from semver import VersionInfo
 
 from oar.cli.cmd_create_test_report import create_test_report
 from oar.core.configstore import ConfigStore
+from oar.core import util
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,8 @@ class ReleaseDetector:
         """
         Get the latest stable version from release stream
         """
-        url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/latest?prefix={self._minor_release}"
+        major_version = util.get_major_version(self._minor_release)
+        url = f"https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/{major_version}-stable/latest?prefix={self._minor_release}"
         resp = requests.get(url)
         if resp.ok:
             return resp.json()["name"]
@@ -94,7 +96,7 @@ class ReleaseDetector:
 
 
 def validate_minor_release(ctx, param, value):
-    pattern = re.compile(r"^4\.\d{1,2}$")
+    pattern = re.compile(r"^\d+\.\d{1,2}$")
     if not pattern.match(value):
         raise click.BadParameter(f"Invalid OCP minor version {value}")
     return value

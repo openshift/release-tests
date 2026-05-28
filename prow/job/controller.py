@@ -16,6 +16,7 @@ from github import Auth, Github
 from github.GithubException import UnknownObjectException, GithubException
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException
+from semver import VersionInfo
 from urllib3 import Retry
 
 from .artifacts import Artifacts
@@ -51,6 +52,20 @@ def create_session() -> requests.Session:
     return session
 
 
+def get_y_stream_version(version):
+    """
+    Extract Y-stream version (major.minor) from full build version.
+
+    Args:
+        version: Full build version (e.g., "5.0.1", "5.0.0-0.nightly-2026-06-01-123456")
+
+    Returns:
+        Y-stream version (e.g., "5.0", "4.16")
+    """
+    v = VersionInfo.parse(version)
+    return f"{v.major}.{v.minor}"
+
+
 class Architectures():
 
     AMD64 = "amd64"
@@ -76,8 +91,17 @@ class Architectures():
 
 
 class ReleaseStreamURLResolver():
+    """Resolves OpenShift release stream URLs."""
 
     def __init__(self, release, nightly=True, arch=Architectures.AMD64):
+        """
+        Initialize ReleaseStreamURLResolver.
+
+        Args:
+            release: Y-stream version (e.g., "5.0", "4.16")
+            nightly: True for nightly builds, False for stable builds
+            arch: Architecture (amd64, arm64, ppc64le, s390x, multi)
+        """
         self._arch = Architectures.fromString(arch)
         self._nightly = nightly
         self._release = release
@@ -86,8 +110,9 @@ class ReleaseStreamURLResolver():
     def get_url_for_latest(self):
         base_url = f"https://{self._arch}.ocp.releases.ci.openshift.org/api/v1/releasestream"
         suffix = "" if self._arch == Architectures.AMD64 else f"-{self._arch}"
+        major_version = self._release.split(".")[0]
         releasestream = (
-            f"{self._release}.0-0.nightly" if self._nightly else f"4-stable") + suffix
+            f"{self._release}.0-0.nightly" if self._nightly else f"{major_version}-stable") + suffix
 
         if self._nightly:
             url = f"{base_url}/{releasestream}/latest"
@@ -95,7 +120,7 @@ class ReleaseStreamURLResolver():
             url = f"{base_url}/{releasestream}/latest?prefix={self._release}"
             # if stable build is not available for latest release, use dev preview releasestream instead
             if self._session.get(url).status_code == 404:
-                releasestream = "4-dev-preview" + suffix
+                releasestream = f"{major_version}-dev-preview" + suffix
                 url = f"{base_url}/{releasestream}/latest"
 
         return url
@@ -105,14 +130,14 @@ class ReleaseStreamURLResolver():
         # the arch can be found in build string of nightly
         # but it does not work for stable build, so param arch is needed here.
         url_resolver = ReleaseStreamURLResolver(
-            build[:4], "nightly" in build, arch)
+            get_y_stream_version(build), "nightly" in build, arch)
 
         return url_resolver.get_url_for_latest().replace("latest", f"release/{build}")
 
     @staticmethod
     def get_url_for_tags(build, arch):
         url_resolver = ReleaseStreamURLResolver(
-            build[:4], "nightly" in build, arch)
+            get_y_stream_version(build), "nightly" in build, arch)
         return url_resolver.get_url_for_latest().replace("latest", "tags")
 
 
@@ -205,10 +230,19 @@ class TestJob():
 
 
 class JobController:
+    """Controls Prow job execution for OpenShift builds."""
 
     def __init__(self, release, nightly=True, trigger_prow_job=True, arch=Architectures.AMD64):
-        self._release = release[:-
-                                2] if len(release.split(".")) == 3 else release
+        """
+        Initialize JobController.
+
+        Args:
+            release: Y-stream version (e.g., "5.0", "4.16")
+            nightly: True for nightly builds, False for stable builds
+            trigger_prow_job: Whether to trigger Prow jobs when new builds are found
+            arch: Architecture (amd64, arm64, ppc64le, s390x, multi)
+        """
+        self._release = release
         self._nightly = nightly
         self._trigger_prow_job = trigger_prow_job
         self._arch = Architectures.fromString(arch)
@@ -456,6 +490,7 @@ class TestJobRegistry():
             matched_path = re.search(
                 r'ocp-\d\.\d+-test-jobs-{}.json'.format(self._arch), content.path)
             if matched_path:
+                # Get y-stream release version
                 release = re.search(r'\d\.\d+', matched_path.group()).group()
                 file_content = self.release_tests_main.get_file_content(
                     content.path)
@@ -467,7 +502,16 @@ class TestJobRegistry():
         logger.info("Test job registry is initialized")
 
     def get_test_jobs(self, release, nightly):
+        """
+        Get all test jobs for a given release stream.
 
+        Args:
+            release: Y-stream version (e.g., "5.0", "4.16")
+            nightly: True for nightly builds, False for stable builds
+
+        Returns:
+            List of TestJob
+        """
         test_jobs = []
         build_type = JOB_TYPE_NIGHTLY if nightly else JOB_TYPE_STABLE
         if release not in self._registry:
@@ -482,7 +526,17 @@ class TestJobRegistry():
         return test_jobs
 
     def get_test_job(self, release, nightly, job_name):
+        """
+        Get a specific test job by name for a given release stream.
 
+        Args:
+            release: Y-stream version (e.g., "5.0", "4.16")
+            nightly: True for nightly builds, False for stable builds
+            job_name: Prow job name to find
+
+        Returns:
+            TestJob if found, None otherwise
+        """
         test_job = None
         jobs = self.get_test_jobs(release, nightly)
         if len(jobs):
@@ -744,6 +798,7 @@ class TestResultAggregator():
             if matched_path:
                 file_name = matched_path.group()
                 logger.info(f"Found test result file {file_name}")
+                # Get y-stream release version
                 release = re.search(r'\d\.\d+', file_name).group()
                 # check if the build is nightly
                 nightly = "nightly" in file_name
@@ -966,7 +1021,7 @@ def start_controller(release, nightly, trigger_prow_job, arch):
 @click.option("--skip-existing/--no-skip-existing", help="skip jobs that are already triggered (default: enabled)", default=True)
 def trigger_jobs_for_build(build, arch, skip_existing):
     validate_environment(REQUIRED_ENV_VARS_FOR_CONTROLLER)
-    release = build[:4]
+    release = get_y_stream_version(build)
     nightly = "nightly" in build
     controller = JobController(release, nightly, True, arch)
     build_obj = controller.get_build(build)
