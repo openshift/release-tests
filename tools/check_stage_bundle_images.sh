@@ -43,10 +43,10 @@ fi
 
 OCP_VERSION="$1"
 
-# Validate version format (should be like 4.19, 4.20, etc.)
-if ! echo "$OCP_VERSION" | grep -qE '^4\.[0-9]+$'; then
+# Validate version format (should be like 4.19, 5.0, etc.)
+if ! echo "$OCP_VERSION" | grep -qE '^[0-9]+\.[0-9]+$'; then
   echo "Error: Invalid OCP version format: $OCP_VERSION"
-  echo "Expected format: 4.XX (e.g., 4.19, 4.20)"
+  echo "Expected format: X.Y (e.g., 4.19, 5.0)"
   exit 1
 fi
 
