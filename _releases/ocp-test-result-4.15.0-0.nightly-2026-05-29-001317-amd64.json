@@ -68,13 +68,58 @@
           "jobStartTime": "2026-05-29T14:24:44Z",
           "jobID": "55c61e3e-d47f-44d7-b629-55552363a7f0",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2060366737789947904",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-05-29T17:52:50Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 29,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-05-29T14:24:49Z",
           "jobID": "3d5d1ce1-b54a-4cb3-be2b-d7274c425e0c",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2060366759600328704",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-05-29T17:31:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -156,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2026-05-29-001317",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2026-05-29-001317"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
