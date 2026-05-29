@@ -31,6 +31,7 @@ class NotificationType(Enum):
     REPORTER = (24, "Reporter Action Request")
 
     def __init__(self, hours: int, label: str):
+        """Set escalation threshold in weekday hours and notification label."""
         self.hours = hours
         self.label = label
 
@@ -58,6 +59,12 @@ class Notification:
     text: str
 
     def __init__(self, issue, type, text):
+        """
+        Args:
+            issue: Jira issue for the notification.
+            type: Notification type.
+            text: Comment body text.
+        """
         self.issue = issue
         self.type = type
         self.text = text
@@ -72,6 +79,11 @@ class NotificationService:
     """
     
     def __init__(self, jira, dry_run=False):
+        """
+        Args:
+            jira: JIRA API client instance.
+            dry_run: If True, log notifications without posting Jira comments.
+        """
         self.jira = jira
         self.dry_run = dry_run
         self.ldap = LdapHelper()
@@ -90,8 +102,11 @@ class NotificationService:
             return None
         try:
             return GitHubApp(app_id, private_key)
-        except Exception:
-            logger.exception("Failed to initialize GitHub App Reader")
+        except Exception as e:
+            logger.error(
+                "Failed to initialize GitHub App Reader (%s)",
+                type(e).__name__,
+            )
             return None
 
     def _github_client_for_repo(self, org: str, repo: str):
@@ -111,7 +126,12 @@ class NotificationService:
         try:
             return self._github_app.client_for_repo(org, repo)
         except Exception as e:
-            logger.warning(f"Failed to get GitHub client for {org}/{repo}: {e}")
+            logger.warning(
+                "Failed to get GitHub client for %s/%s (%s)",
+                org,
+                repo,
+                type(e).__name__,
+            )
             return None
 
     def get_user_email(self, user: User) -> Optional[str]:
