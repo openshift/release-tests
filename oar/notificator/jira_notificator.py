@@ -97,11 +97,11 @@ class NotificationService:
             GitHubApp instance, or None if credentials are missing or initialization fails.
         """
         app_id = os.environ.get(ENV_VAR_GITHUB_APP_READER_ID)
-        private_key = os.environ.get(ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY)
-        if not app_id or not private_key:
+        private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY)
+        if not app_id or not private_key_path:
             return None
         try:
-            return GitHubApp(app_id, private_key)
+            return GitHubApp(app_id, private_key_path)
         except Exception as e:
             logger.error(
                 "Failed to initialize GitHub App Reader (%s)",

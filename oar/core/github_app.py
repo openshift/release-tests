@@ -8,18 +8,22 @@ from github import Auth, Github, GithubIntegration
 class GitHubApp:
     """PyGithub client via GitHub App installation token."""
 
-    def __init__(self, app_id: str, private_key: str):
+    def __init__(self, app_id: str, private_key_path: str):
         """
         Initialize GitHub App authentication.
 
         Args:
             app_id: Application ID (not Client ID).
-            private_key: PEM contents or path to a .pem file.
+            private_key_path: Path to the App private key ``.pem`` file.
         """
-        key = private_key
-        key_path = Path(private_key).expanduser()
-        if key_path.is_file():
-            key = key_path.read_text()
+        if "\n" in private_key_path or "-----BEGIN" in private_key_path:
+            raise ValueError(
+                "private_key_path must be a path to a .pem file, not inline key content"
+            )
+        key_file = Path(private_key_path).expanduser()
+        if not key_file.is_file():
+            raise FileNotFoundError("GitHub App private key file not found")
+        key = key_file.read_text()
         auth = Auth.AppAuth(app_id, key)
         self._integration = GithubIntegration(auth=auth)
 
