@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.18
 created_at: '2026-05-29T06:00:10Z'
-updated_at: '2026-05-29T11:02:52Z'
+updated_at: '2026-05-30T08:38:57Z'
 metadata:
   jira_ticket: ART-19308
   advisory_ids:
@@ -50,4 +50,17 @@ tasks:
   completed_at: null
   result: Waiting for test results to be aggregated for candidate build 4.21.0-0.nightly-2026-05-27-093820.
     Test result file not found at GitHub record branch.
-issues: []
+issues:
+- issue: 'Candidate build 4.21.0-0.nightly-2026-05-27-093820 has critical test failure:
+    Case 10662 (Security Context Constraint - MustRunAsNonRoot enforcement) failed
+    on ALL platforms (AWS, Azure FIPS, GCP) across ALL retry attempts (9/9 failures
+    = 100% failure rate). This indicates a critical security regression where containers
+    may run as root when SCC should prevent this. Test: [sig-auth] Authentication
+    Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process
+    via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy'
+  reported_at: '2026-05-30T08:38:57Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-candidate-build
