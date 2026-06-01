@@ -116,6 +116,11 @@ def _github_repo(repo_name: str):
         raise click.ClickException(
             f"--repo-name must be in owner/repo format, got {repo_name!r}"
         ) from e
+    owner, repo = owner.strip(), repo.strip()
+    if not owner or not repo:
+        raise click.ClickException(
+            f"--repo-name must be in owner/repo format, got {repo_name!r}"
+        )
     try:
         github = GitHubApp(app_id, private_key_path).client_for_repo(owner, repo)
         return github.get_repo(repo_name)
