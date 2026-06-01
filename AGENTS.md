@@ -251,7 +251,7 @@ python tools/auto_release_test_result_checker.py \
 - File tracking system to avoid duplicate notifications
 
 **Environment Variables Required:**
-- `GITHUB_APP_WRITER_ID` / `GITHUB_APP_WRITER_PRIVATE_KEY` - Writer GitHub App for `openshift/release-tests`
+- `GITHUB_APP_READER_ID` / `GITHUB_APP_READER_PRIVATE_KEY` - Reader GitHub App for `openshift/release-tests` (read-only)
 - `SLACK_BOT_TOKEN` - Slack bot token
 
 **Options:**
@@ -324,7 +324,7 @@ pip3 install -e .
 - All OAR CLI environment variables (executes OAR commands)
 
 **Test Result Checker:**
-- **GITHUB_APP_WRITER_ID** / **GITHUB_APP_WRITER_PRIVATE_KEY** - Writer GitHub App for `openshift/release-tests`
+- **GITHUB_APP_READER_ID** / **GITHUB_APP_READER_PRIVATE_KEY** - Reader GitHub App for `openshift/release-tests` (read-only)
 - **SLACK_BOT_TOKEN** - Slack bot token for sending notifications
 
 **Note:** `OAR_SLACK_CHANNEL` and `OAR_SLACK_THREAD` are set internally by the Slack bot when executing commands and should not be configured manually by users.

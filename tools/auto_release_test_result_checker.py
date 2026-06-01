@@ -8,8 +8,8 @@ from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
 from oar.core.const import (
-    ENV_VAR_GITHUB_APP_WRITER_ID,
-    ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    ENV_VAR_GITHUB_APP_READER_ID,
+    ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY,
 )
 from oar.core.github_app import GitHubApp
 
@@ -103,12 +103,12 @@ class TestResultChecker:
 
 
 def _github_repo(repo_name: str):
-    app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
-    private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
+    app_id = os.environ.get(ENV_VAR_GITHUB_APP_READER_ID)
+    private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY)
     if not app_id or not private_key_path:
         raise click.ClickException(
-            f"{ENV_VAR_GITHUB_APP_WRITER_ID} and "
-            f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} must be set."
+            f"{ENV_VAR_GITHUB_APP_READER_ID} and "
+            f"{ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY} must be set."
         )
     try:
         owner, repo = repo_name.split("/", 1)
@@ -120,8 +120,8 @@ def _github_repo(repo_name: str):
         github = GitHubApp(app_id, private_key_path).client_for_repo(owner, repo)
         return github.get_repo(repo_name)
     except Exception as e:
-        logger.error("Failed to initialize GitHub App Writer (%s)", type(e).__name__)
-        raise click.ClickException("Failed to initialize GitHub App Writer client.") from e
+        logger.error("Failed to initialize GitHub App Reader (%s)", type(e).__name__)
+        raise click.ClickException("Failed to initialize GitHub App Reader client.") from e
 
 
 @click.command()
