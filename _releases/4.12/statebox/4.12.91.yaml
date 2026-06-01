@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.91
 created_at: '2026-05-29T07:00:05Z'
-updated_at: '2026-06-01T10:33:39Z'
+updated_at: '2026-06-01T10:35:41Z'
 metadata:
   jira_ticket: ART-19300
   advisory_ids:
@@ -60,14 +60,17 @@ tasks:
     2026-06-01T09:18:17Z: INFO: Added image health summary to MR 552
     2026-06-01T09:18:17Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2026-06-01T09:25:43Z'
-  completed_at: '2026-06-01T10:25:02Z'
+  status: In Progress
+  started_at: '2026-06-01T10:35:38Z'
+  completed_at: null
   result: |-
-    2026-06-01T10:25:02Z: INFO: Initialized StateBox for release 4.12.91 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.91.yaml
-    2026-06-01T10:25:02Z: INFO: check stage job status according to job id: 1628
-    2026-06-01T10:25:02Z: INFO: build status of zstreams/Stage-Pipeline/1628 is FAILURE
-    2026-06-01T10:25:02Z: INFO: task [Stage Testing] status is changed to [Fail]
+    2026-06-01T10:35:38Z: INFO: Initialized StateBox for release 4.12.91 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.91.yaml
+    2026-06-01T10:35:38Z: INFO: job id is not set, will trigger stage testing
+    2026-06-01T10:35:39Z: INFO: Loaded state from _releases/4.12/statebox/4.12.91.yaml (SHA: b53d17df)
+    2026-06-01T10:35:39Z: INFO: Stage release succeeded (verified by label)
+    2026-06-01T10:35:39Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-06-01T10:35:39Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1629/>
+    2026-06-01T10:35:40Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'stage-testing Jenkins job #1628 failed due to PolarShift API timeout - infrastructure
     issue, no tests executed'
