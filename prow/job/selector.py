@@ -67,8 +67,7 @@ class LocalGitRepo():
     def __init__(self, repo_url, default_branch="main"):
         self._default_branch = default_branch
         self._repo_name = repo_url.split("/")[-1].replace(".git", "")
-        self._repo_local_dir = tempfile.NamedTemporaryFile(
-            dir="/tmp", prefix="release-tests-").name
+        self._repo_local_dir = tempfile.mkdtemp(dir="/tmp", prefix="release-tests-")
         self._repo = Repo.clone_from(repo_url, self._repo_local_dir)
 
     def commit_file_change(self, relative_file_path, file_content, actor_name, actor_email):
