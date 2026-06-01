@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import streamlit as st
 
-from oar.core.const import ENV_VAR_GITHUB_APP_WRITER_ID, ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
+from oar.core.const import ENV_VAR_GITHUB_APP_READER_ID, ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY
 from oar.core.github_app import GitHubApp
 
 logger = logging.getLogger(__name__)
@@ -17,12 +17,12 @@ directory_path = '_releases'
 branch_name = 'record'
 
 # Read the GitHub App credentials from environment variables
-github_app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
-github_app_private_key = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
+github_app_id = os.environ.get(ENV_VAR_GITHUB_APP_READER_ID)
+github_app_private_key = os.environ.get(ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY)
 if not github_app_id or not github_app_private_key:
     st.warning(
-        f"Oops, ENV VAR {ENV_VAR_GITHUB_APP_WRITER_ID} or "
-        f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} NOT FOUND"
+        f"Oops, ENV VAR {ENV_VAR_GITHUB_APP_READER_ID} or "
+        f"{ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY} NOT FOUND"
     )
     st.stop()
 
@@ -34,8 +34,8 @@ except Exception:
     logger.exception("Failed to initialize GitHub App client")
     st.error(
         "Failed to initialize GitHub App client. "
-        f"Please check `{ENV_VAR_GITHUB_APP_WRITER_ID}` and "
-        f"`{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY}` "
+        f"Please check `{ENV_VAR_GITHUB_APP_READER_ID}` and "
+        f"`{ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY}` "
         "and verify the app is installed on `openshift/release-tests`."
     )
     st.stop()
