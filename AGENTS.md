@@ -164,7 +164,9 @@ oarctl jira-notificator [--dry-run] [--from-date YYYY-MM-DD]
 - `LdapHelper` - LDAP integration for manager lookup
 
 **Environment Variables Required:**
-- `JIRA_TOKEN` - Jira authentication token
+- `JIRA_TOKEN` - Jira personal access token for API access
+- `GITHUB_APP_READER_ID` / `GITHUB_APP_READER_PRIVATE_KEY` - Reader GitHub App for PR label checks
+- Kerberos ticket - For LDAP manager lookup (`kinit $kid@$domain`)
 
 **Options:**
 - `--dry-run` - Test mode that doesn't send actual Jira comments
