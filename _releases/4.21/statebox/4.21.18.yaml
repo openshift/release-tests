@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.18
 created_at: '2026-05-29T06:00:10Z'
-updated_at: '2026-06-01T16:03:08Z'
+updated_at: '2026-06-01T19:58:25Z'
 metadata:
   jira_ticket: ART-19308
   advisory_ids:
@@ -75,24 +75,13 @@ tasks:
     2026-06-01T12:32:59Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
   status: In Progress
-  started_at: '2026-06-01T16:03:00Z'
+  started_at: '2026-06-01T19:58:23Z'
   completed_at: null
   result: |-
-    2026-06-01T16:03:00Z: WARNING: Request rate limited by Jira. Request should be retried after 1 seconds.
-    You can accumulate up to 400 tokens.
-    Consider adding an exemption for the user as explained in: https://confluence.atlassian.com/adminjiraserver/improving-instance-stability-with-rate-limiting-983794911.html
-    2026-06-01T16:03:00Z: WARNING: Got recoverable error from GET https://redhat.atlassian.net/rest/api/2/issue/ART-19308, will retry [1/3] in 1.6052476021957993s. Err: 429 Too Many Requests
-    2026-06-01T16:03:02Z: WARNING: Request rate limited by Jira. Request should be retried after 1 seconds.
-    You can accumulate up to 400 tokens.
-    Consider adding an exemption for the user as explained in: https://confluence.atlassian.com/adminjiraserver/improving-instance-stability-with-rate-limiting-983794911.html
-    2026-06-01T16:03:02Z: WARNING: Got recoverable error from GET https://redhat.atlassian.net/rest/api/2/issue/ART-19308, will retry [2/3] in 1.3553406177509593s. Err: 429 Too Many Requests
-    2026-06-01T16:03:05Z: INFO: Initialized StateBox for release 4.21.18 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.18.yaml
-    2026-06-01T16:03:05Z: INFO: job id is not set, will trigger stage testing
-    2026-06-01T16:03:05Z: INFO: Loaded state from _releases/4.21/statebox/4.21.18.yaml (SHA: 329d9483)
-    2026-06-01T16:03:05Z: INFO: Stage release succeeded (verified by label)
-    2026-06-01T16:03:05Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-06-01T16:03:05Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1632/>
-    2026-06-01T16:03:06Z: INFO: sent slack message to <#team-qe-release>
+    2026-06-01T19:58:23Z: INFO: Initialized StateBox for release 4.21.18 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.18.yaml
+    2026-06-01T19:58:23Z: INFO: job id is not set, will trigger stage testing
+    2026-06-01T19:58:23Z: INFO: Loaded state from _releases/4.21/statebox/4.21.18.yaml (SHA: e7ce82f2)
+    2026-06-01T19:58:23Z: INFO: stage testing already triggered and in progress, no need to trigger again
 issues:
 - issue: 'Candidate build 4.21.0-0.nightly-2026-05-27-093820 has critical test failure:
     Case 10662 (Security Context Constraint - MustRunAsNonRoot enforcement) failed
