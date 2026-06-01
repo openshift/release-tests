@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.18
 created_at: '2026-05-29T06:00:10Z'
-updated_at: '2026-06-01T16:02:28Z'
+updated_at: '2026-06-01T16:02:53Z'
 metadata:
   jira_ticket: ART-19308
   advisory_ids:
@@ -74,14 +74,14 @@ tasks:
     2026-06-01T12:32:58Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2061426690701135872
     2026-06-01T12:32:59Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-06-01T16:02:26Z'
-  completed_at: null
-  result: |-
-    2026-06-01T16:02:26Z: INFO: Initialized StateBox for release 4.21.18 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.18.yaml
-    2026-06-01T16:02:26Z: INFO: job id is not set, will trigger stage testing
-    2026-06-01T16:02:27Z: INFO: Loaded state from _releases/4.21/statebox/4.21.18.yaml (SHA: 093dcebf)
-    2026-06-01T16:02:27Z: INFO: stage testing already triggered and in progress, no need to trigger again
+  completed_at: '2026-06-01T16:02:53Z'
+  result: 'Jenkins build #1631 ABORTED due to timeout at 15:37:06 UTC. Build exceeded
+    deadline waiting for ginkgo-test completion. Root cause: Container registry outage
+    (registry.redhat.io returned HTTP 502/503 errors during 14:42-14:53 UTC window),
+    preventing operator bundle image pulls. Registry infrastructure issue, not product
+    bug. Retrying with fresh build.'
 issues:
 - issue: 'Candidate build 4.21.0-0.nightly-2026-05-27-093820 has critical test failure:
     Case 10662 (Security Context Constraint - MustRunAsNonRoot enforcement) failed
