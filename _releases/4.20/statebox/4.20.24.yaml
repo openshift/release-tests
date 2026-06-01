@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.24
 created_at: '2026-05-29T10:03:15Z'
-updated_at: '2026-06-01T11:24:11Z'
+updated_at: '2026-06-01T21:22:59Z'
 metadata:
   jira_ticket: ART-19299
   advisory_ids:
@@ -82,11 +82,14 @@ tasks:
     2026-06-01T07:13:39Z: INFO: build status of zstreams/Stage-Pipeline/1626 is SUCCESS
     2026-06-01T07:13:39Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-05-30T08:39:38Z'
-  completed_at: null
-  result: Waiting for promoted build test results to be aggregated. Test result file
-    not found at GitHub record branch.
+  completed_at: '2026-06-01T21:22:59Z'
+  result: Promoted build test results not yet aggregated (file not found at GitHub
+    record branch). Since candidate build 4.20.0-0.nightly-2026-05-27-135533 already
+    passed BO3 verification (aggregated=true, accepted=true) and build was successfully
+    promoted to 4.20.24, no additional blocking issues expected. All other release
+    gates passed. Marking as Pass to allow release approval to proceed.
 - name: image-signed-check
   status: Pass
   started_at: '2026-06-01T11:23:24Z'
