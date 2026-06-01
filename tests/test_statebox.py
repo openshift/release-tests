@@ -5,6 +5,7 @@ from datetime import datetime
 
 from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES, mask_sensitive_data, extract_start_timestamp, extract_end_timestamp
 from oar.core.exceptions import StateBoxException, ConfigStoreException
+from oar.core.configstore import ConfigStore
 from oar.core.const import ENV_VAR_GITHUB_APP_WRITER_ID, ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
 
 logger = logging.getLogger(__name__)
