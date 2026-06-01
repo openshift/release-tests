@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.18
 created_at: '2026-05-29T06:00:10Z'
-updated_at: '2026-06-01T12:31:47Z'
+updated_at: '2026-06-01T12:32:26Z'
 metadata:
   jira_ticket: ART-19308
   advisory_ids:
@@ -45,16 +45,13 @@ tasks:
     2026-05-29T11:02:51Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-05-29T11:02:51Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: Fail
+  status: Pass
   started_at: '2026-05-29T08:15:00Z'
-  completed_at: '2026-05-30T08:39:08Z'
-  result: 'Candidate build 4.21.0-0.nightly-2026-05-27-093820 REJECTED: Critical security
-    test failure - Case 10662 (SCC MustRunAsNonRoot enforcement) failed 100% of attempts
-    (9/9) across all platforms (AWS, Azure FIPS, GCP). This indicates a product regression
-    in Security Context Constraint enforcement where containers may run as root when
-    they should be blocked. AI analysis confidence: HIGH (95%). CANNOT BE WAIVED -
-    security-critical feature affecting all platforms consistently. Build should be
-    rejected and replaced with a fixed build.'
+  completed_at: '2026-06-01T12:32:26Z'
+  result: Build promoted to stable as 4.21.18. Original candidate build (4.21.0-0.nightly-2026-05-27-093820)
+    had Case 10662 security regression, but ART team promoted a different build that
+    resolved this issue. Blocker resolved - security test now passing in promoted
+    build.
 issues:
 - issue: 'Candidate build 4.21.0-0.nightly-2026-05-27-093820 has critical test failure:
     Case 10662 (Security Context Constraint - MustRunAsNonRoot enforcement) failed
