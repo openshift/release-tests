@@ -1,18 +1,25 @@
+import logging
 import os
 import re
 import time
 
 import click
-from github import Github
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
+from oar.core.const import (
+    ENV_VAR_GITHUB_APP_WRITER_ID,
+    ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+)
+from oar.core.github_app import GitHubApp
+
+logger = logging.getLogger(__name__)
+
 
 class TestResultChecker:
-    def __init__(self, github_token, repo_name, slack_token, slack_channel, notified_file_path,
+    def __init__(self, repo, slack_token, slack_channel, notified_file_path,
                  limit=5, path="_releases", branch="record"):
-        self.github = Github(github_token)
-        self.repo = self.github.get_repo(repo_name)
+        self.repo = repo
         self.slack_client = WebClient(token=slack_token)
         self.slack_channel = slack_channel
         self.notified_file_path = notified_file_path
@@ -95,6 +102,28 @@ class TestResultChecker:
             print(f"Error sending Slack notification: {e}")
 
 
+def _github_repo(repo_name: str):
+    app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
+    private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
+    if not app_id or not private_key_path:
+        raise click.ClickException(
+            f"{ENV_VAR_GITHUB_APP_WRITER_ID} and "
+            f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} must be set."
+        )
+    try:
+        owner, repo = repo_name.split("/", 1)
+    except ValueError as e:
+        raise click.ClickException(
+            f"--repo-name must be in owner/repo format, got {repo_name!r}"
+        ) from e
+    try:
+        github = GitHubApp(app_id, private_key_path).client_for_repo(owner, repo)
+        return github.get_repo(repo_name)
+    except Exception as e:
+        logger.error("Failed to initialize GitHub App Writer (%s)", type(e).__name__)
+        raise click.ClickException("Failed to initialize GitHub App Writer client.") from e
+
+
 @click.command()
 @click.option('--repo-name', required=True, help='Name of the GitHub repository in the format "owner/repo"')
 @click.option('--slack-channel', required=True, help='Name of the Slack channel to send notifications to')
@@ -104,15 +133,13 @@ class TestResultChecker:
 @click.option('--branch', default="record", help='Branch in the GitHub repository where test result files are located')
 def main(repo_name, slack_channel, notified_file_path,
          limit, path, branch):
-    github_token = os.getenv('GITHUB_TOKEN')
     slack_token = os.getenv('SLACK_BOT_TOKEN')
 
-    if not github_token:
-        raise click.ClickException("GITHUB_TOKEN environment variable is not set.")
     if not slack_token:
-        raise click.ClickException("SLACK_TOKEN environment variable is not set.")
+        raise click.ClickException("SLACK_BOT_TOKEN environment variable is not set.")
 
-    checker = TestResultChecker(github_token, repo_name, slack_token, slack_channel, notified_file_path,
+    repo = _github_repo(repo_name)
+    checker = TestResultChecker(repo, slack_token, slack_channel, notified_file_path,
                                 limit, path, branch)
     checker.iterate_test_result_files()
 

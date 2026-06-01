@@ -1,9 +1,14 @@
 import json
+import logging
 import os
 
 import pandas as pd
 import streamlit as st
-from github import Github, Auth
+
+from oar.core.const import ENV_VAR_GITHUB_APP_WRITER_ID, ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
+from oar.core.github_app import GitHubApp
+
+logger = logging.getLogger(__name__)
 
 # Define the github access variables
 repository_owner = 'openshift'
@@ -11,15 +16,29 @@ repository_name = 'release-tests'
 directory_path = '_releases'
 branch_name = 'record'
 
-# Read the GitHub token from a system environment variable
-github_token = os.environ.get('GITHUB_TOKEN')
-if not github_token:
-    st.warning("Oops, ENV VAR GITHUB_TOKEN NOT FOUND")
+# Read the GitHub App credentials from environment variables
+github_app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
+github_app_private_key = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
+if not github_app_id or not github_app_private_key:
+    st.warning(
+        f"Oops, ENV VAR {ENV_VAR_GITHUB_APP_WRITER_ID} or "
+        f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} NOT FOUND"
+    )
     st.stop()
 
-
-# Create a GitHub instance with the token
-gh = Github(auth=Auth.Token(github_token))
+# Create a GitHub instance with the App installation token
+try:
+    gh = GitHubApp(github_app_id, github_app_private_key).client_for_repo(
+        repository_owner, repository_name)
+except Exception:
+    logger.exception("Failed to initialize GitHub App client")
+    st.error(
+        "Failed to initialize GitHub App client. "
+        f"Please check `{ENV_VAR_GITHUB_APP_WRITER_ID}` and "
+        f"`{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY}` "
+        "and verify the app is installed on `openshift/release-tests`."
+    )
+    st.stop()
 
 # Get the repository object
 repo = gh.get_repo(f'{repository_owner}/{repository_name}')

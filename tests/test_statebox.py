@@ -5,7 +5,7 @@ from datetime import datetime
 
 from oar.core.statebox import StateBox, SCHEMA_VERSION, DEFAULT_TASK_STATUS, VALID_TASK_STATUSES, mask_sensitive_data, extract_start_timestamp, extract_end_timestamp
 from oar.core.exceptions import StateBoxException, ConfigStoreException
-from oar.core.configstore import ConfigStore
+from oar.core.const import ENV_VAR_GITHUB_APP_WRITER_ID, ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
 
 logger = logging.getLogger(__name__)
 
@@ -15,18 +15,22 @@ class TestStateBox(unittest.TestCase):
     Integration tests for StateBox GitHub-backed state management.
 
     These tests perform real GitHub operations against the z-stream branch.
-    Requires GITHUB_TOKEN environment variable to be set.
+    Requires GITHUB_APP_WRITER_ID and GITHUB_APP_WRITER_PRIVATE_KEY to be set.
 
     Uses a dummy release version for testing and cleans up after each test.
     """
 
     @classmethod
     def setUpClass(cls):
-        """Validate environment and skip tests if GITHUB_TOKEN not found"""
-        cls.github_token = os.environ.get("GITHUB_TOKEN")
+        """Validate environment and skip tests if GitHub App Writer credentials not found"""
+        cls.writer_app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
+        cls.writer_private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
 
-        if not cls.github_token:
-            raise unittest.SkipTest("GITHUB_TOKEN not found in environment. Skipping StateBox integration tests.")
+        if not cls.writer_app_id or not cls.writer_private_key_path:
+            raise unittest.SkipTest(
+                f"{ENV_VAR_GITHUB_APP_WRITER_ID} or {ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} "
+                "not found in environment. Skipping StateBox integration tests."
+            )
 
         # Test configuration
         cls.test_release = "4.20.5"  # Dummy release for testing (4.y.z format)
@@ -45,7 +49,6 @@ class TestStateBox(unittest.TestCase):
             self.configstore,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
 
     def tearDown(self):
@@ -118,7 +121,6 @@ class TestStateBox(unittest.TestCase):
             dummy_configstore,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
 
         state = dummy_statebox.load()
@@ -144,7 +146,6 @@ class TestStateBox(unittest.TestCase):
                 invalid_configstore,
                 repo_name=self.repo_name,
                 branch=self.branch,
-                github_token=self.github_token
             )
 
         # Verify the error message indicates download failed
@@ -622,7 +623,6 @@ class TestStateBox(unittest.TestCase):
         cm_configstore = ConfigStore(self.test_release)
         with StateBox(
             cm_configstore,
-            github_token=self.github_token
         ) as statebox:
             self.assertIsNotNone(statebox)
             self.assertEqual(statebox.release, self.test_release)
@@ -645,13 +645,11 @@ class TestStateBox(unittest.TestCase):
             cs1,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
         statebox2 = StateBox(
             cs2,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
 
         # Both load the same initial state
@@ -690,13 +688,11 @@ class TestStateBox(unittest.TestCase):
             cs1,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
         statebox2 = StateBox(
             cs2,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
 
         # Instance 1 updates image-consistency-check (use valid task names)
@@ -732,13 +728,11 @@ class TestStateBox(unittest.TestCase):
             cs1,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
         statebox2 = StateBox(
             cs2,
             repo_name=self.repo_name,
             branch=self.branch,
-            github_token=self.github_token
         )
 
         # Instance 1 adds issue1

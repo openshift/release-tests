@@ -12,8 +12,13 @@ from subprocess import CalledProcessError
 import click
 import requests
 import yaml
-from github import Auth, Github
 from github.GithubException import UnknownObjectException, GithubException
+
+from oar.core.const import (
+    ENV_VAR_GITHUB_APP_WRITER_ID,
+    ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+)
+from .github_auth import REPO_OPENSHIFT_RELEASE, REPO_RELEASE_TESTS, github_client_for_repo
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException
 from semver import VersionInfo
@@ -27,16 +32,23 @@ logger = logging.getLogger(__name__)
 # declare global constants
 JOB_TYPE_NIGHTLY = "nightly"
 JOB_TYPE_STABLE = "stable"
-REPO_RELEASE_TESTS = "openshift/release-tests"
 BRANCH_RECORD = "record"
 DIR_RELEASE = "_releases"
-SYS_ENV_VAR_GITHUB_TOKEN = "GITHUB_TOKEN"
+SYS_ENV_VAR_GITHUB_APP_WRITER_ID = ENV_VAR_GITHUB_APP_WRITER_ID
+SYS_ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY = ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
 SYS_ENV_VAR_API_TOKEN = "APITOKEN"
 SYS_ENV_VAR_GCS_CRED_FILE = "GCS_CRED_FILE"
 REQUIRED_ENV_VARS_FOR_CONTROLLER = [
-    SYS_ENV_VAR_GITHUB_TOKEN, SYS_ENV_VAR_API_TOKEN]
+    SYS_ENV_VAR_GITHUB_APP_WRITER_ID,
+    SYS_ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    SYS_ENV_VAR_API_TOKEN,
+]
 REQUIRED_ENV_VARS_FOR_AGGREGATOR = [
-    SYS_ENV_VAR_GITHUB_TOKEN, SYS_ENV_VAR_API_TOKEN, SYS_ENV_VAR_GCS_CRED_FILE]
+    SYS_ENV_VAR_GITHUB_APP_WRITER_ID,
+    SYS_ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    SYS_ENV_VAR_API_TOKEN,
+    SYS_ENV_VAR_GCS_CRED_FILE,
+]
 
 
 def create_session() -> requests.Session:
@@ -414,13 +426,19 @@ class JobController:
 class GithubUtil:
 
     def __init__(self, repo, branch="main"):
-        token = os.environ.get("GITHUB_TOKEN")
-        auth = Auth.Token(token)
-        self._client = Github(auth=auth)
+        if repo not in (REPO_RELEASE_TESTS, REPO_OPENSHIFT_RELEASE):
+            raise ValueError(
+                f"GithubUtil supports {REPO_RELEASE_TESTS} and {REPO_OPENSHIFT_RELEASE}, "
+                f"got {repo}"
+            )
+        self._repo_name = repo
+        self._client = github_client_for_repo(repo)
         self._repo = self._client.get_repo(repo)
         self._branch = branch
 
     def push_file(self, data, path):
+        if self._repo_name != REPO_RELEASE_TESTS:
+            raise ValueError(f"push_file is only supported for {REPO_RELEASE_TESTS}")
         if isinstance(data, dict):
             data = json.dumps(data, indent=2)
         if self.file_exists(path):
@@ -462,6 +480,8 @@ class GithubUtil:
             return False
 
     def delete_file(self, path):
+        if self._repo_name != REPO_RELEASE_TESTS:
+            raise ValueError(f"delete_file is only supported for {REPO_RELEASE_TESTS}")
         if self.file_exists(path):
             content = self._repo.get_contents(path=path, ref=self._branch)
             logger.info(f"Deleting file {path}")
@@ -1048,7 +1068,10 @@ def start_aggregator(arch):
 @click.option("--arch", help="architecture used to filter test result", default=Architectures.AMD64, type=click.Choice(Architectures.VALID_ARCHS))
 @click.option("--build", help="build version e.g. 4.16.20", required=True)
 def promote_test_results(arch, build):
-    validate_environment([SYS_ENV_VAR_GITHUB_TOKEN])
+    validate_environment([
+        SYS_ENV_VAR_GITHUB_APP_WRITER_ID,
+        SYS_ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    ])
     TestResultAggregator(arch).promote_test_results_for_build(build)
 
 
@@ -1059,7 +1082,10 @@ def promote_test_results(arch, build):
 @click.option("--current-job-id", help="current job run id", required=True)
 @click.option("--new-job-id", help="new job run id used to replace current job id", required=True)
 def update_retried_job_run(arch, build, job_name, current_job_id, new_job_id):
-    validate_environment([SYS_ENV_VAR_GITHUB_TOKEN])
+    validate_environment([
+        SYS_ENV_VAR_GITHUB_APP_WRITER_ID,
+        SYS_ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    ])
     TestResultAggregator(arch).update_retried_job_run(
         build, job_name, current_job_id, new_job_id)
 
