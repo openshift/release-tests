@@ -85,7 +85,8 @@ jobctl start-controller -r <release> --nightly --arch <architecture>
 - `GithubUtil` - Handles file operations in the GitHub repository
 
 **Environment Variables Required:**
-- `GITHUB_TOKEN` - GitHub authentication
+- `GITHUB_APP_WRITER_ID` - ERT Writer GitHub App ID (`openshift/release-tests`)
+- `GITHUB_APP_WRITER_PRIVATE_KEY` - Path to Writer App private key `.pem` file
 - `APITOKEN` - Prow/Gangway API authentication
 
 ---
@@ -122,7 +123,7 @@ jobctl start-aggregator --arch <architecture>
 - `Artifacts` - Fetches test reports from GCS
 
 **Environment Variables Required:**
-- `GITHUB_TOKEN` - GitHub authentication
+- `GITHUB_APP_WRITER_ID` / `GITHUB_APP_WRITER_PRIVATE_KEY` - Writer GitHub App for `openshift/release-tests`
 - `APITOKEN` - Prow/Gangway API authentication
 - `GCS_CRED_FILE` - Google Cloud Storage credentials for artifact access
 
@@ -248,7 +249,7 @@ python tools/auto_release_test_result_checker.py \
 - File tracking system to avoid duplicate notifications
 
 **Environment Variables Required:**
-- `GITHUB_TOKEN` - GitHub authentication
+- `GITHUB_APP_WRITER_ID` / `GITHUB_APP_WRITER_PRIVATE_KEY` - Writer GitHub App for `openshift/release-tests`
 - `SLACK_BOT_TOKEN` - Slack bot token
 
 **Options:**
@@ -296,19 +297,23 @@ pip3 install -e .
 
 **Release Detector:**
 - All OAR CLI environment variables (calls `create-test-report` command)
-- **GITHUB_TOKEN** - GitHub personal access token for monitoring repository file changes
+- No GitHub token required (uses public raw.githubusercontent.com URL)
+
+**OAR / StateBox / Release Discovery:**
+- **GITHUB_APP_WRITER_ID** / **GITHUB_APP_WRITER_PRIVATE_KEY** - Writer GitHub App for `openshift/release-tests`
 
 **Job Controller:**
-- **GITHUB_TOKEN** - GitHub personal access token for repository operations
+- **GITHUB_APP_WRITER_ID** / **GITHUB_APP_WRITER_PRIVATE_KEY** - Writer GitHub App for `openshift/release-tests`
 - **APITOKEN** - Prow/Gangway API token for triggering test jobs
 
 **Test Result Aggregator:**
-- **GITHUB_TOKEN** - GitHub personal access token for repository operations
+- **GITHUB_APP_WRITER_ID** / **GITHUB_APP_WRITER_PRIVATE_KEY** - Writer GitHub App for `openshift/release-tests`
 - **APITOKEN** - Prow/Gangway API token for triggering test jobs
 - **GCS_CRED_FILE** - Google Cloud Storage credentials file path for test artifact access
 
 **Jira Notificator:**
 - **JIRA_TOKEN** - Jira personal access token for API access
+- **GITHUB_APP_READER_ID** / **GITHUB_APP_READER_PRIVATE_KEY** - Reader GitHub App for PR label checks
 - **Kerberos ticket** - For LDAP manager lookup
 
 **Slack Message Receiver (Release Bot):**
@@ -317,7 +322,7 @@ pip3 install -e .
 - All OAR CLI environment variables (executes OAR commands)
 
 **Test Result Checker:**
-- **GITHUB_TOKEN** - GitHub personal access token for repository operations
+- **GITHUB_APP_WRITER_ID** / **GITHUB_APP_WRITER_PRIVATE_KEY** - Writer GitHub App for `openshift/release-tests`
 - **SLACK_BOT_TOKEN** - Slack bot token for sending notifications
 
 **Note:** `OAR_SLACK_CHANNEL` and `OAR_SLACK_THREAD` are set internally by the Slack bot when executing commands and should not be configured manually by users.
@@ -1018,9 +1023,9 @@ See individual agent sections above for specific environment variables required.
 - **Solution:** Renew your Kerberos ticket: `kinit $kid@$domain`
 - **Verify:** Check ticket status with `klist`
 
-**Problem:** GitHub token permissions insufficient
-- **Solution:** Ensure token has `repo` scope for private repositories
-- **Verify:** Test with `gh auth status`
+**Problem:** GitHub App credentials missing or invalid
+- **Solution:** Set `GITHUB_APP_WRITER_ID` / `GITHUB_APP_WRITER_PRIVATE_KEY` (and Reader vars if needed); ensure `.pem` path is valid and the app is installed on the target repo
+- **Verify:** Check env vars with `env | grep GITHUB_APP`; confirm app installation on `openshift/release-tests` or `openshift/release`
 
 #### Agent-Specific Issues
 

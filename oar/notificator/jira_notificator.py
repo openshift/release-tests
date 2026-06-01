@@ -9,7 +9,8 @@ from jira import JIRA, Issue
 from jira.resources import User
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
-from github import Auth, Github
+from oar.core.const import ENV_VAR_GITHUB_APP_READER_ID, ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY
+from oar.core.github_app import GitHubApp
 from oar.core.jira import JiraIssue
 from oar.core.ldap import LdapHelper
 
@@ -30,6 +31,7 @@ class NotificationType(Enum):
     REPORTER = (24, "Reporter Action Request")
 
     def __init__(self, hours: int, label: str):
+        """Set escalation threshold in weekday hours and notification label."""
         self.hours = hours
         self.label = label
 
@@ -57,6 +59,12 @@ class Notification:
     text: str
 
     def __init__(self, issue, type, text):
+        """
+        Args:
+            issue: Jira issue for the notification.
+            type: Notification type.
+            text: Comment body text.
+        """
         self.issue = issue
         self.type = type
         self.text = text
@@ -71,11 +79,60 @@ class NotificationService:
     """
     
     def __init__(self, jira, dry_run=False):
+        """
+        Args:
+            jira: JIRA API client instance.
+            dry_run: If True, log notifications without posting Jira comments.
+        """
         self.jira = jira
         self.dry_run = dry_run
         self.ldap = LdapHelper()
-        github_token = os.environ.get("GITHUB_TOKEN", "")
-        self.github = Github(auth=Auth.Token(github_token)) if github_token else None
+        self._github_app = self._init_github_app()
+
+    def _init_github_app(self) -> GitHubApp | None:
+        """
+        Create GitHub App Reader client from environment variables.
+
+        Returns:
+            GitHubApp instance, or None if credentials are missing or initialization fails.
+        """
+        app_id = os.environ.get(ENV_VAR_GITHUB_APP_READER_ID)
+        private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY)
+        if not app_id or not private_key_path:
+            return None
+        try:
+            return GitHubApp(app_id, private_key_path)
+        except Exception as e:
+            logger.error(
+                "Failed to initialize GitHub App Reader (%s)",
+                type(e).__name__,
+            )
+            return None
+
+    def _github_client_for_repo(self, org: str, repo: str):
+        """
+        Return a PyGithub client for a linked PR repository.
+
+        Args:
+            org: GitHub org (e.g. ``openshift``).
+            repo: Repository name from the PR URL.
+
+        Returns:
+            Installation-scoped ``Github`` client, or None if the app is unavailable
+            or not installed on the repository.
+        """
+        if not self._github_app:
+            return None
+        try:
+            return self._github_app.client_for_repo(org, repo)
+        except Exception as e:
+            logger.warning(
+                "Failed to get GitHub client for %s/%s (%s)",
+                org,
+                repo,
+                type(e).__name__,
+            )
+            return None
 
     def get_user_email(self, user: User) -> Optional[str]:
         """
@@ -688,8 +745,11 @@ class NotificationService:
         Returns:
             bool: True if all valid PRs are pre-merge verified, False otherwise.
         """
-        if not self.github:
-            logger.warning("GITHUB_TOKEN not set, skipping pre-merge verification check.")
+        if not self._github_app:
+            logger.warning(
+                f"{ENV_VAR_GITHUB_APP_READER_ID} or {ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY} "
+                "not set, skipping pre-merge verification check."
+            )
             return False
 
         try:
@@ -710,7 +770,10 @@ class NotificationService:
 
         for url, org, repo, pr_number in valid_prs:
             try:
-                pr = self.github.get_repo(f"{org}/{repo}").get_pull(pr_number)
+                github = self._github_client_for_repo(org, repo)
+                if not github:
+                    return False
+                pr = github.get_repo(f"{org}/{repo}").get_pull(pr_number)
                 labels = {label.name for label in pr.get_labels()}
                 if "verified-later" in labels:
                     logger.info(f"Issue {issue.key} PR {url} has 'verified-later' label, post-merge verification needed.")
