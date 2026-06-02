@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.43
 created_at: '2026-05-29T07:00:23Z'
-updated_at: '2026-06-02T05:14:29Z'
+updated_at: '2026-06-02T05:15:54Z'
 metadata:
   jira_ticket: ART-19298
   advisory_ids:
@@ -83,4 +83,15 @@ tasks:
   result: 'Promoted build 4.18.43 test results: All 3 blocking upgrade tests passed
     (aggregated: true, accepted: true). One job required retries (4.17->4.18 upgrade)
     but passed after retry. All upgrade scenarios validated successfully.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-06-02T05:15:27Z'
+  completed_at: '2026-06-02T05:15:53Z'
+  result: |-
+    2026-06-02T05:15:27Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-06-02T05:15:27Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.43
+    2026-06-02T05:15:28Z: INFO: Image Digest: sha256:27eafee2d15ebe7d66cf14aeefbb79f91512669ecee1facf3ee5f06019dca651
+    2026-06-02T05:15:28Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=27eafee2d15ebe7d66cf14aeefbb79f91512669ecee1facf3ee5f06019dca651/signature-1
+    2026-06-02T05:15:53Z: INFO: Signature check PASSED
+    2026-06-02T05:15:53Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
