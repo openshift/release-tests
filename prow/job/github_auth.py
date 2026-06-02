@@ -5,13 +5,13 @@ import sys
 
 from github import Github
 
-from oar.core.const import (
-    ENV_VAR_GITHUB_APP_READER_ID,
-    ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY,
-    ENV_VAR_GITHUB_APP_WRITER_ID,
-    ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
-)
-from oar.core.github_app import GitHubApp
+from .github_app import GitHubApp
+
+# Keep prow/job installable as a standalone package (do not depend on oar.*).
+ENV_VAR_GITHUB_APP_WRITER_ID = "GITHUB_APP_WRITER_ID"
+ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY = "GITHUB_APP_WRITER_PRIVATE_KEY"
+ENV_VAR_GITHUB_APP_READER_ID = "GITHUB_APP_READER_ID"
+ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY = "GITHUB_APP_READER_PRIVATE_KEY"
 
 OPENSHIFT_OWNER = "openshift"
 RELEASE_REPO = "release"
