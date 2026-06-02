@@ -14,11 +14,13 @@ import requests
 import yaml
 from github.GithubException import UnknownObjectException, GithubException
 
-from oar.core.const import (
+from .github_auth import (
     ENV_VAR_GITHUB_APP_WRITER_ID,
     ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    REPO_OPENSHIFT_RELEASE,
+    REPO_RELEASE_TESTS,
+    github_client_for_repo,
 )
-from .github_auth import REPO_OPENSHIFT_RELEASE, REPO_RELEASE_TESTS, github_client_for_repo
 from requests.adapters import HTTPAdapter
 from requests.exceptions import RequestException
 from semver import VersionInfo
