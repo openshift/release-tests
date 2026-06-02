@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.43
 created_at: '2026-05-29T07:00:23Z'
-updated_at: '2026-06-02T05:00:00Z'
+updated_at: '2026-06-02T05:14:29Z'
 metadata:
   jira_ticket: ART-19298
   advisory_ids:
@@ -62,14 +62,13 @@ tasks:
     2026-06-02T04:44:52Z: INFO: Added image health summary to MR 550
     2026-06-02T04:44:52Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-06-02T04:59:58Z'
-  completed_at: null
-  result: |-
-    2026-06-02T04:59:58Z: INFO: Initialized StateBox for release 4.18.43 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.43.yaml
-    2026-06-02T04:59:58Z: INFO: job id is not set, will trigger stage testing
-    2026-06-02T04:59:59Z: INFO: Loaded state from _releases/4.18/statebox/4.18.43.yaml (SHA: eeea9d5a)
-    2026-06-02T04:59:59Z: INFO: stage testing already triggered and in progress, no need to trigger again
+  completed_at: '2026-06-02T05:14:29Z'
+  result: 'Stage-Pipeline job #1625 completed successfully. All child jobs passed:
+    Flexy-install #375581 (cluster provisioning), 7 Runner jobs (Cucumber tests),
+    2 ginkgo-test jobs (#299352 normal, #299354 disruptive), and Flexy-destroy #390966
+    (cleanup). Job URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1625/'
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-06-01T20:50:11Z'
