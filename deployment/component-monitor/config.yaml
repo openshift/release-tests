@@ -3,7 +3,7 @@ components:
   - component_slug: "errata-reliability"
     sub_component_slug: "mcp-server"
     http_monitor:
-      url: "http://10.0.76.71:8000/health"
+      url: "http://localhost:8000/health" #Use localhost because component-monitor and mcp-server runs on the same server
       code: 200
       retry_after: 5s
       severity: "Down"
