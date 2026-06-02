@@ -38,13 +38,64 @@
           "jobStartTime": "2026-06-02T18:34:23Z",
           "jobID": "3c46352e-abe0-4944-9d69-a4993fe15f84",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2061879156731285504",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-02T21:22:51Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+                "[sig-network-edge] Network_Edge Component_ALBO Author:hongli-ROSA-OSD_CCS-ConnectedOnly-LEVEL0-High-51189-Install aws-load-balancer-operator and controller [Serial]",
+                "[sig-network-edge] Network_Edge Component_ExtDNS Author:hongli-ConnectedOnly-ROSA-OSD_CCS-LEVEL0-High-48138-Support External DNS on AWS platform"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-06-02T18:34:38Z",
           "jobID": "bda55bbe-52ec-4231-aefd-b29f55e84a71",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2061879188633161728",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-02T21:24:26Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-network-edge] Network_Edge Component_ALBO Author:hongli-ROSA-OSD_CCS-ConnectedOnly-LEVEL0-High-51189-Install aws-load-balancer-operator and controller [Serial]",
+                "[sig-network-edge] Network_Edge Component_ExtDNS Author:hongli-ConnectedOnly-ROSA-OSD_CCS-LEVEL0-High-48138-Support External DNS on AWS platform"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -92,7 +143,28 @@
           "jobStartTime": "2026-06-02T18:34:57Z",
           "jobID": "a2c46a64-fd2c-48da-848f-014f97e5a5c1",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2061879255993683968",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-06-02T21:25:48Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 33
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -174,5 +246,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-06-02-080317",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-06-02-080317"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
