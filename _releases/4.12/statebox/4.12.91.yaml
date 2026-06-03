@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.91
 created_at: '2026-05-29T07:00:05Z'
-updated_at: '2026-06-03T18:29:05Z'
+updated_at: '2026-06-03T19:21:42Z'
 metadata:
   jira_ticket: ART-19300
   advisory_ids:
@@ -96,6 +96,25 @@ tasks:
     2026-06-03T18:28:26Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=3701cb0c9cd5c3123709a9ec33af15b4c6fe414f62b316a27cbbc07f5857a869/signature-1
     2026-06-03T18:29:04Z: INFO: Signature check PASSED
     2026-06-03T18:29:04Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-06-03T19:21:24Z'
+  completed_at: null
+  result: |-
+    2026-06-03T19:21:24Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-06-03T19:21:27Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-06-03T19:21:28Z: INFO: RHCOS nvr is rhcos-x86_64-412.86.202605271418-0
+    2026-06-03T19:21:28Z: INFO: The commit metadata is kernel-4.18.0-372.194.1.el8_6
+    2026-06-03T19:21:28Z: INFO: Tags of this build is [{'arches': '', 'id': 85369, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-8.6.0-z-candidate', 'perm': 'rhel8-gate', 'perm_id': 65}, {'arches': '', 'id': 106214, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.12-rhel-8-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 188811, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:21694-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-06-03T19:21:28Z: INFO: Successfully approved MR 552
+    2026-06-03T19:21:28Z: INFO: Successfully added QE approval to MR 552
+    2026-06-03T19:21:30Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:21696
+    2026-06-03T19:21:40Z: INFO: The metadata url is not accessible
+    2026-06-03T19:21:40Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-06-03T19:21:40Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-06-03T19:21:40Z: INFO: Background metadata checker process started (PID: 323082) - running independently after parent exit
+    2026-06-03T19:21:40Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.12_20260603_152140.log
+    2026-06-03T19:21:41Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'stage-testing Jenkins job #1628 failed due to PolarShift API timeout - infrastructure
     issue, no tests executed'
