@@ -94,7 +94,7 @@ def load_test_results(release='4.12'):
         path=directory_path, ref=branch_name)
     table_data = []
     for file in directory_contents:
-        if file.name.startswith('ocp-test-result') and release in file.name:
+        if file.name.startswith('ocp-test-result') and f'-{release}.' in file.name:
             try:
                 file_content = json.loads(file.decoded_content.decode('utf-8'))
                 job_summary, job_links = get_col_test_summary(file_content)
