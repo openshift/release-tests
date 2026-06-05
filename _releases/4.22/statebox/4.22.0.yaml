@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0
 created_at: '2026-06-04T23:03:11Z'
-updated_at: '2026-06-05T14:10:37Z'
+updated_at: '2026-06-05T14:16:21Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -72,10 +72,11 @@ tasks:
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-06-05T14:03:46Z'
-  completed_at: '2026-06-05T14:10:37Z'
-  result: 'Build 4.22.0 manually promoted to GA (manual_promotion=true). QE blocking
-    tests: 2/3 jobs passed (AWS upgrade ✓, Azure FIPS upgrade ✓, GCP upgrade BO3 failed
-    1/3). Test aggregation incomplete (aggregated=false). Test results: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.22.0-amd64.json'
+  completed_at: '2026-06-05T14:16:21Z'
+  result: 'Build 4.22.0 manually promoted to GA (manual_promotion=true). BO3 verification:
+    1/3 success, but 2/3 failures were infrastructure issues (attempt 1: GCP quota
+    exceeded, attempt 3: ReportPortal upload timeout - tests passed). Attempt 2 succeeded.
+    QE blocking tests functionally passed. Test results: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-4.22.0-amd64.json'
 - name: image-signed-check
   status: Pass
   started_at: '2026-06-05T14:04:02Z'
