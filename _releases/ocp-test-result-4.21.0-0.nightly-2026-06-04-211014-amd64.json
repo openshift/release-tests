@@ -132,7 +132,31 @@
           "jobStartTime": "2026-06-05T06:32:23Z",
           "jobID": "9c383c9b-7dbc-49a5-8bd8-477f32123050",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-azure-ipi-fips-f999/2062784582071095296",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-05T10:32:22Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 33,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-06-05T06:32:23Z",
