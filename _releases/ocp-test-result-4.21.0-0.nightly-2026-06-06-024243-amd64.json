@@ -6,9 +6,47 @@
         "jobStartTime": "2026-06-06T08:39:15Z",
         "jobID": "186480f4-72b9-4b7e-9d50-5ae23f70be9b",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-f999/2063178896626421760",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-06-06T13:18:59Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-auth] Authentication Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy",
+              "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 17,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-06-06T13:35:09Z",
+          "jobID": "2d0e4b6e-4269-4d75-81e0-06fd720a8670",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-f999/2063253361859235840",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-06-06T13:35:14Z",
+          "jobID": "f5479776-1b11-4c12-a802-5fd50bf97485",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-f999/2063253383367626752",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-azure-ipi-fips-f999",
