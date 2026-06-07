@@ -37,7 +37,32 @@
           "jobStartTime": "2026-06-07T12:30:09Z",
           "jobID": "af3ff3c7-bdb2-44b9-bb30-9f1eab264615",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-f999/2063599393239470080",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-07T17:41:37Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 24,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy",
+                "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-06-07T12:30:14Z",
@@ -310,5 +335,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.21.0-0.nightly-2026-06-06-232107",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.21.0-0.nightly-2026-06-06-232107"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
