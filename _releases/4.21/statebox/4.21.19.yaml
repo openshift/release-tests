@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.19
 created_at: '2026-06-04T14:00:25Z'
-updated_at: '2026-06-08T06:52:51Z'
+updated_at: '2026-06-08T06:53:32Z'
 metadata:
   jira_ticket: ART-19506
   advisory_ids:
@@ -46,15 +46,16 @@ tasks:
     2026-06-05T08:00:12Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
-  started_at: '2026-06-05T08:04:24Z'
+  started_at: '2026-06-08T06:53:25Z'
   completed_at: null
   result: |-
-    2026-06-05T08:04:24Z: INFO: Initialized StateBox for release 4.21.19 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.19.yaml
-    2026-06-05T08:04:25Z: INFO: Loaded state from _releases/4.21/statebox/4.21.19.yaml (SHA: 28a73bf7)
-    2026-06-05T08:04:25Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-06-05T08:04:30Z: INFO: Triggered image consistency check Prow job: 1e68ceab-02da-4248-a721-c308af501d4d
-    2026-06-05T08:04:30Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2062808724732383232
-    2026-06-05T08:04:32Z: INFO: sent slack message to <#team-qe-release>
+    2026-06-08T06:53:25Z: INFO: Initialized StateBox for release 4.21.19 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.19.yaml
+    2026-06-08T06:53:25Z: INFO: Loaded state from _releases/4.21/statebox/4.21.19.yaml (SHA: c71f2091)
+    2026-06-08T06:53:25Z: INFO: Prow job 1e68ceab-02da-4248-a721-c308af501d4d ended with state '', re-triggering
+    2026-06-08T06:53:25Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-06-08T06:53:30Z: INFO: Triggered image consistency check Prow job: 61d8f0b6-c117-4650-9945-bc22aaa4803a
+    2026-06-08T06:53:30Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2063878067683594240
+    2026-06-08T06:53:31Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
   status: Fail
   started_at: '2026-06-05T08:04:47Z'
