@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.0
 created_at: '2026-01-29T06:43:26Z'
-updated_at: '2026-06-08T16:11:07Z'
+updated_at: '2026-02-03T12:40:05Z'
 metadata:
   jira_ticket: ART-14107
   advisory_ids:
@@ -158,17 +158,4 @@ tasks:
     \ success (no retries needed)  \n- upgrade-from-stable-4.21-gcp-ipi-f999: success\
     \ (no retries needed)\n\nBuild: 4.21.0 (quay.io/openshift-release-dev/ocp-release:4.21.0-x86_64)\n\
     Phase: Accepted\nAggregated: true\nAccepted: true"
-- name: analyze-candidate-build
-  status: Pass
-  started_at: '2026-06-08T16:11:07Z'
-  completed_at: '2026-06-08T16:11:07Z'
-  result: |-
-    Candidate build 4.21.0-0.nightly-2026-06-03-102204 analysis completed:
-    - Test OCP-10662 (Authentication V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy) passed successfully on live cluster built with nightly payload
-    - Test failure in Prow CI is due to test infrastructure issue, not product bug
-    - Root cause: oc process command missing --local flag causing namespace context pollution between concurrent tests
-    - Fix required: Add --local flag in openshift/origin repository (compat otp library)
-    - Successfully reproduced issue locally: test passes without namespace pollution, fails when namespace context polluted with non-existent namespace
-    - Build manually promoted using: jobctl promote-test-results --build 4.21.0-0.nightly-2026-06-03-102204 --arch amd64
-    - Build marked as aggregated=true in test result tracking system
 issues: []
