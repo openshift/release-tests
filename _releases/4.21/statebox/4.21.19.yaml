@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.19
 created_at: '2026-06-04T14:00:25Z'
-updated_at: '2026-06-08T13:29:48Z'
+updated_at: '2026-06-08T13:31:19Z'
 metadata:
   jira_ticket: ART-19506
   advisory_ids:
@@ -73,6 +73,17 @@ tasks:
   started_at: '2026-06-08T09:27:40Z'
   completed_at: '2026-06-08T09:27:40Z'
   result: All blocking tests passed BO3 verification for promoted build 4.21.19
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-06-08T13:30:36Z'
+  completed_at: '2026-06-08T13:31:18Z'
+  result: |-
+    2026-06-08T13:30:36Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-06-08T13:30:36Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.19
+    2026-06-08T13:30:39Z: INFO: Image Digest: sha256:1417c1970881b2a3b8d4baf2bfed9afc8be016ed82a86a2245fe8c683a82ab33
+    2026-06-08T13:30:39Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=1417c1970881b2a3b8d4baf2bfed9afc8be016ed82a86a2245fe8c683a82ab33/signature-1
+    2026-06-08T13:31:18Z: INFO: Signature check PASSED
+    2026-06-08T13:31:18Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: GitLab stage-release pipeline failed (pipeline 15824296, job 53600873) -
     stage-testing cannot be triggered until resolved
