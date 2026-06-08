@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.19
 created_at: '2026-06-04T14:00:25Z'
-updated_at: '2026-06-08T13:31:19Z'
+updated_at: '2026-06-08T16:19:04Z'
 metadata:
   jira_ticket: ART-19506
   advisory_ids:
@@ -84,6 +84,19 @@ tasks:
     2026-06-08T13:30:39Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=1417c1970881b2a3b8d4baf2bfed9afc8be016ed82a86a2245fe8c683a82ab33/signature-1
     2026-06-08T13:31:18Z: INFO: Signature check PASSED
     2026-06-08T13:31:18Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-06-08T16:19:04Z'
+  completed_at: '2026-06-08T16:19:04Z'
+  result: |-
+    Candidate build 4.21.0-0.nightly-2026-06-03-102204 analysis completed:
+    - Test OCP-10662 (Authentication V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy) passed successfully on live cluster built with nightly payload
+    - Test failure in Prow CI is due to test infrastructure issue, not product bug
+    - Root cause: oc process command missing --local flag causing namespace context pollution between concurrent tests
+    - Fix required: Add --local flag in openshift/origin repository (compat otp library)
+    - Successfully reproduced issue locally: test passes without namespace pollution, fails when namespace context polluted with non-existent namespace
+    - Build manually promoted using: jobctl promote-test-results --build 4.21.0-0.nightly-2026-06-03-102204 --arch amd64
+    - Build marked as aggregated=true in test result tracking system
 issues:
 - issue: GitLab stage-release pipeline failed (pipeline 15824296, job 53600873) -
     stage-testing cannot be triggered until resolved
