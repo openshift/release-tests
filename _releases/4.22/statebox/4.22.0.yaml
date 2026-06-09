@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0
 created_at: '2026-06-04T23:03:11Z'
-updated_at: '2026-06-09T10:54:27Z'
+updated_at: '2026-06-09T11:07:11Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -50,16 +50,15 @@ tasks:
     2026-06-05T09:10:45Z: INFO: Added image health summary to MR 562
     2026-06-05T09:10:45Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: Pass
-  started_at: '2026-06-05T07:47:18Z'
-  completed_at: '2026-06-09T10:54:25Z'
+  status: In Progress
+  started_at: '2026-06-09T11:06:32Z'
+  completed_at: null
   result: |-
-    2026-06-09T10:53:51Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-06-09T10:54:24Z: INFO: checking push job status for advisory 164955 ...
-    2026-06-09T10:54:24Z: INFO: push job for target <cdn_stage> is COMPLETE
-    2026-06-09T10:54:25Z: INFO: checking push job status for advisory 164956 ...
-    2026-06-09T10:54:25Z: INFO: push job for target <cdn_stage> is COMPLETE
-    2026-06-09T10:54:25Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+    2026-06-09T11:06:32Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-06-09T11:07:08Z: INFO: checking push job status for advisory 164955 ...
+    2026-06-09T11:07:08Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
+    2026-06-09T11:07:09Z: INFO: checking push job status for advisory 164956 ...
+    2026-06-09T11:07:09Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
 - name: stage-testing
   status: Pass
   started_at: '2026-06-05T07:59:56Z'
