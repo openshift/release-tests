@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0
 created_at: '2026-06-04T23:03:11Z'
-updated_at: '2026-06-09T07:21:28Z'
+updated_at: '2026-06-09T08:52:29Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -89,22 +89,25 @@ tasks:
     2026-06-05T14:04:45Z: INFO: Signature check PASSED
     2026-06-05T14:04:45Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Fail
   started_at: '2026-06-09T07:21:15Z'
-  completed_at: null
+  completed_at: '2026-06-09T08:52:28Z'
   result: |-
-    2026-06-09T07:21:15Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-06-09T07:21:22Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-06-09T07:21:22Z: INFO: RHCOS nvr is rhcos-x86_64-4.22.9.8.202605251451-0
-    2026-06-09T07:21:23Z: INFO: The commit metadata is kernel-5.14.0-687.11.1.el9_8
-    2026-06-09T07:21:23Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 169772, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.8.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179159, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.23-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179436, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.0-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 185273, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:5486-pending', 'perm': 'trusted', 'perm_id': 6}]
-    2026-06-09T07:21:23Z: INFO: User group_143087_bot_e4ed5153eb7e7dfa7eb3d7901a95a6a7 has already approved MR 562
-    2026-06-09T07:21:23Z: INFO: Successfully added QE approval to MR 562
-    2026-06-09T07:21:24Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHEA-2026:0449
-    2026-06-09T07:21:26Z: INFO: The metadata url is not accessible
-    2026-06-09T07:21:26Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-06-09T07:21:26Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-06-09T07:21:26Z: INFO: Background metadata checker process started (PID: 348781) - running independently after parent exit
-    2026-06-09T07:21:26Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.22_20260609_032126.log
-    2026-06-09T07:21:27Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-06-09T07:21:40Z: INFO: Google Sheets worksheet not found (expected for StateBox releases): cannot find template worksheet
+    2026-06-09T07:21:40Z: INFO: Scheduler lock acquired
+    2026-06-09T07:21:40Z: INFO: Scheduler started: Checking payload metadata URL every 30 minutes
+    2026-06-09T07:21:40Z: INFO: Scheduler will run until 2026-06-11 03:21:40 or until URL becomes accessible
+    2026-06-09T07:21:40Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999935)
+    2026-06-09T07:51:40Z: INFO: Scheduler check #1: Checking payload metadata URL accessibility for release 4.22
+    2026-06-09T07:51:48Z: INFO: Scheduler check #1: Payload metadata URL still not accessible
+    2026-06-09T07:51:48Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:52.027252)
+    2026-06-09T08:21:48Z: INFO: Scheduler check #2: Checking payload metadata URL accessibility for release 4.22
+    2026-06-09T08:22:09Z: INFO: Scheduler check #2: Payload metadata URL still not accessible
+    2026-06-09T08:22:09Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:30.938396)
+    2026-06-09T08:52:09Z: INFO: Scheduler check #3: Checking payload metadata URL accessibility for release 4.22
+    2026-06-09T08:52:21Z: INFO: Payload metadata URL is now accessible
+    2026-06-09T08:52:28Z: INFO: Scheduler lock released
+    2026-06-09T08:52:28Z: INFO: All scheduled jobs cleared
+    2026-06-09T08:52:28Z: ERROR: Background metadata checker failed: change advisory status failed
+    2026-06-09T08:52:28Z: ERROR: Release approval failed with error: change advisory status failed
 issues: []
