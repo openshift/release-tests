@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.0
 created_at: '2026-06-04T23:03:11Z'
-updated_at: '2026-06-10T06:47:11Z'
+updated_at: '2026-06-10T06:55:04Z'
 metadata:
   jira_ticket: ART-14438
   advisory_ids:
@@ -89,25 +89,22 @@ tasks:
     2026-06-05T14:04:45Z: INFO: Signature check PASSED
     2026-06-05T14:04:45Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: Fail
+  status: Pass
   started_at: '2026-06-09T07:21:15Z'
-  completed_at: '2026-06-09T08:52:28Z'
+  completed_at: '2026-06-10T06:55:02Z'
   result: |-
-    2026-06-09T07:21:40Z: INFO: Google Sheets worksheet not found (expected for StateBox releases): cannot find template worksheet
-    2026-06-09T07:21:40Z: INFO: Scheduler lock acquired
-    2026-06-09T07:21:40Z: INFO: Scheduler started: Checking payload metadata URL every 30 minutes
-    2026-06-09T07:21:40Z: INFO: Scheduler will run until 2026-06-11 03:21:40 or until URL becomes accessible
-    2026-06-09T07:21:40Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999935)
-    2026-06-09T07:51:40Z: INFO: Scheduler check #1: Checking payload metadata URL accessibility for release 4.22
-    2026-06-09T07:51:48Z: INFO: Scheduler check #1: Payload metadata URL still not accessible
-    2026-06-09T07:51:48Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:52.027252)
-    2026-06-09T08:21:48Z: INFO: Scheduler check #2: Checking payload metadata URL accessibility for release 4.22
-    2026-06-09T08:22:09Z: INFO: Scheduler check #2: Payload metadata URL still not accessible
-    2026-06-09T08:22:09Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:30.938396)
-    2026-06-09T08:52:09Z: INFO: Scheduler check #3: Checking payload metadata URL accessibility for release 4.22
-    2026-06-09T08:52:21Z: INFO: Payload metadata URL is now accessible
-    2026-06-09T08:52:28Z: INFO: Scheduler lock released
-    2026-06-09T08:52:28Z: INFO: All scheduled jobs cleared
-    2026-06-09T08:52:28Z: ERROR: Background metadata checker failed: change advisory status failed
-    2026-06-09T08:52:28Z: ERROR: Release approval failed with error: change advisory status failed
+    2026-06-10T06:53:09Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-06-10T06:53:11Z: INFO: ShipmentData initialization failed (MR likely merged): Gitlab MR 562 state is not open
+    2026-06-10T06:53:43Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-06-10T06:53:44Z: INFO: RHCOS nvr is rhcos-x86_64-4.22.9.8.202605251451-0
+    2026-06-10T06:53:46Z: INFO: The commit metadata is kernel-5.14.0-687.11.1.el9_8
+    2026-06-10T06:53:47Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 169772, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.8.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179159, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.23-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179436, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.0-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 185273, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:5486-pending', 'perm': 'trusted', 'perm_id': 6}]
+    2026-06-10T06:53:47Z: INFO: Shipment MR for 4.22.0 already merged, skipping QE approval step
+    2026-06-10T06:53:51Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHEA-2026:0449
+    2026-06-10T06:53:51Z: INFO: The metadata url is accessible
+    2026-06-10T06:54:25Z: WARNING: RHBA advisory 164955 does not have secalerts
+    2026-06-10T06:54:56Z: INFO: advisory 164955 state is updated to REL_PREP
+    2026-06-10T06:54:56Z: WARNING: RHBA advisory 164956 does not have secalerts
+    2026-06-10T06:55:01Z: INFO: advisory 164956 state is updated to REL_PREP
+    2026-06-10T06:55:02Z: INFO: task [Change Advisory Status] status is changed to [Pass]
 issues: []
