@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.67
 created_at: '2026-06-10T20:00:08Z'
-updated_at: '2026-06-11T07:27:43Z'
+updated_at: '2026-06-11T07:29:08Z'
 metadata:
   jira_ticket: ART-19739
   advisory_ids:
@@ -23,4 +23,14 @@ tasks:
     2026-06-11T07:27:40Z: INFO: Added QE release lead comment to MR 573
     2026-06-11T07:27:42Z: INFO: sent slack message to <#team-qe-release>
     2026-06-11T07:27:42Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-06-11T07:27:59Z'
+  completed_at: '2026-06-11T07:29:07Z'
+  result: |-
+    2026-06-11T07:27:59Z: INFO: Initialized StateBox for release 4.14.67 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.67.yaml
+    2026-06-11T07:27:59Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-06-11T07:29:05Z: INFO: Processing MR 573 for Jira issues
+    2026-06-11T07:29:07Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2026-06-11T07:29:07Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues: []
