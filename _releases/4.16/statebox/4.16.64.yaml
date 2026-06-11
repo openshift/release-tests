@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-11T18:36:47Z'
+updated_at: '2026-06-11T18:38:50Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -81,4 +81,13 @@ tasks:
     - destructive tests: PASSED\n- disruptive ginkgo: PASSED\n\nSecondary: ci_failure_summary\
     \ script error (NoMethodError) - not a blocker, notification script bug.\n\nRecommendation:\
     \ RETRY - likely infrastructure/test environment issue, not product bug."
-issues: []
+issues:
+- issue: Stage-testing failed - OCP-35942 LocalVolumeDiscovery test expects hardcoded
+    WWN device ID that doesn't exist in dynamically provisioned Azure cluster. Test
+    automation issue, requires retry.
+  reported_at: '2026-06-11T18:38:50Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - stage-testing
