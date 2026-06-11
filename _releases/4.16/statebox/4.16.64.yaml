@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-11T18:28:14Z'
+updated_at: '2026-06-11T18:36:47Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -69,10 +69,16 @@ tasks:
 - name: stage-testing
   status: Fail
   started_at: '2026-06-11T12:46:22Z'
-  completed_at: '2026-06-11T18:28:13Z'
-  result: |-
-    2026-06-11T18:28:13Z: INFO: Initialized StateBox for release 4.16.64 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.64.yaml
-    2026-06-11T18:28:13Z: INFO: check stage job status according to job id: 1641
-    2026-06-11T18:28:13Z: INFO: build status of zstreams/Stage-Pipeline/1641 is FAILURE
-    2026-06-11T18:28:13Z: INFO: task [Stage Testing] status is changed to [Fail]
+  completed_at: '2026-06-11T18:36:47Z'
+  result: "Jenkins job #1641 failed in admin tests stage.\n\nFailed Test: OCP-35942:Storage\
+    \ Stage LocalVolumeDiscovery works\nRunner Job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/ocp-common/job/Runner/1118089/\n\
+    \nRoot Cause: Test expects hardcoded storage device WWN 'wwn-0x6002248086f83854829fd988181ab3a5'\
+    \ but Azure provisioned different device IDs:\n- Worker eastus2-2: wwn-0x60022480f8bbc91c59bc6f19baf0ceef\
+    \  \n- Worker eastus2-3: wwn-0x60022480779d0bf171a1a4aea1f4d147\n\nCategory: Test\
+    \ Automation Issue - Environmental dependency on dynamically provisioned storage\
+    \ device identifiers.\n\nOther Results:\n- Cluster install: SUCCESS\n- non-admin\
+    \ tests: 3/3 passed\n- normal ginkgo: PASSED\n- admin tests: 2/3 passed (1 failure)\n\
+    - destructive tests: PASSED\n- disruptive ginkgo: PASSED\n\nSecondary: ci_failure_summary\
+    \ script error (NoMethodError) - not a blocker, notification script bug.\n\nRecommendation:\
+    \ RETRY - likely infrastructure/test environment issue, not product bug."
 issues: []
