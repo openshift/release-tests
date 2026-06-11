@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-11T18:39:15Z'
+updated_at: '2026-06-11T18:40:29Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -68,16 +68,30 @@ tasks:
     2026-06-11T12:05:56Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
-  started_at: '2026-06-11T18:39:13Z'
+  started_at: '2026-06-11T18:40:29Z'
   completed_at: null
   result: |-
-    2026-06-11T18:39:13Z: INFO: Initialized StateBox for release 4.16.64 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.64.yaml
-    2026-06-11T18:39:13Z: INFO: job id is not set, will trigger stage testing
-    2026-06-11T18:39:14Z: INFO: Loaded state from _releases/4.16/statebox/4.16.64.yaml (SHA: 133601dd)
-    2026-06-11T18:39:14Z: INFO: Stage release succeeded (verified by label)
-    2026-06-11T18:39:14Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-06-11T18:39:14Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1642/>
-    2026-06-11T18:39:14Z: INFO: sent slack message to <#team-qe-release>
+    RETRY ATTEMPT - New Jenkins job triggered after previous failure.
+
+    Previous Build #1641: FAILED
+    - Failed in admin tests stage
+    - Test: OCP-35942:Storage Stage LocalVolumeDiscovery works
+    - Root cause: Hardcoded WWN device ID mismatch (test automation issue)
+    - Runner job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/ocp-common/job/Runner/1118089/
+
+    Current Build #1642: IN PROGRESS
+    - Job URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1642/
+    - Triggered: 2026-06-11 18:39 UTC
+    - Status: Running
+    - Expected duration: 2-3 hours
+    - Reason for retry: Previous failure was test environment issue (dynamic Azure storage WWN IDs don't match hardcoded test expectations)
+
+    StateBox Actions:
+    - Blocker issue added for previous failure
+    - Task status updated to In Progress for retry
+    - Will update to Pass/Fail upon completion
+
+    Next Check: Re-run /release:drive 4.16.64 in ~2.5 hours to check job status
 issues:
 - issue: Stage-testing failed - OCP-35942 LocalVolumeDiscovery test expects hardcoded
     WWN device ID that doesn't exist in dynamically provisioned Azure cluster. Test
