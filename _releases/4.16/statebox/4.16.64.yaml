@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-13T18:49:15Z'
+updated_at: '2026-06-13T19:24:51Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -67,25 +67,17 @@ tasks:
     2026-06-11T12:05:56Z: INFO: Added image health summary to MR 574
     2026-06-11T12:05:56Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2026-06-11T18:40:29Z'
-  completed_at: '2026-06-13T18:49:15Z'
-  result: "Stage-testing failed on both attempts:\n\n**Job #1641 (First Attempt):**\n\
-    - Status: FAILURE\n- Jenkins URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1641\n\
-    - Root Cause: Test execution failures (earlier analysis indicated device mismatch\
-    \ issue)\n\n**Job #1642 (Re-run/Retry):**\n- Status: FAILURE  \n- Jenkins URL:\
-    \ https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1642\n\
-    - Root Cause: Admin tests stage failure - Runner #1118097 was terminated prematurely\
-    \ (duration only 2m 40s) while tests were executing successfully. No test failure\
-    \ messages found in console output, indicating infrastructure issue (job killed/aborted,\
-    \ timeout, or resource constraint).\n\n**Analysis Summary:**\nBoth failures appear\
-    \ infrastructure-related rather than product defects:\n- Job #1641: Test execution\
-    \ environment issues\n- Job #1642: Job termination/infrastructure failure (Runner\
-    \ killed mid-execution)\n\n**Classification:** Infrastructure issues - Non-blocking\n\
-    **Recommendation:** Waivable failures, safe to proceed with release workflow\n\
-    \n**Next Steps:** \n- Analyze promoted build test results (analyze-promoted-build\
-    \ task)\n- Evaluate if stage-testing failures warrant additional investigation\
-    \ or can be waived based on promoted build results"
+  status: In Progress
+  started_at: '2026-06-13T19:24:49Z'
+  completed_at: null
+  result: |-
+    2026-06-13T19:24:49Z: INFO: Initialized StateBox for release 4.16.64 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.64.yaml
+    2026-06-13T19:24:49Z: INFO: job id is not set, will trigger stage testing
+    2026-06-13T19:24:49Z: INFO: Loaded state from _releases/4.16/statebox/4.16.64.yaml (SHA: 91734494)
+    2026-06-13T19:24:49Z: INFO: Stage release succeeded (verified by label)
+    2026-06-13T19:24:49Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-06-13T19:24:49Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1647/>
+    2026-06-13T19:24:50Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: Stage-testing failed - OCP-35942 LocalVolumeDiscovery test expects hardcoded
     WWN device ID that doesn't exist in dynamically provisioned Azure cluster. Test
