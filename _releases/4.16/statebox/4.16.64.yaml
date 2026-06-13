@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-11T18:40:29Z'
+updated_at: '2026-06-13T12:02:36Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -67,31 +67,14 @@ tasks:
     2026-06-11T12:05:56Z: INFO: Added image health summary to MR 574
     2026-06-11T12:05:56Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-06-11T18:40:29Z'
-  completed_at: null
+  completed_at: '2026-06-13T12:02:35Z'
   result: |-
-    RETRY ATTEMPT - New Jenkins job triggered after previous failure.
-
-    Previous Build #1641: FAILED
-    - Failed in admin tests stage
-    - Test: OCP-35942:Storage Stage LocalVolumeDiscovery works
-    - Root cause: Hardcoded WWN device ID mismatch (test automation issue)
-    - Runner job: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/ocp-common/job/Runner/1118089/
-
-    Current Build #1642: IN PROGRESS
-    - Job URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1642/
-    - Triggered: 2026-06-11 18:39 UTC
-    - Status: Running
-    - Expected duration: 2-3 hours
-    - Reason for retry: Previous failure was test environment issue (dynamic Azure storage WWN IDs don't match hardcoded test expectations)
-
-    StateBox Actions:
-    - Blocker issue added for previous failure
-    - Task status updated to In Progress for retry
-    - Will update to Pass/Fail upon completion
-
-    Next Check: Re-run /release:drive 4.16.64 in ~2.5 hours to check job status
+    2026-06-13T12:02:35Z: INFO: Initialized StateBox for release 4.16.64 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.64.yaml
+    2026-06-13T12:02:35Z: INFO: check stage job status according to job id: 1641
+    2026-06-13T12:02:35Z: INFO: build status of zstreams/Stage-Pipeline/1641 is FAILURE
+    2026-06-13T12:02:35Z: INFO: task [Stage Testing] status is changed to [Fail]
 issues:
 - issue: Stage-testing failed - OCP-35942 LocalVolumeDiscovery test expects hardcoded
     WWN device ID that doesn't exist in dynamically provisioned Azure cluster. Test
