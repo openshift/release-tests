@@ -33,13 +33,55 @@
           "jobStartTime": "2026-06-13T16:33:07Z",
           "jobID": "35ba9156-bd57-4e64-a5cd-67b6f29ebefe",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2065834865495904256",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-13T19:35:53Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 6,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+                "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server",
+                "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-06-13T16:33:13Z",
           "jobID": "47f14078-82af-4117-9c6e-2861c56aba74",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2065834887021072384",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-13T19:52:37Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+                "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation "
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -216,5 +258,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release-5:5.0.0-0.nightly-2026-06-13-060545",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/5.0.0-0.nightly-2026-06-13-060545"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
