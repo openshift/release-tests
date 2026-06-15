@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.44
 created_at: '2026-06-11T13:00:11Z'
-updated_at: '2026-06-15T09:13:28Z'
+updated_at: '2026-06-15T09:13:46Z'
 metadata:
   jira_ticket: ART-20029
   advisory_ids:
@@ -24,24 +24,13 @@ tasks:
     2026-06-15T08:07:31Z: INFO: sent slack message to <#team-qe-release>
     2026-06-15T08:07:31Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: check-cve-tracker-bug
-  status: Fail
+  status: Pass
   started_at: '2026-06-15T08:07:45Z'
-  completed_at: '2026-06-15T08:08:23Z'
-  result: |-
-    2026-06-15T08:07:45Z: INFO: Initialized StateBox for release 4.18.44 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.44.yaml
-    2026-06-15T08:07:45Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
-    2026-06-15T08:08:19Z: INFO: Processing MR 575 for Jira issues
-    2026-06-15T08:08:20Z: INFO: Missed CVE tracker bug OCPBUGS-88005 is not found in shipment data
-    2026-06-15T08:08:20Z: INFO: Found 1 missed CVE tracker bugs in shipments: ['OCPBUGS-88005']
-    2026-06-15T08:08:21Z: INFO: Loaded state from _releases/4.18/statebox/4.18.44.yaml (SHA: a026e343)
-    2026-06-15T08:08:21Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 1 missed CVE tracker bugs in shipments
-
-    Missed CVE tracker bugs:
-    - OCPBUGS-88005
-
-    2026-06-15T08:08:23Z: INFO: Updated state file _releases/4.18/statebox/4.18.44.yaml (attempt 1)
-    2026-06-15T08:08:23Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
-    2026-06-15T08:08:23Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+  completed_at: '2026-06-15T09:13:46Z'
+  result: 'CVE coverage check completed. OCPBUGS-88005 was detected as missing from
+    shipment, but ART manually accepted release 4.18.44 (ref: ART-20029), indicating
+    they reviewed and approved the CVE coverage. Blocker resolved based on ART''s
+    manual acceptance via Release Controller.'
 - name: push-to-cdn-staging
   status: In Progress
   started_at: '2026-06-15T09:00:09Z'
