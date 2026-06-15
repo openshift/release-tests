@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.44
 created_at: '2026-06-11T13:00:11Z'
-updated_at: '2026-06-15T08:17:14Z'
+updated_at: '2026-06-15T09:00:15Z'
 metadata:
   jira_ticket: ART-20029
   advisory_ids:
@@ -42,6 +42,20 @@ tasks:
     2026-06-15T08:08:23Z: INFO: Updated state file _releases/4.18/statebox/4.18.44.yaml (attempt 1)
     2026-06-15T08:08:23Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
     2026-06-15T08:08:23Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-06-15T09:00:09Z'
+  completed_at: null
+  result: |-
+    2026-06-15T09:00:09Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-06-15T09:00:13Z: INFO: checking push job status for advisory 168389 ...
+    2026-06-15T09:00:13Z: INFO: no push job found for advisory 168389
+    2026-06-15T09:00:13Z: INFO: advisory 168389 has blocking advisory []
+    2026-06-15T09:00:14Z: INFO: push job for advisory 168389 is triggered
+    2026-06-15T09:00:14Z: INFO: checking push job status for advisory 168390 ...
+    2026-06-15T09:00:14Z: INFO: no push job found for advisory 168390
+    2026-06-15T09:00:14Z: INFO: advisory 168390 has blocking advisory []
+    2026-06-15T09:00:14Z: INFO: push job for advisory 168390 is triggered
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
