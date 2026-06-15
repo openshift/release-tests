@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.44
 created_at: '2026-06-11T13:00:11Z'
-updated_at: '2026-06-15T13:23:18Z'
+updated_at: '2026-06-15T20:12:18Z'
 metadata:
   jira_ticket: ART-20029
   advisory_ids:
@@ -68,6 +68,20 @@ tasks:
     - OCP-35943 (Storage PV provisioned by Localvolumeset): Passed (109.8s)
 
     Jenkins job failed due to Polarshift result reporting timeout (infrastructure issue), but all actual tests executed successfully. Waived as non-blocking infrastructure issue.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-06-15T20:12:18Z'
+  completed_at: '2026-06-15T20:12:18Z'
+  result: "Build 4.18.44 QE test analysis complete - ACCEPTED with waiver.\n\n**Test\
+    \ Results**: accepted: false (1 GCP job failed BO3)\n**Root Cause**: GCP infrastructure\
+    \ provisioning failures (not product bug)\n**Evidence**: \n- GCP job failed 2/3\
+    \ attempts in 15-20 min (cluster setup phase)\n- 3rd attempt succeeded with normal\
+    \ 3+ hour duration\n- AWS and Azure platforms passed on first attempt\n- Platform-specific\
+    \ infrastructure issue, not build quality issue\n\n**ART Manual Override**: Release\
+    \ manually accepted by ART team (ART-20029)\n**AI Recommendation**: ACCEPT - waivable\
+    \ infrastructure failure\n**Decision**: Accepted per ART manual override and QE\
+    \ analysis alignment\n\nAll blocking test jobs passed BO3 or have waivable infrastructure\
+    \ failures. Proceeding to final approval."
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
