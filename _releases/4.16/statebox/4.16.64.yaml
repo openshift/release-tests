@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-13T19:24:51Z'
+updated_at: '2026-06-15T05:34:48Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -67,17 +67,14 @@ tasks:
     2026-06-11T12:05:56Z: INFO: Added image health summary to MR 574
     2026-06-11T12:05:56Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-06-13T19:24:49Z'
-  completed_at: null
+  completed_at: '2026-06-15T05:34:47Z'
   result: |-
-    2026-06-13T19:24:49Z: INFO: Initialized StateBox for release 4.16.64 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.64.yaml
-    2026-06-13T19:24:49Z: INFO: job id is not set, will trigger stage testing
-    2026-06-13T19:24:49Z: INFO: Loaded state from _releases/4.16/statebox/4.16.64.yaml (SHA: 91734494)
-    2026-06-13T19:24:49Z: INFO: Stage release succeeded (verified by label)
-    2026-06-13T19:24:49Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-06-13T19:24:49Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1647/>
-    2026-06-13T19:24:50Z: INFO: sent slack message to <#team-qe-release>
+    2026-06-15T05:34:47Z: INFO: Initialized StateBox for release 4.16.64 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.64.yaml
+    2026-06-15T05:34:47Z: INFO: check stage job status according to job id: 1647
+    2026-06-15T05:34:47Z: INFO: build status of zstreams/Stage-Pipeline/1647 is SUCCESS
+    2026-06-15T05:34:47Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: Stage-testing failed - OCP-35942 LocalVolumeDiscovery test expects hardcoded
     WWN device ID that doesn't exist in dynamically provisioned Azure cluster. Test
