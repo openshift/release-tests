@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.44
 created_at: '2026-06-11T13:00:11Z'
-updated_at: '2026-06-15T12:03:24Z'
+updated_at: '2026-06-15T12:03:29Z'
 metadata:
   jira_ticket: ART-20029
   advisory_ids:
@@ -52,14 +52,14 @@ tasks:
     2026-06-15T12:03:23Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2066492615783616512
     2026-06-15T12:03:23Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-06-15T09:55:01Z'
-  completed_at: null
+  completed_at: '2026-06-15T12:03:28Z'
   result: |-
-    2026-06-15T09:55:01Z: INFO: Initialized StateBox for release 4.18.44 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.44.yaml
-    2026-06-15T09:55:01Z: INFO: check stage job status according to job id: 1650
-    2026-06-15T09:55:01Z: INFO: build status of zstreams/Stage-Pipeline/1650 is In Progress
-    2026-06-15T09:55:01Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-06-15T12:03:28Z: INFO: Initialized StateBox for release 4.18.44 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.44.yaml
+    2026-06-15T12:03:28Z: INFO: check stage job status according to job id: 1650
+    2026-06-15T12:03:28Z: INFO: build status of zstreams/Stage-Pipeline/1650 is FAILURE
+    2026-06-15T12:03:28Z: INFO: task [Stage Testing] status is changed to [Fail]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
