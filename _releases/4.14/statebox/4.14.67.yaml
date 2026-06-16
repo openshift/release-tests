@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.67
 created_at: '2026-06-10T20:00:08Z'
-updated_at: '2026-06-16T06:51:58Z'
+updated_at: '2026-06-16T13:04:34Z'
 metadata:
   jira_ticket: ART-19739
   advisory_ids:
@@ -82,6 +82,17 @@ tasks:
     to stable (4.14.67) represents same binary. Test results stored under stable version
     to avoid duplication. QE blocking tests run against promoted build (analyze-promoted-build
     task) which provides equivalent validation coverage.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-06-16T13:04:06Z'
+  completed_at: '2026-06-16T13:04:33Z'
+  result: |-
+    2026-06-16T13:04:06Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-06-16T13:04:06Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.14.67
+    2026-06-16T13:04:08Z: INFO: Image Digest: sha256:4d3004e29acdc953fd51f92472bc211b607517c36d76648e66266a9ce99d1a38
+    2026-06-16T13:04:08Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4d3004e29acdc953fd51f92472bc211b607517c36d76648e66266a9ce99d1a38/signature-1
+    2026-06-16T13:04:33Z: INFO: Signature check PASSED
+    2026-06-16T13:04:33Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 168355 has 7 blocking security alerts: trackers OCPBUGS-81692,
     OCPBUGS-81705, OCPBUGS-83432, OCPBUGS-83440, OCPBUGS-83648, OCPBUGS-83723, OCPBUGS-85557
