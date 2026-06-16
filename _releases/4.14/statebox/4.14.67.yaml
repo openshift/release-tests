@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.67
 created_at: '2026-06-10T20:00:08Z'
-updated_at: '2026-06-16T06:48:22Z'
+updated_at: '2026-06-16T06:50:07Z'
 metadata:
   jira_ticket: ART-19739
   advisory_ids:
@@ -75,11 +75,13 @@ tasks:
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-06-15T06:53:27Z'
-  completed_at: '2026-06-15T06:53:27Z'
-  result: Candidate build test results not created separately for z-stream releases.
-    Test aggregator stores results under stable version (4.14.67) directly. Candidate
-    build (4.14.0-0.nightly-2026-06-09-142047) was promoted to 4.14.67 by Release
-    Controller. Test analysis performed via analyze-promoted-build task instead.
+  completed_at: '2026-06-16T06:50:07Z'
+  result: 'N/A for z-stream releases. For 4.14.67, test aggregator uses promoted build
+    version directly - no separate candidate build test result file created. This
+    is by design: candidate nightly (4.14.0-0.nightly-2026-06-09-142047) promoted
+    to stable (4.14.67) represents same binary. Test results stored under stable version
+    to avoid duplication. QE blocking tests run against promoted build (analyze-promoted-build
+    task) which provides equivalent validation coverage.'
 issues:
 - issue: 'RHCOS advisory 168355 has 7 blocking security alerts: trackers OCPBUGS-81692,
     OCPBUGS-81705, OCPBUGS-83432, OCPBUGS-83440, OCPBUGS-83648, OCPBUGS-83723, OCPBUGS-85557
