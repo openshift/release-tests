@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.67
 created_at: '2026-06-10T20:00:08Z'
-updated_at: '2026-06-16T13:04:34Z'
+updated_at: '2026-06-16T13:09:12Z'
 metadata:
   jira_ticket: ART-19739
   advisory_ids:
@@ -93,6 +93,24 @@ tasks:
     2026-06-16T13:04:08Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4d3004e29acdc953fd51f92472bc211b607517c36d76648e66266a9ce99d1a38/signature-1
     2026-06-16T13:04:33Z: INFO: Signature check PASSED
     2026-06-16T13:04:33Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: Fail
+  started_at: '2026-06-16T13:09:05Z'
+  completed_at: '2026-06-16T13:09:11Z'
+  result: |-
+    2026-06-16T13:09:05Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-06-16T13:09:08Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-06-16T13:09:08Z: INFO: RHCOS nvr is rhcos-x86_64-414.92.202606050405-0
+    2026-06-16T13:09:08Z: INFO: The commit metadata is kernel-5.14.0-284.174.1.el9_2
+    2026-06-16T13:09:08Z: INFO: Tags of this build is [{'arches': '', 'id': 107797, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.2.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 107800, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.2.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 114086, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.13-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 119081, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.14-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121788, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.15-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 188889, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:22940-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-06-16T13:09:09Z: INFO: Successfully approved MR 573
+    2026-06-16T13:09:09Z: INFO: Successfully added QE approval to MR 573
+    2026-06-16T13:09:10Z: ERROR: Execute oc command failed: Command '['oc', 'adm', 'release', 'info', 'registry.ci.openshift.org/ocp/release:4.14.67', '-o', 'json']' returned non-zero exit status 1.
+    2026-06-16T13:09:10Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-06-16T13:09:10Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-06-16T13:09:10Z: INFO: Background metadata checker process started (PID: 382370) - running independently after parent exit
+    2026-06-16T13:09:10Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.14_20260616_090910.log
+    2026-06-16T13:09:11Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'RHCOS advisory 168355 has 7 blocking security alerts: trackers OCPBUGS-81692,
     OCPBUGS-81705, OCPBUGS-83432, OCPBUGS-83440, OCPBUGS-83648, OCPBUGS-83723, OCPBUGS-85557
