@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.20
 created_at: '2026-06-11T13:00:27Z'
-updated_at: '2026-06-16T10:32:45Z'
+updated_at: '2026-06-16T10:34:02Z'
 metadata:
   jira_ticket: ART-20023
   advisory_ids:
@@ -82,6 +82,17 @@ tasks:
     2026-06-16T10:11:41Z: INFO: check stage job status according to job id: 1651
     2026-06-16T10:11:41Z: INFO: build status of zstreams/Stage-Pipeline/1651 is SUCCESS
     2026-06-16T10:11:41Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-06-16T10:33:02Z'
+  completed_at: '2026-06-16T10:34:01Z'
+  result: |-
+    2026-06-16T10:33:02Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-06-16T10:33:02Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.20
+    2026-06-16T10:33:04Z: INFO: Image Digest: sha256:e2f30027fa1240272c8a472d6c77218ebc486bb966b6862c121187801a40163b
+    2026-06-16T10:33:04Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=e2f30027fa1240272c8a472d6c77218ebc486bb966b6862c121187801a40163b/signature-1
+    2026-06-16T10:34:01Z: INFO: Signature check PASSED
+    2026-06-16T10:34:01Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Release image 4.21.20 not available in CI registry (registry.ci.openshift.org/ocp/release:4.21.20)
     - mirroring issue blocking all QE tests. Tests failing with: "dockerimage.image.openshift.io
