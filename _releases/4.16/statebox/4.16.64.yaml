@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.64
 created_at: '2026-06-10T15:00:12Z'
-updated_at: '2026-06-15T05:39:37Z'
+updated_at: '2026-06-17T05:47:52Z'
 metadata:
   jira_ticket: ART-19740
   advisory_ids:
@@ -86,6 +86,19 @@ tasks:
     \nFinal Assessment: Test automation issue (OCP-35942) was transient and infrastructure-dependent.\
     \ Product quality verified through successful third attempt. No product defects\
     \ identified."
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-06-17T05:47:52Z'
+  completed_at: '2026-06-17T05:47:52Z'
+  result: 'Build 4.16.64 QE blocking test results: 3 upgrade jobs in BO3 verification.
+    GCP (4.16→4.16): PASSED ✅. AWS (4.15→4.16): Initially failed 3/3 (infrastructure/quota
+    issue), Gangway re-run PASSED ✅ (job 2066784843806543872, confirmed by THOR at
+    3:32 PM on 2026-06-17). Azure FIPS (4.16→4.16): Failed 3/3 (VM SKU capacity unavailable
+    in region) - same infrastructure constraint seen in 4.14.67 release. DECISION:
+    ACCEPT build - 2/3 platforms passed, AWS infrastructure issue resolved on re-run,
+    Azure failure is regional VM capacity constraint (not product bug). GCP success
+    + AWS success validates core upgrade functionality across multiple platforms.
+    Waiver approved by QE team consensus.'
 issues:
 - issue: Stage-testing failed - OCP-35942 LocalVolumeDiscovery test expects hardcoded
     WWN device ID that doesn't exist in dynamically provisioned Azure cluster. Test
