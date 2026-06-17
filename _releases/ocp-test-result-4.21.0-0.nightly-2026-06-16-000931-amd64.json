@@ -228,7 +228,31 @@
           "jobStartTime": "2026-06-16T12:31:10Z",
           "jobID": "4e70d497-9c15-45f1-bb62-7102d82af820",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-gcp-ipi-f999/2066861140243124224",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-16T15:42:08Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-auth] Authentication Author:yinzhou-WRS-ConnectedOnly-LEVEL0-High-10662-V-ACS.01-Cannot run process via user root in the container when using MustRunAsNonRoot as the RunAsUserStrategy"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -279,5 +303,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.21.0-0.nightly-2026-06-16-000931",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.21.0-0.nightly-2026-06-16-000931"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
