@@ -42,7 +42,29 @@
           "jobStartTime": "2026-06-17T18:02:57Z",
           "jobID": "3360f4fc-c570-427a-926c-be639f293aeb",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2067307023476723712",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-17T20:45:58Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 5,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+                "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-High-44910-[CSI-Driver] [Dynamic PV] [Filesystem default] support mountOptions"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -114,7 +136,28 @@
           "jobStartTime": "2026-06-17T18:03:20Z",
           "jobID": "96e9599d-8984-40cf-a430-a7abb3504e32",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2067307118209273856",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-17T21:06:40Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+                "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation "
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -151,13 +194,15 @@
           "jobStartTime": "2026-06-17T18:32:09Z",
           "jobID": "631232fd-4524-46e2-b7b3-fda52fef40d5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-4.22-gcp-ipi-f999/2067314369737265152",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-17T22:33:26Z"
         },
         {
           "jobStartTime": "2026-06-17T18:32:14Z",
           "jobID": "113a40db-2196-4e6c-9133-8d003ddb2e60",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-4.22-gcp-ipi-f999/2067314391375679488",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-17T22:31:30Z"
         }
       ]
     },
@@ -178,5 +223,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release-5:5.0.0-0.nightly-2026-06-17-022519",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/5.0.0-0.nightly-2026-06-17-022519"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
