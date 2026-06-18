@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.92
 created_at: '2026-06-17T12:01:17Z'
-updated_at: '2026-06-18T15:00:44Z'
+updated_at: '2026-06-18T17:07:10Z'
 metadata:
   jira_ticket: ART-20650
   advisory_ids:
@@ -52,14 +52,20 @@ tasks:
     were due to resource constraints. However since the rerun https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-gcp-ipi-custom-type-f999/2067546265750605824
     has passed, we can mark this as passed
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-06-18T15:00:43Z'
-  completed_at: null
+  completed_at: '2026-06-18T17:07:09Z'
   result: |-
-    2026-06-18T15:00:43Z: INFO: Initialized StateBox for release 4.12.92 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.92.yaml
-    2026-06-18T15:00:43Z: INFO: Checking image consistency check Prow job status for job ID: a5d52d7d-a30e-43ef-a92d-09e27b5ab83b
-    2026-06-18T15:00:43Z: INFO: Job state: triggered, URL: None
-    2026-06-18T15:00:43Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-06-18T17:05:20Z: INFO: Initialized StateBox for release 4.12.92 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.92.yaml
+    2026-06-18T17:05:20Z: INFO: Checking image consistency check Prow job status for job ID: a5d52d7d-a30e-43ef-a92d-09e27b5ab83b
+    2026-06-18T17:05:20Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2067625701049110528
+    2026-06-18T17:05:20Z: INFO: Starting image health check for shipment MR 587
+    2026-06-18T17:05:20Z: INFO: Stage release succeeded (verified by label)
+    2026-06-18T17:05:20Z: INFO: Processing MR 587
+    2026-06-18T17:05:23Z: INFO: Found 240 images to check
+    2026-06-18T17:07:08Z: INFO: Completed image health check. Scanned 240 images, found 0 unhealthy
+    2026-06-18T17:07:09Z: INFO: Added image health summary to MR 587
+    2026-06-18T17:07:09Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-06-18T14:51:21Z'
