@@ -6,9 +6,44 @@
         "jobStartTime": "2026-06-18T09:20:44Z",
         "jobID": "0bdf6892-becc-484f-b553-f9e660958dbd",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-f999/2067537988648177664",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-06-18T13:39:34Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 24,
+            "failingScenarios": [
+              "[sig-operators] OLM v1 oprun should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-79770-metrics are collected by default"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 17,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-06-18T13:43:53Z",
+          "jobID": "d75e8655-a335-49da-88bb-5ee1b2778164",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2026-06-18T13:44:19Z",
+          "jobID": "bc7b67db-5cf6-4a63-bde7-899a3679dd5f",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999",
