@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.26
 created_at: '2026-06-18T13:00:14Z'
-updated_at: '2026-06-22T06:06:59Z'
+updated_at: '2026-06-22T06:08:43Z'
 metadata:
   jira_ticket: ART-20714
   advisory_ids:
@@ -96,4 +96,15 @@ tasks:
     \ ✅ Passed (2h 38m)  \n3. GCP Z-stream upgrade: ✅ Passed (3h 9m)\n\nCONFIDENCE:\
     \ HIGH - Perfect test pass rate across all platforms, no retries, no flaky tests\
     \ detected.\n\nRECOMMENDATION: Build is ready for release approval."
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-06-22T06:07:44Z'
+  completed_at: '2026-06-22T06:08:42Z'
+  result: |-
+    2026-06-22T06:07:44Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-06-22T06:07:44Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.26
+    2026-06-22T06:07:46Z: INFO: Image Digest: sha256:5a2bec1f74236deb9519ab5232146c57d2afdb8f8db6773abbb50027150eb8ad
+    2026-06-22T06:07:46Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=5a2bec1f74236deb9519ab5232146c57d2afdb8f8db6773abbb50027150eb8ad/signature-1
+    2026-06-22T06:08:42Z: INFO: Signature check PASSED
+    2026-06-22T06:08:42Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
