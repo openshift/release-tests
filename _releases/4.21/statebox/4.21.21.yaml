@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.21
 created_at: '2026-06-18T14:00:16Z'
-updated_at: '2026-06-22T03:00:42Z'
+updated_at: '2026-06-22T03:05:43Z'
 metadata:
   jira_ticket: ART-20715
   advisory_ids:
@@ -61,16 +61,13 @@ tasks:
     upgrade jobs executed: upgrade-from-4.20-aws (success), upgrade-from-4.21-azure-fips
     (success), upgrade-from-4.21-gcp (success). Pull spec: quay.io/openshift-release-dev/ocp-release:4.21.21-x86_64'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-06-22T03:00:35Z'
-  completed_at: null
-  result: |-
-    2026-06-22T03:00:35Z: INFO: Initialized StateBox for release 4.21.21 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.21.yaml
-    2026-06-22T03:00:35Z: INFO: Loaded state from _releases/4.21/statebox/4.21.21.yaml (SHA: 65e02b8e)
-    2026-06-22T03:00:35Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-06-22T03:00:41Z: INFO: Triggered image consistency check Prow job: 6bbb7243-defc-4057-a60e-f4125d0bfe81
-    2026-06-22T03:00:41Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2068893117263646720
-    2026-06-22T03:00:41Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-06-22T03:05:43Z'
+  result: 'Original Prow job 206e663f-737d-45cc-8d12-fe59bcd5ae36 completed successfully
+    (result: SUCCESS). Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2067860102752243712.
+    Note: A duplicate job (6bbb7243-defc-4057-a60e-f4125d0bfe81) was incorrectly triggered
+    and can be ignored.'
 - name: stage-testing
   status: Pass
   started_at: '2026-06-19T06:38:09Z'
