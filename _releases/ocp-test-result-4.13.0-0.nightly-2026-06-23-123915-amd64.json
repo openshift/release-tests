@@ -6,9 +6,42 @@
         "jobStartTime": "2026-06-23T18:21:03Z",
         "jobID": "65095c7d-c6a4-45e2-b61f-070649abbdfb",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2069485906150035456",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-06-23T21:11:22Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 71,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 14,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+              "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-06-23T21:25:17Z",
+          "jobID": "245e0acf-4693-4bbb-85a5-793e95817a68",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2069532270401687552",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-06-23T21:25:23Z",
+          "jobID": "a4d7bfe0-58ff-43af-960b-087c44ec341d",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2069532292069462016",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999",
@@ -40,9 +73,48 @@
         "jobStartTime": "2026-06-23T18:21:14Z",
         "jobID": "add4a4e0-2507-463e-ac6d-c14308323263",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2069485953294012416",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-06-23T21:18:03Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 71,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 19,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+              "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 18,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-19717:UserInterface Check configmap on console",
+              "OCP-20800:UserInterface Key/Value Secret",
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts",
+              "OCP-31989:ClusterObservability Export Thanos Querier metrics and alerts"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-06-23T21:25:36Z",
+          "jobID": "ea2eeab9-dd86-489a-852b-bf52b453afbc",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2069532347602046976",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-06-23T21:25:41Z",
+          "jobID": "e75134ad-66c6-4592-ba99-cdee4cdf907e",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2069532369475342336",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f999",
@@ -50,7 +122,8 @@
         "jobStartTime": "2026-06-23T18:21:19Z",
         "jobID": "47cff0af-177c-4436-8f6c-534a74118e22",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.12-gcp-ipi-f999/2069485970557767680",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-06-23T21:14:41Z"
       },
       "retriedJobs": []
     },
@@ -60,7 +133,8 @@
         "jobStartTime": "2026-06-23T18:21:24Z",
         "jobID": "9441b1d1-6ecb-4b12-85bc-df59b75fd9db",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-stable-4.13-upgrade-from-stable-4.13-aws-ipi-f999/2069485993970372608",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-06-23T20:59:25Z"
       },
       "retriedJobs": []
     }
