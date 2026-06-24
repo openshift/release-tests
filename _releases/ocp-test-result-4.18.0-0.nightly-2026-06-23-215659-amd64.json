@@ -51,7 +51,8 @@
           "jobStartTime": "2026-06-24T04:27:52Z",
           "jobID": "3fcae950-276e-45e8-9d09-f2746d46a7e6",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-azure-ipi-fips-f999/2069638615348023296",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-24T06:13:23Z"
         }
       ]
     },
@@ -61,9 +62,49 @@
         "jobStartTime": "2026-06-24T02:20:11Z",
         "jobID": "6a623369-efb6-48d7-b873-75d7d8bdb55f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2069606484466995200",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-06-24T05:30:08Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 105,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51139-[CSI-Driver] [Dynamic PV] [Filesystem xfs] volumes resize on-line"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 17,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14688:Workloads pod will be scheduled on the node which meets pod affinity - In"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-06-24T06:29:09Z",
+          "jobID": "a9b5fcd8-1c6e-48da-afbb-ac1027c94b7f",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2069669139097587712",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-06-24T06:29:15Z",
+          "jobID": "ed27014d-1b20-415b-8039-af5494b15e7d",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2069669161495171072",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999",
