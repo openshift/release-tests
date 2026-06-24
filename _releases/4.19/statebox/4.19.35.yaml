@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.35
 created_at: '2026-06-18T12:00:19Z'
-updated_at: '2026-06-23T04:10:49Z'
+updated_at: '2026-06-24T14:30:22Z'
 metadata:
   jira_ticket: ART-20709
   advisory_ids:
@@ -105,4 +105,14 @@ tasks:
     2026-06-23T04:10:47Z: INFO: Background metadata checker process started (PID: 86987) - running independently after parent exit
     2026-06-23T04:10:47Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.19_20260623_001047.log
     2026-06-23T04:10:48Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
-issues: []
+issues:
+- issue: 'Errata Tool security_alerts API failing with 400 Bad Request for advisory
+    168662. Cannot refresh security alerts to verify blocking status. API endpoint:
+    https://errata.devel.redhat.com/api/v1/erratum/168662/security_alerts/refresh.
+    This prevents changing advisory status from QE to REL_PREP.'
+  reported_at: '2026-06-24T14:30:22Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
