@@ -50,11 +50,12 @@ class TestConfigStore(unittest.TestCase):
     def test_get_owner(self):
         # verify default value, if minor release not found in conf
         owner = self.cs.get_owner()
-        self.assertEqual(owner, "rioliu@redhat.com")
+        self.assertEqual(owner, "tdavid@redhat.com")
 
+    def test_set_owner(self):
         cs = ConfigStore("4.11.10")
-        owner = cs.get_owner()
-        self.assertEqual(owner, "wenwang@redhat.com")
+        cs.set_owner("wenwang@redhat.com")
+        self.assertEqual(cs.get_owner(), "wenwang@redhat.com")
 
     def test_get_slack_contact(self):
         contact = self.cs.get_slack_contact("qe")
@@ -94,7 +95,7 @@ class TestConfigStore(unittest.TestCase):
         server_url = self.cs.get_jenkins_server()
         self.assertTrue(
             "dno.corp.redhat.com" in server_url)
-        
+
     def test_get_release_version(self):
         version = "4.18.1"
         self.assertEqual(version, util.get_release_key(version))
@@ -106,7 +107,7 @@ class TestConfigStore(unittest.TestCase):
         for r in ["4.18.0-rc.8", "4.19.0-ec.1"]:
             cs = ConfigStore(r)
             self.assertGreater(len(cs.get_advisories()), 0)
-    
+
     def test_get_gitlab_url(self):
         self.assertEqual(self.cs.get_gitlab_url(), "https://gitlab.cee.redhat.com")
         
