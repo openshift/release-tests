@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.65
 created_at: '2026-06-24T22:00:15Z'
-updated_at: '2026-06-25T08:48:41Z'
+updated_at: '2026-06-25T08:48:59Z'
 metadata:
   jira_ticket: ART-21247
   advisory_ids:
@@ -56,4 +56,15 @@ tasks:
     2026-06-25T08:48:39Z: INFO: no push job found for advisory 168997
     2026-06-25T08:48:39Z: INFO: advisory 168997 has blocking advisory []
     2026-06-25T08:48:40Z: INFO: push job for advisory 168997 is triggered
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-06-25T08:48:52Z'
+  completed_at: null
+  result: |-
+    2026-06-25T08:48:52Z: INFO: Initialized StateBox for release 4.16.65 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.65.yaml
+    2026-06-25T08:48:53Z: INFO: Loaded state from _releases/4.16/statebox/4.16.65.yaml (SHA: 081977ce)
+    2026-06-25T08:48:53Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-06-25T08:48:58Z: INFO: Triggered image consistency check Prow job: 4177fc76-8ef5-44d7-b614-e4cb3951300b
+    2026-06-25T08:48:58Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2070067973338435584
+    2026-06-25T08:48:58Z: INFO: sent slack message to <#team-qe-release>
 issues: []
