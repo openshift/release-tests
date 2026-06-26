@@ -186,7 +186,31 @@
           "jobStartTime": "2026-06-26T09:13:39Z",
           "jobID": "8e0dcda9-f00c-4f20-b916-b8d23b60c26d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2070435312189837312",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-06-26T14:28:42Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 30
+            },
+            "cucushift-e2e": {
+              "total": 17,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-20020:UserInterface Source Secret"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     }
@@ -196,5 +220,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-06-25-210812",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-06-25-210812"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
