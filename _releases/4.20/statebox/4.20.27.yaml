@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.27
 created_at: '2026-06-25T12:00:13Z'
-updated_at: '2026-06-26T07:31:36Z'
+updated_at: '2026-06-26T07:57:02Z'
 metadata:
   jira_ticket: ART-21265
   advisory_ids:
@@ -52,4 +52,16 @@ tasks:
     6 blocking test jobs passed BO3 verification. GCP upgrade test: first attempt
     failed (infrastructure), retries 79b1e145-45fe-4c92-bfa2-bcc6ec7097f2 and 2fc31b4f-8448-4bf0-9d4e-784b963f3bbc
     succeeded (BO3: 2/3 passed). Build accepted for promotion.'
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-06-26T07:56:59Z'
+  completed_at: null
+  result: |-
+    2026-06-26T07:56:59Z: INFO: Initialized StateBox for release 4.20.27 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.27.yaml
+    2026-06-26T07:56:59Z: INFO: job id is not set, will trigger stage testing
+    2026-06-26T07:57:00Z: INFO: Loaded state from _releases/4.20/statebox/4.20.27.yaml (SHA: a7ab3f52)
+    2026-06-26T07:57:00Z: INFO: Stage release succeeded (verified by label)
+    2026-06-26T07:57:00Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-06-26T07:57:00Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1668/>
+    2026-06-26T07:57:01Z: INFO: sent slack message to <#team-qe-release>
 issues: []
