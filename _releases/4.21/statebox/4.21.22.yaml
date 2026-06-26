@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.22
 created_at: '2026-06-25T12:00:18Z'
-updated_at: '2026-06-26T10:46:36Z'
+updated_at: '2026-06-26T12:31:03Z'
 metadata:
   jira_ticket: ART-21266
   advisory_ids:
@@ -52,17 +52,14 @@ tasks:
     Azure FIPS job flaky (1/3 passed BO3, retry succeeded). Failures infrastructure-related
     (DNS timeout, timing). All other platforms passed. Accepted with waiver.'
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-06-26T07:55:46Z'
-  completed_at: null
+  completed_at: '2026-06-26T12:31:02Z'
   result: |-
-    2026-06-26T07:55:46Z: INFO: Initialized StateBox for release 4.21.22 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.22.yaml
-    2026-06-26T07:55:46Z: INFO: job id is not set, will trigger stage testing
-    2026-06-26T07:55:47Z: INFO: Loaded state from _releases/4.21/statebox/4.21.22.yaml (SHA: f77b80ce)
-    2026-06-26T07:55:47Z: INFO: Stage release succeeded (verified by label)
-    2026-06-26T07:55:47Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-06-26T07:55:47Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1667/>
-    2026-06-26T07:55:48Z: INFO: sent slack message to <#team-qe-release>
+    2026-06-26T12:31:02Z: INFO: Initialized StateBox for release 4.21.22 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.22.yaml
+    2026-06-26T12:31:02Z: INFO: check stage job status according to job id: 1667
+    2026-06-26T12:31:02Z: INFO: build status of zstreams/Stage-Pipeline/1667 is SUCCESS
+    2026-06-26T12:31:02Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: image-consistency-check
   status: Pass
   started_at: '2026-06-26T07:56:38Z'
