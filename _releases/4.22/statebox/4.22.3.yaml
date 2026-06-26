@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.3
 created_at: '2026-06-25T14:00:23Z'
-updated_at: '2026-06-26T12:17:00Z'
+updated_at: '2026-06-26T12:22:31Z'
 metadata:
   jira_ticket: ART-21264
   advisory_ids:
@@ -51,13 +51,11 @@ tasks:
     2026-06-26T08:06:57Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-06-26T08:06:57Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Fail
   started_at: '2026-06-26T12:16:58Z'
-  completed_at: null
-  result: |-
-    2026-06-26T12:16:58Z: INFO: Initialized StateBox for release 4.22.3 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.3.yaml
-    2026-06-26T12:16:59Z: INFO: Loaded state from _releases/4.22/statebox/4.22.3.yaml (SHA: 2860df18)
-    2026-06-26T12:16:59Z: INFO: Image consistency check already passed, skipping
+  completed_at: '2026-06-26T12:22:31Z'
+  result: Previous run completed with 2 images failing Pyxis freshness check (timeouts).
+    Need to re-run entire task to verify all 855 images.
 - name: stage-testing
   status: In Progress
   started_at: '2026-06-26T08:04:05Z'
