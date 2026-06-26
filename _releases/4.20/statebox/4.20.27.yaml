@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.27
 created_at: '2026-06-25T12:00:13Z'
-updated_at: '2026-06-26T08:16:08Z'
+updated_at: '2026-06-26T10:46:38Z'
 metadata:
   jira_ticket: ART-21265
   advisory_ids:
@@ -65,11 +65,20 @@ tasks:
     2026-06-26T07:57:00Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1668/>
     2026-06-26T07:57:01Z: INFO: sent slack message to <#team-qe-release>
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-06-26T07:58:34Z'
-  completed_at: null
-  result: 'Image consistency check Prow job triggered successfully. Job ID: 15c6a6b7-a0a0-461f-b3f4-4b5597625afc,
-    current state: scheduling. Waiting for job to complete.'
+  completed_at: '2026-06-26T10:46:37Z'
+  result: |-
+    2026-06-26T10:37:57Z: INFO: Initialized StateBox for release 4.20.27 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.27.yaml
+    2026-06-26T10:37:57Z: INFO: Checking image consistency check Prow job status for job ID: 15c6a6b7-a0a0-461f-b3f4-4b5597625afc
+    2026-06-26T10:37:58Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2070417476381839360
+    2026-06-26T10:37:58Z: INFO: Starting image health check for shipment MR 609
+    2026-06-26T10:37:58Z: INFO: Stage release succeeded (verified by label)
+    2026-06-26T10:37:58Z: INFO: Processing MR 609
+    2026-06-26T10:38:01Z: INFO: Found 856 images to check
+    2026-06-26T10:46:37Z: INFO: Completed image health check. Scanned 856 images, found 0 unhealthy
+    2026-06-26T10:46:37Z: INFO: Added image health summary to MR 609
+    2026-06-26T10:46:37Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-06-26T08:16:08Z'
