@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.3
 created_at: '2026-06-25T14:00:23Z'
-updated_at: '2026-06-26T12:55:54Z'
+updated_at: '2026-06-29T12:04:36Z'
 metadata:
   jira_ticket: ART-21264
   advisory_ids:
@@ -100,6 +100,24 @@ tasks:
     2026-06-26T12:39:51Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=df94fff5219721391e48098e258d7bc8a645b1d635a1b65148dc29f2ecb749c8/signature-1
     2026-06-26T12:40:16Z: INFO: Signature check PASSED
     2026-06-26T12:40:16Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-06-29T12:04:22Z'
+  completed_at: null
+  result: |-
+    2026-06-29T12:04:22Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-06-29T12:04:25Z: INFO: RHCOS nvr is rhcos-x86_64-4.22.9.8.202606230855-0
+    2026-06-29T12:04:25Z: INFO: The commit metadata is kernel-5.14.0-687.17.1.el9_8
+    2026-06-29T12:04:25Z: INFO: Tags of this build is [{'arches': '', 'id': 169769, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.8.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 169772, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.8.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 184958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'nvidia-jetpack-rhel-9.8-override', 'perm': 'nvidia-jetpack-packagers', 'perm_id': 109}, {'arches': '', 'id': 189918, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:27789-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 190052, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:168745-dropped', 'perm': 'trusted', 'perm_id': 6}]
+    2026-06-29T12:04:26Z: INFO: Successfully approved MR 608
+    2026-06-29T12:04:26Z: INFO: Successfully added QE approval to MR 608
+    2026-06-29T12:04:27Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:29795
+    2026-06-29T12:04:34Z: INFO: The metadata url is not accessible
+    2026-06-29T12:04:34Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-06-29T12:04:34Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-06-29T12:04:34Z: INFO: Background metadata checker process started (PID: 441115) - running independently after parent exit
+    2026-06-29T12:04:34Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.22_20260629_080434.log
+    2026-06-29T12:04:35Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 169022'
   reported_at: '2026-06-25T13:57:05Z'
