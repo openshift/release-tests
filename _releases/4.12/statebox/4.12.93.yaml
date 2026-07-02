@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.93
 created_at: '2026-07-01T10:00:06Z'
-updated_at: '2026-07-02T15:37:10Z'
+updated_at: '2026-07-02T18:12:27Z'
 metadata:
   jira_ticket: ART-21475
   advisory_ids:
@@ -71,6 +71,14 @@ tasks:
     2026-07-02T15:37:09Z: INFO: Completed image health check. Scanned 240 images, found 0 unhealthy
     2026-07-02T15:37:09Z: INFO: Added image health summary to MR 623
     2026-07-02T15:37:09Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-02T00:41:51Z'
+  completed_at: '2026-07-02T00:41:51Z'
+  result: 'All promoted build tests passed. Build 4.12.93 accepted by aggregation.
+    Test results: 1 blocking test job (periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-aws-ipi-f999)
+    - Status: success, completed 2026-07-02T00:41:51Z. Duration: ~2h 41m. No retries
+    needed. Aggregated: true, Accepted: true.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 169293'
   reported_at: '2026-07-02T06:56:05Z'
