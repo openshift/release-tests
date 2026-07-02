@@ -9,8 +9,8 @@ a central source of truth for supported y-streams and active releases.
 Usage:
     from oar.core.release_discovery import ReleaseDiscovery
 
-    # Initialize with GitHub token
-    discovery = ReleaseDiscovery()  # Uses GITHUB_TOKEN env var
+    # Initialize with GitHub App Writer credentials
+    discovery = ReleaseDiscovery()
 
     # Get all supported y-streams
     y_streams = discovery.get_supported_ystreams()
@@ -32,10 +32,11 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 import yaml
-from github import Auth, Github
 from semver import VersionInfo
 
+from oar.core.const import ENV_VAR_GITHUB_APP_WRITER_ID, ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
 from oar.core.exceptions import ReleaseDiscoveryException
+from oar.core.github_app import GitHubApp
 
 logger = logging.getLogger(__name__)
 
@@ -53,36 +54,51 @@ class ReleaseDiscovery:
 
     def __init__(
         self,
-        github_token: Optional[str] = None,
         repo_name: Optional[str] = None,
-        branch: Optional[str] = None
+        branch: Optional[str] = None,
     ):
         """
         Initialize ReleaseDiscovery with authenticated GitHub API.
 
         Args:
-            github_token: GitHub personal access token (default: from GITHUB_TOKEN env)
             repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
 
         Raises:
-            ReleaseDiscoveryException: If GitHub token is missing
+            ReleaseDiscoveryException: If GitHub App Writer credentials are missing
         """
-        token = github_token or os.environ.get("GITHUB_TOKEN")
-        if not token:
-            raise ReleaseDiscoveryException("GitHub token not found. Set GITHUB_TOKEN environment variable.")
-
         self.repo_name = repo_name or self.DEFAULT_REPO
         self.branch = branch or self.DEFAULT_BRANCH
+
+        if self.repo_name != self.DEFAULT_REPO:
+            raise ReleaseDiscoveryException(
+                f"ReleaseDiscovery only supports {self.DEFAULT_REPO}, got {self.repo_name}"
+            )
 
         # Split repo_name into owner and repository for GraphQL queries
         self.git_repo_owner, self.git_repo_name = self.repo_name.split('/', 1)
 
-        auth = Auth.Token(token)
-        self._github = Github(auth=auth)
+        self._github = self._init_github_client()
 
         # Tracking files data (fetched via GraphQL)
         self._tracking_data: Optional[dict] = None
+
+    def _init_github_client(self):
+        app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
+        private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
+        if not app_id or not private_key_path:
+            raise ReleaseDiscoveryException(
+                f"{ENV_VAR_GITHUB_APP_WRITER_ID} and "
+                f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} must be set."
+            )
+        try:
+            return GitHubApp(app_id, private_key_path).client_for_repo(
+                self.git_repo_owner, self.git_repo_name
+            )
+        except Exception as e:
+            raise ReleaseDiscoveryException(
+                f"Failed to initialize GitHub App Writer ({type(e).__name__})"
+            ) from e
 
     def get_supported_ystreams(self) -> List[str]:
         """

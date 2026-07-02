@@ -17,6 +17,11 @@ from requests.adapters import HTTPAdapter
 from semver import VersionInfo
 from urllib3.util import Retry
 
+from .github_auth import (
+    openshift_release_github_headers,
+    release_tests_github_headers,
+)
+
 
 class Jobs:
     """Class Jobs handle Prow job by calling the API"""
@@ -175,7 +180,7 @@ class Jobs:
 
     def get_sha(self, url):
         """Function get returned sha data"""
-        res = requests.get(url=url, headers=self.get_github_headers())
+        res = requests.get(url=url, headers=self.get_release_tests_github_headers())
         if res.status_code == 200:
             sha = json.loads(res.text)["sha"]
             print(f"sha: {sha}")
@@ -187,7 +192,7 @@ class Jobs:
     def push_action(self, url, data):
         """Function push data to the Github repo"""
         res = requests.put(url=url, json=data,
-                           headers=self.get_github_headers())
+                           headers=self.get_release_tests_github_headers())
         if res.status_code == 200:
             print(res.reason)
         else:
@@ -201,7 +206,7 @@ class Jobs:
         )
         # print(base64Content)
         # check if the file exist
-        res = requests.get(url=url, headers=self.get_github_headers())
+        res = requests.get(url=url, headers=self.get_release_tests_github_headers())
         if res.status_code == 200:
             old_version = self.get_recored_version(url)
             if VersionInfo.parse(old_version) < VersionInfo.parse(content):
@@ -236,7 +241,7 @@ class Jobs:
     def get_recored_version(self, url):
         """Function get the stored OCP payload info"""
         # it will use the default main branch
-        res = requests.get(url=url, headers=self.get_github_headers())
+        res = requests.get(url=url, headers=self.get_release_tests_github_headers())
         if res.status_code != 200:
             print(
                 f"Fail to get recored version! {res.status_code}:{res.reason}")
@@ -279,15 +284,13 @@ class Jobs:
             line = list(job_dict.values())
             writer.writerow(line)
 
-    # get_github_headers func adds Github Token in case rate limit
-    def get_github_headers(self):
-        """Function check the Github token"""
-        token = os.getenv("GITHUB_TOKEN")
-        if token:
-            headers = {"Authorization": "Bearer " + token.strip()}
-            return headers
-        print("No GITHUB_TOKEN env var found, exit...")
-        sys.exit(0)
+    def get_release_tests_github_headers(self):
+        """HTTP headers for ``openshift/release-tests`` Contents API (Writer App)."""
+        return release_tests_github_headers()
+
+    def get_openshift_release_github_headers(self):
+        """HTTP headers for ``openshift/release`` Contents API (Reader App)."""
+        return openshift_release_github_headers()
 
     def get_required_jobs(self, file_path):
         """Function get the required Prow jobs from the file"""
@@ -508,7 +511,7 @@ class Jobs:
         """Function search the prow job from https://github.com/openshift/release/tree/main/ci-operator/jobs/openshift/openshift-tests-private"""
         print("Searching job...")
         jobs_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/?ref=main"
-        req = requests.get(url=jobs_url, timeout=3)
+        req = requests.get(url=jobs_url, headers=self.get_openshift_release_github_headers(), timeout=3)
         if req.status_code != 200:
             print(f"Error code: {req.status_code}, reason: {req.reason}")
             return None
@@ -522,11 +525,11 @@ class Jobs:
             print(">>>> " + file_name)
             url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=main"
             res = requests.get(
-                url=url, headers=self.get_github_headers(), timeout=3)
+                url=url, headers=self.get_openshift_release_github_headers(), timeout=3)
             if res.status_code != 200:
                 continue
             response = requests.get(
-                url=res.json()["git_url"], headers=self.get_github_headers(), timeout=3)
+                url=res.json()["git_url"], headers=self.get_openshift_release_github_headers(), timeout=3)
             if response.status_code != 200:
                 continue
             # We have to get the git blobs when the size is very large, such as
@@ -637,7 +640,7 @@ class Jobs:
         if branch is None:
             branch = "main"
         base_url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/config/{component}/?ref={branch}"
-        req = requests.get(url=base_url, timeout=3)
+        req = requests.get(url=base_url, headers=self.get_openshift_release_github_headers(), timeout=3)
         if req.status_code == 200:
             file_dict = yaml.load(req.text, Loader=yaml.FullLoader)
             file_count = 0
@@ -655,7 +658,7 @@ class Jobs:
     def get_jobs(self, url):
         """Function get prow jobs"""
         res = requests.get(
-            url=url, headers=self.get_github_headers(), timeout=3)
+            url=url, headers=self.get_openshift_release_github_headers(), timeout=3)
         if res.status_code == 200:
             content = base64.b64decode(
                 res.json()["content"].replace("\n", "")).decode("utf-8")
