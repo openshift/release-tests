@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.4
 created_at: '2026-07-02T14:00:21Z'
-updated_at: '2026-07-03T12:27:04Z'
+updated_at: '2026-07-03T12:39:04Z'
 metadata:
   jira_ticket: ART-21496
   advisory_ids:
@@ -98,4 +98,14 @@ tasks:
 
     Recommendation: Accept build despite accepted=false
     Waivable failures: 100% (infrastructure + flaky tests)
-issues: []
+issues:
+- issue: 'Stage-testing job 1677 failed due to Azure infrastructure issue: Subnet
+    creation failed with address prefix conflict (10.0.0.0/24), no public/internal
+    IP found. Flexy-install #377110 could not provision the cluster. This is an infrastructure
+    failure, not a product bug. Retry recommended.'
+  reported_at: '2026-07-03T12:39:04Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - stage-testing
