@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.4
 created_at: '2026-07-02T14:00:21Z'
-updated_at: '2026-07-03T14:19:58Z'
+updated_at: '2026-07-04T09:00:01Z'
 metadata:
   jira_ticket: ART-21496
   advisory_ids:
@@ -107,6 +107,54 @@ tasks:
 
     Recommendation: Accept build despite accepted=false
     Waivable failures: 100% (infrastructure + flaky tests)
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-04T09:00:01Z'
+  completed_at: '2026-07-04T09:00:01Z'
+  result: |-
+    Promoted Build Analysis: ACCEPT - All tests passed
+
+    Build: 4.22.4
+    Test Status: accepted=true, aggregated=true
+
+    Test Results Summary:
+    - Total Jobs: 2 upgrade test jobs
+    - Passed Jobs: 2 (100%)
+    - Failed Jobs: 0
+    - Retries Required: 0
+
+    Upgrade Test Coverage:
+    1. AWS Y-stream upgrade (4.21 → 4.22.4): PASSED
+       - Duration: ~2h 44min
+       - Status: Success on first attempt
+       - Job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.21-aws-ipi-f999/2072808987530629120
+
+    2. Azure FIPS Z-stream upgrade (4.22 → 4.22.4): PASSED
+       - Duration: ~2h 33min
+       - Status: Success on first attempt
+       - FIPS compliance validated during upgrade
+       - Job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.22-azure-ipi-fips-f999/2072809009403924480
+
+    Platform Distribution:
+    - AWS: 1/1 passed (100%)
+    - Azure: 1/1 passed (100%)
+
+    Key Findings:
+    ✅ All blocking tests passed BO3 verification
+    ✅ No failures detected across any platform
+    ✅ No retries required (high reliability indicator)
+    ✅ Both major and minor upgrade paths validated
+    ✅ FIPS compliance maintained during upgrade
+
+    Classification: Clean Release
+    - No product bugs detected
+    - No infrastructure issues
+    - No flaky tests observed
+    - All upgrade paths successful
+
+    Confidence: HIGH - Build ready for release
+
+    Recommendation: Accept promoted build 4.22.4 and proceed to final approval
 issues:
 - issue: 'Stage-testing job 1677 failed due to Azure infrastructure issue: Subnet
     creation failed with address prefix conflict (10.0.0.0/24), no public/internal
