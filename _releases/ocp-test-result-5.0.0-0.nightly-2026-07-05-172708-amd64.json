@@ -6,9 +6,23 @@
         "jobStartTime": "2026-07-06T01:54:56Z",
         "jobID": "5f8d0a7f-c061-410b-b105-473a15b52689",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2073948781522456576",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-07-06T05:39:30Z"
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-07-06T06:00:09Z",
+          "jobID": "594f6c0d-ebbc-4d52-a447-2f2af1a40ced",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2074010494624075776",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-07-06T06:00:14Z",
+          "jobID": "71201126-6b67-4a3b-92fd-4b1022011171",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2074010516237324288",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999",
@@ -48,13 +62,56 @@
           "jobStartTime": "2026-07-06T02:39:54Z",
           "jobID": "4c5854b6-4f31-4b07-ad65-f3c640e45516",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2073960100279619584",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-06T05:38:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 5,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-07-06T02:40:00Z",
           "jobID": "3bcd6971-afd0-4afd-9f9a-2ccead823364",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2073960121955782656",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-06T05:23:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 6,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -91,13 +148,15 @@
           "jobStartTime": "2026-07-06T02:40:11Z",
           "jobID": "9ff7a11a-22d9-4796-9aba-22f7484d44ad",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-4.22-gcp-ipi-f999/2073960169317863424",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-07-06T05:34:25Z"
         },
         {
           "jobStartTime": "2026-07-06T02:40:16Z",
           "jobID": "3cda874f-8c5f-4826-864f-5f78ce4539c7",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-4.22-gcp-ipi-f999/2073960190784311296",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-07-06T05:42:05Z"
         }
       ]
     },
@@ -107,7 +166,8 @@
         "jobStartTime": "2026-07-06T01:55:22Z",
         "jobID": "408e6d4c-4bfe-451a-a941-fae86d0076fc",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-5.0-aws-ipi-f999/2073948890859573248",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-07-06T05:51:29Z"
       },
       "retriedJobs": []
     }
