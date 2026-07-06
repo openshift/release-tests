@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.55
 created_at: '2026-07-01T13:02:31Z'
-updated_at: '2026-07-06T15:12:09Z'
+updated_at: '2026-07-06T17:39:22Z'
 metadata:
   jira_ticket: ART-21477
   advisory_ids:
@@ -47,17 +47,14 @@ tasks:
     Verified via GCS artifacts. Prow API returned 404 for job ID bef9b82c-0064-4017-a497-afdca27ffe67
     but the actual job completed successfully.'
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-07-06T14:56:09Z'
-  completed_at: null
+  completed_at: '2026-07-06T17:39:21Z'
   result: |-
-    2026-07-06T14:56:09Z: INFO: Initialized StateBox for release 4.17.55 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.55.yaml
-    2026-07-06T14:56:09Z: INFO: job id is not set, will trigger stage testing
-    2026-07-06T14:56:09Z: INFO: Loaded state from _releases/4.17/statebox/4.17.55.yaml (SHA: ff6f14fa)
-    2026-07-06T14:56:09Z: INFO: Stage release succeeded (verified by label)
-    2026-07-06T14:56:10Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-07-06T14:56:10Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1682/>
-    2026-07-06T14:56:10Z: INFO: sent slack message to <#team-qe-release>
+    2026-07-06T17:39:21Z: INFO: Initialized StateBox for release 4.17.55 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.55.yaml
+    2026-07-06T17:39:21Z: INFO: check stage job status according to job id: 1682
+    2026-07-06T17:39:21Z: INFO: build status of zstreams/Stage-Pipeline/1682 is SUCCESS
+    2026-07-06T17:39:21Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: image-signed-check
   status: Pass
   started_at: '2026-07-06T14:43:59Z'
