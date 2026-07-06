@@ -40,7 +40,8 @@
           "jobStartTime": "2026-07-06T14:41:23Z",
           "jobID": "340f9542-a7d9-4c08-b442-41d2ce541e24",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2074141668096872448",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-06T17:11:39Z"
         }
       ]
     },
@@ -77,7 +78,27 @@
           "jobStartTime": "2026-07-06T15:39:53Z",
           "jobID": "4e9e96b8-d6fd-4863-aa2d-13ea51856203",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-azure-ipi-fips-f999/2074156389655121920",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-06T18:39:27Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 71,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+                "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 18,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -188,5 +209,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-07-06-041732",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-07-06-041732"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
