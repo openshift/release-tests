@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.37
 created_at: '2026-07-02T19:02:38Z'
-updated_at: '2026-07-07T12:27:02Z'
+updated_at: '2026-07-07T12:28:00Z'
 metadata:
   jira_ticket: ART-21495
   advisory_ids:
@@ -78,4 +78,15 @@ tasks:
     (Konflux flow). Test analysis already completed in analyze-candidate-build task.
     GCP infrastructure failures waived, AWS/Azure tests passed. Build quality validated
     and accepted.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-07T12:27:31Z'
+  completed_at: '2026-07-07T12:27:59Z'
+  result: |-
+    2026-07-07T12:27:31Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-07T12:27:31Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.37
+    2026-07-07T12:27:34Z: INFO: Image Digest: sha256:79dbf4584baf7b1dc523add340b02a22edd635c6c275a4f9124574a334b7310f
+    2026-07-07T12:27:34Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=79dbf4584baf7b1dc523add340b02a22edd635c6c275a4f9124574a334b7310f/signature-1
+    2026-07-07T12:27:59Z: INFO: Signature check PASSED
+    2026-07-07T12:27:59Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
