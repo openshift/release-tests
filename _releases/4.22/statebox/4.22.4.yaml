@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.4
 created_at: '2026-07-02T14:00:21Z'
-updated_at: '2026-07-07T07:09:20Z'
+updated_at: '2026-07-07T07:10:16Z'
 metadata:
   jira_ticket: ART-21496
   advisory_ids:
@@ -152,6 +152,17 @@ tasks:
     Confidence: HIGH - Build ready for release
 
     Recommendation: Accept promoted build 4.22.4 and proceed to final approval
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-07T07:09:31Z'
+  completed_at: '2026-07-07T07:10:14Z'
+  result: |-
+    2026-07-07T07:09:31Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-07T07:09:31Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.22.4
+    2026-07-07T07:09:34Z: INFO: Image Digest: sha256:a961faec0b28568cb4bf9850fee8079a2327a0c72ccf3b4258e3646e903f027b
+    2026-07-07T07:09:34Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=a961faec0b28568cb4bf9850fee8079a2327a0c72ccf3b4258e3646e903f027b/signature-1
+    2026-07-07T07:10:14Z: INFO: Signature check PASSED
+    2026-07-07T07:10:14Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Stage-testing job 1677 failed due to Azure infrastructure issue: Subnet
     creation failed with address prefix conflict (10.0.0.0/24), no public/internal
