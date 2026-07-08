@@ -32,11 +32,11 @@ class TestNotificationManager(unittest.TestCase):
             self.assertTrue(gid.startswith("<!subteam"))
 
     def test_get_slack_user_id(self):
-        uid = self.nm.sc.get_user_id_by_email("rioliu@redhat.com")
+        uid = self.nm.sc.get_user_id_by_email("tdavid@redhat.com")
         self.assertTrue(uid.startswith("<@"))
 
     def test_get_slack_user_id_from_cache(self):
-        emaillist = ["rioliu@redhat.com","jhuttana@redhat.com","rioliu@redhat.com","rioliu@redhat.com"]
+        emaillist = ["tdavid@redhat.com","jhuttana@redhat.com","tdavid@redhat.com","tdavid@redhat.com"]
         for emailid in emaillist:
             uid = self.nm.sc.get_user_id_by_email(emailid)
             self.assertTrue(uid.startswith("<@"))

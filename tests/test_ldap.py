@@ -26,9 +26,7 @@ class TestLdapHelper(unittest.TestCase):
             "bsiskova@redhat.com",
             "lterifaj@redhat.com",
             "cardelea@redhat.com",
-            "jhuttana@redhat.com",
-            "rioliu@redhat.com",
-            "minl@redhat.com"
+            "jhuttana@redhat.com"
         }
         group_members_emails = self.ldap.get_group_members_emails(
             "ocp-errata-reliability-team"

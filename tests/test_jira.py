@@ -36,7 +36,7 @@ class TestJiraManager(unittest.TestCase):
     )
     def test_get_issue_fields(self):
         issue = self.jm.get_issue("OCPBUGS-6622")
-        self.assertEqual(issue.get_qa_contact(), "rioliu@redhat.com")
+        self.assertEqual(issue.get_qa_contact(), "tdavid@redhat.com")
         self.assertEqual(issue.get_priority(), "Critical")
         self.assertEqual(issue.get_status(), "Closed")
         self.assertIn("FastFix", issue.get_labels())
@@ -76,8 +76,8 @@ class TestJiraManager(unittest.TestCase):
     )
     def test_update_issue(self):
         key = "OCPQE-15027"
-        self.jm.assign_issue(key, "rioliu@redhat.com")
-        self.assertEqual(self.jm.get_issue(key).get_assignee(), "rioliu@redhat.com")
+        self.jm.assign_issue(key, "tdavid@redhat.com")
+        self.assertEqual(self.jm.get_issue(key).get_assignee(), "tdavid@redhat.com")
 
         self.jm.transition_issue(key, JIRA_STATUS_IN_PROGRESS)
         self.assertEqual(self.jm.get_issue(key).get_status(), JIRA_STATUS_IN_PROGRESS)
@@ -107,7 +107,7 @@ class TestJiraManager(unittest.TestCase):
         self.jm.change_assignee_of_qe_subtasks()
         subtasks = self.jm.get_sub_tasks(key)
         for st in subtasks:
-            self.assertEqual(st.get_assignee(), "rioliu@redhat.com")
+            self.assertEqual(st.get_assignee(), "tdavid@redhat.com")
 
     @unittest.skipIf(
         token_not_found or token_is_dummy, "token is not found, skip this case"

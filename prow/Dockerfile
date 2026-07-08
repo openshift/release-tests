@@ -1,5 +1,5 @@
 FROM python:3.12
-LABEL maintainer="rioliu@redhat.com"
+LABEL maintainer="tdavid@redhat.com"
 
 # Install uv (fast Python package installer)
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh

@@ -1,5 +1,5 @@
 FROM registry.access.redhat.com/ubi9/ubi
-LABEL maintainer="rioliu@redhat.com"
+LABEL maintainer="tdavid@redhat.com"
 
 # Declare variables
 ENV PY_VER=3.12
