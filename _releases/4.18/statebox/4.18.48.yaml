@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.48
 created_at: '2026-07-09T14:00:14Z'
-updated_at: '2026-07-10T12:21:18Z'
+updated_at: '2026-07-10T12:22:01Z'
 metadata:
   jira_ticket: ART-21552
   advisory_ids:
@@ -61,6 +61,18 @@ tasks:
   completed_at: '2026-07-10T12:21:18Z'
   result: 'Promoted build accepted (phase: Accepted) - proceeding with async task
     triggers'
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-07-10T12:21:58Z'
+  completed_at: null
+  result: |-
+    2026-07-10T12:21:58Z: INFO: Initialized StateBox for release 4.18.48 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.48.yaml
+    2026-07-10T12:21:58Z: INFO: job id is not set, will trigger stage testing
+    2026-07-10T12:21:59Z: INFO: Loaded state from _releases/4.18/statebox/4.18.48.yaml (SHA: a3b87443)
+    2026-07-10T12:21:59Z: INFO: Stage release succeeded (verified by label)
+    2026-07-10T12:21:59Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-07-10T12:21:59Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1688/>
+    2026-07-10T12:22:00Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 169608'
   reported_at: '2026-07-10T04:54:11Z'
