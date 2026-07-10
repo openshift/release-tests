@@ -34,7 +34,32 @@
           "jobStartTime": "2026-07-10T05:27:13Z",
           "jobID": "705dc5d5-aba2-44eb-ac08-289a0541bb34",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2075451756560519168",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-10T09:10:05Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24525-[LSO] [Filesystem ext4] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-07-10T05:27:18Z",
@@ -149,7 +174,8 @@
           "jobStartTime": "2026-07-10T06:28:33Z",
           "jobID": "15a526a8-1695-44a3-949d-80a409247ca2",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2075467191330803712",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-10T08:52:27Z"
         }
       ]
     },
