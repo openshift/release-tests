@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.24
 created_at: '2026-07-09T14:00:21Z'
-updated_at: '2026-07-10T12:23:07Z'
+updated_at: '2026-07-10T12:25:08Z'
 metadata:
   jira_ticket: ART-21551
   advisory_ids:
@@ -80,6 +80,17 @@ tasks:
   completed_at: '2026-07-10T12:23:07Z'
   result: 'Promoted build 4.21.24 test results waived: Report-portal upload failures
     only, no product test failures detected. QE lead approved to proceed.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-10T12:24:34Z'
+  completed_at: '2026-07-10T12:25:00Z'
+  result: |-
+    2026-07-10T12:24:34Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-10T12:24:34Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.24
+    2026-07-10T12:24:37Z: INFO: Image Digest: sha256:9ed4f92ef5d48054797e08789b9a09ebeb9bfd9c6cb6ebba2876e4e81aa09c73
+    2026-07-10T12:24:37Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=9ed4f92ef5d48054797e08789b9a09ebeb9bfd9c6cb6ebba2876e4e81aa09c73/signature-1
+    2026-07-10T12:25:00Z: INFO: Signature check PASSED
+    2026-07-10T12:25:00Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: RHCOS security alert check required manual verification
   reported_at: '2026-07-10T05:49:12Z'
