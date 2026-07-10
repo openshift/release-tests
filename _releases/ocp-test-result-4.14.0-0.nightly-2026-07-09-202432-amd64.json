@@ -44,7 +44,28 @@
           "jobStartTime": "2026-07-10T07:35:42Z",
           "jobID": "bf9958a5-f2db-4414-a90d-7ab12469a2df",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-f999/2075484092010336256",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-10T10:25:42Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 80,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 18
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -106,7 +127,34 @@
           "jobStartTime": "2026-07-10T06:25:13Z",
           "jobID": "bcc87efe-f877-46f6-b0f3-9cb0017a5a91",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2075466354374217728",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-10T09:56:25Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 80,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 23
+            },
+            "cucushift-e2e": {
+              "total": 26,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-11494:Authentication Could grant admin permission for the service account group to access to its own project",
+                "OCP-12482:Workloads Fixed predicates rules testing - PodFitsResources",
+                "OCP-14556:Workloads pod will not be scheduled if node affinity or node selector is not satisfied - node affinity",
+                "OCP-14688:Workloads pod will be scheduled on the node which meets pod affinity - In"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-07-10T06:25:13Z",
@@ -207,13 +255,15 @@
           "jobStartTime": "2026-07-10T07:36:23Z",
           "jobID": "53fd6f2a-8a20-439f-910d-4b09341f2058",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-stable-4.14-upgrade-from-stable-4.14-aws-ipi-f999/2075484263620284416",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-10T10:31:45Z"
         },
         {
           "jobStartTime": "2026-07-10T07:36:34Z",
           "jobID": "7e3568de-82f6-4824-b442-bf130b619aae",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-stable-4.14-upgrade-from-stable-4.14-aws-ipi-f999/2075484309279477760",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-10T10:35:05Z"
         }
       ]
     }
