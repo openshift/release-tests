@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.38
 created_at: '2026-07-10T10:00:12Z'
-updated_at: '2026-07-12T15:14:43Z'
+updated_at: '2026-07-12T15:15:12Z'
 metadata:
   jira_ticket: ART-21567
   advisory_ids:
@@ -54,9 +54,18 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-07-12T02:35:25Z'
-  completed_at: '2026-07-12T15:14:43Z'
-  result: 'Image consistency check Prow job 24175bd4-596e-480b-8d95-48b80a3e422c completed
-    successfully. Verified by release lead. Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2076132688489615360'
+  completed_at: '2026-07-12T15:15:11Z'
+  result: |-
+    2026-07-12T15:09:29Z: INFO: Initialized StateBox for release 4.19.38 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.38.yaml
+    2026-07-12T15:09:29Z: INFO: Checking image consistency check Prow job status for job ID: 24175bd4-596e-480b-8d95-48b80a3e422c
+    2026-07-12T15:09:29Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2076132688489615360
+    2026-07-12T15:09:29Z: INFO: Starting image health check for shipment MR 637
+    2026-07-12T15:09:29Z: INFO: Stage release succeeded (verified by label)
+    2026-07-12T15:09:29Z: INFO: Processing MR 637
+    2026-07-12T15:09:32Z: INFO: Found 858 images to check
+    2026-07-12T15:15:11Z: INFO: Completed image health check. Scanned 858 images, found 0 unhealthy
+    2026-07-12T15:15:11Z: INFO: Added image health summary to MR 637
+    2026-07-12T15:15:11Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-07-12T02:35:31Z'
