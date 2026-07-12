@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.48
 created_at: '2026-07-09T14:00:14Z'
-updated_at: '2026-07-12T03:04:29Z'
+updated_at: '2026-07-12T03:05:02Z'
 metadata:
   jira_ticket: ART-21552
   advisory_ids:
@@ -71,16 +71,10 @@ tasks:
     2026-07-12T03:04:28Z: INFO: build status of zstreams/Stage-Pipeline/1688 is SUCCESS
     2026-07-12T03:04:28Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-07-10T12:22:10Z'
-  completed_at: null
-  result: |-
-    2026-07-10T12:22:10Z: INFO: Initialized StateBox for release 4.18.48 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.48.yaml
-    2026-07-10T12:22:10Z: INFO: Loaded state from _releases/4.18/statebox/4.18.48.yaml (SHA: 1a83c2e9)
-    2026-07-10T12:22:10Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-07-10T12:22:16Z: INFO: Triggered image consistency check Prow job: d9b4e4c9-78b2-4ba6-bc96-4b9939a735f4
-    2026-07-10T12:22:16Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2075557698094501888
-    2026-07-10T12:22:16Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-07-12T03:05:02Z'
+  result: Image consistency check Prow job passed - verified by release lead at https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2075557698094501888
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 169608'
   reported_at: '2026-07-10T04:54:11Z'
