@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.48
 created_at: '2026-07-09T14:00:14Z'
-updated_at: '2026-07-12T03:09:31Z'
+updated_at: '2026-07-12T03:10:48Z'
 metadata:
   jira_ticket: ART-21552
   advisory_ids:
@@ -71,6 +71,17 @@ tasks:
   started_at: '2026-07-10T12:22:10Z'
   completed_at: '2026-07-12T03:05:02Z'
   result: Image consistency check Prow job passed - verified by release lead at https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2075557698094501888
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-12T03:10:20Z'
+  completed_at: '2026-07-12T03:10:47Z'
+  result: |-
+    2026-07-12T03:10:20Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-12T03:10:20Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.48
+    2026-07-12T03:10:22Z: INFO: Image Digest: sha256:186541b2694432bda8df7e572ad0d4b97031b10295394afaa496821e10b51663
+    2026-07-12T03:10:22Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=186541b2694432bda8df7e572ad0d4b97031b10295394afaa496821e10b51663/signature-1
+    2026-07-12T03:10:47Z: INFO: Signature check PASSED
+    2026-07-12T03:10:47Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 169608'
   reported_at: '2026-07-10T04:54:11Z'
