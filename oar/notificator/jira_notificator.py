@@ -7,6 +7,7 @@ from enum import Enum
 from typing import List, Optional, Dict
 from jira import JIRA, Issue
 from jira.resources import User
+from github import Github
 from datetime import datetime, timedelta, timezone
 from dateutil import parser
 from oar.core.const import ENV_VAR_GITHUB_APP_READER_ID, ENV_VAR_GITHUB_APP_READER_PRIVATE_KEY
@@ -105,7 +106,7 @@ class NotificationService:
             return None
         return GitHubApp(app_id, private_key_path)
 
-    def _github_client_for_repo(self, org: str, repo: str):
+    def _github_client_for_repo(self, org: str, repo: str) -> Github | None:
         """
         Return a PyGithub client for a linked PR repository.
 

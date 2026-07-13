@@ -32,6 +32,7 @@ from datetime import datetime, timedelta
 from typing import List, Optional
 
 import yaml
+from github import Github
 from semver import VersionInfo
 
 from oar.core.const import ENV_VAR_GITHUB_APP_WRITER_ID, ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY
@@ -83,7 +84,7 @@ class ReleaseDiscovery:
         # Tracking files data (fetched via GraphQL)
         self._tracking_data: Optional[dict] = None
 
-    def _init_github_client(self):
+    def _init_github_client(self) -> Github:
         app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
         private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
         if not app_id or not private_key_path:
