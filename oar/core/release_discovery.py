@@ -53,31 +53,19 @@ class ReleaseDiscovery:
     DEFAULT_BRANCH = "z-stream"
     RELEASES_PATH = "_releases"
 
-    def __init__(
-        self,
-        repo_name: Optional[str] = None,
-        branch: Optional[str] = None,
-    ):
+    def __init__(self, branch: Optional[str] = None):
         """
         Initialize ReleaseDiscovery with authenticated GitHub API.
 
         Args:
-            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
 
         Raises:
             ReleaseDiscoveryException: If GitHub App Writer credentials are missing
         """
-        self.repo_name = repo_name or self.DEFAULT_REPO
+        self.repo_name = self.DEFAULT_REPO
         self.branch = branch or self.DEFAULT_BRANCH
-
-        if self.repo_name != self.DEFAULT_REPO:
-            raise ReleaseDiscoveryException(
-                f"ReleaseDiscovery only supports {self.DEFAULT_REPO}, got {self.repo_name}"
-            )
-
-        # Split repo_name into owner and repository for GraphQL queries
-        self.git_repo_owner, self.git_repo_name = self.repo_name.split('/', 1)
+        self.git_repo_owner, self.git_repo_name = self.DEFAULT_REPO.split('/', 1)
 
         self._github = self._init_github_client()
 
