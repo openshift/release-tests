@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.5
 created_at: '2026-07-11T00:00:14Z'
-updated_at: '2026-07-13T12:20:13Z'
+updated_at: '2026-07-13T12:22:08Z'
 metadata:
   jira_ticket: ART-21568
   advisory_ids:
@@ -66,6 +66,15 @@ tasks:
   result: 'Manually accepted by release lead. All 6 jobs failed BO3 but 0 actual test
     case failures across all suites and platforms. Job-level failures caused by report-portal
     infrastructure issue, not product bugs. Build: 4.22.0-0.nightly-2026-07-09-173929'
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-13T12:22:08Z'
+  completed_at: '2026-07-13T12:22:08Z'
+  result: 'Promoted build accepted by release lead. Same pattern as candidate build:
+    all 6 jobs failed BO3 but 0 actual test case failures across all suites and platforms
+    (aws-ipi, azure-ipi-fips, gcp-ipi, aws-ipi-disruptive, upgrade-from-4.21, nightly-upgrade-from-4.22).
+    Job-level failures caused by report-portal infrastructure issue, not product bugs.
+    Build: 4.22.0-0.nightly-2026-07-09-173929'
 issues:
 - issue: 'Stage-release pipeline failed (GitLab pipeline 16369336, downstream 16369371)
     with unknown_failure in stage-release-triggers stage. Stage testing cannot proceed
