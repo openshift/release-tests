@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.69
 created_at: '2026-07-08T12:00:08Z'
-updated_at: '2026-07-13T08:06:26Z'
+updated_at: '2026-07-13T09:06:29Z'
 metadata:
   jira_ticket: ART-21526
   advisory_ids:
@@ -80,6 +80,14 @@ tasks:
     2026-07-13T07:49:09Z: INFO: check stage job status according to job id: 1686
     2026-07-13T07:49:09Z: INFO: build status of zstreams/Stage-Pipeline/1686 is SUCCESS
     2026-07-13T07:49:09Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-09T18:57:15Z'
+  completed_at: '2026-07-09T18:57:15Z'
+  result: All 3 blocking jobs (AWS 4.13→4.14, Azure FIPS 4.14→4.14, GCP 4.14→4.14)
+    failed BO3 due to expired TLS certificate on datarouter.ccitredhat.com (expired
+    2026-07-09T18:57:15Z). All actual upgrade tests PASSED in all 9 attempts. Failures
+    waived as CI infrastructure issue - accepted by release lead.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 169525'
   reported_at: '2026-07-09T04:26:07Z'
