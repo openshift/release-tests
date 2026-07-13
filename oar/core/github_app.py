@@ -27,25 +27,6 @@ class GitHubApp:
         auth = Auth.AppAuth(app_id, key)
         self._integration = GithubIntegration(auth=auth)
 
-    def installation_token(self, owner: str, repo: str) -> str:
-        """
-        Return a short-lived installation access token for ``owner/repo``.
-
-        Uses ``GithubIntegration.get_access_token`` (standard GitHub App API).
-
-        Args:
-            owner: GitHub org or user (e.g. ``openshift``).
-            repo: Repository name (e.g. ``release-tests``).
-
-        Returns:
-            Installation access token string for REST/GraphQL ``Authorization: Bearer``.
-
-        Raises:
-            GithubException: App not installed on the repo or invalid credentials.
-        """
-        installation = self._integration.get_repo_installation(owner, repo)
-        return self._integration.get_access_token(installation.id).token
-
     def client_for_repo(self, owner: str, repo: str) -> Github:
         """
         Return a Github client for ``owner/repo``.
