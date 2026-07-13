@@ -179,10 +179,6 @@ class Jobs:
             line = list(job_dict.values())
             writer.writerow(line)
 
-    def get_openshift_release_github_headers(self):
-        """HTTP headers for ``openshift/release`` Contents API (Reader App)."""
-        return openshift_release_github_headers()
-
     def _is_valid_payload_url(self, payload_url: str) -> bool:
         """
         Validate the payload URL.
@@ -365,7 +361,7 @@ class Jobs:
         """Function search the prow job from https://github.com/openshift/release/tree/main/ci-operator/jobs/openshift/openshift-tests-private"""
         print("Searching job...")
         jobs_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/?ref=main"
-        req = requests.get(url=jobs_url, headers=self.get_openshift_release_github_headers(), timeout=3)
+        req = requests.get(url=jobs_url, headers=openshift_release_github_headers(), timeout=3)
         if req.status_code != 200:
             print(f"Error code: {req.status_code}, reason: {req.reason}")
             return None
@@ -379,11 +375,11 @@ class Jobs:
             print(">>>> " + file_name)
             url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=main"
             res = requests.get(
-                url=url, headers=self.get_openshift_release_github_headers(), timeout=3)
+                url=url, headers=openshift_release_github_headers(), timeout=3)
             if res.status_code != 200:
                 continue
             response = requests.get(
-                url=res.json()["git_url"], headers=self.get_openshift_release_github_headers(), timeout=3)
+                url=res.json()["git_url"], headers=openshift_release_github_headers(), timeout=3)
             if response.status_code != 200:
                 continue
             # We have to get the git blobs when the size is very large, such as
