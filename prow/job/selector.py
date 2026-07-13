@@ -76,8 +76,7 @@ class LocalGitRepo():
 
         local_file = f"{self._repo_local_dir}/{relative_file_path}"
 
-        for remote in self._repo.remotes:
-            remote.fetch()
+        self._repo.remote("origin").fetch()
         self._repo.git.merge(f"origin/{self._default_branch}")
 
         self._repo.config_writer().set_value("push", "default", "current")
