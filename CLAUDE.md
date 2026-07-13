@@ -348,7 +348,8 @@ For remote servers:
 - Kerberos ticket required: `kinit $kid@$domain`
 
 **For Controllers/Agents:**
-- `GITHUB_TOKEN` - GitHub API access
+- `GITHUB_APP_WRITER_ID` / `GITHUB_APP_WRITER_PRIVATE_KEY` - Writer App (`openshift/release-tests`)
+- `GITHUB_APP_READER_ID` / `GITHUB_APP_READER_PRIVATE_KEY` - Reader App (`openshift/*`, e.g. release, PR checks)
 - `APITOKEN` - Prow/Gangway API token
 - `GCS_CRED_FILE` - Google Cloud Storage credentials (for test artifacts)
 
@@ -518,8 +519,8 @@ When adding new version support, update:
 
 - **Kerberos required** for Errata Tool and LDAP access: `kinit $kid@$domain`
 - **Bugzilla credentials** cached in `~/.config/python-bugzilla/bugzillarc`
-- **GitHub token** needs `repo` scope for private repositories
-- All tokens should be kept in secure storage (Bitwarden, environment variables)
+- **GitHub Apps** — Writer (`GITHUB_APP_WRITER_*`) for `openshift/release-tests`; Reader (`GITHUB_APP_READER_*`) for `openshift/*` read access
+- All tokens and keys should be kept in secure storage (Bitwarden, environment variables)
 
 ## Common Pitfalls
 

@@ -41,18 +41,19 @@ Login https://console-openshift-console.apps.ci.l2s4.p1.openshiftapps.com/ and t
 oc login --token=<your-prow-token> --server=https://api.ci.l2s4.p1.openshiftapps.com:6443
 ```
 
-- Get the Github token
-
-Click your personal Github account -> `Settings` -> `Developer settings` -> `Personal access tokens (classic)` -> `Create new token`, you will get it like:
-```console
-ghp_xxx
-```
-
-- Set token ENVs
+- Set environment variables
 ```console
 $ export APITOKEN=<your-prow-token>
-$ export GITHUB_TOKEN=<your-github-token>
-``` 
+$ export GITHUB_APP_WRITER_ID=<ert-writer-app-id>
+$ export GITHUB_APP_WRITER_PRIVATE_KEY=/path/to/ert-writer.pem
+$ export GITHUB_APP_READER_ID=<ert-reader-app-id>
+$ export GITHUB_APP_READER_PRIVATE_KEY=/path/to/ert-reader.pem
+```
+
+- `jobctl` uses the **Writer** App on `openshift/release-tests`.
+- `job` uses **Writer** for `release-tests` Contents API and **Reader** for `openshift/release`.
+- `selector.AutoReleaseJobs` uses **Reader** on `openshift/release`.
+- `selector.TestJobRegistryUpdater` uses **Writer** on `openshift/release-tests` (branch + PR to `main`).
 
 - An example to run a job on a specific payload for **e2e test**.
 ```console
