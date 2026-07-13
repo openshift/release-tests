@@ -279,6 +279,7 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 import yaml
+from github import Github
 from github.GithubException import UnknownObjectException, GithubException
 
 from oar.core.configstore import ConfigStore
@@ -340,7 +341,7 @@ INITIAL_BACKOFF = 0.5  # seconds
 MAX_BACKOFF = 10.0  # seconds
 
 
-def _github_client_for_repo(repo_name: str):
+def _github_client_for_repo(repo_name: str) -> Github:
     """
     Initialize GitHub App Writer client for StateBox repository access.
 
