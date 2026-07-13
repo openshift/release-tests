@@ -85,6 +85,15 @@ class ReleaseDiscovery:
         self._tracking_data: Optional[dict] = None
 
     def _init_github_client(self) -> Github:
+        """
+        Initialize GitHub App Writer client for ReleaseDiscovery repository access.
+
+        Returns:
+            PyGithub client scoped to the repository installation.
+
+        Raises:
+            ReleaseDiscoveryException: If credentials are missing or client initialization fails.
+        """
         app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
         private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
         if not app_id or not private_key_path:
