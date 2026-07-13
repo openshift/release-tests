@@ -48,7 +48,6 @@ class TestStateBox(unittest.TestCase):
         # Create StateBox with ConfigStore (configstore is now first positional parameter)
         self.statebox = StateBox(
             self.configstore,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
 
@@ -120,7 +119,6 @@ class TestStateBox(unittest.TestCase):
         dummy_configstore = ConfigStore(self.test_release)
         dummy_statebox = StateBox(
             dummy_configstore,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
 
@@ -145,7 +143,6 @@ class TestStateBox(unittest.TestCase):
             invalid_configstore = ConfigStore(invalid_release)
             StateBox(
                 invalid_configstore,
-                repo_name=self.repo_name,
                 branch=self.branch,
             )
 
@@ -644,12 +641,10 @@ class TestStateBox(unittest.TestCase):
         
         statebox1 = StateBox(
             cs1,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
         statebox2 = StateBox(
             cs2,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
 
@@ -687,12 +682,10 @@ class TestStateBox(unittest.TestCase):
         
         statebox1 = StateBox(
             cs1,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
         statebox2 = StateBox(
             cs2,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
 
@@ -727,12 +720,10 @@ class TestStateBox(unittest.TestCase):
         
         statebox1 = StateBox(
             cs1,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
         statebox2 = StateBox(
             cs2,
-            repo_name=self.repo_name,
             branch=self.branch,
         )
 

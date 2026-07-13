@@ -73,12 +73,11 @@ Example Usage:
 API Reference:
 
 Core Operations:
-    StateBox(configstore, repo_name="openshift/release-tests", branch="z-stream")
+    StateBox(configstore, branch="z-stream")
         Initialize StateBox for a specific release.
 
         Args:
             configstore: ConfigStore instance (provides release version and configuration)
-            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
 
         Raises:
@@ -341,12 +340,11 @@ INITIAL_BACKOFF = 0.5  # seconds
 MAX_BACKOFF = 10.0  # seconds
 
 
-def _github_client_for_repo(repo_name: str) -> Github:
+def _github_client_for_repo() -> Github:
     """
-    Initialize GitHub App Writer client for StateBox repository access.
+    Initialize GitHub App Writer client for openshift/release-tests.
 
-    Args:
-        repo_name: Repository in ``owner/repo`` format.
+    Module-level helper (not a StateBox method) — no instance state required.
 
     Returns:
         PyGithub client scoped to the repository installation.
@@ -354,10 +352,6 @@ def _github_client_for_repo(repo_name: str) -> Github:
     Raises:
         StateBoxException: If credentials are missing or client initialization fails.
     """
-    if repo_name != DEFAULT_REPO_NAME:
-        raise StateBoxException(
-            f"StateBox only supports {DEFAULT_REPO_NAME}, got {repo_name}"
-        )
     app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
     private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
     if not app_id or not private_key_path:
@@ -365,7 +359,7 @@ def _github_client_for_repo(repo_name: str) -> Github:
             f"{ENV_VAR_GITHUB_APP_WRITER_ID} and "
             f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} must be set."
         )
-    owner, repo = repo_name.split("/", 1)
+    owner, repo = DEFAULT_REPO_NAME.split("/", 1)
     try:
         return GitHubApp(app_id, private_key_path).client_for_repo(owner, repo)
     except Exception as e:
@@ -488,7 +482,6 @@ class StateBox:
     def __init__(
         self,
         configstore: ConfigStore,
-        repo_name: str = DEFAULT_REPO_NAME,
         branch: str = DEFAULT_BRANCH,
     ):
         """
@@ -496,7 +489,6 @@ class StateBox:
 
         Args:
             configstore: ConfigStore instance (provides release version and configuration)
-            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
 
         Raises:
@@ -509,7 +501,7 @@ class StateBox:
         # Extract release from ConfigStore
         self._configstore = configstore
         self.release = configstore.release
-        self.repo_name = repo_name
+        self.repo_name = DEFAULT_REPO_NAME
         self.branch = branch
 
         # Extract y-stream version (e.g., "4.19" from "4.19.1")
@@ -517,14 +509,17 @@ class StateBox:
         self.file_path = f"{STATEBOX_PATH_PREFIX}/{y_stream}/statebox/{self.release}.yaml"
 
         # Initialize GitHub client
-        self._github = _github_client_for_repo(repo_name)
-        self._repo = self._github.get_repo(repo_name)
+        self._github = _github_client_for_repo()
+        self._repo = self._github.get_repo(self.repo_name)
 
         # Cache for current state and SHA
         self._state_cache: Optional[Dict[str, Any]] = None
         self._sha_cache: Optional[str] = None
 
-        logger.info(f"Initialized StateBox for release {self.release} at {repo_name}/{branch}/{self.file_path}")
+        logger.info(
+            f"Initialized StateBox for release {self.release} at "
+            f"{self.repo_name}/{branch}/{self.file_path}"
+        )
 
     def _get_default_state(self) -> Dict[str, Any]:
         """
