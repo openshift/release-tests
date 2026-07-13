@@ -118,7 +118,11 @@ class TestReleaseDiscovery(unittest.TestCase):
         """Test initialization without credentials raises exception"""
         with self.assertRaises(ReleaseDiscoveryException) as context:
             ReleaseDiscovery()
-        self.assertIn("must be set", str(context.exception))
+        self.assertEqual(
+            f"{ENV_VAR_GITHUB_APP_WRITER_ID} and "
+            f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} must be set.",
+            str(context.exception),
+        )
 
     @patch.dict('os.environ', WRITER_ENV)
     @patch('oar.core.release_discovery.GitHubApp')
