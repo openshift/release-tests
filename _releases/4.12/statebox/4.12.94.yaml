@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.94
 created_at: '2026-07-15T17:00:07Z'
-updated_at: '2026-07-16T16:56:07Z'
+updated_at: '2026-07-16T16:57:39Z'
 metadata:
   jira_ticket: ART-21661
   advisory_ids:
@@ -45,14 +45,20 @@ tasks:
     2026-07-16T16:56:06Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-07-16T16:56:06Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-07-16T05:42:56Z'
-  completed_at: null
+  completed_at: '2026-07-16T16:57:38Z'
   result: |-
-    2026-07-16T05:42:56Z: INFO: Initialized StateBox for release 4.12.94 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.94.yaml
-    2026-07-16T05:42:56Z: INFO: Checking image consistency check Prow job status for job ID: c497ac86-4d57-4ed9-a900-c1708707bb6d
-    2026-07-16T05:42:56Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2077629074045407232
-    2026-07-16T05:42:56Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-07-16T16:56:15Z: INFO: Initialized StateBox for release 4.12.94 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.94.yaml
+    2026-07-16T16:56:15Z: INFO: Checking image consistency check Prow job status for job ID: c497ac86-4d57-4ed9-a900-c1708707bb6d
+    2026-07-16T16:56:15Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2077629074045407232
+    2026-07-16T16:56:15Z: INFO: Starting image health check for shipment MR 648
+    2026-07-16T16:56:15Z: INFO: Stage release succeeded (verified by label)
+    2026-07-16T16:56:15Z: INFO: Processing MR 648
+    2026-07-16T16:56:17Z: INFO: Found 240 images to check
+    2026-07-16T16:57:38Z: INFO: Completed image health check. Scanned 240 images, found 0 unhealthy
+    2026-07-16T16:57:38Z: INFO: Added image health summary to MR 648
+    2026-07-16T16:57:38Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Fail
   started_at: '2026-07-16T05:34:13Z'
