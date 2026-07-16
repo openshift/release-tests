@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.49
 created_at: '2026-07-16T14:02:43Z'
-updated_at: '2026-07-16T15:37:49Z'
+updated_at: '2026-07-16T17:49:04Z'
 metadata:
   jira_ticket: ART-21669
   advisory_ids:
@@ -44,4 +44,15 @@ tasks:
     2026-07-16T15:37:48Z: INFO: checking push job status for advisory 169866 ...
     2026-07-16T15:37:48Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-07-16T15:37:48Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: In Progress
+  started_at: '2026-07-16T17:49:04Z'
+  completed_at: null
+  result: |-
+    Candidate build 4.18.0-0.nightly-2026-07-16-031107 test results analyzed:
+    - 5/6 blocking jobs passed (aws-ipi, azure-ipi-fips, gcp-ipi-retried, aws-ipi-disruptive, stable-4.18-upgrade-from-stable-4.18)
+    - 1 upgrade job failed and retried: periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-stable-4.18-upgrade-from-stable-4.17-gcp-ipi-f999
+    - Failed job ID 1d5d84dd-46c7-4f28-b6cb-e6a3a24db541 replaced with new retry job ID 4431ba43-2f4b-4849-9d86-c1440796c806
+    - New upgrade job running: 4.17.55 -> 4.18.0-0.nightly-2026-07-16-031107
+    - Waiting for retry job completion (ETA: 2-3 hours)
 issues: []
