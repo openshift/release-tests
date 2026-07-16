@@ -23,12 +23,9 @@ Options:
   --help                Show this message and exit.
 
 Commands:
-  get_payloads              Check the latest payload of each version.
   get_results               Return the Prow job executed info.
-  list                      List the jobs which support the API call.
   run                       Run a job and save results to /tmp/prow-jobs.csv
   run_image_consistency_check  Run image consistency check Prow job.
-  run_required              Run required jobs from a file
   run_stage_testing         Run stage testing Prow job for a given payload.
 ```
 
