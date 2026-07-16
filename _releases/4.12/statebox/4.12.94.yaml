@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.94
 created_at: '2026-07-15T17:00:07Z'
-updated_at: '2026-07-16T05:39:54Z'
+updated_at: '2026-07-16T05:40:58Z'
 metadata:
   jira_ticket: ART-21661
   advisory_ids:
@@ -124,6 +124,13 @@ tasks:
   completed_at: '2026-07-16T05:39:54Z'
   result: 'Build 4.12.94 already promoted (phase: Accepted). Candidate build analysis
     not applicable for promoted stable build.'
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-16T05:40:58Z'
+  completed_at: '2026-07-16T05:40:58Z'
+  result: 'All 3 blocking tests passed (accepted: true, aggregated: true). Jobs: aws-ipi
+    (success), gcp-ipi-custom-type (success), azure-upi (success). No failures to
+    evaluate.'
 issues:
 - issue: 'Stage release pipeline 16440569 failed (downstream pipeline 16440634 also
     failed with unknown_failure). Stage testing cannot proceed until pipeline is retried
