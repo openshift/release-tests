@@ -14,7 +14,6 @@ import click
 import requests
 import yaml
 from requests.adapters import HTTPAdapter
-from semver import VersionInfo
 from urllib3.util import Retry
 
 
@@ -30,9 +29,6 @@ class Jobs:
     STAGE_TESTING_JOB_NAME_TEMPLATE = "periodic-ci-openshift-openshift-tests-private-release-{minor_release}-stage-testing-e2e-aws-ipi"
 
     def __init__(self):
-        self.url = "https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/tags" # TODO to be updated to support 5-stable, or to be removed
-        # config the based URL here
-        self.job_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/config/openshift/openshift-tests-private/{}?ref=main"
         self.gangway_url = "https://gangway-ci.apps.ci.l2s4.p1.openshiftapps.com/v1/executions/"
         self.prow_job_url = "https://prow.ci.openshift.org/prowjob?prowjob={}"
         self.base_image = "quay.io/openshift-release-dev/ocp-release:4.13.4-x86_64"
@@ -173,104 +169,6 @@ class Jobs:
         print(data)
         return data
 
-    def get_sha(self, url):
-        """Function get returned sha data"""
-        res = requests.get(url=url, headers=self.get_github_headers())
-        if res.status_code == 200:
-            sha = json.loads(res.text)["sha"]
-            print(f"sha: {sha}")
-            return sha
-        else:
-            print(res.status_code, res.reason)
-            return None
-
-    def push_action(self, url, data):
-        """Function push data to the Github repo"""
-        res = requests.put(url=url, json=data,
-                           headers=self.get_github_headers())
-        if res.status_code == 200:
-            print(res.reason)
-        else:
-            print(res.status_code, res.reason)
-
-    def push_versions(self, content, file):
-        """Function push OCP payload version info to the Github repo"""
-        url = f"https://api.github.com/repos/openshift/release-tests/contents/_releases/{file}?ref=record"
-        base64_content = base64.b64encode(bytes(content, encoding="utf-8")).decode(
-            "utf-8"
-        )
-        # print(base64Content)
-        # check if the file exist
-        res = requests.get(url=url, headers=self.get_github_headers())
-        if res.status_code == 200:
-            old_version = self.get_recored_version(url)
-            if VersionInfo.parse(old_version) < VersionInfo.parse(content):
-                sha = self.get_sha(url)
-                # sha is Required if you are updating a file.
-                data = {
-                    "sha": sha,
-                    "content": base64_content,
-                    "branch": "record",
-                    "message": f"got the latest version {content}",
-                    "committer": {
-                        "name": "Release Bot",
-                        "email": "jianzhanbjz@github.com",
-                    },
-                }
-                self.push_action(url, data)
-            else:
-                print(
-                    f"No update! since the recored version {old_version} >= the new version {content}")
-        elif res.status_code == 404:
-            print(f"file {url} doesn't exist, create it.")
-            data = {
-                "content": base64_content,
-                "branch": "record",
-                "message": f"got the latest version {content}",
-                "committer": {"name": "Release Bot", "email": "jianzhanbjz@github.com"},
-            }
-            self.push_action(url, data)
-        else:
-            print(f"Push error: {res.status_code}, {res.reason}")
-
-    def get_recored_version(self, url):
-        """Function get the stored OCP payload info"""
-        # it will use the default main branch
-        res = requests.get(url=url, headers=self.get_github_headers())
-        if res.status_code != 200:
-            print(
-                f"Fail to get recored version! {res.status_code}:{res.reason}")
-            return None
-        return (base64.b64decode(json.loads(res.text)["content"]).decode("utf-8").replace("\n", ""))
-
-    def get_payloads(self, versions, push):
-        """Function get the payload info from https://amd64.ocp.releases.ci.openshift.org/"""
-        if versions is None:
-            print("Please input the correct version info...")
-            sys.exit(0)
-        version_list = versions.split(",")
-        res = requests.get(url=self.url, timeout=5)
-        if res.status_code != 200:
-            print(f"Fail to get payload info, {res.status_code}:{res.reason}")
-            sys.exit(1)
-        tags_dict = json.loads(res.text)
-        # Current three z-stream releases
-        # releaseVersions = ["4.10.0", "4.11.0", "4.12.0"]
-        for version in version_list:
-            print(f"getting the latest payload of {version}")
-            for tag in tags_dict["tags"]:
-                new = VersionInfo.parse(tag["name"])
-                old = VersionInfo.parse(version)
-                if tag["phase"] == "Accepted" and new >= old and new.minor == old.minor:
-                    channel = version[:-2]
-                    print(f'The latest version of {channel} is: {tag["name"]}')
-                    file = f"Auto-OCP-{version[:-2]}.txt"
-                    if push:
-                        self.push_versions(content=tag["name"], file=file)
-                    break
-                # else:
-                #     print("Not in the same Y release: %s" % new)
-
     def save_job_data(self, job_dict):
         """Function save job results to the file"""
         # save it to the crrent CSV file
@@ -288,43 +186,6 @@ class Jobs:
             return headers
         print("No GITHUB_TOKEN env var found, exit...")
         sys.exit(0)
-
-    def get_required_jobs(self, file_path):
-        """Function get the required Prow jobs from the file"""
-        print(f"use JSON file: {file_path}")
-        if file_path is None:
-            return None
-        with open(file_path, encoding="utf-8") as f:
-            jobs = f.read()
-            return json.loads(jobs)
-
-    # channel means OCP minor version, such as 4.12
-    # version means OCP version, such as 4.10.63
-    # file_path the path of the jobs file
-    def run_required_jobs(self, channels, file_path, version):
-        """Function run Prow jobs from the file"""
-        job_dict = self.get_required_jobs(file_path)
-        if channels is not None and job_dict is not None:
-            channel_list = channels.split(",")
-            for channel in channel_list:
-                print(f"Hanling {channel}")
-                if channel in job_dict.keys():
-                    for prow_job in job_dict[channel]:
-                        print(f"Hanling {prow_job}")
-                        # amd64 as default
-                        payload = f"quay.io/openshift-release-dev/ocp-release:{version}-x86_64"
-                        if "arm64" in prow_job:
-                            payload = f"quay.io/openshift-release-dev/ocp-release:{version}-aarch64"
-                        # specify the latest stable payload for upgrade test
-                        if "upgrade-from-stable" in prow_job:
-                            self.run_job(prow_job, None, None,
-                                         upgrade_to=payload)
-                        # specify the latest stable payload for e2e test
-                        elif "upgrade" not in prow_job:
-                            self.run_job(prow_job, payload, None, None)
-                        # as default
-                        else:
-                            self.run_job(prow_job, None, None, None)
 
     def _is_valid_payload_url(self, payload_url: str) -> bool:
         """
@@ -630,45 +491,6 @@ class Jobs:
             print(f"Could not get job results for job ID: {job_id}. Return status code: {resp.status_code}, reason: {resp.reason}")
         return None
 
-    def list_jobs(self, component, branch):
-        """Function list prow jobs"""
-        if component is None:
-            component = "openshift/openshift-tests-private"
-        if branch is None:
-            branch = "main"
-        base_url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/config/{component}/?ref={branch}"
-        req = requests.get(url=base_url, timeout=3)
-        if req.status_code == 200:
-            file_dict = yaml.load(req.text, Loader=yaml.FullLoader)
-            file_count = 0
-            for file in file_dict:
-                if file["name"].endswith(".yaml"):
-                    url = self.job_url.format(file["name"].strip())
-                    print(url)
-                    self.get_jobs(url)
-                    file_count += 1
-            print(
-                f"Total file number under {component} folder is: {str(file_count)}")
-        else:
-            print(req.reason)
-
-    def get_jobs(self, url):
-        """Function get prow jobs"""
-        res = requests.get(
-            url=url, headers=self.get_github_headers(), timeout=3)
-        if res.status_code == 200:
-            content = base64.b64decode(
-                res.json()["content"].replace("\n", "")).decode("utf-8")
-            job_dict = yaml.load(content, Loader=yaml.FullLoader)
-            api_count = 0
-            for test_job in job_dict["tests"]:
-                api = "true"
-                api_count += 1
-                print(test_job["as"] + "   " + api)
-            print("Total number of api job is: " + str(api_count))
-        else:
-            print("warning:" + res.reason)
-
 
 JOB = Jobs()
 
@@ -710,46 +532,6 @@ def run_cmd(job_name, payload, upgrade_from, upgrade_to):
     Details: https://issues.redhat.com/browse/DPTP-3538
     """
     JOB.run_job(job_name, payload, upgrade_from, upgrade_to)
-
-
-@cli.command("list")
-@click.option(
-    "--component",
-    help="The detault is 'openshift/openshift-tests-private': https://github.com/openshift/release/tree/main/ci-operator/config/openshift/openshift-tests-private ",
-)
-@click.option("--branch", help="the main branch is as default.")
-def run_list_job(component, branch):
-    """List the jobs which support the API call."""
-    JOB.list_jobs(component, branch)
-
-
-@cli.command("run_required")
-@click.option(
-    "--channel",
-    help="The OCP minor version, if multi versions, comma spacing, such as 4.12,4.11",
-)
-@click.option("--file", help="a file that stores required jobs for all OCP versions.")
-@click.option("--version", help="OCP version, such as 4.10.63")
-def run_required(channel, file, version):
-    """
-    Run required jobs from a file.
-    Note that: this command only runs stable payload, not nightly!
-    For example, $job run_required --channel 4.10 --file my-jobs.json --version 4.10.63
-    """
-    JOB.run_required_jobs(channel, file, version)
-
-
-@cli.command("get_payloads")
-@click.argument("versions")
-@click.option(
-    "--push",
-    default=False,
-    help="push the info to the https://api.github.com/repos/openshift/release-tests/contents/_releases/",
-)
-def run_payloads(versions, push):
-    # TODO Remove if not used, ref: https://redhat.atlassian.net/browse/OCPERT-418
-    """Check the latest stable payload of each version. Use comma spacing if multi versions, such as, 4.10.0,4.11.0,4.12.0"""
-    JOB.get_payloads(versions, push)
 
 
 @cli.command("run_image_consistency_check")
