@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.69
 created_at: '2026-07-15T17:00:16Z'
-updated_at: '2026-07-17T10:19:33Z'
+updated_at: '2026-07-17T10:20:02Z'
 metadata:
   jira_ticket: ART-21662
   advisory_ids:
@@ -59,6 +59,18 @@ tasks:
     2026-07-17T10:19:32Z: INFO: Completed image health check. Scanned 239 images, found 0 unhealthy
     2026-07-17T10:19:32Z: INFO: Added image health summary to MR 647
     2026-07-17T10:19:32Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-07-17T10:19:59Z'
+  completed_at: null
+  result: |-
+    2026-07-17T10:19:59Z: INFO: Initialized StateBox for release 4.13.69 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.69.yaml
+    2026-07-17T10:19:59Z: INFO: job id is not set, will trigger stage testing
+    2026-07-17T10:20:00Z: INFO: Loaded state from _releases/4.13/statebox/4.13.69.yaml (SHA: b46124d1)
+    2026-07-17T10:20:00Z: INFO: Stage release succeeded (verified by label)
+    2026-07-17T10:20:00Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-07-17T10:20:00Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1706/>
+    2026-07-17T10:20:01Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: QE blocking jobs failed to trigger via Gangway API (500 Internal Server Error
     for all 5 jobs). No test result file exists on record branch for candidate build
