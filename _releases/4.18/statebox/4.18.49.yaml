@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.49
 created_at: '2026-07-16T14:02:43Z'
-updated_at: '2026-07-17T08:35:16Z'
+updated_at: '2026-07-17T08:44:28Z'
 metadata:
   jira_ticket: ART-21669
   advisory_ids:
@@ -85,4 +85,16 @@ tasks:
     2026-07-17T08:35:15Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-07-17T08:35:15Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1704/>
     2026-07-17T08:35:15Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: In Progress
+  started_at: '2026-07-17T08:44:28Z'
+  completed_at: null
+  result: |-
+    Promoted build 4.18.49 analysis started:
+    - NOTE: Prow jobs were not auto-triggered by job controller for promoted build
+    - Manually triggered 3 blocking test jobs using jobctl trigger-jobs-for-build:
+      * Job 1: stable-4.18-upgrade-from-stable-4.17-aws-ipi-f999 (ID: 6cb6f3c8-4f53-4752-8d23-537604ee0770)
+      * Job 2: stable-4.18-upgrade-from-stable-4.18-azure-ipi-fips-f999 (ID: 2f16b389-39aa-4981-85e0-2cba0eee8b96)
+      * Job 3: stable-4.18-upgrade-from-stable-4.18-gcp-ipi-f999 (ID: 638e9940-a35a-48d1-86f7-478c72ece1f6)
+    - Waiting for test completion and aggregation (ETA: 2-3 hours)
 issues: []
