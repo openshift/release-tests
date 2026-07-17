@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.6
 created_at: '2026-07-16T14:04:26Z'
-updated_at: '2026-07-17T07:43:54Z'
+updated_at: '2026-07-17T07:48:22Z'
 metadata:
   jira_ticket: ART-21670
   advisory_ids:
@@ -45,18 +45,20 @@ tasks:
     2026-07-16T15:32:48Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-07-16T15:32:48Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: In Progress
+  status: Pass
   started_at: '2026-07-16T17:31:18Z'
-  completed_at: null
+  completed_at: '2026-07-17T07:48:22Z'
   result: |-
-    Candidate build 4.22.0-0.nightly-2026-07-15-214410 analyzed and retried:
-    - Total: 6 QE blocking jobs
-    - Passed: 5/6 (AWS: 3/3, GCP: 2/2)
-    - Azure FIPS job: Retrying failed attempt (flaky Observability Operator + UDN multicast failures)
-    - Attempt 2 passed all tests successfully - good indicator for retry
-    - Action taken: Triggered retry job f0689798-669f-4fa0-9c47-2e48822081b2 to replace failed attempt 00860ffe-aa3a-4c38-8923-cbf8b84e9484
-    - Job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2077809445601021952
-    - Status: Job pending/running - waiting for completion
+    Candidate build 4.22.0-0.nightly-2026-07-15-214410 ACCEPTED:
+    - All 6 QE blocking jobs passed BO3 verification
+    - AWS IPI: ✅ Success (first attempt)
+    - AWS Disruptive: ✅ Success (first attempt)
+    - GCP IPI: ✅ Success (first attempt)
+    - GCP Upgrade (4.21→4.22): ✅ Success (first attempt)
+    - AWS Upgrade (4.22→4.22): ✅ Success (first attempt)
+    - Azure FIPS: ✅ Success (retry succeeded - replaced failed job 00860ffe-aa3a-4c38-8923-cbf8b84e9484 with f0689798-669f-4fa0-9c47-2e48822081b2)
+    - Final Status: accepted=true, aggregated=true
+    - Recommendation: Build approved for promotion (already promoted to 4.22.6)
 - name: image-consistency-check
   status: In Progress
   started_at: '2026-07-17T07:43:33Z'
