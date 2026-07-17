@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.49
 created_at: '2026-07-16T14:02:43Z'
-updated_at: '2026-07-17T09:50:13Z'
+updated_at: '2026-07-17T10:50:21Z'
 metadata:
   jira_ticket: ART-21669
   advisory_ids:
@@ -101,6 +101,17 @@ tasks:
       * Job 2: stable-4.18-upgrade-from-stable-4.18-azure-ipi-fips-f999 (ID: 2f16b389-39aa-4981-85e0-2cba0eee8b96)
       * Job 3: stable-4.18-upgrade-from-stable-4.18-gcp-ipi-f999 (ID: 638e9940-a35a-48d1-86f7-478c72ece1f6)
     - Waiting for test completion and aggregation (ETA: 2-3 hours)
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-17T10:49:56Z'
+  completed_at: '2026-07-17T10:50:20Z'
+  result: |-
+    2026-07-17T10:49:56Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-17T10:49:56Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.49
+    2026-07-17T10:49:57Z: INFO: Image Digest: sha256:33b613b2301d908441b6888d4080665504b3d19d386e88175a2c3a2553fec698
+    2026-07-17T10:49:57Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=33b613b2301d908441b6888d4080665504b3d19d386e88175a2c3a2553fec698/signature-1
+    2026-07-17T10:50:20Z: INFO: Signature check PASSED
+    2026-07-17T10:50:20Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: Job controller did not auto-trigger Prow jobs for promoted build 4.18.49
     - jobs had to be triggered manually using jobctl trigger-jobs-for-build
