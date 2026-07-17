@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.49
 created_at: '2026-07-16T14:02:43Z'
-updated_at: '2026-07-17T08:44:28Z'
+updated_at: '2026-07-17T08:56:09Z'
 metadata:
   jira_ticket: ART-21669
   advisory_ids:
@@ -97,4 +97,12 @@ tasks:
       * Job 2: stable-4.18-upgrade-from-stable-4.18-azure-ipi-fips-f999 (ID: 2f16b389-39aa-4981-85e0-2cba0eee8b96)
       * Job 3: stable-4.18-upgrade-from-stable-4.18-gcp-ipi-f999 (ID: 638e9940-a35a-48d1-86f7-478c72ece1f6)
     - Waiting for test completion and aggregation (ETA: 2-3 hours)
-issues: []
+issues:
+- issue: Job controller did not auto-trigger Prow jobs for promoted build 4.18.49
+    - jobs had to be triggered manually using jobctl trigger-jobs-for-build
+  reported_at: '2026-07-17T08:56:09Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-promoted-build
