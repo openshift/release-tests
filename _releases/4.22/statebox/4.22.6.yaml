@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.6
 created_at: '2026-07-16T14:04:26Z'
-updated_at: '2026-07-17T10:44:35Z'
+updated_at: '2026-07-17T13:15:13Z'
 metadata:
   jira_ticket: ART-21670
   advisory_ids:
@@ -94,4 +94,16 @@ tasks:
     2026-07-17T10:43:37Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4b439fabd9a53e37a7fa436e349837283d04513bc8209e643171d1b86d31b845/signature-1
     2026-07-17T10:44:34Z: INFO: Signature check PASSED
     2026-07-17T10:44:34Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-17T13:15:13Z'
+  completed_at: '2026-07-17T13:15:13Z'
+  result: |-
+    Promoted build 4.22.6 ACCEPTED:
+    - All 3 QE blocking upgrade jobs passed BO3 verification
+    - AWS Upgrade (4.21→4.22): ✅ Success (first attempt)
+    - GCP Upgrade (4.22→4.22): ✅ Success (first attempt)
+    - Azure FIPS Upgrade (4.22→4.22): ✅ Success (retry succeeded after first attempt failure)
+    - Final Status: accepted=true, aggregated=true
+    - All tests passed - build ready for final approval
 issues: []
