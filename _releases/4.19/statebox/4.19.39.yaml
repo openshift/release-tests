@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.39
 created_at: '2026-07-16T12:00:11Z'
-updated_at: '2026-07-17T10:46:12Z'
+updated_at: '2026-07-17T10:46:52Z'
 metadata:
   jira_ticket: ART-21666
   advisory_ids:
@@ -65,17 +65,14 @@ tasks:
     2026-07-16T17:08:57Z: INFO: Added image health summary to MR 653
     2026-07-16T17:08:57Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-07-16T15:45:28Z'
-  completed_at: null
+  completed_at: '2026-07-17T10:46:51Z'
   result: |-
-    2026-07-16T15:45:28Z: INFO: Initialized StateBox for release 4.19.39 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.39.yaml
-    2026-07-16T15:45:28Z: INFO: job id is not set, will trigger stage testing
-    2026-07-16T15:45:28Z: INFO: Loaded state from _releases/4.19/statebox/4.19.39.yaml (SHA: 72b497fb)
-    2026-07-16T15:45:28Z: INFO: Stage release succeeded (verified by label)
-    2026-07-16T15:45:28Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-07-16T15:45:28Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1700/>
-    2026-07-16T15:45:29Z: INFO: sent slack message to <#team-qe-release>
+    2026-07-17T10:46:51Z: INFO: Initialized StateBox for release 4.19.39 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.39.yaml
+    2026-07-17T10:46:51Z: INFO: check stage job status according to job id: 1700
+    2026-07-17T10:46:51Z: INFO: build status of zstreams/Stage-Pipeline/1700 is SUCCESS
+    2026-07-17T10:46:51Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-07-16T15:47:27Z'
