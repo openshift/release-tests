@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.49
 created_at: '2026-07-16T14:02:43Z'
-updated_at: '2026-07-17T15:31:01Z'
+updated_at: '2026-07-17T16:22:02Z'
 metadata:
   jira_ticket: ART-21669
   advisory_ids:
@@ -87,9 +87,9 @@ tasks:
     2026-07-17T15:31:00Z: INFO: build status of zstreams/Stage-Pipeline/1707 is SUCCESS
     2026-07-17T15:31:00Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-07-17T08:44:28Z'
-  completed_at: null
+  completed_at: '2026-07-17T16:22:02Z'
   result: |-
     Promoted build 4.18.49 analysis started:
     - NOTE: Prow jobs were not auto-triggered by job controller for promoted build
@@ -98,6 +98,19 @@ tasks:
       * Job 2: stable-4.18-upgrade-from-stable-4.18-azure-ipi-fips-f999 (ID: 2f16b389-39aa-4981-85e0-2cba0eee8b96)
       * Job 3: stable-4.18-upgrade-from-stable-4.18-gcp-ipi-f999 (ID: 638e9940-a35a-48d1-86f7-478c72ece1f6)
     - Waiting for test completion and aggregation (ETA: 2-3 hours)
+
+    UPDATE 2026-07-17 15:35:
+    ✅ All promoted build tests completed successfully
+    - Build accepted: true
+    - Build phase: Accepted
+    - Test aggregation: Complete
+
+    Test Results:
+    1. Upgrade 4.17→4.18 (AWS IPI): ✅ Success (first attempt)
+    2. Upgrade 4.18→4.18 (Azure IPI FIPS): ✅ Success (after 2 retries - first failed)
+    3. Upgrade 4.18→4.18 (GCP IPI): ✅ Success (first attempt)
+
+    All 3 blocking upgrade tests passed BO3 verification.
 - name: image-signed-check
   status: Pass
   started_at: '2026-07-17T10:49:56Z'
