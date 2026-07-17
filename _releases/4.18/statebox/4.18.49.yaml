@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.49
 created_at: '2026-07-16T14:02:43Z'
-updated_at: '2026-07-17T08:56:09Z'
+updated_at: '2026-07-17T08:57:07Z'
 metadata:
   jira_ticket: ART-21669
   advisory_ids:
@@ -101,8 +101,11 @@ issues:
 - issue: Job controller did not auto-trigger Prow jobs for promoted build 4.18.49
     - jobs had to be triggered manually using jobctl trigger-jobs-for-build
   reported_at: '2026-07-17T08:56:09Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Manually triggered all 3 required Prow jobs for promoted build using
+    jobctl trigger-jobs-for-build command. Jobs are now running successfully (IDs:
+    6cb6f3c8-4f53-4752-8d23-537604ee0770, 2f16b389-39aa-4981-85e0-2cba0eee8b96, 638e9940-a35a-48d1-86f7-478c72ece1f6).'
   blocker: true
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-07-17T08:57:07Z'
