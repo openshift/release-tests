@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.69
 created_at: '2026-07-15T17:00:16Z'
-updated_at: '2026-07-20T05:03:14Z'
+updated_at: '2026-07-20T05:04:20Z'
 metadata:
   jira_ticket: ART-21662
   advisory_ids:
@@ -68,6 +68,12 @@ tasks:
     2026-07-20T05:03:13Z: INFO: check stage job status according to job id: 1706
     2026-07-20T05:03:13Z: INFO: build status of zstreams/Stage-Pipeline/1706 is FAILURE
     2026-07-20T05:03:13Z: INFO: task [Stage Testing] status is changed to [Fail]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-20T05:04:20Z'
+  completed_at: '2026-07-20T05:04:20Z'
+  result: 'Stable build 4.13.69 accepted: true. All 3 upgrade jobs passed on first
+    attempt (AWS 4.12->4.13, Azure FIPS 4.13->4.13, GCP 4.13->4.13). No retries needed.'
 issues:
 - issue: QE blocking jobs failed to trigger via Gangway API (500 Internal Server Error
     for all 5 jobs). No test result file exists on record branch for candidate build
