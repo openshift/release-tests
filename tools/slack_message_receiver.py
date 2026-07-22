@@ -58,7 +58,7 @@ def get_username(user_id):
 
 
 def is_oar_related_message(message):
-    return message.startswith("oar") or message.startswith("oarctl") or re.search("^<\@.*>\ oar\ ", message) or re.search("^<\@.*>\ oarctl\ ", message)
+    return message.startswith("oar") or message.startswith("oarctl") or re.search(r"^<\@.*>\s+oar\s+", message) or re.search(r"^<\@.*>\s+oarctl\s+", message)
 
 
 def validate_oar_command(message):
