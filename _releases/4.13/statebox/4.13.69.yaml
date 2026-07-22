@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.69
 created_at: '2026-07-15T17:00:16Z'
-updated_at: '2026-07-22T10:21:46Z'
+updated_at: '2026-07-22T18:42:47Z'
 metadata:
   jira_ticket: ART-21662
   advisory_ids:
@@ -60,14 +60,12 @@ tasks:
     2026-07-17T10:19:32Z: INFO: Added image health summary to MR 647
     2026-07-17T10:19:32Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-07-22T10:21:45Z'
-  completed_at: null
-  result: |-
-    2026-07-22T10:21:45Z: INFO: Initialized StateBox for release 4.13.69 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.69.yaml
-    2026-07-22T10:21:45Z: INFO: check stage job status according to job id: 1711
-    2026-07-22T10:21:45Z: INFO: build status of zstreams/Stage-Pipeline/1711 is In Progress
-    2026-07-22T10:21:45Z: INFO: task [Stage Testing] status is changed to [In Progress]
+  completed_at: '2026-07-22T18:42:47Z'
+  result: 'Stage-Pipeline #1711: 1 failure (OCP-31437 LocalVolume - known infra flake,
+    debug pod stuck in ContainerCreating). All other tests passed. Waived per tdavid
+    - test automation issue, not product bug.'
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-07-20T05:04:20Z'
