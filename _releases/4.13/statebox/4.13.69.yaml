@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.69
 created_at: '2026-07-15T17:00:16Z'
-updated_at: '2026-07-22T18:42:47Z'
+updated_at: '2026-07-22T21:28:06Z'
 metadata:
   jira_ticket: ART-21662
   advisory_ids:
@@ -72,6 +72,17 @@ tasks:
   completed_at: '2026-07-20T05:04:20Z'
   result: 'Stable build 4.13.69 accepted: true. All 3 upgrade jobs passed on first
     attempt (AWS 4.12->4.13, Azure FIPS 4.13->4.13, GCP 4.13->4.13). No retries needed.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-22T21:26:35Z'
+  completed_at: '2026-07-22T21:28:05Z'
+  result: |-
+    2026-07-22T21:26:35Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-22T21:26:35Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.13.69
+    2026-07-22T21:26:36Z: INFO: Image Digest: sha256:6ff433fc5d4e0a3e7a0496e41af47da5c9349afeaad949e6d3bb49764618e1b9
+    2026-07-22T21:26:36Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=6ff433fc5d4e0a3e7a0496e41af47da5c9349afeaad949e6d3bb49764618e1b9/signature-1
+    2026-07-22T21:28:05Z: INFO: Signature check PASSED
+    2026-07-22T21:28:05Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: QE blocking jobs failed to trigger via Gangway API (500 Internal Server Error
     for all 5 jobs). No test result file exists on record branch for candidate build
