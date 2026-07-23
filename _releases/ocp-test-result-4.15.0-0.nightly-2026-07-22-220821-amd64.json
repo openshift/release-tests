@@ -45,13 +45,67 @@
           "jobStartTime": "2026-07-23T10:25:16Z",
           "jobID": "31693166-f6eb-4ccd-8316-800e93d115b3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2080237805895684096",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-23T13:38:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Acceptance testing vector to loki[Slow][Serial]",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14557:Workloads pod will not be scheduled if node affinity or node selector is not satisfied - node selector",
+                "OCP-14577:Workloads pod  will not be scheduled if not all matchExpressions can be satisfied"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-07-23T10:25:16Z",
           "jobID": "b1542015-c30e-41c3-8909-1cbc2f1d0b30",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2080237806604521472",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-23T13:30:03Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 27,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+                "[sig-openshift-logging] LOGGING Logging Author:qitang-LEVEL0-Critical-53817-Acceptance testing vector to loki[Slow][Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -96,7 +150,40 @@
           "jobStartTime": "2026-07-23T10:25:34Z",
           "jobID": "1f512b71-f488-47dc-877a-10405ef25065",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-gcp-ipi-f999/2080237880915005440",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-23T13:49:38Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 5,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:jitli-LEVEL0-Critical-48959-Should be able to get public images connect to the server and have basic auth credentials",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51160-[CSI-Driver] [Dynamic PV] [Filesystem ext4] volumes resize on-line",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46813-[CSI-Driver][CSI Clone] Clone a pvc with Raw Block VolumeMode",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-50202-[CSI-Driver][Dynamic PV][Block] topology should provision a volume and schedule a pod with AllowedTopologies"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14484:Workloads pod will be scheduled to the node which matches node anti-affinity",
+                "OCP-14522:Workloads pod will be scheduled to the node which matches node affinity - Gt",
+                "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -162,5 +249,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2026-07-22-220821",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2026-07-22-220821"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
