@@ -1,9 +1,14 @@
 import unittest
+from unittest.mock import Mock, patch, call
+
+from click.testing import CliRunner
 
 from oar.core.advisory import Advisory
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
 from oar.core.const import *
+from oar.core.exceptions import StateBoxException
+from oar.cli.cmd_check_blocking_sec_alerts import check_blocking_sec_alerts
 
 
 class TestAdvisoryManager(unittest.TestCase):
@@ -68,7 +73,7 @@ class TestAdvisoryManager(unittest.TestCase):
         self.me = AdvisoryManager(ConfigStore("4.12.61"))
         ads = self.me.get_advisories()
         for ad in ads:
-            self.assertFalse(ad.has_blocking_secruity_alert(), f"advisory {ad.errata_id} has blocking security alerts")
+            self.assertFalse(ad.has_blocking_security_alert(), f"advisory {ad.errata_id} has blocking security alerts")
 
     def test_kernel_tag(self):
         self.assertTrue(Advisory(errata_id=144853, impetus='image').check_kernel_tag())
@@ -78,4 +83,85 @@ class TestAdvisoryManager(unittest.TestCase):
     
     def test_finished_jiras(self):
         self.assertTrue(self.am.has_finished_all_advisories_jiras())
+
+
+class TestCheckBlockingSecAlerts(unittest.TestCase):
+    def setUp(self):
+        self.runner = CliRunner()
+        self.mock_cs = Mock(spec=ConfigStore)
+
+    def _make_advisory(self, errata_id, errata_type, has_blocking=False, raises=None):
+        ad = Mock()
+        ad.errata_id = errata_id
+        ad.errata_type = errata_type
+        if raises:
+            ad.has_blocking_security_alert.side_effect = raises
+        else:
+            ad.has_blocking_security_alert.return_value = has_blocking
+        return ad
+
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.AdvisoryManager')
+    def test_no_blocking_alerts(self, mock_am_cls, mock_sb_cls, mock_util):
+        mock_am_cls.return_value.get_advisories.return_value = [
+            self._make_advisory(11111, "RHSA", has_blocking=False),
+        ]
+        result = self.runner.invoke(check_blocking_sec_alerts, obj={"cs": self.mock_cs}, catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0)
+        mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_PASS)
+        mock_sb_cls.return_value.add_issue.assert_not_called()
+
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.AdvisoryManager')
+    def test_blocking_alert_found(self, mock_am_cls, mock_sb_cls, mock_util):
+        mock_util.get_advisory_link.return_value = "https://errata.devel.redhat.com/advisory/11111"
+        mock_am_cls.return_value.get_advisories.return_value = [
+            self._make_advisory(11111, "RHSA", has_blocking=True),
+        ]
+        result = self.runner.invoke(check_blocking_sec_alerts, obj={"cs": self.mock_cs}, catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0)
+        mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
+        mock_sb_cls.return_value.add_issue.assert_called_once()
+        call_kwargs = mock_sb_cls.return_value.add_issue.call_args
+        self.assertTrue(call_kwargs[1]["blocker"])
+        self.assertIn(TASK_CHECK_BLOCKING_SEC_ALERTS, call_kwargs[1]["related_tasks"])
+
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.AdvisoryManager')
+    def test_no_rhsa_advisories(self, mock_am_cls, mock_sb_cls, mock_util):
+        mock_am_cls.return_value.get_advisories.return_value = [
+            self._make_advisory(22222, "RHBA"),
+        ]
+        result = self.runner.invoke(check_blocking_sec_alerts, obj={"cs": self.mock_cs}, catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0)
+        mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_PASS)
+        mock_sb_cls.return_value.add_issue.assert_not_called()
+
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.AdvisoryManager')
+    def test_all_checks_fail_with_exception(self, mock_am_cls, mock_sb_cls, mock_util):
+        mock_am_cls.return_value.get_advisories.return_value = [
+            self._make_advisory(33333, "RHSA", raises=ConnectionError("Errata API unreachable")),
+        ]
+        result = self.runner.invoke(check_blocking_sec_alerts, obj={"cs": self.mock_cs}, catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0)
+        mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
+        mock_sb_cls.return_value.add_issue.assert_not_called()
+
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.AdvisoryManager')
+    def test_statebox_add_issue_raises(self, mock_am_cls, mock_sb_cls, mock_util):
+        mock_util.get_advisory_link.return_value = "https://errata.devel.redhat.com/advisory/44444"
+        mock_am_cls.return_value.get_advisories.return_value = [
+            self._make_advisory(44444, "RHSA", has_blocking=True),
+        ]
+        mock_sb_cls.return_value.add_issue.side_effect = StateBoxException("duplicate blocker")
+        result = self.runner.invoke(check_blocking_sec_alerts, obj={"cs": self.mock_cs}, catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0)
+        mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
 
