@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.31
 created_at: '2026-07-23T14:00:25Z'
-updated_at: '2026-07-24T11:11:03Z'
+updated_at: '2026-07-24T11:26:27Z'
 metadata:
   jira_ticket: ART-21765
   advisory_ids:
@@ -81,4 +81,22 @@ tasks:
     \ Release Controller already accepted build; failure isolated to specialized platform;\
     \ core platforms (AWS, GCP) healthy\n\nRelease Controller Status: ACCEPTED (phase:\
     \ Accepted)\nBuild Promotion: Confirmed at 2026-07-23"
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-24T11:26:27Z'
+  completed_at: '2026-07-24T11:26:27Z'
+  result: |-
+    Promoted build 4.20.31 test results: ACCEPTED ✅
+
+    QE Test Results: 3/3 upgrade jobs passed (100%)
+    - ✅ Upgrade 4.19→4.20 (AWS IPI): Passed
+    - ✅ Upgrade 4.20→4.20 (Azure IPI FIPS): Passed
+    - ✅ Upgrade 4.20→4.20 (GCP IPI): Passed
+
+    Aggregation Status: Complete (aggregated: true)
+    Overall Acceptance: TRUE (accepted: true)
+
+    Notable: Azure FIPS platform PASSED upgrade tests for promoted build, despite failing image registry test in candidate build. This indicates the issue was specific to install scenario or resolved between builds.
+
+    All blocking test jobs passed BO3 verification.
 issues: []
