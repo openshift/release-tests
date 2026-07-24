@@ -348,7 +348,7 @@ result = oar_check_blocking_sec_alerts(release=release)
 ```
 
 **Output Parsing:**
-```
+```text
 IF "BLOCKING SECURITY ALERTS FOUND" in stdout:
     Report blocking advisory details to user
     Advise user to contact secalert@redhat.com
@@ -360,12 +360,12 @@ IF "No blocking security alerts found" in stdout:
 ```
 
 **Success Detection:**
-```
+```text
 stdout contains: "task [Check Blocking Security Alerts] status is changed to [Pass]"
 ```
 
 **Failure Detection:**
-```
+```text
 stdout contains: "task [Check Blocking Security Alerts] status is changed to [Fail]"
 ```
 

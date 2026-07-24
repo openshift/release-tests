@@ -3,7 +3,12 @@ import logging
 import click
 
 from oar.core.advisory import AdvisoryManager
-from oar.core.const import *
+from oar.core.const import (
+    TASK_CHECK_BLOCKING_SEC_ALERTS,
+    TASK_STATUS_FAIL,
+    TASK_STATUS_INPROGRESS,
+    TASK_STATUS_PASS,
+)
 from oar.core.statebox import StateBox
 from oar.core.exceptions import StateBoxException
 from oar.core import util
@@ -27,31 +32,32 @@ def check_blocking_sec_alerts(ctx):
         statebox = StateBox(cs)
         advisories = am.get_advisories()
 
+        rhsa_advisories = [ad for ad in advisories if ad.errata_type == "RHSA"]
+        if not rhsa_advisories:
+            logger.info("No RHSA advisories found, skipping security alert check")
+            util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_PASS)
+            return
+
+        logger.info(f"Found {len(rhsa_advisories)} RHSA advisory(ies) to check: "
+                     f"{', '.join(str(ad.errata_id) for ad in rhsa_advisories)}")
+
         blocking_advisories = []
-        rhsa_found = 0
-        rhsa_checked = 0
         check_errors = {}
 
-        for advisory in advisories:
+        for advisory in rhsa_advisories:
             try:
-                if advisory.errata_type == "RHSA":
-                    rhsa_found += 1
-                    if advisory.has_blocking_security_alert():
-                        blocking_advisories.append(advisory)
-                    rhsa_checked += 1
+                if advisory.has_blocking_security_alert():
+                    blocking_advisories.append(advisory)
             except Exception as e:
                 check_errors[advisory.errata_id] = str(e)
                 logger.error(f"Error checking advisory {advisory.errata_id}: {e}")
 
-        if rhsa_found == 0:
-            logger.info("No RHSA advisories found, skipping security alert check")
-            util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_PASS)
-            return
-        elif rhsa_checked == 0:
-            error_details = "; ".join(f"{eid}: {err}" for eid, err in check_errors.items())
-            logger.warning(f"Found {rhsa_found} RHSA advisory(ies) but all checks failed: {error_details}")
-            util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
-            return
+        existing_blocker = statebox.get_task_blocker(TASK_CHECK_BLOCKING_SEC_ALERTS)
+        if existing_blocker:
+            statebox.resolve_issue(
+                issue=existing_blocker["issue"],
+                resolution="Re-checked blocking security alerts",
+            )
 
         if blocking_advisories:
             logger.warning("BLOCKING SECURITY ALERTS FOUND:")
@@ -76,6 +82,10 @@ def check_blocking_sec_alerts(ctx):
             except StateBoxException as e:
                 logger.warning(f"Could not add StateBox issue (may already exist): {e}")
 
+            util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
+        elif check_errors:
+            error_details = "; ".join(f"{eid}: {err}" for eid, err in check_errors.items())
+            logger.warning(f"Security-alert checks failed for: {error_details}")
             util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
         else:
             logger.info("No blocking security alerts found")

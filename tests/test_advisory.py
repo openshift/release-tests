@@ -6,7 +6,12 @@ from click.testing import CliRunner
 from oar.core.advisory import Advisory
 from oar.core.advisory import AdvisoryManager
 from oar.core.configstore import ConfigStore
-from oar.core.const import *
+from oar.core.const import (
+    AD_STATUS_DROPPED_NO_SHIP,
+    TASK_CHECK_BLOCKING_SEC_ALERTS,
+    TASK_STATUS_FAIL,
+    TASK_STATUS_PASS,
+)
 from oar.core.exceptions import StateBoxException
 from oar.cli.cmd_check_blocking_sec_alerts import check_blocking_sec_alerts
 
@@ -151,6 +156,18 @@ class TestCheckBlockingSecAlerts(unittest.TestCase):
         self.assertEqual(result.exit_code, 0)
         mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
         mock_sb_cls.return_value.add_issue.assert_not_called()
+
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
+    @patch('oar.cli.cmd_check_blocking_sec_alerts.AdvisoryManager')
+    def test_mixed_success_and_error_fails(self, mock_am_cls, mock_sb_cls, mock_util):
+        mock_am_cls.return_value.get_advisories.return_value = [
+            self._make_advisory(11111, "RHSA", has_blocking=False),
+            self._make_advisory(22222, "RHSA", raises=ConnectionError("Errata API unreachable")),
+        ]
+        result = self.runner.invoke(check_blocking_sec_alerts, obj={"cs": self.mock_cs}, catch_exceptions=False)
+        self.assertEqual(result.exit_code, 0)
+        mock_util.log_task_status.assert_any_call(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
 
     @patch('oar.cli.cmd_check_blocking_sec_alerts.util')
     @patch('oar.cli.cmd_check_blocking_sec_alerts.StateBox')
