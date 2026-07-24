@@ -84,9 +84,44 @@
         "jobStartTime": "2026-07-24T03:26:43Z",
         "jobID": "68ea7609-4d69-423d-8916-2077997d1af7",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2080494863253508096",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-07-24T06:28:51Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 105,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-imageregistry] Image_Registry ROSA-OSD_CCS-ARO-Author:jitli-LEVEL0-Critical-48959-Should be able to get public images connect to the server and have basic auth credentials"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-07-24T07:24:42Z",
+          "jobID": "35861a94-4c35-4e27-925d-3a17e8577d13",
+          "jobState": "scheduling"
+        },
+        {
+          "jobStartTime": "2026-07-24T07:25:07Z",
+          "jobID": "1c718d44-4d37-4d8d-a6d6-08dd81631a57",
+          "jobState": "scheduling"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999",
