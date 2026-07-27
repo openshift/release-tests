@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.31
 created_at: '2026-07-23T14:00:25Z'
-updated_at: '2026-07-27T07:07:27Z'
+updated_at: '2026-07-27T07:08:05Z'
 metadata:
   jira_ticket: ART-21765
   advisory_ids:
@@ -101,4 +101,15 @@ tasks:
     Notable: Azure FIPS platform PASSED upgrade tests for promoted build, despite failing image registry test in candidate build. This indicates the issue was specific to install scenario or resolved between builds.
 
     All blocking test jobs passed BO3 verification.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-27T07:07:37Z'
+  completed_at: '2026-07-27T07:08:04Z'
+  result: |-
+    2026-07-27T07:07:37Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-27T07:07:37Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.31
+    2026-07-27T07:07:40Z: INFO: Image Digest: sha256:c71adce4fdc09a3629f2867619aa255a1ee4b8e1e2a4c2183a2e4186055d32c9
+    2026-07-27T07:07:40Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=c71adce4fdc09a3629f2867619aa255a1ee4b8e1e2a4c2183a2e4186055d32c9/signature-1
+    2026-07-27T07:08:04Z: INFO: Signature check PASSED
+    2026-07-27T07:08:04Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
