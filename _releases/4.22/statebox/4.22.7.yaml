@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.7
 created_at: '2026-07-23T10:00:11Z'
-updated_at: '2026-07-24T07:07:15Z'
+updated_at: '2026-07-27T07:02:49Z'
 metadata:
   jira_ticket: ART-21762
   advisory_ids:
@@ -53,15 +53,16 @@ tasks:
     upgrade-from-4.21). Total tests: 255, failures: 0, errors: 0.'
 - name: image-consistency-check
   status: In Progress
-  started_at: '2026-07-24T07:06:02Z'
+  started_at: '2026-07-27T07:02:41Z'
   completed_at: null
   result: |-
-    2026-07-24T07:06:02Z: INFO: Initialized StateBox for release 4.22.7 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.7.yaml
-    2026-07-24T07:06:03Z: INFO: Loaded state from _releases/4.22/statebox/4.22.7.yaml (SHA: 90a726dc)
-    2026-07-24T07:06:03Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-07-24T07:06:08Z: INFO: Triggered image consistency check Prow job: d8062683-bbff-428e-939f-1f78049ce626
-    2026-07-24T07:06:08Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2080551779568717824
-    2026-07-24T07:06:09Z: INFO: sent slack message to <#team-qe-release>
+    2026-07-27T07:02:41Z: INFO: Initialized StateBox for release 4.22.7 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.7.yaml
+    2026-07-27T07:02:42Z: INFO: Loaded state from _releases/4.22/statebox/4.22.7.yaml (SHA: 6636ed15)
+    2026-07-27T07:02:42Z: INFO: Prow job d8062683-bbff-428e-939f-1f78049ce626 ended with state '', re-triggering
+    2026-07-27T07:02:42Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-07-27T07:02:47Z: INFO: Triggered image consistency check Prow job: 6dcd1315-c499-4a60-92ff-8e4a35635e39
+    2026-07-27T07:02:47Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2081638146646216704
+    2026-07-27T07:02:48Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
   status: In Progress
   started_at: '2026-07-24T07:06:47Z'
