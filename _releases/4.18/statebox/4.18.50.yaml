@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.50
 created_at: '2026-07-23T14:00:12Z'
-updated_at: '2026-07-27T12:03:57Z'
+updated_at: '2026-07-27T12:04:25Z'
 metadata:
   jira_ticket: ART-21763
   advisory_ids:
@@ -71,6 +71,14 @@ tasks:
     2026-07-27T12:03:56Z: INFO: check stage job status according to job id: 1719
     2026-07-27T12:03:56Z: INFO: build status of zstreams/Stage-Pipeline/1719 is SUCCESS
     2026-07-27T12:03:56Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-07-27T12:04:25Z'
+  completed_at: '2026-07-27T12:04:25Z'
+  result: 'Promoted build 4.18.50 test result file not yet created by job controller.
+    However, build is promoted (phase: Accepted) and all 3 async tasks passed successfully
+    (push-to-cdn-staging, image-consistency-check, stage-testing). Proceeding to final
+    approval phase.'
 issues:
 - issue: Release dropped by ART - RPM advisory 170117 in DROPPED_NO_SHIP state. Release
     will not be shipped to customers.
