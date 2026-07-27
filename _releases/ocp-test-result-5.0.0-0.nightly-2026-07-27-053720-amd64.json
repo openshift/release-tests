@@ -6,9 +6,49 @@
         "jobStartTime": "2026-07-27T11:38:32Z",
         "jobID": "eb0f5f4f-03a2-4ea0-b984-a4bea24f56e1",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2081705797158440960",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-07-27T14:42:14Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 13,
+            "errors": 0,
+            "skipped": 28,
+            "failingScenarios": [
+              "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+              "[sig-network-edge] Network_Edge Component_ALBO Author:hongli-ROSA-OSD_CCS-ConnectedOnly-LEVEL0-High-51189-Install aws-load-balancer-operator and controller [Serial]",
+              "[sig-network-edge] Network_Edge Component_ExtDNS Author:hongli-ConnectedOnly-ROSA-OSD_CCS-LEVEL0-High-48138-Support External DNS on AWS platform",
+              "[sig-network-edge] Network_Edge Component_Router Author:mjoseph-LEVEL0-Critical-55223-Configuring list of IP address ranges using allowedSourceRanges in LoadBalancerService",
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+              "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+              "[sig-operators] OLM v1 oprun should Author:kuiwang-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-75492-cluster extension can not be installed with wrong sa or insufficient permission sa",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-High-44910-[CSI-Driver] [Dynamic PV] [Filesystem default] support mountOptions"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-07-27T15:50:13Z",
+          "jobID": "f5e3aaa7-9851-4118-94bf-5cfe6e217109",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2026-07-27T15:50:38Z",
+          "jobID": "2f083fe2-f8f2-4d4e-b733-959a9fca6eb1",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999",
@@ -42,9 +82,47 @@
         "jobStartTime": "2026-07-27T11:38:43Z",
         "jobID": "e3e7c3f5-1d27-416b-90d4-a9bc54cb48d7",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2081705840301051904",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-07-27T15:02:52Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 11,
+            "errors": 0,
+            "skipped": 31,
+            "failingScenarios": [
+              "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-Critical-57440-observability operator uninstall [Serial]",
+              "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+              "[sig-network-edge] Network_Edge Component_Router Author:mjoseph-LEVEL0-Critical-55223-Configuring list of IP address ranges using allowedSourceRanges in LoadBalancerService",
+              "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+              "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+              "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+              "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server",
+              "[sig-operators] OLM v1 oprun should Author:kuiwang-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-75492-cluster extension can not be installed with wrong sa or insufficient permission sa"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-07-27T15:51:13Z",
+          "jobID": "97d8e6c4-6861-4bc7-820c-35a05eef4d60",
+          "jobState": "triggered"
+        },
+        {
+          "jobStartTime": "2026-07-27T15:51:38Z",
+          "jobID": "900332cb-63ff-494e-ad38-c633bd414f2a",
+          "jobState": "triggered"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-disruptive-f999",
