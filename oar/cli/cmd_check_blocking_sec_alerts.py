@@ -52,12 +52,9 @@ def check_blocking_sec_alerts(ctx):
                 check_errors[advisory.errata_id] = str(e)
                 logger.error(f"Error checking advisory {advisory.errata_id}: {e}")
 
-        existing_blocker = statebox.get_task_blocker(TASK_CHECK_BLOCKING_SEC_ALERTS)
-        if existing_blocker:
-            statebox.resolve_issue(
-                issue=existing_blocker["issue"],
-                resolution="Re-checked blocking security alerts",
-            )
+        existing_issues = statebox.get_issues(
+            unresolved_only=True, task_name=TASK_CHECK_BLOCKING_SEC_ALERTS
+        )
 
         if blocking_advisories:
             logger.warning("BLOCKING SECURITY ALERTS FOUND:")
@@ -71,16 +68,28 @@ def check_blocking_sec_alerts(ctx):
                 f"Found blocking security alerts in {len(blocking_advisories)} RHSA advisory(ies)\n\n"
                 f"Affected advisories:\n" + "\n".join(advisory_details)
             )
-            try:
-                statebox.add_issue(
-                    issue=issue_description,
-                    blocker=True,
-                    related_tasks=[TASK_CHECK_BLOCKING_SEC_ALERTS],
-                    auto_save=True,
-                )
-                logger.info(f"Created blocking issue in StateBox for {len(blocking_advisories)} RHSA advisory(ies)")
-            except StateBoxException as e:
-                logger.warning(f"Could not add StateBox issue (may already exist): {e}")
+
+            existing_blocker = next(
+                (i for i in existing_issues if i.get("blocker", False)), None
+            )
+            if existing_blocker and existing_blocker["issue"].strip().lower() == issue_description.strip().lower():
+                logger.info("Blocking security alerts unchanged from previous check")
+            else:
+                if existing_blocker:
+                    statebox.resolve_issue(
+                        issue=existing_blocker["issue"],
+                        resolution="Replaced with updated blocking security alert findings",
+                    )
+                try:
+                    statebox.add_issue(
+                        issue=issue_description,
+                        blocker=True,
+                        related_tasks=[TASK_CHECK_BLOCKING_SEC_ALERTS],
+                        auto_save=True,
+                    )
+                    logger.info(f"Created blocking issue in StateBox for {len(blocking_advisories)} RHSA advisory(ies)")
+                except StateBoxException as e:
+                    logger.warning(f"Could not add StateBox issue: {e}")
 
             util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
         elif check_errors:
@@ -88,6 +97,12 @@ def check_blocking_sec_alerts(ctx):
             logger.warning(f"Security-alert checks failed for: {error_details}")
             util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_FAIL)
         else:
+            for issue in existing_issues:
+                statebox.resolve_issue(
+                    issue=issue["issue"],
+                    resolution="No blocking security alerts found on re-check",
+                )
+                logger.info(f"Resolved previous StateBox issue: {issue['issue'][:80]}")
             logger.info("No blocking security alerts found")
             util.log_task_status(TASK_CHECK_BLOCKING_SEC_ALERTS, TASK_STATUS_PASS)
 
