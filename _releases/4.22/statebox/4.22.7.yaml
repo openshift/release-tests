@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.7
 created_at: '2026-07-23T10:00:11Z'
-updated_at: '2026-07-28T09:17:33Z'
+updated_at: '2026-07-28T09:25:17Z'
 metadata:
   jira_ticket: ART-21762
   advisory_ids:
@@ -253,4 +253,13 @@ tasks:
     2026-07-28T09:17:32Z: INFO: All scheduled jobs cleared
     2026-07-28T09:17:32Z: ERROR: Background metadata checker failed: change advisory status failed
     2026-07-28T09:17:32Z: ERROR: Release approval failed with error: change advisory status failed
-issues: []
+issues:
+- issue: 'change-advisory-status failed after metadata URL became accessible. Background
+    process detected URL accessible at 2026-07-28T09:17:32Z but advisory status change
+    operation failed with error: change advisory status failed'
+  reported_at: '2026-07-28T09:25:17Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
