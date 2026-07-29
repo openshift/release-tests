@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.67
 created_at: '2026-07-22T10:00:09Z'
-updated_at: '2026-07-23T16:01:43Z'
+updated_at: '2026-07-29T14:35:47Z'
 metadata:
   jira_ticket: ART-21739
   advisory_ids:
@@ -66,4 +66,15 @@ tasks:
   result: 'Waivable failure accepted: 1/3 jobs failed (Azure FIPS upgrade). Root cause:
     CI infrastructure pod scheduling timeout - no cluster provisioned, no tests executed.
     2/3 jobs passed (AWS, GCP). Waived by release lead.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-29T14:34:50Z'
+  completed_at: '2026-07-29T14:35:46Z'
+  result: |-
+    2026-07-29T14:34:50Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-29T14:34:50Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.15.67
+    2026-07-29T14:34:53Z: INFO: Image Digest: sha256:2f76605ac71fd30ffe0f017cbff0c01a24dd2649002b397ba17b010f49c77884
+    2026-07-29T14:34:53Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=2f76605ac71fd30ffe0f017cbff0c01a24dd2649002b397ba17b010f49c77884/signature-1
+    2026-07-29T14:35:46Z: INFO: Signature check PASSED
+    2026-07-29T14:35:46Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
