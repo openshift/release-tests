@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.67
 created_at: '2026-07-22T12:02:31Z'
-updated_at: '2026-07-29T05:15:00Z'
+updated_at: '2026-07-29T05:25:07Z'
 metadata:
   jira_ticket: ART-21753
   advisory_ids:
@@ -74,4 +74,14 @@ tasks:
     2026-07-29T05:11:10Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=6a5d0afd0e373aa47fe1598eaf01f359840f893a8ed6e4aa19339fb3a17f5e19/signature-1
     2026-07-29T05:12:22Z: INFO: Signature check PASSED
     2026-07-29T05:12:22Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-07-29T05:25:07Z'
+  completed_at: '2026-07-29T05:25:07Z'
+  result: 'Candidate build 4.16.0-0.nightly-2026-07-21-112356: Original run accepted=false
+    (1 Azure FIPS failure: OCP-47088 nmstate-operator, known flaky). Additional jobs
+    triggered and passed: upgrade-from-stable-4.16-aws-ipi-f999 (2080520074921250816),
+    upgrade-from-stable-4.15-gcp-ipi-f999 (2080519885959467008), aws-ipi-disruptive-f999
+    (2080519715670724608). Promoted build 4.16.67 accepted=true. Candidate build analysis
+    complete.'
 issues: []
