@@ -64,7 +64,31 @@
           "jobStartTime": "2026-07-31T02:29:00Z",
           "jobID": "60fa71c6-6e01-4eba-8f09-d4f3ef6636c3",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2083017061511991296",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-07-31T06:00:38Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -177,5 +201,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-07-30-120658",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-07-30-120658"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
