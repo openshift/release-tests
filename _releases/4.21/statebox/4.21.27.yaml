@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.27
 created_at: '2026-07-30T13:00:33Z'
-updated_at: '2026-07-31T06:21:00Z'
+updated_at: '2026-07-31T06:22:32Z'
 metadata:
   jira_ticket: ART-21806
   advisory_ids:
@@ -67,4 +67,15 @@ tasks:
   started_at: '2026-07-31T02:34:11Z'
   completed_at: '2026-07-31T06:21:00Z'
   result: 'Jenkins Stage-Pipeline build #1721 completed successfully. URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1721/'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-07-31T06:21:16Z'
+  completed_at: '2026-07-31T06:22:31Z'
+  result: |-
+    2026-07-31T06:21:16Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-07-31T06:21:16Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.27
+    2026-07-31T06:21:19Z: INFO: Image Digest: sha256:aaeee8b27a23a8a8923ca2f37dfeabac3c716b4fbecb249f91d0b377323c87b1
+    2026-07-31T06:21:19Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=aaeee8b27a23a8a8923ca2f37dfeabac3c716b4fbecb249f91d0b377323c87b1/signature-1
+    2026-07-31T06:22:31Z: INFO: Signature check PASSED
+    2026-07-31T06:22:31Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
