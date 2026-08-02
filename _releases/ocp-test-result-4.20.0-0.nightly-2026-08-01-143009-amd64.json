@@ -100,7 +100,31 @@
           "jobStartTime": "2026-08-01T23:28:10Z",
           "jobID": "20848223-2ce2-4226-9e0f-667f6803ff1e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/2083696321415352320",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-02T02:27:36Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 30
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "[sig-cluster-lifecycle] Cluster_Infrastructure MAPI Author:zhsun-NonHyperShiftHOST-Longduration-NonPreRelease-LEVEL0-Critical-25436-Scale up/scale down the cluster by changing the replicas of the machineSet [Disruptive] [Serial][Slow]"
+              ]
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-01T23:28:16Z",
@@ -178,5 +202,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2026-08-01-143009",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2026-08-01-143009"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
