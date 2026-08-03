@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.27
 created_at: '2026-07-30T13:00:33Z'
-updated_at: '2026-08-03T10:35:36Z'
+updated_at: '2026-08-03T15:33:13Z'
 metadata:
   jira_ticket: ART-21806
   advisory_ids:
@@ -59,9 +59,13 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-07-31T02:34:05Z'
-  completed_at: '2026-07-31T06:20:56Z'
+  completed_at: '2026-08-03T15:33:13Z'
   result: 'Prow job 9e982c6f-3125-405c-a0d6-ccfb0f18a8b4 completed successfully. URL:
-    https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2083018311305531392'
+    https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2083018311305531392.
+    NOTE: Image health scan was NOT executed automatically as part of the task (bug
+    - Prow job API returned 404 when re-checking completed job). Scan was triggered
+    manually on the ERT VM: 856 images scanned, 0 unhealthy components. Comment added
+    to MR 681.'
 - name: stage-testing
   status: Pass
   started_at: '2026-07-31T02:34:11Z'
