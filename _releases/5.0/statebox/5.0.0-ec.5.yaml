@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-ec.5
 created_at: '2026-08-03T08:41:19Z'
-updated_at: '2026-08-04T07:38:54Z'
+updated_at: '2026-08-04T07:41:08Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -13,14 +13,16 @@ metadata:
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/672
 tasks:
 - name: image-consistency-check
-  status: Fail
-  started_at: '2026-08-03T08:57:20Z'
-  completed_at: '2026-08-04T07:38:53Z'
+  status: In Progress
+  started_at: '2026-08-04T07:40:59Z'
+  completed_at: null
   result: |-
-    2026-08-04T07:38:52Z: INFO: Initialized StateBox for release 5.0.0-ec.5 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-ec.5.yaml
-    2026-08-04T07:38:52Z: INFO: Checking image consistency check Prow job status for job ID: aa894f4f-f2a2-46f3-8bc5-445270a78d4a
-    2026-08-04T07:38:53Z: INFO: Job state: failure, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2084203818848882688
-    2026-08-04T07:38:53Z: INFO: task [Image Consistency Check] status is changed to [Fail]
+    2026-08-04T07:40:59Z: INFO: Initialized StateBox for release 5.0.0-ec.5 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-ec.5.yaml
+    2026-08-04T07:41:00Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-ec.5.yaml (SHA: e6f90d60)
+    2026-08-04T07:41:00Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-08-04T07:41:05Z: INFO: Triggered image consistency check Prow job: f8a5f5a3-3d53-4b81-aa70-fbe6aca1618b
+    2026-08-04T07:41:05Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2084547010240712704
+    2026-08-04T07:41:07Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
   status: In Progress
   started_at: '2026-08-03T08:57:59Z'
