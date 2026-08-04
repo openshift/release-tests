@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-ec.5
 created_at: '2026-08-03T08:41:19Z'
-updated_at: '2026-08-04T08:01:50Z'
+updated_at: '2026-08-04T08:24:24Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -13,16 +13,20 @@ metadata:
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/672
 tasks:
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-08-04T07:40:59Z'
-  completed_at: null
+  completed_at: '2026-08-04T08:24:23Z'
   result: |-
-    2026-08-04T07:40:59Z: INFO: Initialized StateBox for release 5.0.0-ec.5 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-ec.5.yaml
-    2026-08-04T07:41:00Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-ec.5.yaml (SHA: e6f90d60)
-    2026-08-04T07:41:00Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-08-04T07:41:05Z: INFO: Triggered image consistency check Prow job: f8a5f5a3-3d53-4b81-aa70-fbe6aca1618b
-    2026-08-04T07:41:05Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2084547010240712704
-    2026-08-04T07:41:07Z: INFO: sent slack message to <#team-qe-release>
+    2026-08-04T08:19:05Z: INFO: Initialized StateBox for release 5.0.0-ec.5 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-ec.5.yaml
+    2026-08-04T08:19:05Z: INFO: Checking image consistency check Prow job status for job ID: f8a5f5a3-3d53-4b81-aa70-fbe6aca1618b
+    2026-08-04T08:19:05Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2084547010240712704
+    2026-08-04T08:19:05Z: INFO: Starting image health check for shipment MR 672
+    2026-08-04T08:19:05Z: INFO: Stage release succeeded (verified by label)
+    2026-08-04T08:19:05Z: INFO: Processing MR 672
+    2026-08-04T08:19:10Z: INFO: Found 889 images to check
+    2026-08-04T08:24:22Z: INFO: Completed image health check. Scanned 889 images, found 0 unhealthy
+    2026-08-04T08:24:23Z: INFO: Added image health summary to MR 672
+    2026-08-04T08:24:23Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Fail
   started_at: '2026-08-03T08:57:59Z'
