@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.95
 created_at: '2026-07-29T09:00:06Z'
-updated_at: '2026-08-05T13:41:07Z'
+updated_at: '2026-08-05T13:43:33Z'
 metadata:
   jira_ticket: ART-21800
   advisory_ids:
@@ -93,4 +93,23 @@ tasks:
     2026-08-05T13:40:09Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7c196c53350705a178672825ab9582d73bd37701c6d9ed7ea3367c19fe189ddc/signature-1
     2026-08-05T13:41:06Z: INFO: Signature check PASSED
     2026-08-05T13:41:06Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-08-05T13:43:14Z'
+  completed_at: null
+  result: |-
+    2026-08-05T13:43:14Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-08-05T13:43:17Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-08-05T13:43:18Z: INFO: RHCOS nvr is rhcos-x86_64-412.86.202607211933-0
+    2026-08-05T13:43:18Z: INFO: The commit metadata is kernel-4.18.0-372.203.1.el8_6
+    2026-08-05T13:43:18Z: INFO: Tags of this build is [{'arches': '', 'id': 85369, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-8.6.0-z-candidate', 'perm': 'rhel8-gate', 'perm_id': 65}, {'arches': '', 'id': 106214, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.12-rhel-8-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}]
+    2026-08-05T13:43:19Z: INFO: Successfully approved MR 678
+    2026-08-05T13:43:19Z: INFO: Successfully added QE approval to MR 678
+    2026-08-05T13:43:21Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:47703
+    2026-08-05T13:43:31Z: INFO: The metadata url is not accessible
+    2026-08-05T13:43:31Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-08-05T13:43:31Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-08-05T13:43:31Z: INFO: Background metadata checker process started (PID: 626904) - running independently after parent exit
+    2026-08-05T13:43:31Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.12_20260805_094331.log
+    2026-08-05T13:43:32Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues: []
