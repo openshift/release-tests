@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.68
 created_at: '2026-08-05T13:00:12Z'
-updated_at: '2026-08-06T11:30:28Z'
+updated_at: '2026-08-06T11:51:11Z'
 metadata:
   jira_ticket: ART-21877
   advisory_ids:
@@ -41,4 +41,18 @@ tasks:
     only 1/4 jobs failed (aws-ipi-disruptive). All 3 attempts failed in ~25min with
     no test results - cluster setup/provisioning failure, not product bug. Other AWS
     job passed on retry. Azure and GCP clean. Infrastructure failure - waivable.'
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-08-06T11:51:06Z'
+  completed_at: null
+  result: |-
+    2026-08-06T11:51:06Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-08-06T11:51:08Z: INFO: checking push job status for advisory 170855 ...
+    2026-08-06T11:51:08Z: INFO: no push job found for advisory 170855
+    2026-08-06T11:51:08Z: INFO: advisory 170855 has blocking advisory []
+    2026-08-06T11:51:09Z: INFO: push job for advisory 170855 is triggered
+    2026-08-06T11:51:09Z: INFO: checking push job status for advisory 170856 ...
+    2026-08-06T11:51:09Z: INFO: no push job found for advisory 170856
+    2026-08-06T11:51:09Z: INFO: advisory 170856 has blocking advisory []
+    2026-08-06T11:51:10Z: INFO: push job for advisory 170856 is triggered
 issues: []
