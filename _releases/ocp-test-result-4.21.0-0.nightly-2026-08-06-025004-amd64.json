@@ -6,9 +6,37 @@
         "jobStartTime": "2026-08-06T12:22:55Z",
         "jobID": "b181a7c4-6384-4a67-a332-6a4d22a231b7",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-aws-ipi-f999/2085341154525581312",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-06T15:16:17Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 23,
+            "failingScenarios": [
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobID": "10697a30-08bb-47c3-b05d-345f3a2bb71b"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.21-automated-release-azure-ipi-fips-f999",
