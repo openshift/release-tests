@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.33
 created_at: '2026-08-06T11:00:20Z'
-updated_at: '2026-08-07T08:37:24Z'
+updated_at: '2026-08-07T10:06:33Z'
 metadata:
   jira_ticket: ART-21910
   advisory_ids:
@@ -73,8 +73,11 @@ issues:
 - issue: Promoted build test result file missing retried jobs for periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.20-gcp-ipi-f999
     in ocp-test-result-4.20.33-amd64.json
   reported_at: '2026-08-07T08:37:24Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: File was already marked aggregated:true/accepted:false, blocking aggregator
+    from retrying. Ran jobctl trigger-jobs-for-build to reset those flags. Aggregator
+    then detected the failed gcp-ipi job and triggered 2 retry jobs. Retries now running.
   blocker: true
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-08-07T10:06:33Z'
