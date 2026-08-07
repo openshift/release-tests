@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.33
 created_at: '2026-08-06T11:00:20Z'
-updated_at: '2026-08-07T08:09:18Z'
+updated_at: '2026-08-07T08:25:53Z'
 metadata:
   jira_ticket: ART-21910
   advisory_ids:
@@ -33,6 +33,20 @@ tasks:
     2026-08-07T08:09:14Z: INFO: Processing MR 712 for Jira issues
     2026-08-07T08:09:17Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-08-07T08:09:17Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-08-07T08:25:48Z'
+  completed_at: null
+  result: |-
+    2026-08-07T08:25:48Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-08-07T08:25:50Z: INFO: checking push job status for advisory 170900 ...
+    2026-08-07T08:25:50Z: INFO: no push job found for advisory 170900
+    2026-08-07T08:25:50Z: INFO: advisory 170900 has blocking advisory []
+    2026-08-07T08:25:51Z: INFO: push job for advisory 170900 is triggered
+    2026-08-07T08:25:51Z: INFO: checking push job status for advisory 170901 ...
+    2026-08-07T08:25:51Z: INFO: no push job found for advisory 170901
+    2026-08-07T08:25:51Z: INFO: advisory 170901 has blocking advisory []
+    2026-08-07T08:25:52Z: INFO: push job for advisory 170901 is triggered
 issues:
 - issue: 'elliott find-bugs --cve-only crashing: OCPBUGS-84854 (python-pyasn1) no
     builds found. Reported to ART team.'
