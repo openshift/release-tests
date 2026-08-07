@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.28
 created_at: '2026-08-06T11:00:26Z'
-updated_at: '2026-08-07T10:51:41Z'
+updated_at: '2026-08-07T10:52:43Z'
 metadata:
   jira_ticket: ART-21909
   advisory_ids:
@@ -33,6 +33,13 @@ tasks:
     2026-08-07T09:54:28Z: INFO: Processing MR 713 for Jira issues
     2026-08-07T09:54:30Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-08-07T09:54:30Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: In Progress
+  started_at: '2026-08-07T10:52:43Z'
+  completed_at: null
+  result: 'Waiting for 3 Prow jobs to complete: aws-ipi upgrade-from-4.20 (54527843),
+    azure-ipi-fips upgrade-from-4.21 (7f4d2859), gcp-ipi upgrade-from-4.21 (bdee4836).
+    Triggered manually via jobctl.'
 issues:
 - issue: 'elliott find-bugs --cve-only crashing: OCPBUGS-84853 (python-pyasn1) no
     builds found, OCPBUGS-83833 invalid summary [mce-2.11]. Reported to ART team.'
