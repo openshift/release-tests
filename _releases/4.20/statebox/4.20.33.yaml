@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.33
 created_at: '2026-08-06T11:00:20Z'
-updated_at: '2026-08-07T10:19:20Z'
+updated_at: '2026-08-07T11:01:55Z'
 metadata:
   jira_ticket: ART-21910
   advisory_ids:
@@ -83,6 +83,17 @@ tasks:
     was already marked aggregated:true/accepted:false, blocking aggregator from retrying.
     Ran jobctl trigger-jobs-for-build to reset flags. Aggregator then triggered 2
     retry jobs. Waiting for retries to complete and re-aggregate.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-07T11:01:14Z'
+  completed_at: '2026-08-07T11:01:54Z'
+  result: |-
+    2026-08-07T11:01:14Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-07T11:01:14Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.33
+    2026-08-07T11:01:16Z: INFO: Image Digest: sha256:237dafe3f2d26e355372001ae957748211bd4bae8249b48fe2624159cfdc8265
+    2026-08-07T11:01:16Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=237dafe3f2d26e355372001ae957748211bd4bae8249b48fe2624159cfdc8265/signature-1
+    2026-08-07T11:01:54Z: INFO: Signature check PASSED
+    2026-08-07T11:01:54Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'elliott find-bugs --cve-only crashing: OCPBUGS-84854 (python-pyasn1) no
     builds found. Reported to ART team.'
