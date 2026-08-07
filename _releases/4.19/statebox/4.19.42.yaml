@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.42
 created_at: '2026-08-06T10:00:11Z'
-updated_at: '2026-08-07T13:00:34Z'
+updated_at: '2026-08-07T14:22:28Z'
 metadata:
   jira_ticket: ART-21905
   advisory_ids:
@@ -69,11 +69,12 @@ tasks:
     2026-08-07T11:50:01Z: INFO: build status of zstreams/Stage-Pipeline/1731 is SUCCESS
     2026-08-07T11:50:01Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: In Progress
+  status: Pass
   started_at: '2026-08-07T13:00:34Z'
-  completed_at: null
-  result: 'gcp-ipi-f999 failed due to infrastructure issue. Retried (old: 84f07a77,
-    new: 3bcc14e6). Waiting for completion.'
+  completed_at: '2026-08-07T14:22:28Z'
+  result: 'Manually promoted. gcp-ipi-f999 had 1 successful run (job ID: 64713a5a-2fce-4996-a685-eecd43)
+    and 3 infra failures (not product bugs): 1) exit 141 SIGPIPE, 2) imagestream import
+    timeout, 3) imagestream import timeout. manual_promotion=true.'
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-08-07T10:14:38Z'
