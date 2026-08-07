@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.33
 created_at: '2026-08-06T11:00:20Z'
-updated_at: '2026-08-07T10:07:36Z'
+updated_at: '2026-08-07T10:08:19Z'
 metadata:
   jira_ticket: ART-21910
   advisory_ids:
@@ -44,6 +44,17 @@ tasks:
     2026-08-07T10:07:35Z: INFO: checking push job status for advisory 170901 ...
     2026-08-07T10:07:35Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-08-07T10:07:35Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-08-07T10:08:11Z'
+  completed_at: null
+  result: |-
+    2026-08-07T10:08:11Z: INFO: Initialized StateBox for release 4.20.33 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.33.yaml
+    2026-08-07T10:08:12Z: INFO: Loaded state from _releases/4.20/statebox/4.20.33.yaml (SHA: 650f212a)
+    2026-08-07T10:08:12Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-08-07T10:08:17Z: INFO: Triggered image consistency check Prow job: 875ab80f-98e7-47e0-abb0-738809042f59
+    2026-08-07T10:08:17Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2085671263971315712
+    2026-08-07T10:08:18Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'elliott find-bugs --cve-only crashing: OCPBUGS-84854 (python-pyasn1) no
     builds found. Reported to ART team.'
