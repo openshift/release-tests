@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.33
 created_at: '2026-08-06T11:00:20Z'
-updated_at: '2026-08-07T10:18:27Z'
+updated_at: '2026-08-07T10:19:20Z'
 metadata:
   jira_ticket: ART-21910
   advisory_ids:
@@ -74,6 +74,15 @@ tasks:
   result: Test result file ocp-test-result-4.20.0-0.nightly-2026-08-05-084330-amd64.json
     was completely missing from record branch. Triggered 6 Prow jobs via jobctl trigger-jobs-for-build.
     Waiting for jobs to complete and results to aggregate.
+- name: analyze-promoted-build
+  status: In Progress
+  started_at: '2026-08-07T10:19:20Z'
+  completed_at: null
+  result: Test result file ocp-test-result-4.20.33-amd64.json existed but was missing
+    retried jobs for failed stable-4.20-upgrade-from-stable-4.20-gcp-ipi-f999. File
+    was already marked aggregated:true/accepted:false, blocking aggregator from retrying.
+    Ran jobctl trigger-jobs-for-build to reset flags. Aggregator then triggered 2
+    retry jobs. Waiting for retries to complete and re-aggregate.
 issues:
 - issue: 'elliott find-bugs --cve-only crashing: OCPBUGS-84854 (python-pyasn1) no
     builds found. Reported to ART team.'
