@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.52
 created_at: '2026-08-06T11:00:11Z'
-updated_at: '2026-08-07T09:56:57Z'
+updated_at: '2026-08-07T11:00:41Z'
 metadata:
   jira_ticket: ART-21906
   advisory_ids:
@@ -78,6 +78,17 @@ tasks:
   result: All 6 blocking tests passed BO3 verification. Build 4.18.0-0.nightly-2026-08-05-184652
     accepted=true, aggregated=true. 0 failures across all jobs (aws-ipi, azure-ipi-fips,
     gcp-ipi, aws-ipi-disruptive, upgrade-from-4.17-gcp-ipi, upgrade-from-4.18-aws-ipi).
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-07T10:59:42Z'
+  completed_at: '2026-08-07T11:00:40Z'
+  result: |-
+    2026-08-07T10:59:42Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-07T10:59:42Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.52
+    2026-08-07T10:59:44Z: INFO: Image Digest: sha256:dddcb2c76b40454aac441daa388ae91c76d90b1a058adce58f3ce4e0ec957b3f
+    2026-08-07T10:59:44Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=dddcb2c76b40454aac441daa388ae91c76d90b1a058adce58f3ce4e0ec957b3f/signature-1
+    2026-08-07T11:00:40Z: INFO: Signature check PASSED
+    2026-08-07T11:00:40Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: Test result file ocp-test-result-4.18.52-amd64.json missing on record branch
     - no blocking test results available for build analysis
