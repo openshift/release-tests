@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.52
 created_at: '2026-08-06T11:00:11Z'
-updated_at: '2026-08-07T11:01:46Z'
+updated_at: '2026-08-07T12:46:40Z'
 metadata:
   jira_ticket: ART-21906
   advisory_ids:
@@ -86,6 +86,13 @@ tasks:
     2026-08-07T10:59:44Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=dddcb2c76b40454aac441daa388ae91c76d90b1a058adce58f3ce4e0ec957b3f/signature-1
     2026-08-07T11:00:40Z: INFO: Signature check PASSED
     2026-08-07T11:00:40Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-08-07T12:46:40Z'
+  completed_at: '2026-08-07T12:46:40Z'
+  result: 'All 3 blocking tests passed. Build 4.18.52 accepted=true, aggregated=true.
+    0 failures across all jobs (upgrade-from-4.17-aws-ipi, upgrade-from-4.18-azure-ipi-fips,
+    upgrade-from-4.18-gcp-ipi). All jobs state: success.'
 issues:
 - issue: Test result file ocp-test-result-4.18.52-amd64.json missing on record branch
     - no blocking test results available for build analysis
