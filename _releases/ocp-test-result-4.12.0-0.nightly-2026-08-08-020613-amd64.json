@@ -64,13 +64,46 @@
           "jobStartTime": "2026-08-08T14:24:03Z",
           "jobID": "6c286fb5-dd2b-4d05-a037-7417901653da",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2086096104494993408",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-08T16:48:20Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 7
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-08T14:24:08Z",
           "jobID": "f878f680-6579-4549-beb9-7813efab680a",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2086096126137602048",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-08T17:00:26Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 54,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-High-50504-Verify flowlogs-pipeline metrics and health [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -99,13 +132,15 @@
           "jobStartTime": "2026-08-08T14:24:21Z",
           "jobID": "43ef5161-d471-44d9-898d-18984e60567f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-gcp-ipi-custom-type-f999/2086096178369269760",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-08T17:01:59Z"
         },
         {
           "jobStartTime": "2026-08-08T14:24:26Z",
           "jobID": "2a747e6f-aa29-46fa-b86f-910e24892014",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-gcp-ipi-custom-type-f999/2086096201970618368",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-08T17:01:50Z"
         }
       ]
     }
@@ -115,5 +150,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2026-08-08-020613",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2026-08-08-020613"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
