@@ -68,9 +68,47 @@
         "jobStartTime": "2026-08-09T18:20:25Z",
         "jobID": "5f44ba0c-d30d-4d20-94e6-21ba4073db3f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2086517977020108800",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-09T21:27:01Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 80,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 23
+          },
+          "cucushift-e2e": {
+            "total": 22,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler",
+              "OCP-31989:ClusterObservability Export Thanos Querier metrics and alerts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-08-09T23:23:29Z",
+          "jobID": "c75c2979-f844-4ff4-8a07-16f6a1809ce7",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2086594246025940992",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-08-09T23:23:35Z",
+          "jobID": "390374db-de71-4736-8943-7b7c049f3ea3",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-gcp-ipi-f999/2086594267735658496",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.14-automated-release-aws-ipi-disruptive-f999",
