@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.28
 created_at: '2026-08-06T11:00:26Z'
-updated_at: '2026-08-10T08:14:20Z'
+updated_at: '2026-08-10T08:59:15Z'
 metadata:
   jira_ticket: ART-21909
   advisory_ids:
@@ -41,12 +41,12 @@ tasks:
     upgrade-from-4.21 (7f4d2859), gcp-ipi upgrade-from-4.21 (initial bdee4836 failed,
     retries passed).'
 - name: analyze-candidate-build
-  status: In Progress
+  status: Pass
   started_at: '2026-08-07T15:19:55Z'
-  completed_at: null
-  result: '5/6 jobs passed. azure-ipi-fips-f999 failed 3 times due to infrastructure
-    issues (latest: unable to import latest release image - invalid reference format,
-    timed out after 6 imports). Retry #4 triggered (95efc00a). Waiting for completion.'
+  completed_at: '2026-08-10T08:59:15Z'
+  result: 6/6 jobs passed. azure-ipi-fips-f999 first run failed (2 sig-monitoring
+    failures), retried job (25b50214) passed. Later manual retries failed with infra
+    issue (nightly image expired). Test results promoted manually.
 - name: push-to-cdn-staging
   status: Pass
   started_at: '2026-08-07T11:44:34Z'
