@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.68
 created_at: '2026-08-05T13:00:12Z'
-updated_at: '2026-08-11T06:09:43Z'
+updated_at: '2026-08-11T06:11:44Z'
 metadata:
   jira_ticket: ART-21877
   advisory_ids:
@@ -53,16 +53,11 @@ tasks:
     2026-08-11T06:08:40Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-08-11T06:08:40Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-08-06T11:51:19Z'
-  completed_at: null
-  result: |-
-    2026-08-06T11:51:19Z: INFO: Initialized StateBox for release 4.16.68 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.68.yaml
-    2026-08-06T11:51:20Z: INFO: Loaded state from _releases/4.16/statebox/4.16.68.yaml (SHA: def518a1)
-    2026-08-06T11:51:20Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-08-06T11:51:25Z: INFO: Triggered image consistency check Prow job: d2d83738-3326-491e-9eb3-f54aa7c8464d
-    2026-08-06T11:51:25Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2085334814684090368
-    2026-08-06T11:51:26Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-08-11T06:11:44Z'
+  result: 'Prow job d2d83738-3326-491e-9eb3-f54aa7c8464d completed successfully. GCS
+    finished.json confirms: result=SUCCESS, passed=true. Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2085334814684090368'
 - name: stage-testing
   status: In Progress
   started_at: '2026-08-11T06:09:40Z'
