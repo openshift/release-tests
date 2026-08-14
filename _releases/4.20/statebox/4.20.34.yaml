@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.34
 created_at: '2026-08-13T23:00:16Z'
-updated_at: '2026-08-14T10:44:37Z'
+updated_at: '2026-08-14T10:45:11Z'
 metadata:
   jira_ticket: ART-22693
   advisory_ids:
@@ -44,14 +44,12 @@ tasks:
     2026-08-14T07:01:32Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-08-14T07:01:32Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-08-14T07:22:41Z'
-  completed_at: null
-  result: |-
-    2026-08-14T07:22:41Z: INFO: Initialized StateBox for release 4.20.34 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.34.yaml
-    2026-08-14T07:22:41Z: INFO: Checking image consistency check Prow job status for job ID: 198a36af-7003-47e8-b10a-6430b0e72391
-    2026-08-14T07:22:41Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2088161134405226496
-    2026-08-14T07:22:41Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+  completed_at: '2026-08-14T10:45:11Z'
+  result: 'Prow job 198a36af-7003-47e8-b10a-6430b0e72391 completed successfully (verified
+    via GCS artifacts: result=SUCCESS, passed=true). Prow API returning 503 during
+    status check but job itself succeeded.'
 - name: stage-testing
   status: Pass
   started_at: '2026-08-14T07:22:47Z'
