@@ -40,13 +40,58 @@
           "jobStartTime": "2026-08-14T19:27:27Z",
           "jobID": "ad8068ac-5f46-4c93-a46a-d30a994eb49e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2088346782080700416",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-14T22:16:08Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 26
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14521:Workloads pod will be scheduled to the node which matches node anti-affinity - DoesNotExist"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-14T19:27:32Z",
           "jobID": "60b0ee2a-6eb2-4f0b-8bca-973ee39a6f63",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2088346835469996032",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-14T22:13:18Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 26
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -143,5 +188,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.16.0-0.nightly-2026-08-14-004548",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.16.0-0.nightly-2026-08-14-004548"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
