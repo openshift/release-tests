@@ -68,9 +68,54 @@
         "jobStartTime": "2026-08-14T17:23:58Z",
         "jobID": "c91895cd-cd27-4401-a301-6b22f4146a6e",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2088315708537573376",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-14T20:41:27Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 100,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51139-[CSI-Driver] [Dynamic PV] [Filesystem xfs] volumes resize on-line",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-44905-[CSI-Driver] [Dynamic PV] [block volume] volumes should store data"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 22,
+            "failures": 3,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14556:Workloads pod will not be scheduled if node affinity or node selector is not satisfied - node affinity",
+              "OCP-14697:Workloads pod will be scheduled on the node which meets pod affinity specified namespace",
+              "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-08-14T21:35:32Z",
+          "jobID": "036cd0ba-5ef8-40f6-85ce-74f7755c9737",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2088379017446035456",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-08-14T21:35:37Z",
+          "jobID": "0735fe2c-1ef8-47ca-bd1b-5fb7a8c2929b",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2088379039071866880",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-disruptive-f999",
