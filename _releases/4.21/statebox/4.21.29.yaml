@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.29
 created_at: '2026-08-14T08:02:59Z'
-updated_at: '2026-08-15T09:12:37Z'
+updated_at: '2026-08-15T09:14:51Z'
 metadata:
   jira_ticket: ART-22694
   advisory_ids:
@@ -46,11 +46,18 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-08-14T14:15:13Z'
-  completed_at: '2026-08-15T09:11:47Z'
-  result: 'Prow job 07979ca9-9cc9-47dd-bff4-82ed4bd10d75 verified SUCCESS via GCS
-    finished.json (passed=true, result=SUCCESS). MCP status query timed out at transport
-    layer repeatedly; result confirmed independently from Prow artifacts. Job URL:
-    https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2088270254303088640'
+  completed_at: '2026-08-15T09:14:50Z'
+  result: |-
+    2026-08-15T09:09:20Z: INFO: Initialized StateBox for release 4.21.29 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.29.yaml
+    2026-08-15T09:09:20Z: INFO: Checking image consistency check Prow job status for job ID: 07979ca9-9cc9-47dd-bff4-82ed4bd10d75
+    2026-08-15T09:09:20Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2088270254303088640
+    2026-08-15T09:09:20Z: INFO: Starting image health check for shipment MR 732
+    2026-08-15T09:09:20Z: INFO: Stage release succeeded (verified by label)
+    2026-08-15T09:09:20Z: INFO: Processing MR 732
+    2026-08-15T09:09:23Z: INFO: Found 855 images to check
+    2026-08-15T09:14:49Z: INFO: Completed image health check. Scanned 855 images, found 0 unhealthy
+    2026-08-15T09:14:50Z: INFO: Added image health summary to MR 732
+    2026-08-15T09:14:50Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-08-14T14:15:27Z'
