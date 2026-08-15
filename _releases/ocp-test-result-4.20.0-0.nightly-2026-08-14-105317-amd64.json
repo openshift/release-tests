@@ -68,9 +68,51 @@
         "jobStartTime": "2026-08-14T21:31:30Z",
         "jobID": "5c07eed7-cc4b-4a47-9b6f-b5ca3889a0c9",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/2088378001585606656",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-15T00:58:04Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 115,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 30,
+            "failingScenarios": [
+              "[sig-networking] SDN udn pods Author:anusaxen-LEVEL0-Critical-75236-Check udn pods are not isolated if same nad network is shared across two namespaces",
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-LEVEL0-Medium-73293-certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 20,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14484:Workloads pod will be scheduled to the node which matches node anti-affinity",
+              "OCP-14582:Workloads When no scheduler name is supplied, the pod is automatically scheduled using the default-scheduler"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-08-15T01:32:49Z",
+          "jobID": "fe7c6841-c005-4d56-917e-2ef480b6e151",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/2088438733320753152",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-08-15T01:32:50Z",
+          "jobID": "a494b90b-d747-4f30-b355-49010adaa5b8",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-gcp-ipi-f999/2088438734176391168",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-aws-ipi-disruptive-f999",
@@ -111,7 +153,8 @@
           "jobStartTime": "2026-08-14T23:27:46Z",
           "jobID": "72305edb-bed5-41d4-8e8b-e9cb23f5cd36",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.19-gcp-ipi-f999/2088407262015000576",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-15T00:59:55Z"
         }
       ]
     },
