@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.53
 created_at: '2026-08-14T13:02:58Z'
-updated_at: '2026-08-15T06:00:35Z'
+updated_at: '2026-08-15T08:23:18Z'
 metadata:
   jira_ticket: ART-22695
   advisory_ids:
@@ -63,4 +63,15 @@ tasks:
     2026-08-15T06:00:33Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-08-15T06:00:34Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1742/>
     2026-08-15T06:00:34Z: INFO: sent slack message to <#team-qe-release>
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-15T08:22:51Z'
+  completed_at: '2026-08-15T08:23:17Z'
+  result: |-
+    2026-08-15T08:22:51Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-15T08:22:51Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.53
+    2026-08-15T08:22:52Z: INFO: Image Digest: sha256:f9d84ee7a22c2f9d1e36e40e7b2a06af7e14b44f5c88450d5567291d1b638dce
+    2026-08-15T08:22:52Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=f9d84ee7a22c2f9d1e36e40e7b2a06af7e14b44f5c88450d5567291d1b638dce/signature-1
+    2026-08-15T08:23:17Z: INFO: Signature check PASSED
+    2026-08-15T08:23:17Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
