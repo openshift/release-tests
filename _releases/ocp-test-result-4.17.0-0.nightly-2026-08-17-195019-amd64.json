@@ -120,7 +120,32 @@
           "jobStartTime": "2026-08-18T01:29:10Z",
           "jobID": "b4fafe77-f73c-4ddf-8c61-b7342123f7f7",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2089524975651262464",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-18T04:27:34Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 26,
+              "failingScenarios": [
+                "[sig-monitoring] Cluster_Observability Observability Operator ConnectedOnly Author:Vibhu-LEVEL0-NonHyperShiftHOST-Critical-59384-High-59674-create monitoringstack to discover any target and verify observability operator discovered target and collected metrics of example APP",
+                "[sig-node] NODE keda Author:weinliu-LEVEL0-StagerunBoth-High-52383-Keda Install"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
