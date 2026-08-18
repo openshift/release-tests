@@ -68,13 +68,61 @@
           "jobStartTime": "2026-08-17T20:31:03Z",
           "jobID": "1500cc98-0ba0-4314-8edc-5cf9eec71f3e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2089449951128981504",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-17T23:54:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 4,
+              "errors": 0,
+              "skipped": 33,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-High-74978-CRD upgrade will be prevented if the Scope is switched between Namespaced and Cluster",
+                "[sig-operators] OLM v1 oprun should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-69196-olmv1 Supports Version Ranges during clusterextension upgrade",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-17T20:31:03Z",
           "jobID": "bdcbe904-1ce4-47b8-ae1c-780f36e78f0e",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-azure-ipi-fips-f999/2089449951938482176",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-17T23:41:02Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 115,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 33
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -156,5 +204,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2026-08-17-070259",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.20.0-0.nightly-2026-08-17-070259"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
