@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.70
 created_at: '2026-08-12T10:00:09Z'
-updated_at: '2026-08-19T06:33:23Z'
+updated_at: '2026-08-19T18:10:58Z'
 metadata:
   jira_ticket: ART-21990
   advisory_ids:
@@ -116,4 +116,15 @@ tasks:
     ReportPortal 503 outage confirmed temporary by Jayashree (QE lead) and Peter Ruan (pruan, datarouter owner) via Slack. Same failure pattern waived for 4.20.34 release.
 
     Full analysis: 4.13.70-promoted-build-analysis.md
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-19T18:10:15Z'
+  completed_at: '2026-08-19T18:10:57Z'
+  result: |-
+    2026-08-19T18:10:15Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-19T18:10:15Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.13.70
+    2026-08-19T18:10:17Z: INFO: Image Digest: sha256:033e3d7ba0937c0b3d2f88993bbe2e97c8b396f1782a7353c68ebe1282b2586c
+    2026-08-19T18:10:17Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=033e3d7ba0937c0b3d2f88993bbe2e97c8b396f1782a7353c68ebe1282b2586c/signature-1
+    2026-08-19T18:10:57Z: INFO: Signature check PASSED
+    2026-08-19T18:10:57Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
