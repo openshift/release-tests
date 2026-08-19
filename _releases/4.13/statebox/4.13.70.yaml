@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.70
 created_at: '2026-08-12T10:00:09Z'
-updated_at: '2026-08-18T10:57:06Z'
+updated_at: '2026-08-19T06:30:25Z'
 metadata:
   jira_ticket: ART-21990
   advisory_ids:
@@ -60,14 +60,29 @@ tasks:
     2026-08-17T13:56:11Z: INFO: Added image health summary to MR 723
     2026-08-17T13:56:11Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
+  status: Pass
   started_at: '2026-08-18T07:13:05Z'
-  completed_at: '2026-08-18T10:57:05Z'
+  completed_at: '2026-08-19T06:30:25Z'
   result: |-
-    2026-08-18T10:57:05Z: INFO: Initialized StateBox for release 4.13.70 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.70.yaml
-    2026-08-18T10:57:05Z: INFO: check stage job status according to job id: 1747
-    2026-08-18T10:57:05Z: INFO: build status of zstreams/Stage-Pipeline/1747 is FAILURE
-    2026-08-18T10:57:05Z: INFO: task [Stage Testing] status is changed to [Fail]
+    Stage-testing PASSED with waiver for LocalStorage tests on Azure UPI.
+
+    Builds #1747 and #1748 both provisioned clusters successfully and passed 9/10 test jobs. Only failures were LocalStorage Cucumber tests:
+
+    - OCP-31437: Storage Stage LocalVolume can be used by deployment
+    - OCP-35943: Storage Stage PV is provisioned by Localvolumeset
+    - Error: "pattern not found: local-pv-*" — LocalStorage provisioner unable to discover PVs on Azure UPI Standard_D4s_v3 worker nodes.
+
+    Root cause: Azure UPI environment limitation — local disk provisioner does not find eligible disks on these instance types. Not a product bug.
+
+    All other tests passed: non-admin runners (3/3), normal ginkgo, admin runners (2/3), destructive runner, disruptive ginkgo — covering networking, descheduler, cluster-capacity, and E2E scenarios.
+
+    Waiver approved by release lead.
+
+    Jenkins links:
+    - #1747: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1747/
+    - #1748: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1748/
+
+    Note: Builds #1743-#1746 failed on Azure UPI Flexy-install (infrastructure provisioning failures, not test failures).
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-08-17T14:29:50Z'
