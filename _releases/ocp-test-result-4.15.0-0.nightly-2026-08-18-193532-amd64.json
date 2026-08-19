@@ -65,13 +65,61 @@
           "jobStartTime": "2026-08-19T16:26:26Z",
           "jobID": "d551447c-3f49-4305-a29d-b713036ed275",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2090113258127101952",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-19T19:47:52Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-19T16:26:52Z",
           "jobID": "adfea834-653a-474c-99a7-08e425796e1f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999/2090113551749353472",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-19T19:30:05Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 85,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 27
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failingScenarios": [
+                "OCP-14698:Workloads pod with pod affinity will not be scheduled if not all matchExpressions are satisfied"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -168,5 +216,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.15.0-0.nightly-2026-08-18-193532",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.15.0-0.nightly-2026-08-18-193532"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
