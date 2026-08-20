@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.68
 created_at: '2026-08-20T08:00:10Z'
-updated_at: '2026-08-20T08:59:20Z'
+updated_at: '2026-08-20T09:43:37Z'
 metadata:
   jira_ticket: ART-22801
   advisory_ids:
@@ -47,4 +47,14 @@ tasks:
     2026-08-20T08:59:18Z: INFO: no push job found for advisory 171589
     2026-08-20T08:59:18Z: INFO: advisory 171589 has blocking advisory []
     2026-08-20T08:59:19Z: INFO: push job for advisory 171589 is triggered
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-08-20T09:43:37Z'
+  completed_at: '2026-08-20T09:43:37Z'
+  result: 'Waivable failures accepted: All 3 attempts on azure-ipi-fips-f999 failed
+    due to Azure infrastructure instability (attempt 1: cluster provisioning failure;
+    retry 1: OCP-26285 known flaky pod affinity preferred scheduling test - OCPQE-17141;
+    retry 2: OCP-14698 failed due to image.openshift.io/ImagePolicy admission plugin
+    timeout after 13s - transient infra issue). No product regressions detected. Cross-platform
+    failures: 0. Decision: ACCEPT.'
 issues: []
