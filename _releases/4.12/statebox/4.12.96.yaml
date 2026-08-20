@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.96
 created_at: '2026-08-12T20:00:08Z'
-updated_at: '2026-08-20T06:53:25Z'
+updated_at: '2026-08-20T06:54:55Z'
 metadata:
   jira_ticket: ART-22009
   advisory_ids:
@@ -72,4 +72,15 @@ tasks:
   result: 'Waivable failures accepted: All 3 blocking upgrade jobs (AWS, GCP, Azure)
     failed due to ReportPortal issue in post phase. Actual test cases passed. Waived
     by release lead.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-20T06:54:10Z'
+  completed_at: '2026-08-20T06:54:54Z'
+  result: |-
+    2026-08-20T06:54:10Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-20T06:54:10Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.12.96
+    2026-08-20T06:54:14Z: INFO: Image Digest: sha256:fc0a3dd609a60dd4ad10fe4badef3058d61a1a33436d33ec4b563d5aaf9f26cc
+    2026-08-20T06:54:14Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=fc0a3dd609a60dd4ad10fe4badef3058d61a1a33436d33ec4b563d5aaf9f26cc/signature-1
+    2026-08-20T06:54:54Z: INFO: Signature check PASSED
+    2026-08-20T06:54:54Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
