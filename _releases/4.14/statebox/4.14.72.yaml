@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.72
 created_at: '2026-08-19T19:04:55Z'
-updated_at: '2026-08-21T07:30:33Z'
+updated_at: '2026-08-21T12:25:04Z'
 metadata:
   jira_ticket: ART-22788
   advisory_ids:
@@ -68,4 +68,13 @@ tasks:
     2026-08-21T07:30:32Z: INFO: check stage job status according to job id: 1749
     2026-08-21T07:30:32Z: INFO: build status of zstreams/Stage-Pipeline/1749 is SUCCESS
     2026-08-21T07:30:32Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-08-21T12:25:04Z'
+  completed_at: '2026-08-21T12:25:04Z'
+  result: 'All 6 blocking jobs passed. azure-ipi-fips and gcp-ipi had flaky monitoring
+    test failure (59384/59674) in original BO3 cycle. Manual Gangway re-runs confirmed
+    clean passes: azure-ipi-fips (build 2090735218490085376, passed in 2h45m25s),
+    gcp-ipi (build 2090736326688116736, passed in 2h30m34s). Failures were flaky test,
+    not product bugs.'
 issues: []
