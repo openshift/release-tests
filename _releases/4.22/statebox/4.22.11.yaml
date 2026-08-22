@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.11
 created_at: '2026-08-21T15:00:16Z'
-updated_at: '2026-08-22T09:51:09Z'
+updated_at: '2026-08-22T09:52:11Z'
 metadata:
   jira_ticket: ART-22830
   advisory_ids:
@@ -54,6 +54,17 @@ tasks:
   result: Build 4.22.11 accepted=True, aggregated=True. All blocking tests passed
     BO3 verification via Release Controller. No test failures detected in promoted
     build.
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-08-22T09:52:03Z'
+  completed_at: null
+  result: |-
+    2026-08-22T09:52:03Z: INFO: Initialized StateBox for release 4.22.11 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.11.yaml
+    2026-08-22T09:52:04Z: INFO: Loaded state from _releases/4.22/statebox/4.22.11.yaml (SHA: d649f6cc)
+    2026-08-22T09:52:04Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-08-22T09:52:09Z: INFO: Triggered image consistency check Prow job: bd84e894-b1e7-469d-baee-7cd1f92d21d8
+    2026-08-22T09:52:09Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2091103241642184704
+    2026-08-22T09:52:10Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: GitLab API returning 502 Bad Gateway - preventing take-ownership from initializing
     shipment MR (https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/751)
