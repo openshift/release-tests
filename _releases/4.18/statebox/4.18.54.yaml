@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.54
 created_at: '2026-08-21T12:00:18Z'
-updated_at: '2026-08-22T09:40:34Z'
+updated_at: '2026-08-22T10:29:46Z'
 metadata:
   jira_ticket: ART-22837
   advisory_ids:
@@ -69,4 +69,14 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Test result: aggregated=true,
     accepted=true. All 3 test jobs succeeded: upgrade-from-stable-4.17-aws-ipi, upgrade-from-stable-4.18-azure-ipi-fips,
     upgrade-from-stable-4.18-gcp-ipi'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-08-22T10:29:46Z'
+  completed_at: '2026-08-22T10:29:46Z'
+  result: 'Candidate build 4.18.0-0.nightly-2026-08-18-085616 failed BO3 on GCP upgrade
+    test (1/3 success rate), but promoted build 4.18.54 passed all blocking tests.
+    GCP upgrade test on promoted build also required retry, confirming transient GCP
+    infrastructure issues during test period. Assessment: GCP platform instability,
+    not product bug. Build functional - AWS/Azure platforms passed. Waived as infrastructure
+    issue.'
 issues: []
