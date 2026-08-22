@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.44
 created_at: '2026-08-20T23:00:16Z'
-updated_at: '2026-08-22T10:06:02Z'
+updated_at: '2026-08-22T10:32:26Z'
 metadata:
   jira_ticket: ART-22843
   advisory_ids:
@@ -80,6 +80,18 @@ tasks:
     accepted=true. All 3 test jobs succeeded on first attempt with no retries: upgrade-from-stable-4.18-aws-ipi
     (2h 43m), upgrade-from-stable-4.19-azure-ipi-fips (2h 43m), upgrade-from-stable-4.19-gcp-ipi
     (2h 53m). Build phase: Accepted.'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-08-22T10:32:26Z'
+  completed_at: '2026-08-22T10:32:26Z'
+  result: 'Candidate build 4.19.0-0.nightly-2026-08-19-071214 showed Azure FIPS test
+    flakiness (failed BO3 with 1/3 success, non-deterministic failures across retries).
+    Promoted build 4.19.44 passed all blocking tests. Informing tests showed similar
+    platform instability (Azure upgrade failed, AWS/GCP required retries). Assessment:
+    Multi-platform infrastructure instability, not product bugs. Non-deterministic
+    failures (different tests failed per attempt) confirm transient issues. Build
+    functional - all blocking tests passed in promoted build. Waived as infrastructure/timing
+    issues.'
 issues:
 - issue: 'stage-testing job #1751 failed due to Azure infrastructure issue: Flexy-install
     #378909 encountered subnet reference error when creating bastion VM (subnet created
