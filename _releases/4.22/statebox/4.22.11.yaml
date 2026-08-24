@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.11
 created_at: '2026-08-21T15:00:16Z'
-updated_at: '2026-08-24T12:33:08Z'
+updated_at: '2026-08-24T13:13:11Z'
 metadata:
   jira_ticket: ART-22830
   advisory_ids:
@@ -93,6 +93,17 @@ tasks:
     2026-08-24T12:20:40Z: INFO: no push job found for advisory 171656
     2026-08-24T12:20:40Z: INFO: advisory 171656 has blocking advisory []
     2026-08-24T12:20:41Z: INFO: push job for advisory 171656 is triggered
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-24T13:12:10Z'
+  completed_at: '2026-08-24T13:13:10Z'
+  result: |-
+    2026-08-24T13:12:10Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-24T13:12:10Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.22.11
+    2026-08-24T13:12:13Z: INFO: Image Digest: sha256:7130a86441e55382a1eecf141edefd4a83c6eb7b27c6cb67883027736b8242b3
+    2026-08-24T13:12:13Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7130a86441e55382a1eecf141edefd4a83c6eb7b27c6cb67883027736b8242b3/signature-1
+    2026-08-24T13:13:10Z: INFO: Signature check PASSED
+    2026-08-24T13:13:10Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: GitLab API returning 502 Bad Gateway - preventing take-ownership from initializing
     shipment MR (https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/751)
