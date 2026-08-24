@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.54
 created_at: '2026-08-21T12:00:18Z'
-updated_at: '2026-08-22T10:29:46Z'
+updated_at: '2026-08-24T07:00:18Z'
 metadata:
   jira_ticket: ART-22837
   advisory_ids:
@@ -57,11 +57,14 @@ tasks:
     2026-08-22T09:37:59Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2091099674705399808
     2026-08-22T09:38:00Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-08-22T09:38:54Z'
-  completed_at: null
-  result: 'Stage-testing job successfully triggered despite race condition. Build
-    number: 1755. Job URL: https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1755/'
+  completed_at: '2026-08-24T07:00:17Z'
+  result: |-
+    2026-08-24T07:00:17Z: INFO: Initialized StateBox for release 4.18.54 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.54.yaml
+    2026-08-24T07:00:17Z: INFO: check stage job status according to job id: 1755
+    2026-08-24T07:00:17Z: INFO: build status of zstreams/Stage-Pipeline/1755 is FAILURE
+    2026-08-24T07:00:17Z: INFO: task [Stage Testing] status is changed to [Fail]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-08-22T09:40:34Z'
