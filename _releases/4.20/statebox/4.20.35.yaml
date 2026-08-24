@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.35
 created_at: '2026-08-20T21:00:17Z'
-updated_at: '2026-08-24T10:07:27Z'
+updated_at: '2026-08-24T14:44:29Z'
 metadata:
   jira_ticket: ART-22848
   advisory_ids:
@@ -108,15 +108,14 @@ tasks:
     2026-08-24T10:06:20Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260824_060620.log
     2026-08-24T10:06:21Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-08-24T10:07:23Z'
-  completed_at: null
+  completed_at: '2026-08-24T14:44:28Z'
   result: |-
-    2026-08-24T10:07:23Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-08-24T10:07:25Z: INFO: checking push job status for advisory 171704 ...
-    2026-08-24T10:07:25Z: INFO: no push job found for advisory 171704
-    2026-08-24T10:07:25Z: INFO: advisory 171704 has blocking advisory []
-    2026-08-24T10:07:26Z: INFO: push job for advisory 171704 is triggered
+    2026-08-24T14:44:26Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-08-24T14:44:28Z: INFO: checking push job status for advisory 171704 ...
+    2026-08-24T14:44:28Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-08-24T14:44:28Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 171703'
   reported_at: '2026-08-21T08:49:31Z'
