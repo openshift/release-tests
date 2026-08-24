@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.54
 created_at: '2026-08-21T12:00:18Z'
-updated_at: '2026-08-24T09:56:04Z'
+updated_at: '2026-08-24T09:56:56Z'
 metadata:
   jira_ticket: ART-22837
   advisory_ids:
@@ -86,6 +86,17 @@ tasks:
     infrastructure issues during test period. Assessment: GCP platform instability,
     not product bug. Build functional - AWS/Azure platforms passed. Waived as infrastructure
     issue.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-24T09:56:14Z'
+  completed_at: '2026-08-24T09:56:55Z'
+  result: |-
+    2026-08-24T09:56:14Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-24T09:56:14Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.54
+    2026-08-24T09:56:15Z: INFO: Image Digest: sha256:4d4e6147f15c286b33afbd6838ed94683b5f93711a90efe046c58d453318663c
+    2026-08-24T09:56:15Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4d4e6147f15c286b33afbd6838ed94683b5f93711a90efe046c58d453318663c/signature-1
+    2026-08-24T09:56:55Z: INFO: Signature check PASSED
+    2026-08-24T09:56:55Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Stage-testing job #1755 failed - ART Jenkins instance inaccessible for root
     cause analysis'
