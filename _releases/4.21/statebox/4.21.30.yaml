@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.30
 created_at: '2026-08-21T03:00:17Z'
-updated_at: '2026-08-24T10:15:17Z'
+updated_at: '2026-08-24T10:16:40Z'
 metadata:
   jira_ticket: ART-22853
   advisory_ids:
@@ -85,6 +85,17 @@ tasks:
     2026-08-24T10:08:44Z: INFO: no push job found for advisory 171690
     2026-08-24T10:08:44Z: INFO: advisory 171690 has blocking advisory []
     2026-08-24T10:08:45Z: INFO: push job for advisory 171690 is triggered
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-24T10:15:56Z'
+  completed_at: '2026-08-24T10:16:39Z'
+  result: |-
+    2026-08-24T10:15:56Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-24T10:15:56Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.30
+    2026-08-24T10:15:59Z: INFO: Image Digest: sha256:249ceebaa2b02ce15ab132d36db4c0babffa8b783fcbb7e328bec5301742e904
+    2026-08-24T10:15:59Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=249ceebaa2b02ce15ab132d36db4c0babffa8b783fcbb7e328bec5301742e904/signature-1
+    2026-08-24T10:16:39Z: INFO: Signature check PASSED
+    2026-08-24T10:16:39Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 171689'
   reported_at: '2026-08-24T08:31:16Z'
