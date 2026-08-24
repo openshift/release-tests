@@ -6,9 +6,47 @@
         "jobStartTime": "2026-08-24T04:22:32Z",
         "jobID": "2f18d80e-f280-4665-9198-52054f738c80",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/2091742931458199552",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-24T07:30:07Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 85,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 20,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44903-[CSI-Driver] [Dynamic PV] [ext4] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-08-24T08:29:23Z",
+          "jobID": "4c65182e-2ecc-493b-9be5-0542fb043bd0",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/2091805054985048064",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-08-24T08:29:28Z",
+          "jobID": "3995c505-9a26-4b15-9fcc-14e350ea7337",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-aws-ipi-f999/2091805076627656704",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.15-automated-release-azure-ipi-fips-f999",
