@@ -14,13 +14,63 @@
           "jobStartTime": "2026-08-25T16:30:55Z",
           "jobID": "2fedcc58-7759-47c4-8eff-f1b6f7a9e010",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2092288622425280512",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-25T19:36:00Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-cli] Workloads test oc works well ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-Critical-63002-oc new-app propagate containerPort information to the deployment if import-mode is PreserveOriginal"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-25T16:31:00Z",
           "jobID": "53fb2d32-6839-4daa-bfbf-f3218eb6dffc",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-aws-ipi-f999/2092288644126609408",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-25T19:40:27Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 20,
+              "failingScenarios": [
+                "[sig-cli] Workloads client test ROSA-OSD_CCS-ARO-Author:yinzhou-LEVEL0-High-67387-oc new-app propagate containerPort information to the deployment if import-mode is default",
+                "[sig-cli] Workloads ocmirror v1 works well NonHyperShiftHOST-ConnectedOnly-Author:yinzhou-LEVEL0-Low-51093-oc-mirror init",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24525-[LSO] [Filesystem ext4] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
