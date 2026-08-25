@@ -37,9 +37,47 @@
         "jobStartTime": "2026-08-25T11:32:25Z",
         "jobID": "2af7f552-3e84-40a1-904a-ae4062940838",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2092213503325638656",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-25T15:27:43Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 26,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-Author:pewang-LEVEL0-High-56080-[Local-ephemeral-storage] [emptyDir] with sizeLimit should work on Pod level"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-08-25T15:30:11Z",
+          "jobID": "65a2c76a-b881-4f86-a76f-051889461060",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2092273341351071744",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-08-25T15:30:11Z",
+          "jobID": "bcb9cddc-bbe1-45d6-8e73-e8a7c7411255",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2092273342059909120",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
