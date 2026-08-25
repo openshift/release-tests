@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.72
 created_at: '2026-08-19T19:04:55Z'
-updated_at: '2026-08-21T12:29:30Z'
+updated_at: '2026-08-25T11:38:22Z'
 metadata:
   jira_ticket: ART-22788
   advisory_ids:
@@ -84,4 +84,20 @@ tasks:
   result: 'All 3 blocking jobs passed on first run. aggregated: true, accepted: true.
     Jobs: upgrade-from-4.13-aws-ipi (success), upgrade-from-4.14-azure-ipi-fips (success),
     upgrade-from-4.14-gcp-ipi (success). No retries needed.'
-issues: []
+issues:
+- issue: 'RHCOS advisory 171574 detailed CVE analysis: 18 total CVEs (10 HIGH severity,
+    8 MEDIUM). Advisory-level SLA overdue by 211 days (due 2026-01-26). Three individual
+    CVEs past SLA: CVE-2026-4408 samba RCE (91 days overdue since 2026-05-26), CVE-2026-14474
+    sssd sudo privilege escalation (49 days overdue since 2026-07-07), CVE-2026-14476
+    sssd authentication bypass (49 days overdue since 2026-07-07). Additional HIGH
+    CVEs: CVE-2025-10263 ARM kernel privilege escalation, CVE-2026-1933 samba access
+    check, CVE-2026-3012 samba certificate validation, CVE-2026-33845/33846 gnutls
+    DTLS DoS, CVE-2026-34982 vim sandbox bypass, CVE-2026-42009 gnutls reordering,
+    CVE-2026-64531 kernel openvswitch overflow. See escalation to secalert@redhat.com
+    for tracker resolution.'
+  reported_at: '2026-08-25T11:38:22Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - change-advisory-status
