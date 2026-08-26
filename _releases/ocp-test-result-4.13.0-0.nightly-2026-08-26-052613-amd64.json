@@ -6,7 +6,27 @@
         "jobStartTime": "2026-08-26T10:21:21Z",
         "jobID": "bf94ac1b-7396-4ca6-8e2a-8e531d1016f3",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2092558008126017536",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-26T13:46:32Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 71,
+            "failures": 4,
+            "errors": 0,
+            "skipped": 14,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+              "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 24,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
       "retriedJobs": []
     },
@@ -59,7 +79,32 @@
         "jobStartTime": "2026-08-26T10:21:26Z",
         "jobID": "e9e2bf34-92bf-475c-ac67-bf7e6017864d",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-gcp-ipi-f999/2092558030464880640",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-26T14:05:03Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 71,
+            "failures": 5,
+            "errors": 0,
+            "skipped": 19,
+            "failingScenarios": [
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Auto Author:aramesha-LEVEL0-Critical-54043-Critical-66031-Verify flowlogs-pipeline and Console metrics [Serial]",
+              "[sig-netobserv] Network_Observability FLP and Console metrics: when processor.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-50504-Verify flowlogs-pipeline metrics and health [Serial]",
+              "[sig-netobserv] Network_Observability eBPF metrics when agent.ebpf.metrics.TLS == Disabled Author:aramesha-LEVEL0-Critical-72959-Verify eBPF agent metrics and health [Serial]",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-Critical-24485-[CSI-Driver] [Dynamic PV] [Filesystem default] volumes should store data and allow exec of files"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 24,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+              "OCP-14479:Workloads pod will be scheduled to the node which matches node affinity"
+            ]
+          }
+        }
       },
       "retriedJobs": []
     },
