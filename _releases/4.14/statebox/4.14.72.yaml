@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.72
 created_at: '2026-08-19T19:04:55Z'
-updated_at: '2026-08-26T06:51:40Z'
+updated_at: '2026-08-26T06:52:30Z'
 metadata:
   jira_ticket: ART-22788
   advisory_ids:
@@ -84,6 +84,17 @@ tasks:
   result: 'All 3 blocking jobs passed on first run. aggregated: true, accepted: true.
     Jobs: upgrade-from-4.13-aws-ipi (success), upgrade-from-4.14-azure-ipi-fips (success),
     upgrade-from-4.14-gcp-ipi (success). No retries needed.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-26T06:52:04Z'
+  completed_at: '2026-08-26T06:52:29Z'
+  result: |-
+    2026-08-26T06:52:04Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-26T06:52:04Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.14.72
+    2026-08-26T06:52:06Z: INFO: Image Digest: sha256:e6be81645e10fedbbd1ebeca18933b761c648e37de9b761929e4d3cb46c46322
+    2026-08-26T06:52:06Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=e6be81645e10fedbbd1ebeca18933b761c648e37de9b761929e4d3cb46c46322/signature-1
+    2026-08-26T06:52:29Z: INFO: Signature check PASSED
+    2026-08-26T06:52:29Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 171574 detailed CVE analysis: 18 total CVEs (10 HIGH severity,
     8 MEDIUM). Advisory-level SLA overdue by 211 days (due 2026-01-26). Three individual
