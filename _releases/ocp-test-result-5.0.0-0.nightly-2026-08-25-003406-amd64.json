@@ -66,7 +66,31 @@
           "jobStartTime": "2026-08-26T09:30:19Z",
           "jobID": "3a07bcb3-455d-441e-a5a4-b4b6b171243d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999/2092545164047290368",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-26T12:08:06Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 7,
+              "errors": 0,
+              "skipped": 36,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+                "[sig-network-edge] Network_Edge Component_Router Author:mjoseph-LEVEL0-Critical-55223-Configuring list of IP address ranges using allowedSourceRanges in LoadBalancerService",
+                "[sig-networking] SDN multihoming Author:weliang-LEVEL0-NonHyperShiftHOST-Medium-60507-Multihoming Verify the dualstack connectivity between multihoming pods",
+                "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+                "[sig-operators] OLM v1 oprun should Author:kuiwang-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-75492-cluster extension can not be installed with wrong sa or insufficient permission sa",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     }
