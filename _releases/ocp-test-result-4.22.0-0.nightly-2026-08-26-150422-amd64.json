@@ -84,9 +84,63 @@
         "jobStartTime": "2026-08-27T03:25:35Z",
         "jobID": "699683ce-566b-454b-b63e-0d2789a06941",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2092815765936803840",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-08-27T06:51:45Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 113,
+            "failures": 19,
+            "errors": 0,
+            "skipped": 29,
+            "failingScenarios": [
+              "[sig-etcd] ETCD Author:skundu-NonHyperShiftHOST-WRS-LEVEL0-Critical-24280-V-ACS.03-Etcd basic verification",
+              "[sig-monitoring] Cluster_Observability parallel monitoring Author:tagao-LEVEL0-Medium-55767-Missing metrics in kube-state-metrics",
+              "[sig-network-edge] Network_Edge Component_Router Author:aiyengar-ROSA-OSD_CCS-ARO-LEVEL0-High-41042-The Power-of-two balancing features defaults to random LB algorithm instead of leastconn for REEN/Edge/insecure routes",
+              "[sig-network-edge] Network_Edge Component_Router Author:shudili-LEVEL0-High-55367-Default HAProxy maxconn value to 50000 for OCP 4.12 and later",
+              "[sig-networking] SDN OVN EgressIP Author:huirwang-LEVEL0-ConnectedOnly-High-47019-High-47023-[FdpOvnOvs] EgressIP works well with networkpolicy and egressFirewall. [Serial]",
+              "[sig-networking] SDN udn/default multicast Author:yingwang-LEVEL0-High-78447-udn pods should/should not receive multicast traffic when enable/disable multicast.",
+              "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]",
+              "[sig-operators] OLM v1 oprun should Author:kuiwang-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-75492-cluster extension can not be installed with wrong sa or insufficient permission sa",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-43971-CSI Driver [Dynamic PV] [FileShare] provisioning with VolumeBindingModes WaitForFirstConsumer, Immediate and volumes should store data and allow exec of files",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44903-[CSI-Driver] [Dynamic PV] [ext4] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-45985-[CSI-Driver] [Dynamic PV] [Raw block] volumes resize on-line",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46813-[CSI-Driver][CSI Clone] Clone a pvc with Raw Block VolumeMode",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-52743-[Storageclass] OCP Cluster should have no more than one default storageclass defined, PVC without specifying storagclass should succeed while only one default storageclass present",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-Author:pewang-LEVEL0-High-56080-[Local-ephemeral-storage] [emptyDir] with sizeLimit should work on Pod level"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-08-27T07:29:36Z",
+          "jobID": "f05e7161-ab4c-4616-9fee-de7b475ffbfb",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2092877171461722112",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-08-27T07:29:41Z",
+          "jobID": "4f8c3c96-3a10-441e-bd54-67d80933847c",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2092877193196605440",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-disruptive-f999",
@@ -102,13 +156,31 @@
           "jobStartTime": "2026-08-27T05:28:52Z",
           "jobID": "753f8fe8-6cf3-4810-a840-326c2632be76",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-disruptive-f999/2092846788661743616",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-27T06:52:46Z",
+          "testResultSummary": {
+            "openshift-extended-test-disruptive": {
+              "total": 9,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 5
+            }
+          }
         },
         {
           "jobStartTime": "2026-08-27T05:28:52Z",
           "jobID": "17991167-6dd5-483f-b949-f70355010f53",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-disruptive-f999/2092846789605462016",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-08-27T06:57:40Z",
+          "testResultSummary": {
+            "openshift-extended-test-disruptive": {
+              "total": 9,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 5
+            }
+          }
         }
       ]
     },
@@ -118,7 +190,8 @@
         "jobStartTime": "2026-08-27T03:25:46Z",
         "jobID": "fdad8d91-a371-4eb3-82cc-9383e34903ca",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.21-gcp-ipi-f999/2092815808764841984",
-        "jobState": "pending"
+        "jobState": "success",
+        "jobCompletionTime": "2026-08-27T06:33:15Z"
       },
       "retriedJobs": []
     },
@@ -136,7 +209,8 @@
           "jobStartTime": "2026-08-27T05:29:05Z",
           "jobID": "bf15e469-e3dd-4bd2-9e03-f842c6f1674f",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-nightly-4.22-upgrade-from-stable-4.22-aws-ipi-f999/2092846842789236736",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-08-27T07:17:45Z"
         },
         {
           "jobStartTime": "2026-08-27T05:29:10Z",
