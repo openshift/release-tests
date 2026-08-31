@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.36
 created_at: '2026-08-31T10:00:14Z'
-updated_at: '2026-08-31T19:49:10Z'
+updated_at: '2026-08-31T19:49:41Z'
 metadata:
   jira_ticket: ART-23158
   advisory_ids:
@@ -81,8 +81,12 @@ issues:
     (ed83a613-9e73-4f04-a9ee-0cfab5f61785). Need to investigate job controller triggering
     logic.'
   reported_at: '2026-08-31T19:49:10Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Manually triggered missing jobs using jobctl_trigger_jobs_for_build
+    MCP tool. All 3 blocking jobs now running: aws-ipi-f999 (auto), azure-ipi-fips-f999
+    (manual), gcp-ipi-f999 (manual). Jobs triggered successfully and test aggregation
+    will proceed normally.'
   blocker: false
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-08-31T19:49:41Z'
