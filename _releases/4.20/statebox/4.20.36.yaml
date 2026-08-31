@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.36
 created_at: '2026-08-31T10:00:14Z'
-updated_at: '2026-08-31T19:50:12Z'
+updated_at: '2026-08-31T19:51:18Z'
 metadata:
   jira_ticket: ART-23158
   advisory_ids:
@@ -70,6 +70,12 @@ tasks:
     2026-08-31T19:45:15Z: INFO: Triggered image consistency check Prow job: 22826ce1-f9cf-43e8-9f44-6c94157eeea2
     2026-08-31T19:45:15Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2094511890993516544
     2026-08-31T19:45:16Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: In Progress
+  started_at: '2026-08-31T19:51:18Z'
+  completed_at: null
+  result: 'Waiting for test aggregation. Test result file created, 3 blocking jobs
+    running: aws-ipi-f999, azure-ipi-fips-f999, gcp-ipi-f999.'
 issues:
 - issue: 'Job controller did not trigger all blocking jobs automatically for build
     4.20.36. Only 1 job was triggered initially. Manually triggered 2 additional jobs:
