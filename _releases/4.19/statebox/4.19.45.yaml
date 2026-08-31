@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.45
 created_at: '2026-08-27T15:00:13Z'
-updated_at: '2026-08-31T07:43:38Z'
+updated_at: '2026-08-31T14:16:36Z'
 metadata:
   jira_ticket: ART-23155
   advisory_ids:
@@ -51,14 +51,20 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Test result file: ocp-test-result-4.19.0-0.nightly-2026-08-24-172300-amd64.json,
     aggregated=true, accepted=true'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-08-31T07:42:26Z'
-  completed_at: null
+  completed_at: '2026-08-31T14:16:35Z'
   result: |-
-    2026-08-31T07:42:26Z: INFO: Initialized StateBox for release 4.19.45 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.45.yaml
-    2026-08-31T07:42:26Z: INFO: Checking image consistency check Prow job status for job ID: 753c442f-e276-43d9-b37e-5afdaf2cbb9e
-    2026-08-31T07:42:26Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2094329827749269504
-    2026-08-31T07:42:26Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-08-31T14:09:41Z: INFO: Initialized StateBox for release 4.19.45 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.45.yaml
+    2026-08-31T14:09:41Z: INFO: Checking image consistency check Prow job status for job ID: 753c442f-e276-43d9-b37e-5afdaf2cbb9e
+    2026-08-31T14:09:41Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2094329827749269504
+    2026-08-31T14:09:41Z: INFO: Starting image health check for shipment MR 773
+    2026-08-31T14:09:41Z: INFO: Stage release succeeded (verified by label)
+    2026-08-31T14:09:41Z: INFO: Processing MR 773
+    2026-08-31T14:09:44Z: INFO: Found 841 images to check
+    2026-08-31T14:16:35Z: INFO: Completed image health check. Scanned 841 images, found 0 unhealthy
+    2026-08-31T14:16:35Z: INFO: Added image health summary to MR 773
+    2026-08-31T14:16:35Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-08-31T07:42:41Z'
