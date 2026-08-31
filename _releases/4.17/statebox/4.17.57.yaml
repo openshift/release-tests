@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.57
 created_at: '2026-08-26T18:00:09Z'
-updated_at: '2026-08-31T07:46:54Z'
+updated_at: '2026-08-31T07:51:15Z'
 metadata:
   jira_ticket: ART-23118
   advisory_ids:
@@ -82,6 +82,17 @@ tasks:
     jobs failed BO3 (aws-ipi, azure-ipi-fips) with non-repeating failing scenarios
     across attempts (flaky/infra pattern, no consistent product bug). AI recommendation:
     ACCEPT (medium confidence). Informational only, does not gate pipeline.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-08-31T07:50:16Z'
+  completed_at: '2026-08-31T07:51:14Z'
+  result: |-
+    2026-08-31T07:50:16Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-08-31T07:50:16Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.17.57
+    2026-08-31T07:50:17Z: INFO: Image Digest: sha256:20063c3ad963efe23d545d4644231fc2e2eec33d066c8a8423f2dde973a062af
+    2026-08-31T07:50:17Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=20063c3ad963efe23d545d4644231fc2e2eec33d066c8a8423f2dde973a062af/signature-1
+    2026-08-31T07:51:14Z: INFO: Signature check PASSED
+    2026-08-31T07:51:14Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: RHCOS advisory 172011 has 24 blocking security alerts (erratum_tracker_has_no_flaws)
     - trackers OCPBUGS-78003,79414,79566,84616,84884,85136,85145,85162,85170,85178,85594,85602,86202,86283,86536,88143,92804,93781,97685,97692,98952
