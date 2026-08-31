@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.12
 created_at: '2026-08-27T16:00:21Z'
-updated_at: '2026-08-31T07:38:56Z'
+updated_at: '2026-08-31T07:41:06Z'
 metadata:
   jira_ticket: ART-23156
   advisory_ids:
@@ -67,4 +67,13 @@ tasks:
     2026-08-31T07:38:54Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-08-31T07:38:54Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1768/>
     2026-08-31T07:38:55Z: INFO: sent slack message to <#team-qe-release>
-issues: []
+issues:
+- issue: Test result file incomplete - only 1 blocking job found (periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.21-aws-ipi-f999).
+    Expected multiple blocking jobs for complete test coverage. JobController may
+    not have triggered all required tests.
+  reported_at: '2026-08-31T07:41:06Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-promoted-build
