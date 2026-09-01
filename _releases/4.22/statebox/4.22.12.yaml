@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.12
 created_at: '2026-08-27T16:00:21Z'
-updated_at: '2026-08-31T19:52:22Z'
+updated_at: '2026-09-01T07:41:07Z'
 metadata:
   jira_ticket: ART-23156
   advisory_ids:
@@ -86,10 +86,11 @@ tasks:
     2026-08-31T14:33:04Z: INFO: Signature check PASSED
     2026-08-31T14:33:04Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-08-31T19:52:22Z'
-  completed_at: null
-  result: GCP blocking test failing - escalated to relevant teams
+  completed_at: '2026-09-01T07:41:07Z'
+  result: GCP blocking test passed after retry (job aa401249-b255-46ab-9441-21c1f2b55ba2).
+    All blocking tests now pass.
 issues:
 - issue: Test result file incomplete - only 1 blocking job found (periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.21-aws-ipi-f999).
     Expected multiple blocking jobs for complete test coverage. JobController may
