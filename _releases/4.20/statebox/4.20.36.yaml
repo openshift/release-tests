@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.36
 created_at: '2026-08-31T10:00:14Z'
-updated_at: '2026-09-01T07:59:53Z'
+updated_at: '2026-09-01T11:31:13Z'
 metadata:
   jira_ticket: ART-23158
   advisory_ids:
@@ -75,11 +75,12 @@ tasks:
     2026-08-31T21:34:57Z: INFO: Added image health summary to MR 771
     2026-08-31T21:34:57Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-08-31T19:51:18Z'
-  completed_at: null
-  result: 'Waiting for test aggregation. Test result file created, 3 blocking jobs
-    running: aws-ipi-f999, azure-ipi-fips-f999, gcp-ipi-f999.'
+  completed_at: '2026-09-01T11:31:13Z'
+  result: 'All blocking tests passed BO3 verification. aggregated=true, accepted=true.
+    aws-ipi-f999: 2/3 success (BO3 passed), azure-ipi-fips-f999: 1/1 success, gcp-ipi-f999:
+    1/1 success. Build 4.20.36 approved for release.'
 - name: image-signed-check
   status: Pass
   started_at: '2026-08-31T21:49:00Z'
