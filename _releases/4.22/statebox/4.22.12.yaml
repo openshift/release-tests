@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.12
 created_at: '2026-08-27T16:00:21Z'
-updated_at: '2026-09-01T07:41:18Z'
+updated_at: '2026-09-01T07:44:32Z'
 metadata:
   jira_ticket: ART-23156
   advisory_ids:
@@ -91,6 +91,25 @@ tasks:
   completed_at: '2026-09-01T07:41:07Z'
   result: GCP blocking test passed after retry (job aa401249-b255-46ab-9441-21c1f2b55ba2).
     All blocking tests now pass.
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-09-01T07:44:25Z'
+  completed_at: null
+  result: |-
+    2026-09-01T07:44:25Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-09-01T07:44:27Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-09-01T07:44:28Z: INFO: RHCOS nvr is rhcos-x86_64-4.22.9.8.202608251819-0
+    2026-09-01T07:44:28Z: INFO: The commit metadata is kernel-5.14.0-687.42.1.el9_8
+    2026-09-01T07:44:28Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 169769, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.8.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 169772, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.8.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 176466, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179159, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.23-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179436, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.0-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 196809, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.1-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 198714, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:59723-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': 'aarch64 ppc64le i686 x86_64 s390x', 'id': 198996, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'kpatch-kernel-5.14.0-687.42.1.el9_8-build', 'perm': 'admin', 'perm_id': 1}]
+    2026-09-01T07:44:28Z: INFO: Successfully approved MR 770
+    2026-09-01T07:44:28Z: INFO: Successfully added QE approval to MR 770
+    2026-09-01T07:44:30Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:60441
+    2026-09-01T07:44:30Z: INFO: The metadata url is not accessible
+    2026-09-01T07:44:30Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-09-01T07:44:30Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-09-01T07:44:30Z: INFO: Background metadata checker process started (PID: 717345) - running independently after parent exit
+    2026-09-01T07:44:30Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.22_20260901_034430.log
+    2026-09-01T07:44:31Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: Test result file incomplete - only 1 blocking job found (periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-stable-4.22-upgrade-from-stable-4.21-aws-ipi-f999).
     Expected multiple blocking jobs for complete test coverage. JobController may
