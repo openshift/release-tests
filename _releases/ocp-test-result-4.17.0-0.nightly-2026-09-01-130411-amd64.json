@@ -192,7 +192,31 @@
           "jobStartTime": "2026-09-03T15:27:44Z",
           "jobID": "b28bcbae-c4f7-4955-98c5-3401c51c4871",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-gcp-ipi-f999/2095534215478120448",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-09-03T18:23:43Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 100,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 25,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 22,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-09-03T15:27:49Z",
