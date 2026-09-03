@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.97
 created_at: '2026-08-26T10:00:06Z'
-updated_at: '2026-09-03T04:56:11Z'
+updated_at: '2026-09-03T05:20:36Z'
 metadata:
   jira_ticket: ART-23114
   advisory_ids:
@@ -127,4 +127,16 @@ tasks:
     2026-09-03T04:56:08Z: INFO: Background metadata checker process started (PID: 746516) - running independently after parent exit
     2026-09-03T04:56:08Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.12_20260903_005608.log
     2026-09-03T04:56:09Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
-issues: []
+issues:
+- issue: 'BLOCKING (release date today, 2026-09-03): Multiple blocking security alerts
+    on RHCOS advisory 172006 - type ''erratum_tracker_has_no_flaws'' (several trackers
+    have no associated flaws; each tracker must be associated with at least one flaw).
+    Email sent to secalert@redhat.com and Slack notification posted to Product Security
+    requesting resolution. Release cannot ship until these blocking secalerts are
+    cleared.'
+  reported_at: '2026-09-03T05:20:36Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
