@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.0
 created_at: '2026-09-03T12:43:21Z'
-updated_at: '2026-09-03T12:55:12Z'
+updated_at: '2026-09-03T12:57:12Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -22,16 +22,11 @@ tasks:
     needed. 100% success rate.
 - name: stage-testing
   status: In Progress
-  started_at: '2026-09-03T12:54:36Z'
+  started_at: '2026-09-03T12:57:12Z'
   completed_at: null
-  result: |-
-    2026-09-03T12:54:36Z: INFO: Initialized StateBox for release 5.0.0-rc.0 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.0.yaml
-    2026-09-03T12:54:36Z: INFO: job id is not set, will trigger stage testing
-    2026-09-03T12:54:37Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-rc.0.yaml (SHA: 079343f2)
-    2026-09-03T12:54:37Z: INFO: Stage release succeeded (verified by label)
-    2026-09-03T12:54:37Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-09-03T12:54:37Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1772/>
-    2026-09-03T12:54:38Z: INFO: sent slack message to <#team-qe-release>
+  result: 'Jenkins Stage Pipeline Build #1772 triggered successfully. Prow stage testing
+    job 6e81a7ca-29a1-4e3d-a0f3-722a6b992939 also triggered manually for periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi.
+    Both jobs running on payload quay.io/openshift-release-dev/ocp-release:5.0.0-rc.0-x86_64'
 - name: image-consistency-check
   status: In Progress
   started_at: '2026-09-03T12:54:54Z'
