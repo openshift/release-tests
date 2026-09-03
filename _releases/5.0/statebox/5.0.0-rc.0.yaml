@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.0
 created_at: '2026-09-03T12:43:21Z'
-updated_at: '2026-09-03T12:54:07Z'
+updated_at: '2026-09-03T12:54:39Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -20,4 +20,16 @@ tasks:
   result: All 3 upgrade tests passed on first attempt across AWS, Azure FIPS, and
     GCP platforms. Build 5.0.0-rc.0 validated successfully. No failures, no retries
     needed. 100% success rate.
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-09-03T12:54:36Z'
+  completed_at: null
+  result: |-
+    2026-09-03T12:54:36Z: INFO: Initialized StateBox for release 5.0.0-rc.0 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.0.yaml
+    2026-09-03T12:54:36Z: INFO: job id is not set, will trigger stage testing
+    2026-09-03T12:54:37Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-rc.0.yaml (SHA: 079343f2)
+    2026-09-03T12:54:37Z: INFO: Stage release succeeded (verified by label)
+    2026-09-03T12:54:37Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-09-03T12:54:37Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1772/>
+    2026-09-03T12:54:38Z: INFO: sent slack message to <#team-qe-release>
 issues: []
