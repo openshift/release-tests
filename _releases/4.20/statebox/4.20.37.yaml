@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.37
 created_at: '2026-09-03T11:00:14Z'
-updated_at: '2026-09-04T07:15:00Z'
+updated_at: '2026-09-04T08:46:23Z'
 metadata:
   jira_ticket: ART-23268
   advisory_ids:
@@ -77,4 +77,12 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Test results: aggregated=true,
     accepted=true. All 3 QE blocking test jobs succeeded: aws-ipi-f999 (4.19->4.20),
     azure-ipi-fips-f999 (4.20->4.20), gcp-ipi-f999 (4.20->4.20).'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-04T08:46:23Z'
+  completed_at: '2026-09-04T08:46:23Z'
+  result: Candidate build had 2 GCP-specific failures that appear to be flaky (both
+    jobs passed on at least one retry). Since promoted build 4.20.37 has accepted=true
+    with all tests passing BO3 verification, candidate build failures are considered
+    non-blocking. Platform-specific GCP flakiness does not impact release decision.
 issues: []
