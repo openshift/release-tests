@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.70
 created_at: '2026-09-02T19:00:12Z'
-updated_at: '2026-09-04T15:25:45Z'
+updated_at: '2026-09-04T15:33:13Z'
 metadata:
   jira_ticket: ART-23249
   advisory_ids:
@@ -76,4 +76,15 @@ tasks:
     gracePeriod case 31873) failed. Attempt 3 - all passed. Different failures across
     retries confirm flaky/infrastructure pattern, not product bugs. GCP passed BO3
     (2/3) after oc-mirror init flake. All 4 other jobs passed first attempt.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-04T15:32:46Z'
+  completed_at: '2026-09-04T15:33:12Z'
+  result: |-
+    2026-09-04T15:32:46Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-04T15:32:46Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.70
+    2026-09-04T15:32:48Z: INFO: Image Digest: sha256:077bb2d0f053cfadc673374237b206740ab78f2663d3dbd1b49713c2ced88994
+    2026-09-04T15:32:48Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=077bb2d0f053cfadc673374237b206740ab78f2663d3dbd1b49713c2ced88994/signature-1
+    2026-09-04T15:33:12Z: INFO: Signature check PASSED
+    2026-09-04T15:33:12Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
