@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.46
 created_at: '2026-09-03T12:00:14Z'
-updated_at: '2026-09-04T09:10:25Z'
+updated_at: '2026-09-04T09:10:48Z'
 metadata:
   jira_ticket: ART-23271
   advisory_ids:
@@ -80,6 +80,14 @@ tasks:
     2026-09-04T09:10:23Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-09-04T09:10:23Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1779/>
     2026-09-04T09:10:24Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-04T09:10:48Z'
+  completed_at: '2026-09-04T09:10:48Z'
+  result: 'All blocking tests passed BO3 verification. Build 4.19.46 has accepted=true,
+    aggregated=true. Test results: 3/3 upgrade jobs passed on first attempt (stable-4.19-upgrade-from-stable-4.18-aws,
+    stable-4.19-upgrade-from-stable-4.19-azure-fips, stable-4.19-upgrade-from-stable-4.19-gcp).
+    No test failures detected. Gate check: PASSED.'
 issues:
 - issue: 'RHCOS advisory 172363 has 8 blocking security alerts: Trackers (OCPBUGS-100082,
     OCPBUGS-84266, OCPBUGS-93963, OCPBUGS-93969, OCPBUGS-93996, OCPBUGS-94066, OCPBUGS-98976,
