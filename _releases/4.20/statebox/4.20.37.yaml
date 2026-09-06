@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.37
 created_at: '2026-09-03T11:00:14Z'
-updated_at: '2026-09-04T16:16:15Z'
+updated_at: '2026-09-06T16:16:53Z'
 metadata:
   jira_ticket: ART-23268
   advisory_ids:
@@ -95,22 +95,300 @@ tasks:
     2026-09-04T16:15:43Z: INFO: Signature check PASSED
     2026-09-04T16:15:43Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: change-advisory-status
-  status: In Progress
+  status: Fail
   started_at: '2026-09-04T16:15:59Z'
-  completed_at: null
+  completed_at: '2026-09-06T16:16:52Z'
   result: |-
-    2026-09-04T16:15:59Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
-    2026-09-04T16:16:05Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
-    2026-09-04T16:16:05Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202609021029-0
-    2026-09-04T16:16:05Z: INFO: The commit metadata is kernel-5.14.0-570.138.1.el9_6
-    2026-09-04T16:16:05Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147773, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 198978, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:62568-released', 'perm': 'trusted', 'perm_id': 6}]
-    2026-09-04T16:16:06Z: INFO: Successfully approved MR 796
-    2026-09-04T16:16:06Z: INFO: Successfully added QE approval to MR 796
-    2026-09-04T16:16:08Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:63103
-    2026-09-04T16:16:13Z: INFO: The metadata url is not accessible
-    2026-09-04T16:16:13Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
-    2026-09-04T16:16:13Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
-    2026-09-04T16:16:13Z: INFO: Background metadata checker process started (PID: 750115) - running independently after parent exit
-    2026-09-04T16:16:13Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260904_121613.log
-    2026-09-04T16:16:14Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+    2026-09-04T16:16:52Z: INFO: Google Sheets worksheet not found (expected for StateBox releases): cannot find worksheet 4.20.37 in report doc
+    2026-09-04T16:16:52Z: INFO: Scheduler lock acquired
+    2026-09-04T16:16:52Z: INFO: Scheduler started: Checking payload metadata URL every 30 minutes
+    2026-09-04T16:16:52Z: INFO: Scheduler will run until 2026-09-06 12:16:52 or until URL becomes accessible
+    2026-09-04T16:16:52Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:59:59.999939)
+    2026-09-04T16:46:52Z: INFO: Scheduler check #1: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T16:47:01Z: INFO: Scheduler check #1: Payload metadata URL still not accessible
+    2026-09-04T16:47:01Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 23:29:51.840567)
+    2026-09-04T17:17:01Z: INFO: Scheduler check #2: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T17:17:22Z: INFO: Scheduler check #2: Payload metadata URL still not accessible
+    2026-09-04T17:17:22Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:59:30.071428)
+    2026-09-04T17:47:22Z: INFO: Scheduler check #3: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T17:47:30Z: INFO: Scheduler check #3: Payload metadata URL still not accessible
+    2026-09-04T17:47:30Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 22:29:22.140240)
+    2026-09-04T18:17:30Z: INFO: Scheduler check #4: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T18:17:38Z: INFO: Scheduler check #4: Payload metadata URL still not accessible
+    2026-09-04T18:17:38Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:59:14.431504)
+    2026-09-04T18:47:38Z: INFO: Scheduler check #5: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T18:47:46Z: INFO: Scheduler check #5: Payload metadata URL still not accessible
+    2026-09-04T18:47:46Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 21:29:06.733814)
+    2026-09-04T19:17:46Z: INFO: Scheduler check #6: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T19:17:54Z: INFO: Scheduler check #6: Payload metadata URL still not accessible
+    2026-09-04T19:17:54Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 20:58:58.626655)
+    2026-09-04T19:47:54Z: INFO: Scheduler check #7: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T19:48:09Z: INFO: Scheduler check #7: Payload metadata URL still not accessible
+    2026-09-04T19:48:09Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 20:28:43.712045)
+    2026-09-04T20:18:09Z: INFO: Scheduler check #8: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T20:18:24Z: INFO: Scheduler check #8: Payload metadata URL still not accessible
+    2026-09-04T20:18:24Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 19:58:28.886195)
+    2026-09-04T20:48:24Z: INFO: Scheduler check #9: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T20:48:29Z: INFO: Scheduler check #9: Payload metadata URL still not accessible
+    2026-09-04T20:48:29Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 19:28:23.845068)
+    2026-09-04T21:18:29Z: INFO: Scheduler check #10: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T21:18:36Z: INFO: Scheduler check #10: Payload metadata URL still not accessible
+    2026-09-04T21:18:36Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 18:58:15.959525)
+    2026-09-04T21:48:36Z: INFO: Scheduler check #11: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T21:48:51Z: INFO: Scheduler check #11: Payload metadata URL still not accessible
+    2026-09-04T21:48:51Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 18:28:01.255658)
+    2026-09-04T22:18:51Z: INFO: Scheduler check #12: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T22:18:59Z: INFO: Scheduler check #12: Payload metadata URL still not accessible
+    2026-09-04T22:18:59Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 17:57:53.288186)
+    2026-09-04T22:48:59Z: INFO: Scheduler check #13: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T22:49:07Z: INFO: Scheduler check #13: Payload metadata URL still not accessible
+    2026-09-04T22:49:07Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 17:27:45.271057)
+    2026-09-04T23:19:07Z: INFO: Scheduler check #14: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T23:19:22Z: INFO: Scheduler check #14: Payload metadata URL still not accessible
+    2026-09-04T23:19:22Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 16:57:30.356506)
+    2026-09-04T23:49:22Z: INFO: Scheduler check #15: Checking payload metadata URL accessibility for release 4.20
+    2026-09-04T23:49:30Z: INFO: Scheduler check #15: Payload metadata URL still not accessible
+    2026-09-04T23:49:30Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 16:27:22.298912)
+    2026-09-05T00:19:30Z: INFO: Scheduler check #16: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T00:19:38Z: INFO: Scheduler check #16: Payload metadata URL still not accessible
+    2026-09-05T00:19:38Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 15:57:14.368021)
+    2026-09-05T00:49:38Z: INFO: Scheduler check #17: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T00:49:46Z: INFO: Scheduler check #17: Payload metadata URL still not accessible
+    2026-09-05T00:49:46Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 15:27:06.314117)
+    2026-09-05T01:19:46Z: INFO: Scheduler check #18: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T01:19:53Z: INFO: Scheduler check #18: Payload metadata URL still not accessible
+    2026-09-05T01:19:53Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 14:56:59.623264)
+    2026-09-05T01:49:53Z: INFO: Scheduler check #19: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T01:50:00Z: INFO: Scheduler check #19: Payload metadata URL still not accessible
+    2026-09-05T01:50:00Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 14:26:52.853220)
+    2026-09-05T02:20:00Z: INFO: Scheduler check #20: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T02:20:07Z: INFO: Scheduler check #20: Payload metadata URL still not accessible
+    2026-09-05T02:20:07Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 13:56:45.117485)
+    2026-09-05T02:50:07Z: INFO: Scheduler check #21: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T02:50:14Z: INFO: Scheduler check #21: Payload metadata URL still not accessible
+    2026-09-05T02:50:14Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 13:26:38.102126)
+    2026-09-05T03:20:14Z: INFO: Scheduler check #22: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T03:20:21Z: INFO: Scheduler check #22: Payload metadata URL still not accessible
+    2026-09-05T03:20:21Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 12:56:31.162209)
+    2026-09-05T03:50:21Z: INFO: Scheduler check #23: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T03:50:33Z: INFO: Scheduler check #23: Payload metadata URL still not accessible
+    2026-09-05T03:50:33Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 12:26:19.113073)
+    2026-09-05T04:20:33Z: INFO: Scheduler check #24: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T04:20:40Z: INFO: Scheduler check #24: Payload metadata URL still not accessible
+    2026-09-05T04:20:40Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 11:56:11.994138)
+    2026-09-05T04:50:40Z: INFO: Scheduler check #25: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T04:50:56Z: INFO: Scheduler check #25: Payload metadata URL still not accessible
+    2026-09-05T04:50:56Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 11:25:56.501279)
+    2026-09-05T05:20:56Z: INFO: Scheduler check #26: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T05:21:10Z: INFO: Scheduler check #26: Payload metadata URL still not accessible
+    2026-09-05T05:21:10Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 10:55:42.612101)
+    2026-09-05T05:51:10Z: INFO: Scheduler check #27: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T05:51:22Z: INFO: Scheduler check #27: Payload metadata URL still not accessible
+    2026-09-05T05:51:22Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 10:25:30.783052)
+    2026-09-05T06:21:22Z: INFO: Scheduler check #28: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T06:21:37Z: INFO: Scheduler check #28: Payload metadata URL still not accessible
+    2026-09-05T06:21:37Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 9:55:15.657752)
+    2026-09-05T06:51:37Z: INFO: Scheduler check #29: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T06:51:52Z: INFO: Scheduler check #29: Payload metadata URL still not accessible
+    2026-09-05T06:51:52Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 9:25:00.772228)
+    2026-09-05T07:21:52Z: INFO: Scheduler check #30: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T07:21:59Z: INFO: Scheduler check #30: Payload metadata URL still not accessible
+    2026-09-05T07:21:59Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 8:54:52.965380)
+    2026-09-05T07:51:59Z: INFO: Scheduler check #31: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T07:52:21Z: INFO: Scheduler check #31: Payload metadata URL still not accessible
+    2026-09-05T07:52:21Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 8:24:31.166609)
+    2026-09-05T08:22:21Z: INFO: Scheduler check #32: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T08:22:36Z: INFO: Scheduler check #32: Payload metadata URL still not accessible
+    2026-09-05T08:22:36Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 7:54:16.377528)
+    2026-09-05T08:52:36Z: INFO: Scheduler check #33: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T08:52:51Z: INFO: Scheduler check #33: Payload metadata URL still not accessible
+    2026-09-05T08:52:51Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 7:24:01.446193)
+    2026-09-05T09:22:51Z: INFO: Scheduler check #34: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T09:23:13Z: INFO: Scheduler check #34: Payload metadata URL still not accessible
+    2026-09-05T09:23:13Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 6:53:39.520480)
+    2026-09-05T09:53:13Z: INFO: Scheduler check #35: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T09:53:20Z: INFO: Scheduler check #35: Payload metadata URL still not accessible
+    2026-09-05T09:53:20Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 6:23:32.480111)
+    2026-09-05T10:23:20Z: INFO: Scheduler check #36: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T10:23:35Z: INFO: Scheduler check #36: Payload metadata URL still not accessible
+    2026-09-05T10:23:35Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 5:53:17.824259)
+    2026-09-05T10:53:35Z: INFO: Scheduler check #37: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T10:53:47Z: INFO: Scheduler check #37: Payload metadata URL still not accessible
+    2026-09-05T10:53:47Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 5:23:05.529488)
+    2026-09-05T11:23:47Z: INFO: Scheduler check #38: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T11:24:08Z: INFO: Scheduler check #38: Payload metadata URL still not accessible
+    2026-09-05T11:24:08Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 4:52:43.981386)
+    2026-09-05T11:54:08Z: INFO: Scheduler check #39: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T11:54:30Z: INFO: Scheduler check #39: Payload metadata URL still not accessible
+    2026-09-05T11:54:30Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 4:22:22.337168)
+    2026-09-05T12:24:30Z: INFO: Scheduler check #40: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T12:24:52Z: INFO: Scheduler check #40: Payload metadata URL still not accessible
+    2026-09-05T12:24:52Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 3:52:00.251305)
+    2026-09-05T12:54:52Z: INFO: Scheduler check #41: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T12:55:14Z: INFO: Scheduler check #41: Payload metadata URL still not accessible
+    2026-09-05T12:55:14Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 3:21:38.386607)
+    2026-09-05T13:25:14Z: INFO: Scheduler check #42: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T13:25:36Z: INFO: Scheduler check #42: Payload metadata URL still not accessible
+    2026-09-05T13:25:36Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 2:51:16.401569)
+    2026-09-05T13:55:36Z: INFO: Scheduler check #43: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T13:55:58Z: INFO: Scheduler check #43: Payload metadata URL still not accessible
+    2026-09-05T13:55:58Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 2:20:54.559535)
+    2026-09-05T14:25:58Z: INFO: Scheduler check #44: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T14:26:13Z: INFO: Scheduler check #44: Payload metadata URL still not accessible
+    2026-09-05T14:26:13Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 1:50:39.341892)
+    2026-09-05T14:56:13Z: INFO: Scheduler check #45: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T14:56:24Z: INFO: Scheduler check #45: Payload metadata URL still not accessible
+    2026-09-05T14:56:24Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 1:20:28.350920)
+    2026-09-05T15:26:24Z: INFO: Scheduler check #46: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T15:26:39Z: INFO: Scheduler check #46: Payload metadata URL still not accessible
+    2026-09-05T15:26:39Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 0:50:13.645802)
+    2026-09-05T15:56:39Z: INFO: Scheduler check #47: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T15:56:51Z: INFO: Scheduler check #47: Payload metadata URL still not accessible
+    2026-09-05T15:56:51Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1 day, 0:20:01.643588)
+    2026-09-05T16:26:51Z: INFO: Scheduler check #48: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T16:27:12Z: INFO: Scheduler check #48: Payload metadata URL still not accessible
+    2026-09-05T16:27:12Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 23:49:40.809923)
+    2026-09-05T16:57:12Z: INFO: Scheduler check #49: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T16:57:21Z: INFO: Scheduler check #49: Payload metadata URL still not accessible
+    2026-09-05T16:57:21Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 23:19:30.936844)
+    2026-09-05T17:27:21Z: INFO: Scheduler check #50: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T17:27:36Z: INFO: Scheduler check #50: Payload metadata URL still not accessible
+    2026-09-05T17:27:36Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 22:49:16.279223)
+    2026-09-05T17:57:36Z: INFO: Scheduler check #51: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T17:57:43Z: INFO: Scheduler check #51: Payload metadata URL still not accessible
+    2026-09-05T17:57:43Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 22:19:09.585998)
+    2026-09-05T18:27:43Z: INFO: Scheduler check #52: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T18:27:55Z: INFO: Scheduler check #52: Payload metadata URL still not accessible
+    2026-09-05T18:27:55Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 21:48:57.707660)
+    2026-09-05T18:57:55Z: INFO: Scheduler check #53: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T18:58:17Z: INFO: Scheduler check #53: Payload metadata URL still not accessible
+    2026-09-05T18:58:17Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 21:18:35.816629)
+    2026-09-05T19:28:17Z: INFO: Scheduler check #54: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T19:28:25Z: INFO: Scheduler check #54: Payload metadata URL still not accessible
+    2026-09-05T19:28:25Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 20:48:27.880745)
+    2026-09-05T19:58:25Z: INFO: Scheduler check #55: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T19:58:31Z: INFO: Scheduler check #55: Payload metadata URL still not accessible
+    2026-09-05T19:58:31Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 20:18:20.945098)
+    2026-09-05T20:28:31Z: INFO: Scheduler check #56: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T20:28:44Z: INFO: Scheduler check #56: Payload metadata URL still not accessible
+    2026-09-05T20:28:44Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 19:48:08.862862)
+    2026-09-05T20:58:44Z: INFO: Scheduler check #57: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T20:59:05Z: INFO: Scheduler check #57: Payload metadata URL still not accessible
+    2026-09-05T20:59:05Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 19:17:47.244754)
+    2026-09-05T21:29:05Z: INFO: Scheduler check #58: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T21:29:21Z: INFO: Scheduler check #58: Payload metadata URL still not accessible
+    2026-09-05T21:29:21Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 18:47:31.916808)
+    2026-09-05T21:59:21Z: INFO: Scheduler check #59: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T21:59:42Z: INFO: Scheduler check #59: Payload metadata URL still not accessible
+    2026-09-05T21:59:42Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 18:17:10.023914)
+    2026-09-05T22:29:42Z: INFO: Scheduler check #60: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T22:29:57Z: INFO: Scheduler check #60: Payload metadata URL still not accessible
+    2026-09-05T22:29:57Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 17:46:55.052201)
+    2026-09-05T22:59:57Z: INFO: Scheduler check #61: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T23:00:19Z: INFO: Scheduler check #61: Payload metadata URL still not accessible
+    2026-09-05T23:00:19Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 17:16:33.238883)
+    2026-09-05T23:30:19Z: INFO: Scheduler check #62: Checking payload metadata URL accessibility for release 4.20
+    2026-09-05T23:30:41Z: INFO: Scheduler check #62: Payload metadata URL still not accessible
+    2026-09-05T23:30:41Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 16:46:11.422390)
+    2026-09-06T00:00:41Z: INFO: Scheduler check #63: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T00:00:56Z: INFO: Scheduler check #63: Payload metadata URL still not accessible
+    2026-09-06T00:00:56Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 16:15:56.362693)
+    2026-09-06T00:30:56Z: INFO: Scheduler check #64: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T00:31:18Z: INFO: Scheduler check #64: Payload metadata URL still not accessible
+    2026-09-06T00:31:18Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 15:45:34.307061)
+    2026-09-06T01:01:18Z: INFO: Scheduler check #65: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T01:01:40Z: INFO: Scheduler check #65: Payload metadata URL still not accessible
+    2026-09-06T01:01:40Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 15:15:12.667983)
+    2026-09-06T01:31:40Z: INFO: Scheduler check #66: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T01:31:54Z: INFO: Scheduler check #66: Payload metadata URL still not accessible
+    2026-09-06T01:31:54Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 14:44:58.100529)
+    2026-09-06T02:01:54Z: INFO: Scheduler check #67: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T02:02:16Z: INFO: Scheduler check #67: Payload metadata URL still not accessible
+    2026-09-06T02:02:16Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 14:14:36.120843)
+    2026-09-06T02:32:16Z: INFO: Scheduler check #68: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T02:32:28Z: INFO: Scheduler check #68: Payload metadata URL still not accessible
+    2026-09-06T02:32:28Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 13:44:24.908678)
+    2026-09-06T03:02:28Z: INFO: Scheduler check #69: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T03:02:39Z: INFO: Scheduler check #69: Payload metadata URL still not accessible
+    2026-09-06T03:02:39Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 13:14:13.076368)
+    2026-09-06T03:32:39Z: INFO: Scheduler check #70: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T03:33:01Z: INFO: Scheduler check #70: Payload metadata URL still not accessible
+    2026-09-06T03:33:01Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 12:43:51.765834)
+    2026-09-06T04:03:01Z: INFO: Scheduler check #71: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T04:03:23Z: INFO: Scheduler check #71: Payload metadata URL still not accessible
+    2026-09-06T04:03:23Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 12:13:29.819121)
+    2026-09-06T04:33:23Z: INFO: Scheduler check #72: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T04:33:29Z: INFO: Scheduler check #72: Payload metadata URL still not accessible
+    2026-09-06T04:33:29Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 11:43:23.510984)
+    2026-09-06T05:03:29Z: INFO: Scheduler check #73: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T05:03:51Z: INFO: Scheduler check #73: Payload metadata URL still not accessible
+    2026-09-06T05:03:51Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 11:13:01.629255)
+    2026-09-06T05:33:51Z: INFO: Scheduler check #74: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T05:34:13Z: INFO: Scheduler check #74: Payload metadata URL still not accessible
+    2026-09-06T05:34:13Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 10:42:39.799857)
+    2026-09-06T06:04:13Z: INFO: Scheduler check #75: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T06:04:34Z: INFO: Scheduler check #75: Payload metadata URL still not accessible
+    2026-09-06T06:04:34Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 10:12:17.953687)
+    2026-09-06T06:34:34Z: INFO: Scheduler check #76: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T06:34:56Z: INFO: Scheduler check #76: Payload metadata URL still not accessible
+    2026-09-06T06:34:56Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 9:41:56.176396)
+    2026-09-06T07:04:56Z: INFO: Scheduler check #77: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T07:05:11Z: INFO: Scheduler check #77: Payload metadata URL still not accessible
+    2026-09-06T07:05:11Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 9:11:41.250490)
+    2026-09-06T07:35:11Z: INFO: Scheduler check #78: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T07:35:33Z: INFO: Scheduler check #78: Payload metadata URL still not accessible
+    2026-09-06T07:35:33Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 8:41:19.145234)
+    2026-09-06T08:05:33Z: INFO: Scheduler check #79: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T08:05:45Z: INFO: Scheduler check #79: Payload metadata URL still not accessible
+    2026-09-06T08:05:45Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 8:11:07.372091)
+    2026-09-06T08:35:45Z: INFO: Scheduler check #80: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T08:35:56Z: INFO: Scheduler check #80: Payload metadata URL still not accessible
+    2026-09-06T08:35:56Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 7:40:56.077841)
+    2026-09-06T09:05:56Z: INFO: Scheduler check #81: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T09:06:18Z: INFO: Scheduler check #81: Payload metadata URL still not accessible
+    2026-09-06T09:06:18Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 7:10:34.391010)
+    2026-09-06T09:36:18Z: INFO: Scheduler check #82: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T09:36:30Z: INFO: Scheduler check #82: Payload metadata URL still not accessible
+    2026-09-06T09:36:30Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 6:40:22.152340)
+    2026-09-06T10:06:30Z: INFO: Scheduler check #83: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T10:06:52Z: INFO: Scheduler check #83: Payload metadata URL still not accessible
+    2026-09-06T10:06:52Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 6:10:00.123270)
+    2026-09-06T10:36:52Z: INFO: Scheduler check #84: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T10:36:59Z: INFO: Scheduler check #84: Payload metadata URL still not accessible
+    2026-09-06T10:36:59Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 5:39:53.326920)
+    2026-09-06T11:06:59Z: INFO: Scheduler check #85: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T11:07:14Z: INFO: Scheduler check #85: Payload metadata URL still not accessible
+    2026-09-06T11:07:14Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 5:09:38.454303)
+    2026-09-06T11:37:14Z: INFO: Scheduler check #86: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T11:37:26Z: INFO: Scheduler check #86: Payload metadata URL still not accessible
+    2026-09-06T11:37:26Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 4:39:26.140553)
+    2026-09-06T12:07:26Z: INFO: Scheduler check #87: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T12:07:34Z: INFO: Scheduler check #87: Payload metadata URL still not accessible
+    2026-09-06T12:07:34Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 4:09:18.338174)
+    2026-09-06T12:37:34Z: INFO: Scheduler check #88: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T12:37:46Z: INFO: Scheduler check #88: Payload metadata URL still not accessible
+    2026-09-06T12:37:46Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 3:39:06.261520)
+    2026-09-06T13:07:46Z: INFO: Scheduler check #89: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T13:08:01Z: INFO: Scheduler check #89: Payload metadata URL still not accessible
+    2026-09-06T13:08:01Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 3:08:51.189344)
+    2026-09-06T13:38:01Z: INFO: Scheduler check #90: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T13:38:23Z: INFO: Scheduler check #90: Payload metadata URL still not accessible
+    2026-09-06T13:38:23Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 2:38:29.629234)
+    2026-09-06T14:08:23Z: INFO: Scheduler check #91: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T14:08:31Z: INFO: Scheduler check #91: Payload metadata URL still not accessible
+    2026-09-06T14:08:31Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 2:08:21.199184)
+    2026-09-06T14:38:31Z: INFO: Scheduler check #92: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T14:38:43Z: INFO: Scheduler check #92: Payload metadata URL still not accessible
+    2026-09-06T14:38:43Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1:38:09.241296)
+    2026-09-06T15:08:43Z: INFO: Scheduler check #93: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T15:09:05Z: INFO: Scheduler check #93: Payload metadata URL still not accessible
+    2026-09-06T15:09:05Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 1:07:47.499389)
+    2026-09-06T15:39:05Z: INFO: Scheduler check #94: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T15:39:27Z: INFO: Scheduler check #94: Payload metadata URL still not accessible
+    2026-09-06T15:39:27Z: INFO: Scheduler sleeping for 1800 seconds (timeout in 0:37:25.840873)
+    2026-09-06T16:09:27Z: INFO: Scheduler check #95: Checking payload metadata URL accessibility for release 4.20
+    2026-09-06T16:09:35Z: INFO: Scheduler check #95: Payload metadata URL still not accessible
+    2026-09-06T16:09:35Z: INFO: Scheduler sleeping for 438 seconds (timeout in 0:07:17.744327)
+    2026-09-06T16:16:52Z: WARNING: Timeout reached after 2 days, payload metadata URL still not accessible
+    2026-09-06T16:16:52Z: WARNING: Release approval timeout. Payload metadata URL still not accessible after 2 days.
 issues: []
