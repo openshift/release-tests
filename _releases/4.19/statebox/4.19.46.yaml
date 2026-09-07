@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.46
 created_at: '2026-09-03T12:00:14Z'
-updated_at: '2026-09-07T10:52:43Z'
+updated_at: '2026-09-07T12:48:42Z'
 metadata:
   jira_ticket: ART-23271
   advisory_ids:
@@ -114,8 +114,13 @@ issues:
     in shipment MR 794. Prow job 000a845b-e621-4bc3-847e-c94c219a062e completed, but
     image health check detected issues. Review MR 794 for image health summary details.'
   reported_at: '2026-09-04T16:22:45Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: QE approval granted based on ProdSec and ART team review. ProdSec confirmed
+    image health grade alerts are informational only and not blockers. ART team confirmed
+    images are properly signed. The 38 unhealthy images (4.6% of 833 total) is within
+    acceptable range based on historical precedent (4.21.6 had 701/851 waived in March
+    2026). Release approved to proceed with documented waiver.
   blocker: true
   related_tasks:
   - image-consistency-check
+  resolved_at: '2026-09-07T12:48:42Z'
