@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.46
 created_at: '2026-09-03T12:00:14Z'
-updated_at: '2026-09-07T12:51:27Z'
+updated_at: '2026-09-07T12:55:40Z'
 metadata:
   jira_ticket: ART-23271
   advisory_ids:
@@ -81,6 +81,17 @@ tasks:
     aggregated=true. Test results: 3/3 upgrade jobs passed on first attempt (stable-4.19-upgrade-from-stable-4.18-aws,
     stable-4.19-upgrade-from-stable-4.19-azure-fips, stable-4.19-upgrade-from-stable-4.19-gcp).
     No test failures detected. Gate check: PASSED.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-07T12:54:58Z'
+  completed_at: '2026-09-07T12:55:39Z'
+  result: |-
+    2026-09-07T12:54:58Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-07T12:54:58Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.46
+    2026-09-07T12:55:01Z: INFO: Image Digest: sha256:7c2a7b3f4b11fb7b217f196d8f4e6a3385beb7c15275b941a27249263c60a3bc
+    2026-09-07T12:55:01Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7c2a7b3f4b11fb7b217f196d8f4e6a3385beb7c15275b941a27249263c60a3bc/signature-1
+    2026-09-07T12:55:39Z: INFO: Signature check PASSED
+    2026-09-07T12:55:39Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'RHCOS advisory 172363 has 8 blocking security alerts: Trackers (OCPBUGS-100082,
     OCPBUGS-84266, OCPBUGS-93963, OCPBUGS-93969, OCPBUGS-93996, OCPBUGS-94066, OCPBUGS-98976,
