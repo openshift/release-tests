@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.1
 created_at: '2026-09-07T12:17:22Z'
-updated_at: '2026-09-08T11:09:15Z'
+updated_at: '2026-09-08T11:12:19Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -27,4 +27,11 @@ tasks:
     2026-09-08T11:09:12Z: INFO: Initialized StateBox for release 5.0.0-rc.1 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.1.yaml
     2026-09-08T11:09:13Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-rc.1.yaml (SHA: 3154bd19)
     2026-09-08T11:09:13Z: INFO: Prow job 58156c24-1cc6-40ef-be10-db1c3f0d7c71 already in state 'success', skipping duplicate trigger
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-08T11:12:19Z'
+  completed_at: '2026-09-08T11:12:19Z'
+  result: 'All 3 blocking test jobs passed on first attempt. AWS (4.22→5.0 upgrade),
+    Azure FIPS (5.0→5.0 upgrade), and GCP (5.0→5.0 upgrade) all successful. No retries
+    required. Build accepted and ready for release. Test result: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-5.0.0-rc.1-amd64.json'
 issues: []
