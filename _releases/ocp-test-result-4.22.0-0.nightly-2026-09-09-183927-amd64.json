@@ -100,9 +100,47 @@
         "jobStartTime": "2026-09-10T01:23:52Z",
         "jobID": "fc9174d4-f92b-45bf-9827-7ae46d25d64f",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2097858564591718400",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-09-10T04:33:28Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 113,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 30,
+            "failingScenarios": [
+              "[sig-cluster-lifecycle] Cluster_Infrastructure CCM Author:zhsun-LEVEL0-Critical-70627-Service of type LoadBalancer can be created successful",
+              "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-09-10T05:45:07Z",
+          "jobID": "6c9b880c-4f4d-49d7-856a-76c4fc5f92e1",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2097924309077987328",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-09-10T05:45:12Z",
+          "jobID": "92d06f5b-f1c2-4f39-88be-4f60a43ca7a3",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2097924330817064960",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-disruptive-f999",
