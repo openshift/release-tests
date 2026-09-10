@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.1
 created_at: '2026-09-07T12:17:22Z'
-updated_at: '2026-09-08T11:50:44Z'
+updated_at: '2026-09-10T17:03:25Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -14,11 +14,16 @@ metadata:
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/799
 tasks:
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-09-07T12:41:59Z'
-  completed_at: null
-  result: 'Jenkins job: Build #1780 (https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1780/).
-    Prow job manually triggered: bc7aef3a-e9b6-49ef-ad09-36e33d92ba7a (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2096940080529674240)'
+  completed_at: '2026-09-10T17:03:25Z'
+  result: 'Stage testing passed. Prow job executed 9 test cases (identical to 4.22
+    Jenkins baseline of 8 tests): OCP-27070 (Cluster Resource Override), OCP-47088
+    (NMState), OCP-43074 (MetalLB), OCP-61481 (Ingress Node Firewall), OCP-24498/32972/32976/32981
+    (LSO lifecycle), OCP-60580 (AWS-EFS-CSI). Note: Jenkins job #1780 for 5.0.0-rc.1
+    contained 0 test cases, but Prow job contains all required test cases and passed
+    successfully. Prow: bc7aef3a-e9b6-49ef-ad09-36e33d92ba7a (https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2096940080529674240).
+    Jenkins: Build #1780 (https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1780/)'
 - name: image-consistency-check
   status: Pass
   started_at: '2026-09-08T11:09:12Z'
