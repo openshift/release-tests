@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.33
 created_at: '2026-09-10T16:00:24Z'
-updated_at: '2026-09-11T12:46:39Z'
+updated_at: '2026-09-11T13:53:52Z'
 metadata:
   jira_ticket: ART-23393
   advisory_ids:
@@ -68,4 +68,15 @@ tasks:
     2026-09-11T06:29:20Z: INFO: Completed image health check. Scanned 836 images, found 0 unhealthy
     2026-09-11T06:29:20Z: INFO: Added image health summary to MR 826
     2026-09-11T06:29:20Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-11T13:53:23Z'
+  completed_at: '2026-09-11T13:53:51Z'
+  result: |-
+    2026-09-11T13:53:23Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-11T13:53:23Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.21.33
+    2026-09-11T13:53:26Z: INFO: Image Digest: sha256:a9be0bcc315021f011c6e01bc6d8392497688c67e8411b83fce0cddec9315c4d
+    2026-09-11T13:53:26Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=a9be0bcc315021f011c6e01bc6d8392497688c67e8411b83fce0cddec9315c4d/signature-1
+    2026-09-11T13:53:51Z: INFO: Signature check PASSED
+    2026-09-11T13:53:51Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
