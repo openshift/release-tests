@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.55
 created_at: '2026-09-10T13:00:13Z'
-updated_at: '2026-09-13T16:37:26Z'
+updated_at: '2026-09-13T16:49:39Z'
 metadata:
   jira_ticket: ART-23372
   advisory_ids:
@@ -57,6 +57,27 @@ tasks:
     - upgrade-from-stable-4.18-gcp-ipi-f999: success (job 2c7c99d9-cb27-4edd-aa94-4bfbb657a773, completed 2026-09-11T09:23:47Z)
 
     aggregated=true, accepted=true, and the denominator is now genuine 3/3 (not the earlier 1/1 false positive). The two jobs that had been silently dropped at trigger time (azure-ipi-fips, gcp-ipi) were re-triggered on 2026-09-11 and both passed on first attempt. Prior CORRECTION note is hereby closed.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-13T16:49:39Z'
+  completed_at: '2026-09-13T16:49:39Z'
+  result: |-
+    ACCEPTED WITH WAIVER by release lead 2026-09-13. Candidate 4.18.0-0.nightly-2026-09-07-235046 (amd64): aggregated=true, accepted=false. All observed failures waivable; no product regression.
+
+    BO3 verdicts: aws-ipi FAIL(1/2), azure-ipi-fips FAIL(1/3), gcp-ipi PASS, aws-ipi-disruptive PASS, stable-4.17->4.18-gcp-ipi PASS.
+
+    Waiver rationale:
+    1. azure-ipi-fips attempt 1 - ran only 13 min (16:24:38-16:37:32) with testResultSummary=null. Install/infra abort, zero tests executed. Not a product failure.
+    2. azure-ipi-fips retry 2 - single test OCP-69123 "Catalogd clustercatalog offer the operator content through http server". Retry 1 on SAME platform passed 105/105. Known root cause: OCPBUGS-97746 (ASSIGNED, Major) "catalogd sets ClusterCatalog Serving=True before catalog.jsonl file is available" - a race that makes an HTTP-content-serving test fail intermittently. 4.22 clone OCPBUGS-99986. Long-standing race, not a 4.18 regression.
+    3. aws-ipi attempt 1 - OCP-59384/59674 Observability Operator MonitoringStack target discovery. No matching OCPBUGS. Retry passed 105/105 clean. Single-platform, self-clearing flake.
+
+    Cross-platform check: neither failing test failed on more than one platform. No consistent failures. Nothing affecting API/auth/networking/storage.
+
+    TRIGGER-DROP DEFECT (same class as the promoted-build issue): registry ocp-4.18-test-jobs-amd64.json defines 6 nightly blocking jobs, result file has only 5 - stable-4.18-upgrade-from-stable-4.18-aws-ipi-f999 never got a job ID. Additionally aws-ipi received only 1 of its 2 BO3 retries, making it mathematically unable to reach the >=2/3 threshold regardless of results; its single retry passed clean. So the aws-ipi FAIL is an artifact of the missing retry, not a test signal.
+
+    Confidence Medium-High. Gap is data, not signal: the missing 4.18->4.18 aws upgrade job is untested on this candidate, but substantially covered by promoted build 4.18.55 where all 3 blocking stable upgrade jobs (4.17->4.18 aws, 4.18 azure-fips, 4.18 gcp) passed on first attempt.
+
+    NOTE: this task is informational and non-gating; the release gate is analyze-promoted-build. Does not affect the open CVE tracker blocker. Full writeup: 4.18.55-candidate-build-analysis.md
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
