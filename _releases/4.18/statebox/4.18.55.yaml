@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.55
 created_at: '2026-09-10T13:00:13Z'
-updated_at: '2026-09-11T05:43:44Z'
+updated_at: '2026-09-13T16:37:26Z'
 metadata:
   jira_ticket: ART-23372
   advisory_ids:
@@ -46,16 +46,17 @@ tasks:
     2026-09-11T05:31:49Z: INFO: sent slack message to <#forum-ocp-release>
     2026-09-11T05:31:49Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-09-11T05:43:44Z'
-  completed_at: null
-  result: 'CORRECTION: earlier Pass was invalid. accepted=true was computed from only
-    1 of 3 required stable jobs. Registry ocp-4.18-test-jobs-amd64.json defines 3
-    blocking stable jobs; only upgrade-from-stable-4.17-aws-ipi-f999 was ever triggered
-    (confirmed across all 3 commits of the result file). azure-ipi-fips and gcp-ipi
-    never got a Prow job ID and were silently dropped at trigger time. Aggregator
-    uses len(result[]) as denominator and never cross-checks the registry, so 1/1
-    passing yielded accepted=true. Re-triggering missing jobs.'
+  completed_at: '2026-09-11T09:23:47Z'
+  result: |-
+    Verified against job registry (ocp-4.18-test-jobs-amd64.json): registry defines exactly 3 blocking stable jobs, and all 3 are now present in ocp-test-result-4.18.55-amd64.json with firstJob.jobState=success, zero retries needed.
+
+    - upgrade-from-stable-4.17-aws-ipi-f999: success (job d66edff3-039c-4c1a-9095-da7c2736cab2, completed 2026-09-10T22:36:45Z)
+    - upgrade-from-stable-4.18-azure-ipi-fips-f999: success (job 307def68-6ad4-47c2-87f1-a46a452f4aae, completed 2026-09-11T08:58:13Z)
+    - upgrade-from-stable-4.18-gcp-ipi-f999: success (job 2c7c99d9-cb27-4edd-aa94-4bfbb657a773, completed 2026-09-11T09:23:47Z)
+
+    aggregated=true, accepted=true, and the denominator is now genuine 3/3 (not the earlier 1/1 false positive). The two jobs that had been silently dropped at trigger time (azure-ipi-fips, gcp-ipi) were re-triggered on 2026-09-11 and both passed on first attempt. Prior CORRECTION note is hereby closed.
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
