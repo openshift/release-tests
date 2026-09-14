@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.98
 created_at: '2026-09-11T14:00:07Z'
-updated_at: '2026-09-13T19:42:19Z'
+updated_at: '2026-09-14T05:08:58Z'
 metadata:
   jira_ticket: ART-23373
   advisory_ids:
@@ -43,6 +43,17 @@ tasks:
     2026-09-13T19:42:17Z: INFO: no push job found for advisory 172691
     2026-09-13T19:42:17Z: INFO: advisory 172691 has blocking advisory []
     2026-09-13T19:42:18Z: INFO: push job for advisory 172691 is triggered
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-09-14T05:08:50Z'
+  completed_at: null
+  result: |-
+    2026-09-14T05:08:50Z: INFO: Initialized StateBox for release 4.12.98 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.98.yaml
+    2026-09-14T05:08:51Z: INFO: Loaded state from _releases/4.12/statebox/4.12.98.yaml (SHA: 5a5976a9)
+    2026-09-14T05:08:51Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-09-14T05:08:56Z: INFO: Triggered image consistency check Prow job: 0af596a8-cb28-44fe-ae12-ac4fba796ca7
+    2026-09-14T05:08:56Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2099367203743731712
+    2026-09-14T05:08:57Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
