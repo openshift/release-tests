@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.38
 created_at: '2026-09-10T16:00:16Z'
-updated_at: '2026-09-14T09:19:29Z'
+updated_at: '2026-09-14T09:13:55Z'
 metadata:
   jira_ticket: ART-23404
   advisory_ids:
@@ -96,4 +96,23 @@ tasks:
     (Lease-server 500/502 errors), https://redhat.atlassian.net/browse/OCPQE-32118
     (OCP-24523 LSO flaky), https://redhat.atlassian.net/browse/OCPQE-32119 (OCP-50954
     UWM Alertmanager flaky)'
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-09-14T09:13:41Z'
+  completed_at: null
+  result: |-
+    2026-09-14T09:13:41Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-09-14T09:13:45Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-09-14T09:13:46Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202609092300-0
+    2026-09-14T09:13:47Z: INFO: The commit metadata is kernel-5.14.0-570.140.1.el9_6
+    2026-09-14T09:13:47Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147773, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 199474, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:65708-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-09-14T09:13:48Z: INFO: Successfully approved MR 830
+    2026-09-14T09:13:48Z: INFO: Successfully added QE approval to MR 830
+    2026-09-14T09:13:49Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:66377
+    2026-09-14T09:13:53Z: INFO: The metadata url is not accessible
+    2026-09-14T09:13:53Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-09-14T09:13:53Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-09-14T09:13:53Z: INFO: Background metadata checker process started (PID: 785136) - running independently after parent exit
+    2026-09-14T09:13:53Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260914_051353.log
+    2026-09-14T09:13:54Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues: []
