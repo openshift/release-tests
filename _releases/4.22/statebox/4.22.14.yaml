@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.14
 created_at: '2026-09-10T16:00:31Z'
-updated_at: '2026-09-11T13:53:27Z'
+updated_at: '2026-09-14T09:08:50Z'
 metadata:
   jira_ticket: ART-23395
   advisory_ids:
@@ -79,4 +79,12 @@ tasks:
     2026-09-11T13:53:01Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=e74e45ada5ab6325586e559ea69b7fd23bfe620af960bef33af19cadea8db7d2/signature-1
     2026-09-11T13:53:26Z: INFO: Signature check PASSED
     2026-09-11T13:53:26Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-14T09:08:50Z'
+  completed_at: '2026-09-14T09:08:50Z'
+  result: 'All blocking tests passed BO3 verification for promoted build 4.22.14.
+    Test results: aggregated=true, accepted=true. All 3 blocking jobs succeeded: upgrade-from-stable-4.21-aws-ipi
+    (success), upgrade-from-stable-4.22-azure-ipi-fips (success), upgrade-from-stable-4.22-gcp-ipi
+    (success). No test failures detected.'
 issues: []
