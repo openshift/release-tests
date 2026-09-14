@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.38
 created_at: '2026-09-10T16:00:16Z'
-updated_at: '2026-09-14T09:17:06Z'
+updated_at: '2026-09-14T09:19:29Z'
 metadata:
   jira_ticket: ART-23404
   advisory_ids:
@@ -86,4 +86,14 @@ tasks:
   result: 'All blocking tests passed BO3 verification (accepted=true). Test results:
     upgrade-from-4.19 AWS (SUCCESS), upgrade-from-4.20 Azure FIPS (SUCCESS), upgrade-from-4.20
     GCP (SUCCESS). No test failures detected.'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-14T09:19:29Z'
+  completed_at: '2026-09-14T09:19:29Z'
+  result: 'Candidate build was manually promoted. There were some consistent infra/automation
+    related issues. JIRAs created to report those issues: https://redhat.atlassian.net/browse/DPTP-5276
+    (cluster-profile pull-secret not mounted), https://redhat.atlassian.net/browse/DPTP-5277
+    (Lease-server 500/502 errors), https://redhat.atlassian.net/browse/OCPQE-32118
+    (OCP-24523 LSO flaky), https://redhat.atlassian.net/browse/OCPQE-32119 (OCP-50954
+    UWM Alertmanager flaky)'
 issues: []
