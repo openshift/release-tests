@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.71
 created_at: '2026-09-11T14:00:16Z'
-updated_at: '2026-09-15T11:27:20Z'
+updated_at: '2026-09-15T12:32:01Z'
 metadata:
   jira_ticket: ART-23368
   advisory_ids:
@@ -63,4 +63,19 @@ tasks:
     2026-09-15T10:57:19Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-09-15T10:57:19Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1787/>
     2026-09-15T10:57:20Z: INFO: sent slack message to <#team-qe-release>
+- name: image-consistency-check
+  status: Pass
+  started_at: '2026-09-15T12:29:18Z'
+  completed_at: '2026-09-15T12:31:59Z'
+  result: |-
+    2026-09-15T12:29:18Z: INFO: Initialized StateBox for release 4.13.71 at openshift/release-tests/z-stream/_releases/4.13/statebox/4.13.71.yaml
+    2026-09-15T12:29:18Z: INFO: Checking image consistency check Prow job status for job ID: e91ebf99-b2dc-434d-934d-7a4e1be550ab
+    2026-09-15T12:29:19Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2099816521835483136
+    2026-09-15T12:29:19Z: INFO: Starting image health check for shipment MR 816
+    2026-09-15T12:29:19Z: INFO: Stage release succeeded (verified by label)
+    2026-09-15T12:29:19Z: INFO: Processing MR 816
+    2026-09-15T12:29:24Z: INFO: Found 239 images to check
+    2026-09-15T12:31:59Z: INFO: Completed image health check. Scanned 239 images, found 0 unhealthy
+    2026-09-15T12:31:59Z: INFO: Added image health summary to MR 816
+    2026-09-15T12:31:59Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 issues: []
