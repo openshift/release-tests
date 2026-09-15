@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.55
 created_at: '2026-09-10T13:00:13Z'
-updated_at: '2026-09-15T04:50:58Z'
+updated_at: '2026-09-15T05:02:22Z'
 metadata:
   jira_ticket: ART-23372
   advisory_ids:
@@ -78,6 +78,20 @@ tasks:
     2026-09-15T04:50:56Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-09-15T04:50:56Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1785/>
     2026-09-15T04:50:57Z: INFO: sent slack message to <#team-qe-release>
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-09-15T05:02:16Z'
+  completed_at: null
+  result: |-
+    2026-09-15T05:02:16Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-09-15T05:02:19Z: INFO: checking push job status for advisory 172782 ...
+    2026-09-15T05:02:19Z: INFO: no push job found for advisory 172782
+    2026-09-15T05:02:19Z: INFO: advisory 172782 has blocking advisory []
+    2026-09-15T05:02:20Z: INFO: push job for advisory 172782 is triggered
+    2026-09-15T05:02:20Z: INFO: checking push job status for advisory 172680 ...
+    2026-09-15T05:02:20Z: INFO: no push job found for advisory 172680
+    2026-09-15T05:02:20Z: INFO: advisory 172680 has blocking advisory []
+    2026-09-15T05:02:21Z: INFO: push job for advisory 172680 is triggered
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
