@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.13.71
 created_at: '2026-09-11T14:00:16Z'
-updated_at: '2026-09-15T10:33:14Z'
+updated_at: '2026-09-15T10:43:54Z'
 metadata:
   jira_ticket: ART-23368
   advisory_ids:
@@ -19,4 +19,15 @@ tasks:
   result: 'Promoted build 4.13.71 test results: aggregated=true, accepted=true. All
     blocking jobs passed BO3 verification (upgrade: Succeeded, upgrade-minor: Succeeded).
     No analysis needed.'
+- name: take-ownership
+  status: Pass
+  started_at: '2026-09-15T10:43:37Z'
+  completed_at: '2026-09-15T10:43:53Z'
+  result: |-
+    2026-09-15T10:43:37Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-09-15T10:43:49Z: INFO: QA Owner of advisory 172676 is updated to [EMAIL_REDACTED]
+    2026-09-15T10:43:50Z: INFO: QA Owner of advisory 172677 is updated to [EMAIL_REDACTED]
+    2026-09-15T10:43:51Z: INFO: Added QE release lead comment to MR 816
+    2026-09-15T10:43:53Z: INFO: sent slack message to <#team-qe-release>
+    2026-09-15T10:43:53Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues: []
