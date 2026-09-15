@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.98
 created_at: '2026-09-11T14:00:07Z'
-updated_at: '2026-09-15T06:33:44Z'
+updated_at: '2026-09-15T06:36:23Z'
 metadata:
   jira_ticket: ART-23373
   advisory_ids:
@@ -46,6 +46,18 @@ tasks:
   completed_at: '2026-09-15T06:33:44Z'
   result: Prow job 0af596a8-cb28-44fe-ae12-ac4fba796ca7 completed successfully - manually
     verified (Prow API 403 authentication issue prevented automated status check)
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-09-15T06:36:21Z'
+  completed_at: null
+  result: |-
+    2026-09-15T06:36:21Z: INFO: Initialized StateBox for release 4.12.98 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.98.yaml
+    2026-09-15T06:36:21Z: INFO: job id is not set, will trigger stage testing
+    2026-09-15T06:36:21Z: INFO: Loaded state from _releases/4.12/statebox/4.12.98.yaml (SHA: 3bf44919)
+    2026-09-15T06:36:21Z: INFO: Stage release succeeded (verified by label)
+    2026-09-15T06:36:22Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-09-15T06:36:22Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1786/>
+    2026-09-15T06:36:22Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
