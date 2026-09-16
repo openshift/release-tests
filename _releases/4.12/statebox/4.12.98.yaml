@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.98
 created_at: '2026-09-11T14:00:07Z'
-updated_at: '2026-09-16T13:10:16Z'
+updated_at: '2026-09-16T13:32:31Z'
 metadata:
   jira_ticket: ART-23373
   advisory_ids:
@@ -81,6 +81,25 @@ tasks:
     2026-09-16T12:42:22Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=0ba3b9ea13531f643027339fef1e1a1e04bd4d87f3387f25e6d7e3dfa64bad52/signature-1
     2026-09-16T12:43:00Z: INFO: Signature check PASSED
     2026-09-16T12:43:00Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-09-16T13:32:09Z'
+  completed_at: null
+  result: |-
+    2026-09-16T13:32:09Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-09-16T13:32:12Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-09-16T13:32:12Z: INFO: RHCOS nvr is rhcos-x86_64-412.86.202609082051-0
+    2026-09-16T13:32:13Z: INFO: The commit metadata is kernel-4.18.0-372.213.1.el8_6
+    2026-09-16T13:32:13Z: INFO: Tags of this build is [{'arches': '', 'id': 85366, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-8.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 85369, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-8.6.0-z-candidate', 'perm': 'rhel8-gate', 'perm_id': 65}, {'arches': '', 'id': 106214, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.12-rhel-8-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 199561, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:65711-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-09-16T13:32:13Z: INFO: Successfully approved MR 819
+    2026-09-16T13:32:13Z: INFO: Successfully added QE approval to MR 819
+    2026-09-16T13:32:15Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:65908
+    2026-09-16T13:32:29Z: INFO: The metadata url is not accessible
+    2026-09-16T13:32:29Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-09-16T13:32:29Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-09-16T13:32:29Z: INFO: Background metadata checker process started (PID: 794091) - running independently after parent exit
+    2026-09-16T13:32:29Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.12_20260916_093229.log
+    2026-09-16T13:32:29Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
