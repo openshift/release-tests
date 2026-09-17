@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.69
 created_at: '2026-09-17T07:00:09Z'
-updated_at: '2026-09-17T11:35:25Z'
+updated_at: '2026-09-17T11:36:13Z'
 metadata:
   jira_ticket: ART-23701
   advisory_ids:
@@ -33,4 +33,15 @@ tasks:
     2026-09-17T11:35:22Z: INFO: Processing MR 847 for Jira issues
     2026-09-17T11:35:24Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-09-17T11:35:24Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
-issues: []
+issues:
+- issue: 'RHCOS advisory 173004 has 14 blocking security alerts, all ''erratum_tracker_has_no_flaws'':
+    OCPBUGS-59334, 59408, 61147, 61156, 61273, 78001, 79411, 84262, 85143, 93776,
+    94065, 98972, 113097, 113397 have no associated CVE flaws. Also present (non-blocking):
+    erratum_cve_discrepancy, erratum_missing_notes_link. Requires follow-up with secalert@redhat.com
+    / ART to either link flaws or detach trackers. Does not stop QE pipeline.'
+  reported_at: '2026-09-17T11:36:13Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - check-rhcos-security-alerts
