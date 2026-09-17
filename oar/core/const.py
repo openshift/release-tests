@@ -64,6 +64,7 @@ SUPPORTED_TASK_NAMES = [
     "analyze-promoted-build",
     "check-greenwave-cvp-tests",
     "check-cve-tracker-bug",
+    "check-blocking-sec-alerts",
     "push-to-cdn-staging",
     "stage-testing",
     "image-signed-check",
@@ -80,6 +81,7 @@ WORKFLOW_TASK_NAMES = [
     "analyze-candidate-build",
     "analyze-promoted-build",
     "check-cve-tracker-bug",
+    "check-blocking-sec-alerts",
     "push-to-cdn-staging",
     "stage-testing",
     "image-signed-check",
@@ -108,6 +110,7 @@ TASK_STAGE_TESTING = "stage-testing"
 TASK_IMAGE_SIGNED_CHECK = "image-signed-check"
 TASK_DROP_BUGS = "drop-bugs"
 TASK_CHANGE_ADVISORY_STATUS = "change-advisory-status"
+TASK_CHECK_BLOCKING_SEC_ALERTS = "check-blocking-sec-alerts"
 
 # Task to human-readable display name mapping
 TASK_DISPLAY_NAMES = {
@@ -122,6 +125,7 @@ TASK_DISPLAY_NAMES = {
     TASK_IMAGE_SIGNED_CHECK: "Image Signed Check",
     TASK_DROP_BUGS: "Drop Bugs",
     TASK_CHANGE_ADVISORY_STATUS: "Change Advisory Status",
+    TASK_CHECK_BLOCKING_SEC_ALERTS: "Check Blocking Security Alerts",
 }
 
 # env variables

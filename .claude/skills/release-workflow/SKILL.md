@@ -56,7 +56,7 @@ take-ownership
     ↓
 check-cve-tracker-bug (always passes, notifies ART)
     ↓
-check-rhcos-security-alerts (Konflux only - checks blocking security alerts)
+check-blocking-sec-alerts (checks blocking security alerts on RHSA advisories)
     ↓
     ├─→ push-to-cdn-staging (async - runs independently in parallel)
     └─→ [WAIT FOR BUILD PROMOTION - check API until phase == "Accepted"]
@@ -86,7 +86,7 @@ analyze-candidate-build (conditionally - only if accepted == false)
 - **Sequential:** Most tasks run one after another
 - **Parallel Execution:**
   - `analyze-candidate-build` runs independently (tests already completed when flow starts)
-  - `push-to-cdn-staging` starts immediately after check-rhcos-security-alerts (runs while waiting for build promotion)
+  - `push-to-cdn-staging` starts immediately after check-blocking-sec-alerts (runs while waiting for build promotion)
   - **ENHANCED:** 2 async tasks (image-consistency-check, stage-testing) triggered immediately after build promotion is detected, running in parallel with test result analysis
 - **Build Promotion Checkpoint:** Critical decision point - once detected, async tasks trigger immediately
 - **Test Result Checkpoints:** Must wait for file existence and aggregation (runs in parallel with async tasks)
@@ -327,87 +327,49 @@ stdout contains: "task [Check CVE tracker bugs] status is changed to [Pass]"
 
 **Expected Duration:** 1 minute
 
-**Next Action:** Proceed to check-rhcos-security-alerts
+**Next Action:** Proceed to check-blocking-sec-alerts
 
 ---
 
-### 4. check-rhcos-security-alerts
+### 4. check-blocking-sec-alerts
 
-**Purpose:** Check for blocking security alerts on RHCOS advisory (Konflux flow only)
-
-**When to run:** Konflux release flow only (releases with shipment_mr in metadata)
+**Purpose:** Check for blocking security alerts across all RHSA advisories
 
 **Prerequisites:** check-cve-tracker-bug completed
 
-**Implementation:** Uses curl with Kerberos authentication (no existing MCP tool)
+**MCP Tool:** `oar_check_blocking_sec_alerts(release)`
 
-**Execution Steps:**
+**Input:**
+- `release`: Z-stream version
 
-**Step 1: Verify Kerberos ticket exists**
-```bash
-klist
-```
-
-If no ticket or ticket expired:
-- Report to user: "No valid Kerberos ticket found. Please run: kinit $kid@$domain"
-- STOP task execution
-
-**Step 2: Get RHCOS advisory ID**
+**Execution:**
 ```python
-metadata = oar_get_release_metadata(release)
-rhcos_advisory_id = metadata.advisories.rhcos
+result = oar_check_blocking_sec_alerts(release=release)
 ```
 
-**Step 3: Fetch security alerts from Errata Tool**
-```bash
-curl -s -u : --negotiate 'https://errata.devel.redhat.com/api/v1/erratum/{rhcos_advisory_id}/security_alerts'
-```
+**Output Parsing:**
+```text
+IF "BLOCKING SECURITY ALERTS FOUND" in stdout:
+    Report blocking advisory details to user
+    Advise user to contact secalert@redhat.com
+    Task status will be Fail - a blocking issue is added to StateBox
 
-**Step 4: Parse response and check for blocking alerts**
-```python
-response = json.loads(curl_output)
-
-# Filter blocking alerts from the alerts array
-blocking_alerts = [alert for alert in response.alerts.alerts if alert.blocking == true]
-
-IF len(blocking_alerts) > 0:
-    Report to user with alert details and ask to email secalert@redhat.com
-    # Continue pipeline - this is not a hard blocker, but requires follow-up
-
-ELSE:
-    Report to user: "No blocking security alerts found on RHCOS advisory"
+IF "No blocking security alerts found" in stdout:
+    Report: "No blocking security alerts found"
+    Task status will be Pass
 ```
 
 **Success Detection:**
-```
-Task always passes - this is an informational check
-Blocking alerts require manual follow-up but don't stop the pipeline
-```
-
-**Expected Duration:** 10 seconds
-
-**Errata Tool API Response Format:**
-```json
-{
-  "alerts": {
-    "alerts": [
-      {
-        "name": "erratum_missing_notes_link",
-        "text": "...",
-        "description": "...",
-        "how_to_resolve": "...",
-        "blocking": false
-      }
-    ],
-    "blocking": false
-  }
-}
+```text
+stdout contains: "task [Check Blocking Security Alerts] status is changed to [Pass]"
 ```
 
-**Key Fields:**
-- `.alerts.alerts[]` (array) - List of individual alerts
-- `.alerts.alerts[].blocking` (boolean) - Per-alert blocking status (THIS is what we check)
-- `.alerts.blocking` (boolean) - Top-level blocking status (informational only)
+**Failure Detection:**
+```text
+stdout contains: "task [Check Blocking Security Alerts] status is changed to [Fail]"
+```
+
+**Expected Duration:** 30 seconds
 
 **Next Action:**
 - Trigger push-to-cdn-staging (async)
