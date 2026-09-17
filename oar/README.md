@@ -47,7 +47,7 @@ Commands:
   check-greenwave-cvp-tests  Check Greenwave CVP test results for all...
   check-cve-tracker-bug      Check if there is any missed CVE tracker bug
   push-to-cdn-staging        Trigger push job for cdn stage targets
-  stage-testing              Trigger stage pipeline test
+  stage-testing              Trigger stage testing Prow job
   image-signed-check         Check payload image is well signed
   drop-bugs                  Drop bugs from advisories
   change-advisory-status     Change advisory status e.g.
@@ -89,10 +89,10 @@ $ oar -r $release-version check-cve-tracker-bug
 ```
 $ oar -r $release-version push-to-cdn-staging
 ```
-8. This command triggers stage pipeline to do stage testing. Build number is returned with the first run. The build number can be used as option for subsequent run to check jenkins job status
+8. This command triggers stage testing Prow job via Gangway API. The Prow job ID is returned with the first run. The job ID can be used as an option for subsequent run to check job status
 ```
 $ oar -r $release-version stage-testing
-$ oar -r $release-version stage-testing -n 123
+$ oar -r $release-version stage-testing -i <job-id>
 ```
 9. This command verifies whether payload is well-signed. It gets digest of stable build automatically and checks out whether it can be found on mirror site
 ```

@@ -459,18 +459,18 @@ elif task["status"] == "Pass":
     Continue to next task
 
 elif task["status"] == "In Progress":
-    # Check if async task (Prow/Jenkins jobs)
+    # Check if async task (Prow jobs)
     if task_name in ["image-consistency-check", "stage-testing"]:
         # Extract job ID from task result
         # image-consistency-check: "Triggered image consistency check Prow job: {job_id}"
-        # stage-testing: "Build number: {build_number}"
-        job_id = extract_from_result(task["result"], r"Prow job: (\S+)") or extract_from_result(task["result"], r"job ID: (\S+)") or extract_from_result(task["result"], r"Build number: (\d+)")
+        # stage-testing: "Triggered stage testing Prow job: {job_id}"
+        job_id = extract_from_result(task["result"], r"Prow job: (\S+)") or extract_from_result(task["result"], r"job ID: (\S+)")
 
         if not job_id:
             Log: f"⚠ {task_name} in progress but no job ID found, retrying..."
             Execute task_name
         else:
-            # Query job status (Prow or Jenkins depending on task)
+            # Query Prow job status
             result = execute_mcp_tool(task_name, job_id=job_id)
 
             if "status is changed to [Pass]" in result:
@@ -648,7 +648,7 @@ AI: ✓ Skipping 2 completed tasks (take-ownership, check-cve-tracker-bug)
 AI: ⏳ push-to-cdn-staging still running (job #456)
 AI: ✓ Build promoted! Phase: PHASE 3 - Test Evaluation
 AI: ⏳ image-consistency-check triggered (Prow job abc-123-def)
-AI: ⏳ stage-testing triggered (Jenkins job #790)
+AI: ⏳ stage-testing triggered (Prow job xyz-456-ghi)
 AI: Waiting for test results, check back in 1 hour
 ```
 
@@ -660,7 +660,7 @@ AI: Resuming from PHASE 4...
 AI: ✓ Skipping 4 completed tasks
 AI: ✓ push-to-cdn-staging completed (job #456)
 AI: ✓ image-consistency-check completed (Prow job abc-123-def)
-AI: ✓ stage-testing completed (Jenkins job #790)
+AI: ✓ stage-testing completed (Prow job xyz-456-ghi)
 AI: Analyzing promoted build test results...
 AI: ✓ All tests passed, proceeding to PHASE 5
 AI: ✓ image-signed-check completed

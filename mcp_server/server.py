@@ -718,23 +718,23 @@ async def oar_image_consistency_check(release: str, job_id: str = None) -> str:
 
 
 @mcp.tool()
-async def oar_stage_testing(release: str, build_number: str = None) -> str:
+async def oar_stage_testing(release: str, job_id: str = None) -> str:
     """
     Check status of stage testing or start new tests.
 
-    If build_number is provided, queries existing job status (READ-ONLY).
-    If build_number is not provided, starts new stage tests (WRITE).
+    If job_id is provided, queries existing Prow job status (READ-ONLY).
+    If job_id is not provided, starts new stage tests (WRITE).
 
     Args:
         release: Z-stream release version (e.g., "4.19.1")
-        build_number: Optional specific build number to check status
+        job_id: Optional Prow job ID to check status
 
     Returns:
         Stage testing job status or new job details
     """
     args = []
-    if build_number is not None and build_number != "":
-        args.extend(["-n", build_number])
+    if job_id is not None and job_id != "":
+        args.extend(["-i", job_id])
 
     result = await invoke_oar_command_async(release, "stage-testing", args)
     return format_result(result)

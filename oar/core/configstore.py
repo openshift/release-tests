@@ -72,14 +72,14 @@ class ConfigStore:
             ENV_VAR_JIRA_USERNAME: "Required for Jira Cloud authentication (JiraManager)",
             ENV_VAR_GCP_SA_FILE: "Required for Google Sheets operations (WorksheetManager)",
             ENV_VAR_SLACK_BOT_TOKEN: "Required for Slack notifications (NotificationManager)",
-            ENV_JENKINS_USER: "Required for Jenkins job operations (JenkinsHelper)",
-            ENV_JENKINS_TOKEN: "Required for Jenkins job operations (JenkinsHelper)",
             ENV_VAR_GITLAB_TOKEN: "Required for GitLab/Konflux shipment operations (ShipmentData)",
         }
 
         # Optional variables for specific OAR commands
         optional_vars = {
             ENV_VAR_SLACK_APP_TOKEN: "Optional for Slack socket mode",
+            ENV_JENKINS_USER: "Optional for legacy Jenkins job operations (JenkinsHelper)",
+            ENV_JENKINS_TOKEN: "Optional for legacy Jenkins job operations (JenkinsHelper)",
         }
 
         # Check required variables
