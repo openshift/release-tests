@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.69
 created_at: '2026-09-17T07:00:09Z'
-updated_at: '2026-09-17T14:32:47Z'
+updated_at: '2026-09-17T15:02:49Z'
 metadata:
   jira_ticket: ART-23701
   advisory_ids:
@@ -44,6 +44,25 @@ tasks:
     2026-09-17T14:32:46Z: INFO: checking push job status for advisory 173004 ...
     2026-09-17T14:32:46Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-09-17T14:32:46Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-17T15:02:49Z'
+  completed_at: '2026-09-17T15:02:49Z'
+  result: |-
+    Candidate build 4.15.0-0.nightly-2026-09-15-112245 (amd64) ACCEPTED with waiver by release lead. aggregated=true, accepted=false.
+
+    Registry cross-check: 6 blocking jobs expected in _releases/ocp-4.15-test-jobs-amd64.json (nightly), 6 present in result file - no silently-dropped jobs.
+
+    BO3: 5/6 jobs PASS (aws-ipi, gcp-ipi, aws-ipi-disruptive, upgrade-from-4.14-gcp-ipi, upgrade-from-4.15-aws-ipi all green on first attempt). 1 job FAIL: azure-ipi-fips at 1/3 (fail, success, fail).
+
+    Root cause analysis of the three failing tests (JUnit artifacts pulled from GCS):
+    1. Attempt 1 - OCP-44910 storage CSI [Dynamic PV] mountOptions: failed at openshift-tests-private/test/extended/util/client.go:908 with 'oauthaccesstokens.oauth.openshift.io "sha256~XlfKQd-npSqg..." already exists'. Failure is in the test framework's per-test client/token bootstrap, BEFORE any CSI logic executed. Test-harness collision, not a storage defect.
+    2. Attempt 3 - OCP-27649 Compliance Operator ComplianceSuite: failed at util/assert.go:30 with 'subscription compliance-operator is not correct status in ns openshift-compliance'. Failed during OLM operator-install setup; test never exercised ComplianceSuite scanning. Exact match to known QE automation issue OCPQE-20170 (Closed; fix likely not backported to release-4.15). Sibling OCPQE-20168 same pattern for file-integrity-operator.
+    3. Attempt 3 - OCP-14522 workloads node affinity (cucushift): generic 'the step failed (RuntimeError)' at features/tierN/infrastructure/nodeAffinity.feature:599, no underlying detail surfaced. Passed attempts 1 and 2.
+
+    Waiver rationale: two of three failures occurred in setup/harness before reaching the feature under test, one with a documented OCPQE automation ticket. Zero overlap in failing tests across the three attempts. No product-code failure, no cross-platform failure (all other 5 jobs and all other platforms clean). Confidence: High.
+
+    Decision: release lead accepted on 2026-09-17.
 issues:
 - issue: 'RHCOS advisory 173004 has 14 blocking security alerts, all ''erratum_tracker_has_no_flaws'':
     OCPBUGS-59334, 59408, 61147, 61156, 61273, 78001, 79411, 84262, 85143, 93776,
