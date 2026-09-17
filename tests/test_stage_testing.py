@@ -11,7 +11,7 @@ from oar.core.const import (
 )
 
 
-class TestStageTestingCheckJobStatus(unittest.TestCase):
+class TestStageTesting(unittest.TestCase):
 
     def _create_stage_testing(self):
         cs = MagicMock()
@@ -19,7 +19,7 @@ class TestStageTestingCheckJobStatus(unittest.TestCase):
         with patch("oar.cli.cmd_stage_testing.NotificationManager"), \
              patch("oar.cli.cmd_stage_testing.ShipmentData"), \
              patch("oar.cli.cmd_stage_testing.StateBox"), \
-             patch("oar.cli.cmd_stage_testing.Jobs") as mock_jobs_cls:
+             patch("oar.cli.cmd_stage_testing.Jobs"):
             st = StageTesting(cs)
         return st
 
@@ -77,19 +77,6 @@ class TestStageTestingCheckJobStatus(unittest.TestCase):
             st.check_job_status("job-abc-123")
 
         mock_util.log_task_status.assert_called_with(TASK_STAGE_TESTING, TASK_STATUS_FAIL)
-
-
-class TestStageTestingTriggerNewJob(unittest.TestCase):
-
-    def _create_stage_testing(self):
-        cs = MagicMock()
-        cs.release = "4.19.1"
-        with patch("oar.cli.cmd_stage_testing.NotificationManager"), \
-             patch("oar.cli.cmd_stage_testing.ShipmentData"), \
-             patch("oar.cli.cmd_stage_testing.StateBox"), \
-             patch("oar.cli.cmd_stage_testing.Jobs"):
-            st = StageTesting(cs)
-        return st
 
     @patch("oar.cli.cmd_stage_testing.util")
     def test_skip_when_already_passed(self, mock_util):
