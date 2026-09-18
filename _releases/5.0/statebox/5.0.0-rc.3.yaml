@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.3
 created_at: '2026-09-18T08:49:29Z'
-updated_at: '2026-09-18T10:35:10Z'
+updated_at: '2026-09-18T11:59:55Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -22,4 +22,15 @@ tasks:
     2026-09-18T10:35:08Z: INFO: Checking stage testing Prow job status for job ID: a09f8976-cc90-4660-8ff1-6b6f08851e9d
     2026-09-18T10:35:09Z: INFO: Job state: failure, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2100870637131141120
     2026-09-18T10:35:09Z: INFO: task [Stage Testing] status is changed to [Fail]
+- name: take-ownership
+  status: Pass
+  started_at: '2026-09-18T11:58:11Z'
+  completed_at: '2026-09-18T11:59:54Z'
+  result: |-
+    2026-09-18T11:58:11Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-09-18T11:59:45Z: INFO: QA Owner of advisory 168422 is updated to [EMAIL_REDACTED]
+    2026-09-18T11:59:49Z: INFO: QA Owner of advisory 169393 is updated to [EMAIL_REDACTED]
+    2026-09-18T11:59:50Z: INFO: Added QE release lead comment to MR 865
+    2026-09-18T11:59:54Z: INFO: sent slack message to <#team-qe-release>
+    2026-09-18T11:59:54Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues: []
