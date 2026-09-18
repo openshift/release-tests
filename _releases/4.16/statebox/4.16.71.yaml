@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.71
 created_at: '2026-09-17T07:00:19Z'
-updated_at: '2026-09-18T03:38:56Z'
+updated_at: '2026-09-18T07:06:27Z'
 metadata:
   jira_ticket: ART-23703
   advisory_ids:
@@ -73,6 +73,23 @@ tasks:
   completed_at: '2026-09-18T03:38:56Z'
   result: All 3 blocking upgrade jobs (aws-ipi, azure-ipi-fips, gcp-ipi) succeeded.
     aggregated=true, accepted=true. Gate check passed.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-18T07:06:27Z'
+  completed_at: '2026-09-18T07:06:27Z'
+  result: 'Candidate build 4.16.0-0.nightly-2026-09-15-110044: aggregated=true, accepted=false.
+    3/6 blocking jobs (aws-ipi, azure-ipi-fips, gcp-ipi) failed BO3 due to OCP-48916/48917
+    Secondary Scheduler Operator test - test asserts hardcoded CSV version (v1.3.2)
+    but operator installed successfully at newer version (v1.3.3), phase=Succeeded.
+    Root cause confirmed via Prow JUnit logs: not a product bug, operator install
+    worked fine. This is a known recurring QE automation issue (hardcoded version
+    string in secondary_scheduler_operator.go) - identical pattern found in OCPQE-31155
+    (Closed/Done, fixed via PRs #28210/#28204 bumping v1.3.1->v1.3.2), plus OCPQE-14788,
+    26264, 26267, 27241, 28688, 27650. No PR yet merged for v1.3.3 bump. Other failures
+    (AWS OAP cert-manager 73293, Azure storage snapshot/clone tests) were inconsistent
+    across retries - flaky, non-reproducing. WAIVED: build accepted despite accepted=false
+    flag. Recommend filing/checking for a new OCPQE ticket to bump hardcoded version
+    to v1.3.3.'
 issues:
 - issue: 'RHCOS advisory 173031 has blocking security alert: tracker OCPBUGS-86178
     has no associated flaws. Needs follow-up with secalert@redhat.com.'
