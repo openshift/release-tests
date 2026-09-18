@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.3
 created_at: '2026-09-18T08:49:29Z'
-updated_at: '2026-09-18T08:49:29Z'
+updated_at: '2026-09-18T08:52:50Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -12,5 +12,18 @@ metadata:
   candidate_builds:
     x86_64: 5.0.0-0.nightly-2026-09-13-163645
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/865
-tasks: []
+tasks:
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-09-18T08:52:45Z'
+  completed_at: null
+  result: |-
+    2026-09-18T08:52:45Z: INFO: Initialized StateBox for release 5.0.0-rc.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.3.yaml
+    2026-09-18T08:52:45Z: INFO: Triggering stage testing Prow job
+    2026-09-18T08:52:46Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-rc.3.yaml (SHA: f0bed67e)
+    2026-09-18T08:52:46Z: INFO: Stage release succeeded (verified by label)
+    2026-09-18T08:52:46Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-09-18T08:52:47Z: INFO: Triggered stage testing Prow job: a09f8976-cc90-4660-8ff1-6b6f08851e9d
+    2026-09-18T08:52:47Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2100870637131141120
+    2026-09-18T08:52:48Z: INFO: sent slack message to <#team-qe-release>
 issues: []
