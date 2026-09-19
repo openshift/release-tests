@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.15
 created_at: '2026-09-17T16:00:19Z'
-updated_at: '2026-09-19T11:00:45Z'
+updated_at: '2026-09-19T11:19:12Z'
 metadata:
   jira_ticket: ART-23742
   advisory_ids:
@@ -66,4 +66,18 @@ tasks:
     2026-09-19T11:00:22Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=fed788eac1c99388dd9b78dda4d6a73e39b70abb00ca918d2bb456a97187f0c1/signature-1
     2026-09-19T11:00:44Z: INFO: Signature check PASSED
     2026-09-19T11:00:44Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-19T11:19:12Z'
+  completed_at: '2026-09-19T11:19:12Z'
+  result: |-
+    Candidate build 4.22.0-0.nightly-2026-09-16-175651 manually accepted by ART (ART-23742).
+
+    Test Status: accepted=false (job controller failed to trigger BO3 retries)
+    - 6 jobs in error state with 0 retry attempts (infrastructure issue)
+    - Actual test failures: OCP-74948 (OLM v1 catalog) failed on AWS/Azure, passed on GCP
+    - 3 jobs showed 0 test failures (GCP install, AWS disruptive tests)
+    - 2 upgrade jobs failed during setup (no test results)
+
+    ART Decision: Manual override applied - build promoted to 4.22.15 stable despite test verification issues.
 issues: []
