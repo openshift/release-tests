@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.15
 created_at: '2026-09-17T16:00:19Z'
-updated_at: '2026-09-19T11:19:12Z'
+updated_at: '2026-09-19T11:19:55Z'
 metadata:
   jira_ticket: ART-23742
   advisory_ids:
@@ -80,4 +80,14 @@ tasks:
     - 2 upgrade jobs failed during setup (no test results)
 
     ART Decision: Manual override applied - build promoted to 4.22.15 stable despite test verification issues.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-19T11:19:55Z'
+  completed_at: '2026-09-19T11:19:55Z'
+  result: "Promoted build 4.22.15 test verification: PASSED\n\nTest Status: accepted=true,\
+    \ aggregated=true\n- Total Jobs: 3\n- Passed Jobs: 3 (100%)\n- Failed Jobs: 0\n\
+    \nAll blocking test jobs passed BO3 verification successfully.\n\nJobs tested:\n\
+    1. AWS upgrade from 4.21 → 4.22: success\n2. Azure FIPS upgrade within 4.22: success\
+    \  \n3. (Job 3 details in full results)\n\nGate check: PASSED - proceeding to\
+    \ async task execution phase."
 issues: []
