@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.15
 created_at: '2026-09-17T16:00:19Z'
-updated_at: '2026-09-19T11:00:16Z'
+updated_at: '2026-09-19T11:00:45Z'
 metadata:
   jira_ticket: ART-23742
   advisory_ids:
@@ -55,4 +55,15 @@ tasks:
     2026-09-19T11:00:15Z: INFO: Triggered image consistency check Prow job: a1dbe14d-69bc-4114-ac10-5f535956e5a6
     2026-09-19T11:00:15Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2101267626234744832
     2026-09-19T11:00:15Z: INFO: sent slack message to <#team-qe-release>
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-19T11:00:19Z'
+  completed_at: '2026-09-19T11:00:44Z'
+  result: |-
+    2026-09-19T11:00:19Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-19T11:00:19Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.22.15
+    2026-09-19T11:00:22Z: INFO: Image Digest: sha256:fed788eac1c99388dd9b78dda4d6a73e39b70abb00ca918d2bb456a97187f0c1
+    2026-09-19T11:00:22Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=fed788eac1c99388dd9b78dda4d6a73e39b70abb00ca918d2bb456a97187f0c1/signature-1
+    2026-09-19T11:00:44Z: INFO: Signature check PASSED
+    2026-09-19T11:00:44Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
