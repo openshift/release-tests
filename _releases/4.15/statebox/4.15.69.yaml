@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.69
 created_at: '2026-09-17T07:00:09Z'
-updated_at: '2026-09-21T09:36:04Z'
+updated_at: '2026-09-21T09:36:44Z'
 metadata:
   jira_ticket: ART-23701
   advisory_ids:
@@ -91,6 +91,18 @@ tasks:
     2026-09-21T09:36:02Z: INFO: Triggered image consistency check Prow job: 4d12c4fc-7807-4f04-80e7-96a7c9195e55
     2026-09-21T09:36:02Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2101971236044148736
     2026-09-21T09:36:03Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-09-21T09:36:42Z'
+  completed_at: null
+  result: |-
+    2026-09-21T09:36:42Z: INFO: Initialized StateBox for release 4.15.69 at openshift/release-tests/z-stream/_releases/4.15/statebox/4.15.69.yaml
+    2026-09-21T09:36:42Z: INFO: job id is not set, will trigger stage testing
+    2026-09-21T09:36:43Z: INFO: Loaded state from _releases/4.15/statebox/4.15.69.yaml (SHA: 2a0e4096)
+    2026-09-21T09:36:43Z: INFO: Stage release succeeded (verified by label)
+    2026-09-21T09:36:43Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-09-21T09:36:43Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1792/>
+    2026-09-21T09:36:43Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'RHCOS advisory 173004 has 14 blocking security alerts, all ''erratum_tracker_has_no_flaws'':
     OCPBUGS-59334, 59408, 61147, 61156, 61273, 78001, 79411, 84262, 85143, 93776,
