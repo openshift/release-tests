@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.15
 created_at: '2026-09-17T16:00:19Z'
-updated_at: '2026-09-21T08:02:09Z'
+updated_at: '2026-09-21T08:02:24Z'
 metadata:
   jira_ticket: ART-23742
   advisory_ids:
@@ -116,4 +116,12 @@ tasks:
     2026-09-21T07:11:06Z: INFO: Background metadata checker process started (PID: 804874) - running independently after parent exit
     2026-09-21T07:11:06Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.22_20260921_031106.log
     2026-09-21T07:11:06Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
-issues: []
+issues:
+- issue: All 6 test jobs in 'error' state without BO3 retries. CI infrastructure/Prow
+    execution issue - requires job retry or infrastructure investigation.
+  reported_at: '2026-09-21T08:02:24Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-candidate-build
