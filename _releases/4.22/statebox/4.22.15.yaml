@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.15
 created_at: '2026-09-17T16:00:19Z'
-updated_at: '2026-09-21T08:02:24Z'
+updated_at: '2026-09-21T09:08:50Z'
 metadata:
   jira_ticket: ART-23742
   advisory_ids:
@@ -120,8 +120,13 @@ issues:
 - issue: All 6 test jobs in 'error' state without BO3 retries. CI infrastructure/Prow
     execution issue - requires job retry or infrastructure investigation.
   reported_at: '2026-09-21T08:02:24Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Resolved by ART manual override (ART-23742). Release manually accepted
+    and promoted to stable despite CI infrastructure issues. Manual upgrade tests
+    (AWS, Azure, GCP) passed successfully. All downstream QE verification completed:
+    image-consistency (840 images OK), stage-testing (SUCCESS), signatures (PASSED).
+    Infrastructure issue documented but does not block release.'
   blocker: true
   related_tasks:
   - analyze-candidate-build
+  resolved_at: '2026-09-21T09:08:50Z'
