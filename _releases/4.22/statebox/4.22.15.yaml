@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.15
 created_at: '2026-09-17T16:00:19Z'
-updated_at: '2026-09-21T07:11:07Z'
+updated_at: '2026-09-21T08:02:09Z'
 metadata:
   jira_ticket: ART-23742
   advisory_ids:
@@ -71,19 +71,13 @@ tasks:
     2026-09-19T11:00:44Z: INFO: Signature check PASSED
     2026-09-19T11:00:44Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: Pass
+  status: Fail
   started_at: '2026-09-19T11:19:12Z'
-  completed_at: '2026-09-19T11:19:12Z'
-  result: |-
-    Candidate build 4.22.0-0.nightly-2026-09-16-175651 manually accepted by ART (ART-23742).
-
-    Test Status: accepted=false (job controller failed to trigger BO3 retries)
-    - 6 jobs in error state with 0 retry attempts (infrastructure issue)
-    - Actual test failures: OCP-74948 (OLM v1 catalog) failed on AWS/Azure, passed on GCP
-    - 3 jobs showed 0 test failures (GCP install, AWS disruptive tests)
-    - 2 upgrade jobs failed during setup (no test results)
-
-    ART Decision: Manual override applied - build promoted to 4.22.15 stable despite test verification issues.
+  completed_at: '2026-09-21T08:02:09Z'
+  result: 'INFRASTRUCTURE ISSUE: All 6 jobs in ''error'' state (not ''failure'').
+    No BO3 retries triggered. Some jobs passed all tests but still marked error (GCP:
+    0/113 failures but error state). Indicates CI system/Prow execution issue, not
+    product bug. Requires investigation of job execution logs and retry of jobs.'
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-09-19T11:19:55Z'
