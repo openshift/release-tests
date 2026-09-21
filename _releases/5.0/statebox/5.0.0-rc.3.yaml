@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.3
 created_at: '2026-09-18T08:49:29Z'
-updated_at: '2026-09-18T11:59:55Z'
+updated_at: '2026-09-21T07:16:21Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -14,14 +14,18 @@ metadata:
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/865
 tasks:
 - name: stage-testing
-  status: Fail
-  started_at: '2026-09-18T08:52:45Z'
-  completed_at: '2026-09-18T10:35:09Z'
+  status: In Progress
+  started_at: '2026-09-21T07:16:16Z'
+  completed_at: null
   result: |-
-    2026-09-18T10:35:08Z: INFO: Initialized StateBox for release 5.0.0-rc.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.3.yaml
-    2026-09-18T10:35:08Z: INFO: Checking stage testing Prow job status for job ID: a09f8976-cc90-4660-8ff1-6b6f08851e9d
-    2026-09-18T10:35:09Z: INFO: Job state: failure, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2100870637131141120
-    2026-09-18T10:35:09Z: INFO: task [Stage Testing] status is changed to [Fail]
+    2026-09-21T07:16:16Z: INFO: Initialized StateBox for release 5.0.0-rc.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.3.yaml
+    2026-09-21T07:16:16Z: INFO: Triggering stage testing Prow job
+    2026-09-21T07:16:17Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-rc.3.yaml (SHA: 3478eb16)
+    2026-09-21T07:16:17Z: INFO: Stage release succeeded (verified by label)
+    2026-09-21T07:16:17Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-09-21T07:16:18Z: INFO: Triggered stage testing Prow job: a1ae81b6-32a3-4b5d-ae0d-a4c8b85794aa
+    2026-09-21T07:16:18Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2101933521470754816
+    2026-09-21T07:16:19Z: INFO: sent slack message to <#team-qe-release>
 - name: take-ownership
   status: Pass
   started_at: '2026-09-18T11:58:11Z'
