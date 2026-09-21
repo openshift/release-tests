@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.69
 created_at: '2026-09-17T07:00:09Z'
-updated_at: '2026-09-17T15:02:49Z'
+updated_at: '2026-09-21T09:32:10Z'
 metadata:
   jira_ticket: ART-23701
   advisory_ids:
@@ -63,6 +63,23 @@ tasks:
     Waiver rationale: two of three failures occurred in setup/harness before reaching the feature under test, one with a documented OCPQE automation ticket. Zero overlap in failing tests across the three attempts. No product-code failure, no cross-platform failure (all other 5 jobs and all other platforms clean). Confidence: High.
 
     Decision: release lead accepted on 2026-09-17.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-18T08:20:43Z'
+  completed_at: '2026-09-18T08:20:54Z'
+  result: |-
+    Promoted build 4.15.69 (amd64) ACCEPTED. aggregated=true, accepted=true - no waiver needed.
+
+    Registry cross-check performed to rule out silently-dropped jobs: _releases/ocp-4.15-test-jobs-amd64.json "stable" stream defines exactly 3 blocking jobs; all 3 present in ocp-test-result-4.15.69-amd64.json. No gap between expected and executed.
+
+    Job results (all jobState=success on firstJob, retriedJobs empty - no BO3 retries needed):
+    1. upgrade-from-stable-4.14-aws-ipi-f999: success (2026-09-18T08:20:43Z -> 10:56:53Z), jobID a97cb133-9673-495e-a6b2-7746a6641115
+    2. upgrade-from-stable-4.15-azure-ipi-fips-f999: success (2026-09-18T08:20:49Z -> 11:23:17Z), jobID 13b03eca-4afb-4892-9d3b-bcc3346bb2f2
+    3. upgrade-from-stable-4.15-gcp-ipi-f999: success (2026-09-18T08:20:54Z -> 11:22:01Z), jobID 21644e51-7a2d-430d-981b-8709f17923f9
+
+    Note: azure-ipi-fips, which needed BO3 on the candidate build (1/3), passed clean on the promoted build - supporting the earlier waiver rationale that those were harness/automation failures rather than product defects.
+
+    Gate check: PASSED. Build promotion phase=Accepted confirmed via Release Controller API.
 issues:
 - issue: 'RHCOS advisory 173004 has 14 blocking security alerts, all ''erratum_tracker_has_no_flaws'':
     OCPBUGS-59334, 59408, 61147, 61156, 61273, 78001, 79411, 84262, 85143, 93776,
