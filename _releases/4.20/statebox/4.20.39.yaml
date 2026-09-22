@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.39
 created_at: '2026-09-18T07:00:13Z'
-updated_at: '2026-09-22T07:41:45Z'
+updated_at: '2026-09-22T07:43:02Z'
 metadata:
   jira_ticket: ART-23743
   advisory_ids:
@@ -654,6 +654,17 @@ tasks:
     QE blocking test results are identical to candidate build analysis (accepted:
     false, but waivable flaky tests). Release Controller blocking tests (upgrade)
     passed. Build accepted for release.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-22T07:42:05Z'
+  completed_at: '2026-09-22T07:43:01Z'
+  result: |-
+    2026-09-22T07:42:05Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-22T07:42:05Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.39
+    2026-09-22T07:42:08Z: INFO: Image Digest: sha256:7bcf96bd0766436fcc30ac30d4bba565d27bfe5772d48177f1afd65878209850
+    2026-09-22T07:42:08Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7bcf96bd0766436fcc30ac30d4bba565d27bfe5772d48177f1afd65878209850/signature-1
+    2026-09-22T07:43:01Z: INFO: Signature check PASSED
+    2026-09-22T07:43:01Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: image-consistency-check Prow job 9e1ab2af-630b-41e5-bba5-dcc043394e66 not
     found (404) - job may have expired or API error occurred
