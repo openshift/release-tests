@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.48
 created_at: '2026-09-18T09:00:11Z'
-updated_at: '2026-09-22T11:03:09Z'
+updated_at: '2026-09-22T11:04:14Z'
 metadata:
   jira_ticket: ART-23746
   advisory_ids:
@@ -85,6 +85,17 @@ tasks:
     (aggregated=True, accepted=True). All downstream QE verification completed: image-consistency-check
     (831 images, 0 unhealthy), stage-testing (Jenkins #1793 SUCCESS). Test result
     file not yet available in GitHub record branch, but promotion confirms test quality.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-22T11:03:49Z'
+  completed_at: '2026-09-22T11:04:13Z'
+  result: |-
+    2026-09-22T11:03:49Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-22T11:03:49Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.48
+    2026-09-22T11:03:49Z: INFO: Image Digest: sha256:3d5589a4eaeba9882efb93c31110387e755910105f4838ff6c109accd62f28c8
+    2026-09-22T11:03:49Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=3d5589a4eaeba9882efb93c31110387e755910105f4838ff6c109accd62f28c8/signature-1
+    2026-09-22T11:04:13Z: INFO: Signature check PASSED
+    2026-09-22T11:04:13Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: image-consistency-check Prow job c8cc8989-6c8d-4866-b4d2-c6800060fddd not
     found (404 error) - job may have expired or been deleted
