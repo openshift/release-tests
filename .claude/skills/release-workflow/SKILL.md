@@ -576,7 +576,7 @@ ELSE IF file.accepted == false:
 
 **Prerequisites:**
 - Build promotion detected (phase == "Accepted")
-- **CRITICAL (Konflux flow only):** Shipment MR stage-release pipeline must succeed first
+- **CRITICAL:** Shipment MR stage-release pipeline must succeed first
 
 **Execution Phases:**
 
@@ -615,17 +615,17 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 
 ### 9. stage-testing (Async Task)
 
-**Purpose:** Run stage testing jobs on Jenkins
+**Purpose:** Run stage testing jobs via Prow
 
-**MCP Tool:** `oar_stage_testing(release, build_number=None)`
+**MCP Tool:** `oar_stage_testing(release, job_id=None)`
 
 **Input:**
 - `release`: Z-stream version
-- `build_number`: Optional Jenkins build number (for status check)
+- `job_id`: Optional Prow job ID (for status check)
 
 **Prerequisites:**
 - Build promotion detected (phase == "Accepted")
-- **CRITICAL (Konflux flow only):** Shipment MR stage-release pipeline must succeed first
+- **CRITICAL:** Shipment MR stage-release pipeline must succeed first
 
 **Execution Phases:**
 
@@ -633,9 +633,9 @@ Failure: stdout contains: "task [Image consistency check] status is changed to [
 ```python
 Execute: oar_stage_testing(release)
 
-# Success - Jenkins job triggered:
+# Success - Prow job triggered:
 stdout contains: "task [Stage testing] status is changed to [In Progress]"
-AND capture Jenkins build number from stdout
+AND capture Prow job ID from stdout
 
 # Blocked - Stage-release pipeline not succeeded:
 IF stage-release pipeline error detected:
@@ -645,7 +645,7 @@ IF stage-release pipeline error detected:
 
 **Phase 2 - Check Status:**
 ```python
-Execute: oar_stage_testing(release, build_number={captured_build_number})
+Execute: oar_stage_testing(release, job_id={captured_job_id})
 ```
 
 **Phase 3 - Complete:**
@@ -658,7 +658,7 @@ Failure: stdout contains: "task [Stage testing] status is changed to [Fail]"
 
 **Failure Handling:**
 - Stage-release pipeline not ready: Report to user, ask to work with ART, wait for user to re-invoke
-- Jenkins job failure: Mark overall status "Red", notify owner
+- Prow job failure: Mark overall status "Red", notify owner
 
 ---
 

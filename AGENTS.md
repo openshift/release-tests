@@ -476,22 +476,22 @@ oar -r <release> image-consistency-check -i <job-id>
 **Command:**
 ```bash
 oar -r <release> stage-testing
-oar -r <release> stage-testing -n <build-number>
+oar -r <release> stage-testing -i <job-id>
 ```
 
-**Purpose:** Triggers the stage pipeline to perform testing in the staging environment.
+**Purpose:** Triggers the stage testing Prow job to perform testing in the staging environment.
 
 **Options:**
-- `-n, --build-number` - Jenkins build number to check status (for subsequent runs)
+- `-i, --job-id` - Prow job ID to check status (for subsequent runs)
 
 **What it does:**
-- Triggers Jenkins stage testing pipeline
-- Returns build number on first run
-- Can check job status on subsequent runs with build number
+- Triggers stage testing Prow job via Gangway API
+- Returns job ID on first run
+- Can check job status on subsequent runs with job ID
 
 **Workflow:**
-1. First run: Triggers job, returns build number
-2. Subsequent runs: Check status using `-n <build-number>`
+1. First run: Triggers Prow job, returns job ID
+2. Subsequent runs: Check status using `-i <job-id>`
 
 ---
 
@@ -800,7 +800,7 @@ All core modules follow a consistent pattern:
 **Supported Jobs:**
 - `stage-pipeline` - Stage environment testing
 
-**Note:** Image consistency check has been migrated to Prow (see `prow/job/job.py` `run_image_consistency_check`).
+**Note:** Both image consistency check and stage testing have been migrated to Prow (see `prow/job/job.py` `run_image_consistency_check` and `run_stage_testing`). This module is kept for backward compatibility.
 
 **Key Methods:**
 - `call_stage_job()` - Trigger stage testing
