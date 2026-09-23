@@ -56,9 +56,55 @@
         "jobStartTime": "2026-09-23T15:21:00Z",
         "jobID": "0b6a3c81-6c38-4f62-b44a-eb5416555835",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2102780288483463168",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-09-23T18:44:58Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 51,
+            "failures": 9,
+            "errors": 0,
+            "skipped": 9,
+            "failingScenarios": [
+              "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+              "[sig-isc] Security_and_Compliance File_Integrity_Operator an end user handle FIO within a namespace Author:xiyuan-LEVEL0-NonHyperShiftHOST-ROSA-ARO-OSD_CCS-WRS-Medium-31873-V-EST.01-V-EDR.01-check the gracePeriod is configurable [Serial]",
+              "[sig-monitoring] Cluster_Observability parallel monitoring user workload monitoring Author:tagao-LEVEL0-Medium-46301-Allow OpenShift users to configure query log file for Prometheus",
+              "[sig-network-edge] Network_Edge Component_Router Author:shudili-LEVEL0-High-55367-Default HAProxy maxconn value to 50000 for OCP 4.12 and later",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-Critical-24485-[CSI Driver] [Dynamic PV] [Filesystem default] volumes should store data and allow exec of files",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-Critical-51139-[CSI Driver] [Dynamic PV] [Filesystem xfs] volumes resize on-line"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 24,
+            "failures": 5,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-14484:Workloads pod will be scheduled to the node which matches node anti-affinity",
+              "OCP-14509:Workloads if no preferred nodes are available non-preferred nodes will be chosen",
+              "OCP-14522:Workloads pod will be scheduled to the node which matches node affinity - Gt",
+              "OCP-14603:Workloads pod will not be scheduled if pod affinity not match",
+              "pod prefers to be scheduled to the nodes which matches affinity rules cases for 4.x"
+            ]
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-09-23T19:23:10Z",
+          "jobID": "c284c9e8-fe63-43f2-b34c-d6a5aece7bc7",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2102841222082072576",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-09-23T19:23:16Z",
+          "jobID": "1ace9d75-6ccf-40ac-8189-fcf38d4942b4",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2102841243842121728",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-aws-ipi-f999",
