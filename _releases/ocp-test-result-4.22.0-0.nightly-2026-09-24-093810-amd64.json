@@ -37,13 +37,62 @@
           "jobStartTime": "2026-09-24T19:46:19Z",
           "jobID": "3228ffe4-11fb-47e6-a82e-a0a251aee658",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2103209433503895552",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-09-24T22:42:29Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-09-24T19:46:24Z",
           "jobID": "d5a3ba81-923f-4651-adae-f034a4b340ae",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2103209455523991552",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-09-24T22:50:01Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server",
+                "[sig-storage] STORAGE Author:pewang-NonHyperShiftHOST-ROSA-OSD_CCS-LEVEL0-Critical-24524-Medium-79030-[LSO] [Filesystem xfs] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -218,5 +267,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-09-24-093810",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-09-24-093810"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
