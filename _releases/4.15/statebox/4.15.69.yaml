@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.69
 created_at: '2026-09-17T07:00:09Z'
-updated_at: '2026-09-24T05:51:44Z'
+updated_at: '2026-09-24T05:58:55Z'
 metadata:
   jira_ticket: ART-23701
   advisory_ids:
@@ -122,8 +122,13 @@ issues:
     erratum_cve_discrepancy, erratum_missing_notes_link. Requires follow-up with secalert@redhat.com
     / ART to either link flaws or detach trackers. Does not stop QE pipeline.'
   reported_at: '2026-09-17T11:36:13Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Re-checked Errata security_alerts API for advisory 173004 on 2026-09-24:
+    all 14 erratum_tracker_has_no_flaws blocking alerts are cleared. Advisory now
+    returns total=1 alert, blocking_count=0 (only erratum_missing_notes_link, non-blocking).
+    Top-level alerts.blocking=false. ART/secalert linked the flaws or detached the
+    trackers. No further follow-up needed.'
   blocker: false
   related_tasks:
   - check-rhcos-security-alerts
+  resolved_at: '2026-09-24T05:58:55Z'
