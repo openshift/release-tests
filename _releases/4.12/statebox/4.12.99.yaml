@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.99
 created_at: '2026-09-24T10:00:07Z'
-updated_at: '2026-09-24T11:50:45Z'
+updated_at: '2026-09-24T11:55:43Z'
 metadata:
   jira_ticket: ART-23845
   advisory_ids:
@@ -47,4 +47,16 @@ tasks:
     2026-09-24T11:50:43Z: INFO: no push job found for advisory 173436
     2026-09-24T11:50:43Z: INFO: advisory 173436 has blocking advisory []
     2026-09-24T11:50:44Z: INFO: push job for advisory 173436 is triggered
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-24T11:55:43Z'
+  completed_at: '2026-09-24T11:55:43Z'
+  result: |-
+    Candidate build 4.12.0-0.nightly-2026-09-22-191303 (amd64): aggregated=true, accepted=false. 3/5 blocking jobs passed BO3; 2 failed 0/3: gcp-ipi-custom-type and stable-4.12-upgrade-from-stable-4.12-gcp-ipi-custom-type.
+
+    WAIVED by release lead ([EMAIL_REDACTED]) as GCP platform infrastructure failures. Evidence: (1) failures confined to the GCP custom-type variant - aws-ipi, azure-ipi-fips and upgrade-aws-ipi all green on first attempt, no cross-platform signal; (2) 4 of 6 failed attempts produced no testResultSummary, indicating the jobs died before test execution completed (install/provisioning failure signature); (3) upgrade job attempt 3 ran only ~4 minutes (14:28:24-14:32:11Z), an infra abort rather than a test run; (4) the single attempt that produced results showed 13 LEVEL0 failures scattered across monitoring, network-edge and storage plus 3 cucushift failures - consistent with a degraded cluster, not a targeted regression; (5) both retries per job launched within seconds of each other, so all three attempts sampled the same GCP conditions.
+
+    Caveats recorded for audit: this GCP job is not chronically broken (passed in 4.12.94, 4.12.97, 4.12.98), so this is a point-in-time GCP failure on 2026-09-23. Root cause could NOT be confirmed from job artifacts - gsutil required reauthentication, so install logs in gs://qe-private-deck were not read. Confidence: Medium.
+
+    Note: this task is informational and does not gate the pipeline. The release gate remains analyze-promoted-build on 4.12.99.
 issues: []
