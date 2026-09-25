@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.4
 created_at: '2026-09-25T08:25:18Z'
-updated_at: '2026-09-25T10:40:06Z'
+updated_at: '2026-09-25T10:44:18Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -29,18 +29,14 @@ tasks:
     2026-09-25T08:25:17Z: INFO: sent slack message to <#forum-ocp-release>
     2026-09-25T08:25:17Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-09-25T10:40:01Z'
-  completed_at: null
+  completed_at: '2026-09-25T10:44:17Z'
   result: |-
-    2026-09-25T10:40:01Z: INFO: Initialized StateBox for release 5.0.0-rc.4 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.4.yaml
-    2026-09-25T10:40:01Z: INFO: Triggering stage testing Prow job
-    2026-09-25T10:40:02Z: INFO: Loaded state from _releases/5.0/statebox/5.0.0-rc.4.yaml (SHA: 7e171e67)
-    2026-09-25T10:40:02Z: INFO: Stage release succeeded (verified by label)
-    2026-09-25T10:40:02Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-09-25T10:40:03Z: INFO: Triggered stage testing Prow job: 2a2d2183-cd18-44ac-8802-4256a2f88e83
-    2026-09-25T10:40:03Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2103434347934650368
-    2026-09-25T10:40:04Z: INFO: sent slack message to <#team-qe-release>
+    2026-09-25T10:44:16Z: INFO: Initialized StateBox for release 5.0.0-rc.4 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0-rc.4.yaml
+    2026-09-25T10:44:16Z: INFO: Checking stage testing Prow job status for job ID: 2fccf9bb-bd73-4795-8162-47003019d452
+    2026-09-25T10:44:17Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2103402329632935936
+    2026-09-25T10:44:17Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
   started_at: '2026-09-25T10:39:08Z'
