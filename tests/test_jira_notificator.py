@@ -485,10 +485,10 @@ class TestJiraNotificator(unittest.TestCase):
         issue_no_links = self.jira.issue("OCPBUGS-59288")
         self.assertFalse(self.ns.is_pre_merge_verified(issue_no_links))
 
-        # No GITHUB_TOKEN -> skip check, return False
-        ns_no_token = NotificationService(self.jira, True)
-        ns_no_token.github = None
-        self.assertFalse(ns_no_token.is_pre_merge_verified(issue_pre_merge_verified))
+        # No GitHub App Reader credentials -> skip check, return False
+        ns_no_github = NotificationService(self.jira, True)
+        ns_no_github._github_app = None
+        self.assertFalse(ns_no_github.is_pre_merge_verified(issue_pre_merge_verified))
 
     def test_process_on_qa_issues(self):
         day_ago = datetime.now() - timedelta(hours=24)

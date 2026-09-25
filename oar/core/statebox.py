@@ -73,17 +73,15 @@ Example Usage:
 API Reference:
 
 Core Operations:
-    StateBox(configstore, repo_name="openshift/release-tests", branch="z-stream", github_token=None)
+    StateBox(configstore, branch="z-stream")
         Initialize StateBox for a specific release.
 
         Args:
             configstore: ConfigStore instance (provides release version and configuration)
-            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
-            github_token: GitHub token (default: from GITHUB_TOKEN env)
 
         Raises:
-            StateBoxException: If GitHub token is missing
+            StateBoxException: If GitHub App Writer credentials are missing
 
         Note:
             Release version is extracted from configstore.release.
@@ -280,12 +278,21 @@ from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
 
 import yaml
-from github import Auth, Github
+from github import Github
 from github.GithubException import UnknownObjectException, GithubException
 
 from oar.core.configstore import ConfigStore
-from oar.core.const import SUPPORTED_TASK_NAMES, TASK_STATUS_PASS, TASK_STATUS_FAIL, TASK_STATUS_INPROGRESS, TASK_STATUS_NOT_STARTED
+from oar.core.const import (
+    ENV_VAR_GITHUB_APP_WRITER_ID,
+    ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY,
+    SUPPORTED_TASK_NAMES,
+    TASK_STATUS_PASS,
+    TASK_STATUS_FAIL,
+    TASK_STATUS_INPROGRESS,
+    TASK_STATUS_NOT_STARTED,
+)
 from oar.core.exceptions import StateBoxException
+from oar.core.github_app import GitHubApp
 from oar.core.util import validate_release_version, get_current_timestamp
 
 logger = logging.getLogger(__name__)
@@ -331,6 +338,34 @@ STATEBOX_PATH_PREFIX = "_releases"
 MAX_RETRIES = 5
 INITIAL_BACKOFF = 0.5  # seconds
 MAX_BACKOFF = 10.0  # seconds
+
+
+def _github_client_for_repo() -> Github:
+    """
+    Initialize GitHub App Writer client for openshift/release-tests.
+
+    Module-level helper (not a StateBox method) — no instance state required.
+
+    Returns:
+        PyGithub client scoped to the repository installation.
+
+    Raises:
+        StateBoxException: If credentials are missing or client initialization fails.
+    """
+    app_id = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_ID)
+    private_key_path = os.environ.get(ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY)
+    if not app_id or not private_key_path:
+        raise StateBoxException(
+            f"{ENV_VAR_GITHUB_APP_WRITER_ID} and "
+            f"{ENV_VAR_GITHUB_APP_WRITER_PRIVATE_KEY} must be set."
+        )
+    owner, repo = DEFAULT_REPO_NAME.split("/", 1)
+    try:
+        return GitHubApp(app_id, private_key_path).client_for_repo(owner, repo)
+    except Exception as e:
+        raise StateBoxException(
+            f"Failed to initialize GitHub App Writer ({type(e).__name__})"
+        ) from e
 
 
 def extract_start_timestamp(text: Optional[str]) -> Optional[str]:
@@ -447,21 +482,17 @@ class StateBox:
     def __init__(
         self,
         configstore: ConfigStore,
-        repo_name: str = DEFAULT_REPO_NAME,
         branch: str = DEFAULT_BRANCH,
-        github_token: Optional[str] = None
     ):
         """
         Initialize StateBox for a specific release.
 
         Args:
             configstore: ConfigStore instance (provides release version and configuration)
-            repo_name: GitHub repository name (default: "openshift/release-tests")
             branch: Branch name (default: "z-stream")
-            github_token: GitHub personal access token (default: from GITHUB_TOKEN env)
 
         Raises:
-            StateBoxException: If GitHub token is missing
+            StateBoxException: If GitHub App Writer credentials are missing
 
         Note:
             Release version is extracted from configstore.release.
@@ -470,7 +501,7 @@ class StateBox:
         # Extract release from ConfigStore
         self._configstore = configstore
         self.release = configstore.release
-        self.repo_name = repo_name
+        self.repo_name = DEFAULT_REPO_NAME
         self.branch = branch
 
         # Extract y-stream version (e.g., "4.19" from "4.19.1")
@@ -478,19 +509,17 @@ class StateBox:
         self.file_path = f"{STATEBOX_PATH_PREFIX}/{y_stream}/statebox/{self.release}.yaml"
 
         # Initialize GitHub client
-        token = github_token or os.environ.get("GITHUB_TOKEN")
-        if not token:
-            raise StateBoxException("GitHub token not found. Set GITHUB_TOKEN environment variable.")
-
-        auth = Auth.Token(token)
-        self._github = Github(auth=auth)
-        self._repo = self._github.get_repo(repo_name)
+        self._github = _github_client_for_repo()
+        self._repo = self._github.get_repo(self.repo_name)
 
         # Cache for current state and SHA
         self._state_cache: Optional[Dict[str, Any]] = None
         self._sha_cache: Optional[str] = None
 
-        logger.info(f"Initialized StateBox for release {self.release} at {repo_name}/{branch}/{self.file_path}")
+        logger.info(
+            f"Initialized StateBox for release {self.release} at "
+            f"{self.repo_name}/{branch}/{self.file_path}"
+        )
 
     def _get_default_state(self) -> Dict[str, Any]:
         """

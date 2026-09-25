@@ -38,7 +38,7 @@ class ConfigStore:
 
         - Prow controllers/aggregators: Validated separately
           See: prow/job/controller.py (validate_environment function)
-          Vars: GITHUB_TOKEN, APITOKEN, GCS_CRED_FILE
+          Vars: GITHUB_APP_WRITER_*, GITHUB_APP_READER_*, APITOKEN, GCS_CRED_FILE
 
         - MCP server: Uses this validation (wraps OAR CLI commands)
           See: mcp_server/server.py
