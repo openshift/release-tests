@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.99
 created_at: '2026-09-24T10:00:07Z'
-updated_at: '2026-09-25T08:45:46Z'
+updated_at: '2026-09-25T08:46:03Z'
 metadata:
   jira_ticket: ART-23845
   advisory_ids:
@@ -56,4 +56,15 @@ tasks:
     Caveats recorded for audit: this GCP job is not chronically broken (passed in 4.12.94, 4.12.97, 4.12.98), so this is a point-in-time GCP failure on 2026-09-23. Root cause could NOT be confirmed from job artifacts - gsutil required reauthentication, so install logs in gs://qe-private-deck were not read. Confidence: Medium.
 
     Note: this task is informational and does not gate the pipeline. The release gate remains analyze-promoted-build on 4.12.99.
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-09-25T08:45:55Z'
+  completed_at: null
+  result: |-
+    2026-09-25T08:45:55Z: INFO: Initialized StateBox for release 4.12.99 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.99.yaml
+    2026-09-25T08:45:56Z: INFO: Loaded state from _releases/4.12/statebox/4.12.99.yaml (SHA: 8621f0d9)
+    2026-09-25T08:45:56Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-09-25T08:46:01Z: INFO: Triggered image consistency check Prow job: 24381c75-bd74-4c7e-a785-b7a7eb5d203e
+    2026-09-25T08:46:01Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2103408257698631680
+    2026-09-25T08:46:02Z: INFO: sent slack message to <#team-qe-release>
 issues: []
