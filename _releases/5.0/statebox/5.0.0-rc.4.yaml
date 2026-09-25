@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.4
 created_at: '2026-09-25T08:25:18Z'
-updated_at: '2026-09-25T08:25:36Z'
+updated_at: '2026-09-25T08:57:20Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -57,4 +57,16 @@ tasks:
     2026-09-25T08:34:07Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=a17008f53031e79fbc807228ba9bcf2819c274831e320e7e18734c9607825c50/signature-1
     2026-09-25T08:34:07Z: INFO: Signature check PASSED
     2026-09-25T08:34:07Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Fail
+  started_at: '2026-09-25T08:57:20Z'
+  completed_at: '2026-09-25T08:57:20Z'
+  result: 'Candidate build 5.0.0-0.nightly-2026-09-21-210852 (x86_64): accepted=false,
+    3/6 jobs failed BO3 (AWS, Azure, GCP install+test jobs). 6 unique failing tests:
+    OCP-27649 (stale test expectation), OCP-31873 (FIO operator catalog issue), OCP-55223
+    (confirmed product bug OCPBUGS-122890 POST), OCP-74948 (catalogd serving empty
+    content), OCP-75492 (OLM v1 condition timing OCPBUGS-97948), OCP-44910 (AWS-only
+    EBS discard mount option). 3 passed jobs: disruptive, upgrade-from-4.22, upgrade-from-5.0.
+    Failures are tracked product bugs and stale test expectations, not critical platform
+    regressions.'
 issues: []
