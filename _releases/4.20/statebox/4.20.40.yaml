@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.40
 created_at: '2026-09-25T07:00:12Z'
-updated_at: '2026-09-25T07:28:28Z'
+updated_at: '2026-09-25T07:29:01Z'
 metadata:
   jira_ticket: ART-23910
   advisory_ids:
@@ -70,4 +70,12 @@ tasks:
     2026-09-25T07:28:26Z: INFO: task [Stage Testing] status is changed to [In Progress]
     2026-09-25T07:28:26Z: INFO: triggered stage pipeline job: <https://jenkins-csb-openshift-qe-mastern.dno.corp.redhat.com/job/zstreams/job/Stage-Pipeline/1796/>
     2026-09-25T07:28:27Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-09-25T07:29:01Z'
+  completed_at: '2026-09-25T07:29:01Z'
+  result: 'All blocking tests passed BO3 verification. aggregated=true, accepted=true.
+    6/6 jobs succeeded: AWS IPI (0 failures), Azure IPI FIPS (0 failures), GCP IPI
+    (0 failures), AWS Disruptive (0 failures), Upgrade from 4.19 (success), Upgrade
+    from 4.20 (success)'
 issues: []
