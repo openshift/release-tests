@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.4
 created_at: '2026-09-25T08:25:18Z'
-updated_at: '2026-09-25T09:51:51Z'
+updated_at: '2026-09-25T09:54:42Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -88,14 +88,14 @@ tasks:
     2026-09-25T09:55:07Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-09-25T09:55:07Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: check-cve-tracker-bug
-  status: Pass
+  status: Fail
   started_at: '2026-09-25T09:51:51Z'
-  completed_at: '2026-09-25T09:51:51Z'
-  result: 'CVE tracker bug check passed. Elliott completed successfully (stderr contained
-    only INFO logs, not actual errors). 10 CVE tracker bugs not found in RHSA advisories
-    (expected for Konflux flow): OCPBUGS-111724, 111744, 111749, 111753, 111765, 111772,
-    111777, 111783, 111786, 111793. 17 of 56 bugs qualified for cutoff time 2026-09-21.
-    Shipment MR !879: 15 fbc, 47 extras, 193 image, 15 metadata builds.'
+  completed_at: '2026-09-25T09:54:42Z'
+  result: 'Elliott command failed due to stderr handling bug in shipment.py:1532 (treats
+    INFO logs on stderr as errors). 10 CVE tracker bugs not found in RHSA advisories:
+    OCPBUGS-111724, 111744, 111749, 111753, 111765, 111772, 111777, 111783, 111786,
+    111793. Cannot determine if CVEs are covered in shipment MR !879 because elliott
+    output was not captured.'
 issues:
 - issue: 'OCP-75492: OLM v1 ClusterExtension Progressing condition not surfacing expected
     error (OCPBUGS-97948 New) — likely product bug, fails on all 3 platforms.'
