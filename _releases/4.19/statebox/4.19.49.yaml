@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.49
 created_at: '2026-09-24T14:00:14Z'
-updated_at: '2026-09-25T08:00:46Z'
+updated_at: '2026-09-26T09:25:16Z'
 metadata:
   jira_ticket: ART-23909
   advisory_ids:
@@ -69,18 +69,14 @@ tasks:
   result: Promoted build test results not yet available. Candidate build (4.19.0-0.nightly-2026-09-23-001137)
     already passed all tests and was promoted to 4.19.49.
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-09-25T08:00:38Z'
-  completed_at: null
+  completed_at: '2026-09-26T09:25:15Z'
   result: |-
-    2026-09-25T08:00:38Z: INFO: Initialized StateBox for release 4.19.49 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.49.yaml
-    2026-09-25T08:00:38Z: INFO: Triggering stage testing Prow job
-    2026-09-25T08:00:38Z: INFO: Loaded state from _releases/4.19/statebox/4.19.49.yaml (SHA: b8b620bc)
-    2026-09-25T08:00:38Z: INFO: Stage release succeeded (verified by label)
-    2026-09-25T08:00:38Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-09-25T08:00:44Z: INFO: Triggered stage testing Prow job: ffb43ba9-b4e8-4b81-9204-970b63467017
-    2026-09-25T08:00:44Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi/2103396857886543872
-    2026-09-25T08:00:45Z: INFO: sent slack message to <#team-qe-release>
+    2026-09-26T09:25:15Z: INFO: Initialized StateBox for release 4.19.49 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.49.yaml
+    2026-09-26T09:25:15Z: INFO: Checking stage testing Prow job status for job ID: ffb43ba9-b4e8-4b81-9204-970b63467017
+    2026-09-26T09:25:15Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi/2103396857886543872
+    2026-09-26T09:25:15Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: Stage release pipeline still running (GitLab pipeline 17936130). Cannot trigger
     stage testing until shipment pipeline completes.
