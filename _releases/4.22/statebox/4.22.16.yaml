@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.16
 created_at: '2026-09-25T07:00:24Z'
-updated_at: '2026-09-26T09:42:47Z'
+updated_at: '2026-09-26T09:43:12Z'
 metadata:
   jira_ticket: ART-23911
   advisory_ids:
@@ -52,4 +52,15 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Test results: 3/3 jobs succeeded
     (AWS upgrade from 4.21, Azure FIPS upgrade from 4.22, GCP upgrade from 4.22).
     Build phase: Accepted, aggregated: true, accepted: true.'
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-09-26T09:43:03Z'
+  completed_at: null
+  result: |-
+    2026-09-26T09:43:03Z: INFO: Initialized StateBox for release 4.22.16 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.16.yaml
+    2026-09-26T09:43:04Z: INFO: Loaded state from _releases/4.22/statebox/4.22.16.yaml (SHA: f28221bf)
+    2026-09-26T09:43:04Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-09-26T09:43:09Z: INFO: Triggered image consistency check Prow job: 1c978cba-371c-4ac3-8e5b-f69b75865eaa
+    2026-09-26T09:43:09Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2103785037546655744
+    2026-09-26T09:43:11Z: INFO: sent slack message to <#team-qe-release>
 issues: []
