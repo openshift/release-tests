@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.58
 created_at: '2026-09-24T07:56:36Z'
-updated_at: '2026-09-26T15:52:45Z'
+updated_at: '2026-09-26T15:53:41Z'
 metadata:
   jira_ticket: ART-23846
   advisory_ids:
@@ -52,16 +52,13 @@ tasks:
     accepted=true. One initial failure (aws-ipi LSO storage test) passed on BO3 retry
     (both retries succeeded). All other jobs passed on first attempt.
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-09-25T08:34:36Z'
-  completed_at: null
-  result: |-
-    2026-09-25T08:34:36Z: INFO: Initialized StateBox for release 4.17.58 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.58.yaml
-    2026-09-25T08:34:36Z: INFO: Loaded state from _releases/4.17/statebox/4.17.58.yaml (SHA: 33653588)
-    2026-09-25T08:34:36Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-09-25T08:34:42Z: INFO: Triggered image consistency check Prow job: ce892db9-d8af-4659-bc42-cf8de1347094
-    2026-09-25T08:34:42Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2103405406716956672
-    2026-09-25T08:34:42Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-09-26T15:53:41Z'
+  result: Prow job ce892db9-d8af-4659-bc42-cf8de1347094 (periodic-ci-openshift-release-tests-main-image-consistency-check)
+    completed successfully. Gangway API returned 404 for job-id lookup on re-check
+    (job aged out of API cache after ~31h), but GCS finished.json confirms passed=true,
+    result=SUCCESS. Manually marked Pass based on verified artifact.
 - name: stage-testing
   status: Pass
   started_at: '2026-09-25T08:34:49Z'
