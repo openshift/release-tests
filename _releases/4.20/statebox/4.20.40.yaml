@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.40
 created_at: '2026-09-25T07:00:12Z'
-updated_at: '2026-09-26T09:27:38Z'
+updated_at: '2026-09-26T10:00:48Z'
 metadata:
   jira_ticket: ART-23910
   advisory_ids:
@@ -106,6 +106,14 @@ tasks:
     2026-09-26T09:27:37Z: INFO: Background metadata checker process started (PID: 822022) - running independently after parent exit
     2026-09-26T09:27:37Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20260926_052737.log
     2026-09-26T09:27:37Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-26T10:00:48Z'
+  completed_at: '2026-09-26T10:00:48Z'
+  result: 'All blocking tests passed BO3 verification. aggregated=true, accepted=true.
+    3/3 upgrade jobs succeeded: Upgrade from 4.19 AWS IPI (success, 0 failures), Upgrade
+    from 4.20 Azure IPI FIPS (success, 0 failures), Upgrade from 4.20 GCP IPI (success,
+    0 failures). No retried jobs required.'
 issues:
 - issue: Image signatures not yet published to mirror - release not fully promoted/signed
     (signature-1 not found for sha256:5e7b078005685058604a617d52e416d3d152a6ab9197e51c81f4d446b6c0102b)
