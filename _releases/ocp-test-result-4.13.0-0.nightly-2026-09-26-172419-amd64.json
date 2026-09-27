@@ -31,13 +31,46 @@
           "jobStartTime": "2026-09-27T00:27:08Z",
           "jobID": "e70edc63-2d79-4b72-8a6f-95dae74a8e8d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2104004879306461184",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-09-27T02:50:28Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 67,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 14
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-09-27T00:27:13Z",
           "jobID": "733dce47-f739-4363-b06f-52d313941a52",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2104004900789686272",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-09-27T02:56:09Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 67,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 14,
+              "failingScenarios": [
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-Author:pewang-LEVEL0-Critical-24523-[LSO] [block volume] LocalVolume CR related pv could be used by Pod"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -135,5 +168,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-09-26-172419",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-09-26-172419"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
