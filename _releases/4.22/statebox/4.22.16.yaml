@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.16
 created_at: '2026-09-25T07:00:24Z'
-updated_at: '2026-09-28T07:40:52Z'
+updated_at: '2026-09-28T08:06:58Z'
 metadata:
   jira_ticket: ART-23911
   advisory_ids:
@@ -84,4 +84,15 @@ tasks:
     3/3 jobs succeeded (AWS upgrade from 4.21, Azure FIPS upgrade from 4.22, GCP upgrade
     from 4.22). All tests passed on first attempt with no retries. Build phase: Accepted,
     aggregated: true, accepted: true.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-28T08:06:29Z'
+  completed_at: '2026-09-28T08:06:57Z'
+  result: |-
+    2026-09-28T08:06:29Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-28T08:06:29Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.22.16
+    2026-09-28T08:06:32Z: INFO: Image Digest: sha256:55a0c0c8f9a285fa468009511dd878d5492436ceb4f0207933b6403d19353876
+    2026-09-28T08:06:32Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=55a0c0c8f9a285fa468009511dd878d5492436ceb4f0207933b6403d19353876/signature-1
+    2026-09-28T08:06:57Z: INFO: Signature check PASSED
+    2026-09-28T08:06:57Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
