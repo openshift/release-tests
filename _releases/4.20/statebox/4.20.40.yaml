@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.40
 created_at: '2026-09-25T07:00:12Z'
-updated_at: '2026-09-28T09:28:18Z'
+updated_at: '2026-09-28T09:39:56Z'
 metadata:
   jira_ticket: ART-23910
   advisory_ids:
@@ -401,3 +401,13 @@ issues:
   blocker: true
   related_tasks:
   - image-signed-check
+- issue: Advisory metadata URLs not accessible after 2-day timeout (RHSA-2026:71450,
+    RHSA-2026:71454, RHSA-2026:71447 all return 404), but release IS available on
+    mirror.openshift.com. Shipment MR 883 not merged, advisories still in QE state.
+    Manual investigation needed to determine actual release status.
+  reported_at: '2026-09-28T09:39:56Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
