@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.99
 created_at: '2026-09-24T10:00:07Z'
-updated_at: '2026-09-28T08:51:25Z'
+updated_at: '2026-09-28T08:54:54Z'
 metadata:
   jira_ticket: ART-23845
   advisory_ids:
@@ -57,16 +57,22 @@ tasks:
 
     Note: this task is informational and does not gate the pipeline. The release gate remains analyze-promoted-build on 4.12.99.
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-09-25T08:45:55Z'
-  completed_at: null
+  completed_at: '2026-09-25T08:46:01Z'
   result: |-
-    2026-09-25T08:45:55Z: INFO: Initialized StateBox for release 4.12.99 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.99.yaml
-    2026-09-25T08:45:56Z: INFO: Loaded state from _releases/4.12/statebox/4.12.99.yaml (SHA: 8621f0d9)
-    2026-09-25T08:45:56Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-09-25T08:46:01Z: INFO: Triggered image consistency check Prow job: 24381c75-bd74-4c7e-a785-b7a7eb5d203e
-    2026-09-25T08:46:01Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2103408257698631680
-    2026-09-25T08:46:02Z: INFO: sent slack message to <#team-qe-release>
+    Corrected from Fail to Pass on 2026-09-28 by release lead review.
+
+    The Fail was a false negative from the status-check tooling, not a job failure. Prow job 24381c75-bd74-4c7e-a785-b7a7eb5d203e was triggered 2026-09-25T08:46:01Z. When queried on 2026-09-28 the Gangway/Prow API returned HTTP 404 ("Job not found or Prow API error") because the job had aged out of API retention (~3 days), and cmd_image_consistency_check.py treats a failed lookup as a task failure.
+
+    Evidence the job actually succeeded - fetched directly from the GCS artifact bucket:
+      gs://test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2103408257698631680/finished.json
+      => {"passed": true, "result": "SUCCESS", "metadata.pod": "24381c75-bd74-4c7e-a785-b7a7eb5d203e"}
+    The pod ID in finished.json matches the recorded job ID, confirming this artifact belongs to the triggered job.
+      started.json timestamp 1790326590, finished.json timestamp 1790327314 (~12 min runtime, normal for this job).
+      Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2103408257698631680
+
+    Confidence: High - the result was read from the job's own completion artifact rather than inferred.
 - name: stage-testing
   status: Pass
   started_at: '2026-09-25T08:46:12Z'
