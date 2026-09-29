@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.99
 created_at: '2026-09-24T10:00:07Z'
-updated_at: '2026-09-28T08:54:54Z'
+updated_at: '2026-09-29T05:49:31Z'
 metadata:
   jira_ticket: ART-23845
   advisory_ids:
@@ -82,4 +82,19 @@ tasks:
     2026-09-28T08:51:23Z: INFO: Checking stage testing Prow job status for job ID: 42035d0e-c158-4a3a-b36b-d1bcd3e96449
     2026-09-28T08:51:23Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-stage-testing-e2e-aws-ipi/2103408325549887488
     2026-09-28T08:51:23Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-09-29T05:49:31Z'
+  completed_at: '2026-09-29T05:49:31Z'
+  result: |-
+    Promoted build 4.12.99 (amd64): aggregated=true, accepted=false. 2/3 blocking jobs passed BO3 (aws-ipi upgrade, gcp-ipi-custom-type upgrade both first-attempt success); 1 failed 0/3: upgrade-from-stable-4.12-azure-upi.
+
+    WAIVED by release lead as an Azure UPI install/provisioning infrastructure failure. Evidence: (1) failure isolated to the azure-upi variant - aws-ipi and gcp-ipi-custom-type upgrade jobs both green on first attempt, no cross-platform signal; (2) all 3 azure-upi attempts produced NO testResultSummary, indicating the jobs died before test execution began (install/provisioning failure signature); (3) each attempt ran only ~13-14 min (first 13:28:01-13:41:49Z; retries 14:25:20-14:39:25Z and 14:25:26-14:39:15Z), far too short for an upgrade+e2e run - an infra abort during provisioning; (4) both retries launched 6 seconds apart, so all attempts sampled the same Azure UPI provisioning window; (5) consistent with the candidate build, whose only failures were similarly-shaped platform infra failures (GCP), also waived.
+
+    Caveat recorded for audit: root cause could NOT be confirmed from job artifacts - gsutil required reauthentication, so install logs in gs://qe-private-deck were not read. Verdict rests on aggregated result shape (no test results + short runtime + platform isolation). Confidence: Medium.
+
+    Failed job URLs (azure-upi upgrade):
+      attempt1: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-azure-upi-f999/2103114233116889088
+      attempt2: .../2103128660440518656
+      attempt3: .../2103128679826591744
 issues: []
