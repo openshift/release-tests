@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.35
 created_at: '2026-09-25T07:00:18Z'
-updated_at: '2026-09-29T07:55:22Z'
+updated_at: '2026-09-29T08:02:53Z'
 metadata:
   jira_ticket: ART-23912
   advisory_ids:
@@ -243,4 +243,13 @@ tasks:
     build 4.21.35 passed ALL GCP tests successfully validating product quality. Recommendation:
     ACCEPT (HIGH confidence). Validated by Release Controller showing 4.21.35 passed
     all verification tests including GCP platform.'
-issues: []
+issues:
+- issue: 'Errata Tool infrastructure down - HTTP 500 error (Error ID: d58f2f8b) when
+    accessing advisory 173478. Web application could not be started by Phusion Passenger.
+    This is blocking final advisory status change to REL_PREP.'
+  reported_at: '2026-09-29T08:02:53Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
