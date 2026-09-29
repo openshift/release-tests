@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.99
 created_at: '2026-09-24T10:00:07Z'
-updated_at: '2026-09-29T05:49:31Z'
+updated_at: '2026-09-29T05:51:42Z'
 metadata:
   jira_ticket: ART-23845
   advisory_ids:
@@ -97,4 +97,15 @@ tasks:
       attempt1: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-stable-4.12-upgrade-from-stable-4.12-azure-upi-f999/2103114233116889088
       attempt2: .../2103128660440518656
       attempt3: .../2103128679826591744
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-09-29T05:51:16Z'
+  completed_at: '2026-09-29T05:51:41Z'
+  result: |-
+    2026-09-29T05:51:16Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-09-29T05:51:16Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.12.99
+    2026-09-29T05:51:19Z: INFO: Image Digest: sha256:387c81d0f69383a8f333dbf2ae27b11b803bcc6005ade2ad3437ff26a82a816a
+    2026-09-29T05:51:19Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=387c81d0f69383a8f333dbf2ae27b11b803bcc6005ade2ad3437ff26a82a816a/signature-1
+    2026-09-29T05:51:41Z: INFO: Signature check PASSED
+    2026-09-29T05:51:41Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
