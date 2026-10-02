@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.72
 created_at: '2026-10-01T08:00:10Z'
-updated_at: '2026-10-02T13:56:28Z'
+updated_at: '2026-10-02T14:00:47Z'
 metadata:
   jira_ticket: ART-24250
   advisory_ids:
@@ -56,11 +56,20 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-10-01T20:21:16Z'
-  completed_at: '2026-10-01T20:59:58Z'
-  result: 'Image consistency check Prow job e828c310-4141-4c0f-a6bb-6b6d85b0eaf2 completed
-    SUCCESS (passed=true, completed 2026-10-01T20:59:58Z). Verified directly from
-    GCS finished.json/prowjob.json (state=success) because the oar_image_consistency_check
-    polling tool repeatedly hit the 300s MCP idle timeout. Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105757664494489600'
+  completed_at: '2026-10-02T14:00:46Z'
+  result: |-
+    2026-10-02T13:50:32Z: INFO: Initialized StateBox for release 4.16.72 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.72.yaml
+    2026-10-02T13:50:32Z: INFO: Checking image consistency check Prow job status for job ID: e828c310-4141-4c0f-a6bb-6b6d85b0eaf2
+    2026-10-02T13:50:32Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105757664494489600
+    2026-10-02T13:50:32Z: INFO: Starting image health check for shipment MR 907
+    2026-10-02T13:50:32Z: INFO: Stage release succeeded (verified by label)
+    2026-10-02T13:50:32Z: INFO: Processing MR 907
+    2026-10-02T13:50:35Z: INFO: Found 845 images to check
+    2026-10-02T13:51:23Z: WARNING: Failed to check freshness for image: Failed to query Pyxis API: HTTPSConnectionPool(host='catalog.stage.redhat.com', port=443): Read timed out. (read timeout=30)
+    2026-10-02T13:51:53Z: WARNING: Failed to check freshness for image: Failed to query Pyxis API: HTTPSConnectionPool(host='catalog.stage.redhat.com', port=443): Read timed out. (read timeout=30)
+    2026-10-02T14:00:46Z: INFO: Completed image health check. Scanned 843 images, found 0 unhealthy
+    2026-10-02T14:00:46Z: INFO: Added image health summary to MR 907
+    2026-10-02T14:00:46Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-10-01T20:21:31Z'
