@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.41
 created_at: '2026-10-01T15:00:14Z'
-updated_at: '2026-10-02T11:23:08Z'
+updated_at: '2026-10-02T12:36:55Z'
 metadata:
   jira_ticket: ART-24314
   advisory_ids:
@@ -85,4 +85,14 @@ tasks:
     2026-10-02T11:19:42Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=735d04d245382654d1d2441a8c7746bc84be421362af51bbb678e0d2cc7bc05a/signature-1
     2026-10-02T11:19:42Z: INFO: Signature check PASSED
     2026-10-02T11:19:42Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: In Progress
+  started_at: '2026-10-02T12:36:55Z'
+  completed_at: null
+  result: 'GCP jobs (gcp-ipi + gcp-upgrade) failed due to gcloud Python 3.6 incompatibility
+    in cucushift-installer-check-gcp-disktype step - CI infra bug, not product bug.
+    Fix: openshift/release#86224 (merged 2026-10-01, changes from_image ocp/4.15:upi-installer
+    to ocp/5.1:upi-installer). 4 new GCP jobs triggered with fix: 7f7c5819, 2e132b55
+    (gcp-ipi), 2fb6233f, 3cd334e0 (gcp-upgrade). Retried job IDs updated in test results.
+    Waiting for new jobs to complete.'
 issues: []
