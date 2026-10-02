@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.36
 created_at: '2026-10-01T20:00:22Z'
-updated_at: '2026-10-02T07:42:56Z'
+updated_at: '2026-10-02T08:25:33Z'
 metadata:
   jira_ticket: ART-24318
   advisory_ids:
@@ -42,18 +42,14 @@ tasks:
     FIPS), upgrade-from-stable-4.21 (GCP). Build is ready for release.'
 - name: push-to-cdn-staging
   status: In Progress
-  started_at: '2026-10-02T07:40:36Z'
+  started_at: '2026-10-02T08:25:29Z'
   completed_at: null
   result: |-
-    2026-10-02T07:40:36Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-10-02T07:40:38Z: INFO: checking push job status for advisory 173781 ...
-    2026-10-02T07:40:38Z: INFO: no push job found for advisory 173781
-    2026-10-02T07:40:38Z: INFO: advisory 173781 has blocking advisory []
-    2026-10-02T07:40:39Z: INFO: push job for advisory 173781 is triggered
-    2026-10-02T07:40:39Z: INFO: checking push job status for advisory 173782 ...
-    2026-10-02T07:40:39Z: INFO: no push job found for advisory 173782
-    2026-10-02T07:40:39Z: INFO: advisory 173782 has blocking advisory []
-    2026-10-02T07:40:39Z: INFO: push job for advisory 173782 is triggered
+    2026-10-02T08:25:29Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-10-02T08:25:32Z: INFO: checking push job status for advisory 173781 ...
+    2026-10-02T08:25:32Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
+    2026-10-02T08:25:32Z: INFO: checking push job status for advisory 173782 ...
+    2026-10-02T08:25:32Z: INFO: push job for target <cdn_stage> is COMPLETE
 - name: stage-testing
   status: In Progress
   started_at: '2026-10-02T07:42:52Z'
