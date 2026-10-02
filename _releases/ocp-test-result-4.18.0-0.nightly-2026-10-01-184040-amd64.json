@@ -63,9 +63,47 @@
         "jobStartTime": "2026-10-02T02:21:33Z",
         "jobID": "e66b00d4-a9b3-4b94-b436-248ddcdcc910",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2105845612778885120",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-10-02T05:29:59Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 105,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 20,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-10-02T06:48:05Z",
+          "jobID": "bdb11fde-30bf-4b4f-a535-59e6370c83f6",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2105912686716915712",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-10-02T06:48:10Z",
+          "jobID": "18d717a3-c0ce-460c-bd73-b3bacd6186ea",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-gcp-ipi-f999/2105912708502130688",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.18-automated-release-aws-ipi-disruptive-f999",
