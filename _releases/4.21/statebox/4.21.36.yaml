@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.36
 created_at: '2026-10-01T20:00:22Z'
-updated_at: '2026-10-02T09:52:05Z'
+updated_at: '2026-10-02T11:18:05Z'
 metadata:
   jira_ticket: ART-24318
   advisory_ids:
@@ -52,18 +52,14 @@ tasks:
     2026-10-02T09:36:19Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-10-02T09:36:19Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-10-02T09:26:49Z'
-  completed_at: null
+  completed_at: '2026-10-02T11:18:04Z'
   result: |-
-    2026-10-02T09:26:49Z: INFO: Initialized StateBox for release 4.21.36 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.36.yaml
-    2026-10-02T09:26:49Z: INFO: Triggering stage testing Prow job
-    2026-10-02T09:26:50Z: INFO: Loaded state from _releases/4.21/statebox/4.21.36.yaml (SHA: 56102e07)
-    2026-10-02T09:26:50Z: INFO: Stage release succeeded (verified by label)
-    2026-10-02T09:26:50Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-10-02T09:26:55Z: INFO: Triggered stage testing Prow job: d44006f1-2884-4297-bf24-f80e30bd884e
-    2026-10-02T09:26:55Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-stage-testing-e2e-aws-ipi/2105952700179943424
-    2026-10-02T09:26:57Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-02T11:18:04Z: INFO: Initialized StateBox for release 4.21.36 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.36.yaml
+    2026-10-02T11:18:04Z: INFO: Checking stage testing Prow job status for job ID: d44006f1-2884-4297-bf24-f80e30bd884e
+    2026-10-02T11:18:04Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-stage-testing-e2e-aws-ipi/2105952700179943424
+    2026-10-02T11:18:04Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: image-consistency-check
   status: Pass
   started_at: '2026-10-02T08:50:24Z'
