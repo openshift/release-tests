@@ -16,6 +16,8 @@ import yaml
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 
+from .github_auth import openshift_release_github_headers
+
 
 class Jobs:
     """Class Jobs handle Prow job by calling the API"""
@@ -176,16 +178,6 @@ class Jobs:
             writer = csv.writer(f)
             line = list(job_dict.values())
             writer.writerow(line)
-
-    # get_github_headers func adds Github Token in case rate limit
-    def get_github_headers(self):
-        """Function check the Github token"""
-        token = os.getenv("GITHUB_TOKEN")
-        if token:
-            headers = {"Authorization": "Bearer " + token.strip()}
-            return headers
-        print("No GITHUB_TOKEN env var found, exit...")
-        sys.exit(0)
 
     def _is_valid_payload_url(self, payload_url: str) -> bool:
         """
@@ -369,7 +361,7 @@ class Jobs:
         """Function search the prow job from https://github.com/openshift/release/tree/main/ci-operator/jobs/openshift/openshift-tests-private"""
         print("Searching job...")
         jobs_url = "https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/?ref=main"
-        req = requests.get(url=jobs_url, timeout=3)
+        req = requests.get(url=jobs_url, headers=openshift_release_github_headers(), timeout=3)
         if req.status_code != 200:
             print(f"Error code: {req.status_code}, reason: {req.reason}")
             return None
@@ -383,11 +375,11 @@ class Jobs:
             print(">>>> " + file_name)
             url = f"https://api.github.com/repos/openshift/release/contents/ci-operator/jobs/openshift/openshift-tests-private/{file_name}?ref=main"
             res = requests.get(
-                url=url, headers=self.get_github_headers(), timeout=3)
+                url=url, headers=openshift_release_github_headers(), timeout=3)
             if res.status_code != 200:
                 continue
             response = requests.get(
-                url=res.json()["git_url"], headers=self.get_github_headers(), timeout=3)
+                url=res.json()["git_url"], headers=openshift_release_github_headers(), timeout=3)
             if response.status_code != 200:
                 continue
             # We have to get the git blobs when the size is very large, such as
