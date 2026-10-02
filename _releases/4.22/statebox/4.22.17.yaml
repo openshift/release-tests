@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.17
 created_at: '2026-10-01T20:00:31Z'
-updated_at: '2026-10-02T08:24:53Z'
+updated_at: '2026-10-02T08:32:16Z'
 metadata:
   jira_ticket: ART-24307
   advisory_ids:
@@ -51,16 +51,20 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build: 4.22.17, Phase: Accepted,
     aggregated: true, accepted: true'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-10-02T07:28:04Z'
-  completed_at: null
+  completed_at: '2026-10-02T08:32:14Z'
   result: |-
-    2026-10-02T07:28:04Z: INFO: Initialized StateBox for release 4.22.17 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.17.yaml
-    2026-10-02T07:28:05Z: INFO: Loaded state from _releases/4.22/statebox/4.22.17.yaml (SHA: 8e7179cf)
-    2026-10-02T07:28:05Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-10-02T07:28:10Z: INFO: Triggered image consistency check Prow job: dd65ebd4-2ce2-4f49-9905-b288fa0f148a
-    2026-10-02T07:28:10Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105922815654891520
-    2026-10-02T07:28:12Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-02T08:25:25Z: INFO: Initialized StateBox for release 4.22.17 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.17.yaml
+    2026-10-02T08:25:25Z: INFO: Checking image consistency check Prow job status for job ID: dd65ebd4-2ce2-4f49-9905-b288fa0f148a
+    2026-10-02T08:25:25Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105922815654891520
+    2026-10-02T08:25:25Z: INFO: Starting image health check for shipment MR 912
+    2026-10-02T08:25:25Z: INFO: Stage release succeeded (verified by label)
+    2026-10-02T08:25:25Z: INFO: Processing MR 912
+    2026-10-02T08:25:28Z: INFO: Found 840 images to check
+    2026-10-02T08:32:14Z: INFO: Completed image health check. Scanned 840 images, found 0 unhealthy
+    2026-10-02T08:32:14Z: INFO: Added image health summary to MR 912
+    2026-10-02T08:32:14Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-10-02T07:28:20Z'
