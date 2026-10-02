@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.50
 created_at: '2026-10-01T20:00:12Z'
-updated_at: '2026-10-02T11:20:24Z'
+updated_at: '2026-10-02T11:23:20Z'
 metadata:
   jira_ticket: ART-24306
   advisory_ids:
@@ -74,4 +74,15 @@ tasks:
     2026-10-02T11:20:23Z: INFO: Checking stage testing Prow job status for job ID: 8b7f6ddd-5318-45ff-9459-57092c6b1afc
     2026-10-02T11:20:23Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi/2105952650859122688
     2026-10-02T11:20:23Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-02T11:23:17Z'
+  completed_at: '2026-10-02T11:23:19Z'
+  result: |-
+    2026-10-02T11:23:17Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-02T11:23:17Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.50
+    2026-10-02T11:23:19Z: INFO: Image Digest: sha256:5e25ea28cc7d21b69b894431b7966f19d96e1b5768c3f8be8883c15843b98eae
+    2026-10-02T11:23:19Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=5e25ea28cc7d21b69b894431b7966f19d96e1b5768c3f8be8883c15843b98eae/signature-1
+    2026-10-02T11:23:19Z: INFO: Signature check PASSED
+    2026-10-02T11:23:19Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
