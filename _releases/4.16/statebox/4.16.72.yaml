@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.72
 created_at: '2026-10-01T08:00:10Z'
-updated_at: '2026-10-02T13:48:08Z'
+updated_at: '2026-10-02T13:49:21Z'
 metadata:
   jira_ticket: ART-24250
   advisory_ids:
@@ -78,4 +78,13 @@ tasks:
     2026-10-02T13:48:06Z: INFO: Checking stage testing Prow job status for job ID: b62cdd61-cf99-40b3-b547-c859a6bd4202
     2026-10-02T13:48:06Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-stage-testing-e2e-aws-ipi/2105757788373258240
     2026-10-02T13:48:06Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-02T13:49:21Z'
+  completed_at: '2026-10-02T13:49:21Z'
+  result: 'Promoted build 4.16.72 (amd64): aggregated=true, accepted=true. All blocking
+    BO3 jobs passed verification. aws-ipi (upgrade-from-4.15) success, azure-ipi-fips
+    (upgrade-from-4.16) success, gcp-ipi (upgrade-from-4.16) failed first attempt
+    but both BO3 retries succeeded -> accepted. Clean automatic pass, no waiver required.
+    Gate PASSED.'
 issues: []
