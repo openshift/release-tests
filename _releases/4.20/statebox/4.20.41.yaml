@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.41
 created_at: '2026-10-01T15:00:14Z'
-updated_at: '2026-10-02T07:25:26Z'
+updated_at: '2026-10-02T07:29:20Z'
 metadata:
   jira_ticket: ART-24314
   advisory_ids:
@@ -50,4 +50,15 @@ tasks:
   completed_at: '2026-10-02T07:25:26Z'
   result: 'All blocking tests passed BO3 verification. Test results: aggregated=true,
     accepted=true'
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-10-02T07:29:11Z'
+  completed_at: null
+  result: |-
+    2026-10-02T07:29:11Z: INFO: Initialized StateBox for release 4.20.41 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.41.yaml
+    2026-10-02T07:29:12Z: INFO: Loaded state from _releases/4.20/statebox/4.20.41.yaml (SHA: 20846ad3)
+    2026-10-02T07:29:12Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-10-02T07:29:17Z: INFO: Triggered image consistency check Prow job: 371d2b9b-a014-40ef-99f5-b545f7544d7c
+    2026-10-02T07:29:17Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105923097126244352
+    2026-10-02T07:29:19Z: INFO: sent slack message to <#team-qe-release>
 issues: []
