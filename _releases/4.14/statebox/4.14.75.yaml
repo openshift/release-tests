@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.75
 created_at: '2026-09-30T19:00:08Z'
-updated_at: '2026-10-04T06:44:01Z'
+updated_at: '2026-10-04T06:52:41Z'
 metadata:
   jira_ticket: ART-24241
   advisory_ids:
@@ -70,17 +70,19 @@ tasks:
     (does not block this release): 4.14 branch step image needs CLOUDSDK_PYTHON pointed
     at Python 3.10+ or a newer base image.'
 - name: image-consistency-check
-  status: Pass
-  started_at: '2026-10-01T19:36:37Z'
-  completed_at: '2026-10-04T06:44:01Z'
-  result: 'CORRECTED from Fail -> Pass. The Fail was a false negative: `oar image-consistency-check
-    -i c755357d-51c6-4250-9d94-2f6acf4ec97f` returned HTTP 404 "Job not found or Prow
-    API error" because the Gangway job record aged out (job ran 2026-10-01, status
-    checked 2026-10-04, ~3 days later). Job outcome verified directly from GCS artifacts
-    instead: finished.json = {"passed": true, "result": "SUCCESS"}; Prow reported
-    job state ''succeeded'' after 23m36s; step image-consistency-check-release-qe-tests-image-consistency-check
-    succeeded after 8m11s. Step log final lines: "Checked 184 payload images" / "All
-    payload images are consistent with images in shipment." Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105746428323172352'
+  status: In Progress
+  started_at: '2026-10-04T06:52:41Z'
+  completed_at: null
+  result: |-
+    REVERTING my earlier Pass - it was premature. This task has TWO pass criteria (oar/cli/cmd_image_consistency_check.py:82-84): (1) Prow job state == success, AND (2) ImageHealthOperator.check_image_health() returns True. Only criterion (1) is proven.
+
+    Criterion (1) PROVEN: Prow job c755357d-51c6-4250-9d94-2f6acf4ec97f finished.json = {"passed": true, "result": "SUCCESS"}; step log "Checked 184 payload images / All payload images are consistent with images in shipment." https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105746428323172352
+
+    Criterion (2) NEVER RAN: check_job_status() raised on the Gangway 404 at line 76 and never reached line 83. So ShipmentData.check_component_image_health() (Pyxis container freshness grades; unhealthy = grade "Unknown" or worse than "B") and add_image_health_summary_comment() never executed. Confirmed externally: no image health summary comment exists on shipment MR 908.
+
+    These are different checks - (1) is payload-vs-shipment pullspec matching done inside the Prow job, (2) is a Pyxis grade query done locally by the OAR command. Grade health for 4.14.75 is currently UNKNOWN.
+
+    Resolution: re-trigger the Prow job to obtain a live job ID the Gangway API still knows about, then check status so criterion (2) runs and posts the MR comment.
 - name: stage-testing
   status: Pass
   started_at: '2026-10-01T19:37:00Z'
