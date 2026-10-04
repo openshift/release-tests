@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.75
 created_at: '2026-09-30T19:00:08Z'
-updated_at: '2026-10-04T06:43:02Z'
+updated_at: '2026-10-04T06:44:01Z'
 metadata:
   jira_ticket: ART-24241
   advisory_ids:
@@ -70,16 +70,17 @@ tasks:
     (does not block this release): 4.14 branch step image needs CLOUDSDK_PYTHON pointed
     at Python 3.10+ or a newer base image.'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-10-01T19:36:37Z'
-  completed_at: null
-  result: |-
-    2026-10-01T19:36:37Z: INFO: Initialized StateBox for release 4.14.75 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.75.yaml
-    2026-10-01T19:36:38Z: INFO: Loaded state from _releases/4.14/statebox/4.14.75.yaml (SHA: 4ecbe606)
-    2026-10-01T19:36:38Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-10-01T19:36:43Z: INFO: Triggered image consistency check Prow job: c755357d-51c6-4250-9d94-2f6acf4ec97f
-    2026-10-01T19:36:43Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105746428323172352
-    2026-10-01T19:36:45Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-10-04T06:44:01Z'
+  result: 'CORRECTED from Fail -> Pass. The Fail was a false negative: `oar image-consistency-check
+    -i c755357d-51c6-4250-9d94-2f6acf4ec97f` returned HTTP 404 "Job not found or Prow
+    API error" because the Gangway job record aged out (job ran 2026-10-01, status
+    checked 2026-10-04, ~3 days later). Job outcome verified directly from GCS artifacts
+    instead: finished.json = {"passed": true, "result": "SUCCESS"}; Prow reported
+    job state ''succeeded'' after 23m36s; step image-consistency-check-release-qe-tests-image-consistency-check
+    succeeded after 8m11s. Step log final lines: "Checked 184 payload images" / "All
+    payload images are consistent with images in shipment." Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105746428323172352'
 - name: stage-testing
   status: Pass
   started_at: '2026-10-01T19:37:00Z'
