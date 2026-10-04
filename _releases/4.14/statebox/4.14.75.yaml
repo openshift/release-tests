@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.75
 created_at: '2026-09-30T19:00:08Z'
-updated_at: '2026-10-01T19:37:26Z'
+updated_at: '2026-10-04T06:42:54Z'
 metadata:
   jira_ticket: ART-24241
   advisory_ids:
@@ -81,18 +81,14 @@ tasks:
     2026-10-01T19:36:43Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2105746428323172352
     2026-10-01T19:36:45Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-10-01T19:37:00Z'
-  completed_at: null
+  completed_at: '2026-10-04T06:42:53Z'
   result: |-
-    2026-10-01T19:37:00Z: INFO: Initialized StateBox for release 4.14.75 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.75.yaml
-    2026-10-01T19:37:00Z: INFO: Triggering stage testing Prow job
-    2026-10-01T19:37:01Z: INFO: Loaded state from _releases/4.14/statebox/4.14.75.yaml (SHA: 71786d64)
-    2026-10-01T19:37:01Z: INFO: Stage release succeeded (verified by label)
-    2026-10-01T19:37:01Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-10-01T19:37:06Z: INFO: Triggered stage testing Prow job: 49e9bd9f-0c15-4a21-bb79-9782b75e9b75
-    2026-10-01T19:37:06Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-stage-testing-e2e-aws-ipi/2105746523420626944
-    2026-10-01T19:37:09Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-04T06:42:53Z: INFO: Initialized StateBox for release 4.14.75 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.75.yaml
+    2026-10-04T06:42:53Z: INFO: Checking stage testing Prow job status for job ID: 49e9bd9f-0c15-4a21-bb79-9782b75e9b75
+    2026-10-04T06:42:53Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-stage-testing-e2e-aws-ipi/2105746523420626944
+    2026-10-04T06:42:53Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: push-to-cdn-staging
   status: In Progress
   started_at: '2026-10-01T19:37:18Z'
