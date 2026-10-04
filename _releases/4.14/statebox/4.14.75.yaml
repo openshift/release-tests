@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.75
 created_at: '2026-09-30T19:00:08Z'
-updated_at: '2026-10-04T16:20:58Z'
+updated_at: '2026-10-04T16:40:42Z'
 metadata:
   jira_ticket: ART-24241
   advisory_ids:
@@ -70,16 +70,20 @@ tasks:
     (does not block this release): 4.14 branch step image needs CLOUDSDK_PYTHON pointed
     at Python 3.10+ or a newer base image.'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-10-04T16:20:49Z'
-  completed_at: null
+  completed_at: '2026-10-04T16:40:41Z'
   result: |-
-    2026-10-04T16:20:49Z: INFO: Initialized StateBox for release 4.14.75 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.75.yaml
-    2026-10-04T16:20:50Z: INFO: Loaded state from _releases/4.14/statebox/4.14.75.yaml (SHA: 81a1b8b6)
-    2026-10-04T16:20:50Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-10-04T16:20:55Z: INFO: Triggered image consistency check Prow job: e6f15e45-4a9c-478a-bd49-61158033af2d
-    2026-10-04T16:20:55Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2106784354763018240
-    2026-10-04T16:20:57Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-04T16:34:14Z: INFO: Initialized StateBox for release 4.14.75 at openshift/release-tests/z-stream/_releases/4.14/statebox/4.14.75.yaml
+    2026-10-04T16:34:14Z: INFO: Checking image consistency check Prow job status for job ID: e6f15e45-4a9c-478a-bd49-61158033af2d
+    2026-10-04T16:34:14Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2106784354763018240
+    2026-10-04T16:34:14Z: INFO: Starting image health check for shipment MR 908
+    2026-10-04T16:34:14Z: INFO: Stage release succeeded (verified by label)
+    2026-10-04T16:34:14Z: INFO: Processing MR 908
+    2026-10-04T16:34:19Z: INFO: Found 837 images to check
+    2026-10-04T16:40:41Z: INFO: Completed image health check. Scanned 837 images, found 0 unhealthy
+    2026-10-04T16:40:41Z: INFO: Added image health summary to MR 908
+    2026-10-04T16:40:41Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-10-01T19:37:00Z'
