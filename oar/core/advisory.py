@@ -176,7 +176,7 @@ class AdvisoryManager:
                     logger.warning(
                         f"cannot change state of advisory {ad.errata_id} from {target_status} to {ad.get_state()}, skip")
                     continue
-                if ad.has_blocking_secruity_alert():
+                if ad.has_blocking_security_alert():
                     raise AdvisoryException(
                         f"advisory {ad.errata_id} has blocking secalerts, please contact prodsec team")
                 ad.set_state(target_status.strip())
@@ -654,7 +654,7 @@ class Advisory(Erratum):
                 f"RHBA advisory {self.errata_id} does not have secalerts")
             return None
 
-    def has_blocking_secruity_alert(self):
+    def has_blocking_security_alert(self):
         """
         Check RHSA advisory has blocking security alert
         """
