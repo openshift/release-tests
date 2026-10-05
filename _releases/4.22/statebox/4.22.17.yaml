@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.17
 created_at: '2026-10-01T20:00:31Z'
-updated_at: '2026-10-02T13:00:49Z'
+updated_at: '2026-10-05T11:25:14Z'
 metadata:
   jira_ticket: ART-24307
   advisory_ids:
@@ -87,15 +87,9 @@ tasks:
     2026-10-02T11:18:34Z: INFO: Signature check PASSED
     2026-10-02T11:18:34Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: In Progress
+  status: Pass
   started_at: '2026-10-02T13:00:49Z'
-  completed_at: null
-  result: 'GCP jobs (gcp-ipi + gcp-upgrade) failed due to gcloud Python 3.6 incompatibility
-    in cucushift-installer-check-gcp-disktype step - CI infra bug, not product bug.
-    Fix: openshift/release#86224 (merged 2026-10-01, changes from_image ocp/4.15:upi-installer
-    to ocp/5.1:upi-installer). AWS/Azure failures are flaky OLM v1 tests. 4 new GCP
-    jobs triggered with fix: a7da0d11, 79f9b5ec (gcp-ipi), f2e0b9e5, e3392ab3 (gcp-upgrade).
-    Additionally retriggered: 1x aws-ipi (21576e1d replacing e4cf81ed), 2x azure-ipi-fips
-    (87f8d8fb replacing ff34c3e3, c1a755a0 replacing 7176bdf6). All retried job IDs
-    updated in test results. Waiting for all jobs to complete.'
+  completed_at: '2026-10-05T11:25:14Z'
+  result: Accepted. azure-ipi-fips failed 3/3 with OCP-74948 - known bug OCPBUGS-99986
+    (catalogd HA scaling issue). All other jobs pass BO3.
 issues: []
