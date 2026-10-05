@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.50
 created_at: '2026-10-01T20:00:12Z'
-updated_at: '2026-10-02T12:47:18Z'
+updated_at: '2026-10-05T11:51:37Z'
 metadata:
   jira_ticket: ART-24306
   advisory_ids:
@@ -87,12 +87,10 @@ tasks:
     2026-10-02T11:23:19Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-candidate-build
   status: In Progress
-  started_at: '2026-10-02T12:47:18Z'
+  started_at: '2026-10-05T11:51:37Z'
   completed_at: null
-  result: 'GCP jobs (gcp-ipi + gcp-upgrade) failed due to gcloud Python 3.6 incompatibility
-    in cucushift-installer-check-gcp-disktype step - CI infra bug, not product bug.
-    Fix: openshift/release#86224 (merged 2026-10-01, changes from_image ocp/4.15:upi-installer
-    to ocp/5.1:upi-installer). 4 new GCP jobs triggered with fix: 12595847, 0e75fb96
-    (gcp-ipi), cccafb4e, e7afcb6f (gcp-upgrade). Retried job IDs updated in test results.
-    Waiting for new jobs to complete.'
+  result: 'GCP jobs failed with "failed to acquire lease for gcp-autorelease-qe-quota-slice:
+    resources not found" (CI quota issue). 4 new jobs triggered with upgrade_from=4.18.56:
+    gcp-ipi (cbce98e3, 23759c3e), gcp-upgrade (595f7bf8, bc66d4df). Retried job IDs
+    updated in test results. Waiting for new jobs to complete.'
 issues: []
