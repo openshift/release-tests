@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.41
 created_at: '2026-10-01T15:00:14Z'
-updated_at: '2026-10-05T11:16:02Z'
+updated_at: '2026-10-05T15:09:35Z'
 metadata:
   jira_ticket: ART-24314
   advisory_ids:
@@ -87,12 +87,14 @@ tasks:
     2026-10-02T11:19:42Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-candidate-build
   status: In Progress
-  started_at: '2026-10-05T11:16:02Z'
+  started_at: '2026-10-05T15:09:35Z'
   completed_at: null
-  result: 'Previous retries (Oct 2) all failed due to GCP lease pool exhaustion (0
-    free, 7 leased for gcp-autorelease-qe-quota-slice) - CI infra issue, not product
-    or test bug. No cluster was provisioned, no tests ran. Original failures (Oct
-    1) were gcloud Python 3.6 incompatibility (fix: openshift/release#86224). New
-    retries triggered Oct 5: GCP IPI install (ed61a552, 5419922b), GCP upgrade from
-    4.19 (6013c7b8, 3fc50a32). Waiting for new jobs to complete.'
+  result: 'Candidate build GCP failures root cause: (1) Oct 1 original runs: gcloud
+    Python 3.6 incompatibility in cucushift-installer-check-gcp-disktype (fix: openshift/release#86224).
+    (2) Oct 2 retries: GCP lease pool exhaustion (0 free, 7 leased for gcp-autorelease-qe-quota-slice).
+    (3) Oct 5 retries: GCP cluster install timeout - CAPI network infrastructure not
+    ready within 15min, compute.googleapis.com/networks quota nearly exhausted. All
+    failures are CI infrastructure issues, not product bugs. New retries running:
+    GCP IPI (ed61a552 pending, 9b177947 pending, 11507262 pending), GCP upgrade (8685ae98
+    pending, a3eb114c failed). Waiting for pending jobs.'
 issues: []
