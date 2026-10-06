@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.50
 created_at: '2026-10-01T20:00:12Z'
-updated_at: '2026-10-05T11:51:37Z'
+updated_at: '2026-10-06T15:51:55Z'
 metadata:
   jira_ticket: ART-24306
   advisory_ids:
@@ -86,11 +86,10 @@ tasks:
     2026-10-02T11:23:19Z: INFO: Signature check PASSED
     2026-10-02T11:23:19Z: INFO: task [Image Signed Check] status is changed to [Pass]
 - name: analyze-candidate-build
-  status: In Progress
+  status: Pass
   started_at: '2026-10-05T11:51:37Z'
-  completed_at: null
-  result: 'GCP jobs failed with "failed to acquire lease for gcp-autorelease-qe-quota-slice:
-    resources not found" (CI quota issue). 4 new jobs triggered with upgrade_from=4.18.56:
-    gcp-ipi (cbce98e3, 23759c3e), gcp-upgrade (595f7bf8, bc66d4df). Retried job IDs
-    updated in test results. Waiting for new jobs to complete.'
+  completed_at: '2026-10-06T15:51:55Z'
+  result: 'All blocking tests passed BO3 verification after GCP job retries. GCP jobs
+    previously failed due to quota lease issues (gcp-autorelease-qe-quota-slice: resources
+    not found). New jobs triggered with fix and all passed. Build accepted=true, aggregated=true.'
 issues: []
