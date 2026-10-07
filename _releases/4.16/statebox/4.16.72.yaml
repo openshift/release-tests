@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.72
 created_at: '2026-10-01T08:00:10Z'
-updated_at: '2026-10-02T14:00:47Z'
+updated_at: '2026-10-07T13:52:11Z'
 metadata:
   jira_ticket: ART-24250
   advisory_ids:
@@ -88,4 +88,15 @@ tasks:
     (upgrade-from-4.16) success, gcp-ipi (upgrade-from-4.16) failed first attempt
     but both BO3 retries succeeded -> accepted. Clean automatic pass, no waiver required.
     Gate PASSED.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-07T13:51:30Z'
+  completed_at: '2026-10-07T13:52:10Z'
+  result: |-
+    2026-10-07T13:51:30Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-07T13:51:30Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.72
+    2026-10-07T13:51:32Z: INFO: Image Digest: sha256:9cf7596b1c295a65f4b38d96f231690661869f496bc30dd002f07e31aac87f89
+    2026-10-07T13:51:32Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=9cf7596b1c295a65f4b38d96f231690661869f496bc30dd002f07e31aac87f89/signature-1
+    2026-10-07T13:52:10Z: INFO: Signature check PASSED
+    2026-10-07T13:52:10Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
