@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.59
 created_at: '2026-10-07T16:00:15Z'
-updated_at: '2026-10-08T09:04:35Z'
+updated_at: '2026-10-08T09:05:33Z'
 metadata:
   jira_ticket: ART-24445
   advisory_ids:
@@ -56,4 +56,21 @@ tasks:
     2026-10-08T09:04:29Z: INFO: Triggered stage testing Prow job: ea3c01a1-bef7-4451-8168-c46d973ff567
     2026-10-08T09:04:29Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-stage-testing-e2e-aws-ipi/2108124125338800128
     2026-10-08T09:04:31Z: INFO: sent slack message to <#team-qe-release>
-issues: []
+issues:
+- issue: 'check-cve-tracker-bug fails with GitLab 404 Project Not Found (reproduced
+    twice, not transient). Root cause is NOT specific to 4.17.59: elliott''s get_bug_ids_from_open_shipment_mrs()
+    enumerates ALL open MRs in hybrid-platforms/art/ocp-shipment-data and calls gl.get_project(mr.source_project_id)
+    on each. Open MR !921 (revert-quay-3-19-shipment) is fork-based with source_project_id=288573,
+    which the MCP server''s GITLAB_TOKEN cannot read, so the whole command aborts.
+    Our shipment MR !939 is fine (source_project_id == target_project_id == 116177).
+    CONSEQUENCE: CVE tracker coverage for 4.17.59 is UNVERIFIED and no missed-tracker
+    notification was sent to ART. Remediation: grant MCP server GITLAB_TOKEN read
+    access to project 288573, or have ART close/re-target MR !921, or run `oar -r
+    4.17.59 check-cve-tracker-bug` from an account with fork access. Task left non-blocking
+    per workflow spec.'
+  reported_at: '2026-10-08T09:05:33Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - check-cve-tracker-bug
