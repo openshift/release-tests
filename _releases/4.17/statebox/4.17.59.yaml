@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.59
 created_at: '2026-10-07T16:00:15Z'
-updated_at: '2026-10-08T09:07:13Z'
+updated_at: '2026-10-08T09:09:30Z'
 metadata:
   jira_ticket: ART-24445
   advisory_ids:
@@ -76,6 +76,17 @@ tasks:
     promoted build ran a different, smaller job set (3 upgrade jobs: from-4.16-aws,
     from-4.17-azure-fips, from-4.17-gcp) and did NOT re-run either failing candidate
     job, so the candidate AWS failures remain uncovered by the promoted run.'
+- name: take-ownership
+  status: Pass
+  started_at: '2026-10-08T09:09:15Z'
+  completed_at: '2026-10-08T09:09:29Z'
+  result: |-
+    2026-10-08T09:09:15Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-10-08T09:09:24Z: INFO: QA Owner of advisory 174328 is updated to [EMAIL_REDACTED]
+    2026-10-08T09:09:25Z: INFO: QA Owner of advisory 174329 is updated to [EMAIL_REDACTED]
+    2026-10-08T09:09:25Z: INFO: Added QE release lead comment to MR 939
+    2026-10-08T09:09:29Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-08T09:09:29Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues:
 - issue: 'check-cve-tracker-bug fails with GitLab 404 Project Not Found (reproduced
     twice, not transient). Root cause is NOT specific to 4.17.59: elliott''s get_bug_ids_from_open_shipment_mrs()
