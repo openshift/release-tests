@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.100
 created_at: '2026-10-07T15:00:06Z'
-updated_at: '2026-10-08T08:39:54Z'
+updated_at: '2026-10-08T09:04:31Z'
 metadata:
   jira_ticket: ART-24430
   advisory_ids:
@@ -23,4 +23,23 @@ tasks:
     2026-10-08T08:39:48Z: INFO: Added QE release lead comment to MR 935
     2026-10-08T08:39:52Z: INFO: sent slack message to <#team-qe-release>
     2026-10-08T08:39:52Z: INFO: task [Take Ownership] status is changed to [Pass]
-issues: []
+issues:
+- issue: check-cve-tracker-bug crashes in elliott (ART-side bug, not a CVE finding).
+    elliottlib/shipment_utils.py:243 get_bug_ids_from_open_shipment_mrs scans ALL
+    open ocp-shipment-data MRs, calls get_shipment_configs_from_mr(mr.web_url) ->
+    artcommonlib/gitlab.py:75 projects.get(), raising GitlabHttpError 404 Project
+    Not Found on one MR whose source project the service account cannot resolve (likely
+    a fork; GitLab returns 404 for invisible projects). No guard, so one unreadable
+    MR aborts the sweep. Reproduced twice (09:00:35Z, 09:03:19Z), identical signature
+    - deterministic. NOT specific to 4.12.100; affects any release until that MR closes
+    or elliott is patched. The Jira sweep itself completed (basis 2026-10-06 00:20:05
+    UTC, brew event 69052798, 16/18 VERIFIED bugs qualified, 3 filtered as attached
+    elsewhere) but died before reporting missed trackers. CVE coverage for 4.12.100
+    is UNVERIFIED - needs manual check before final approval. Task is non-blocking
+    by design.
+  reported_at: '2026-10-08T09:04:31Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - check-cve-tracker-bug
