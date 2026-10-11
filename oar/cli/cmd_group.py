@@ -6,6 +6,7 @@ import click
 import oar.core.util as util
 from oar import version
 from oar.cli.cmd_change_advisory_status import change_advisory_status
+from oar.cli.cmd_check_blocking_sec_alerts import check_blocking_sec_alerts
 from oar.cli.cmd_check_cve_tracker_bug import check_cve_tracker_bug
 from oar.cli.cmd_create_test_report import create_test_report
 from oar.cli.cmd_image_consistency_check import image_consistency_check
@@ -227,6 +228,7 @@ cli.add_command(create_test_report)
 cli.add_command(take_ownership)
 cli.add_command(image_consistency_check)
 cli.add_command(check_cve_tracker_bug)
+cli.add_command(check_blocking_sec_alerts)
 cli.add_command(push_to_cdn_staging)
 cli.add_command(stage_testing)
 cli.add_command(image_signed_check)
