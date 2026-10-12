@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.100
 created_at: '2026-10-07T15:00:06Z'
-updated_at: '2026-10-12T07:21:21Z'
+updated_at: '2026-10-12T07:21:38Z'
 metadata:
   jira_ticket: ART-24430
   advisory_ids:
@@ -44,6 +44,17 @@ tasks:
     2026-10-12T07:18:51Z: INFO: Processing MR 935 for Jira issues
     2026-10-12T07:18:53Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-10-12T07:18:53Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-10-12T07:21:29Z'
+  completed_at: null
+  result: |-
+    2026-10-12T07:21:29Z: INFO: Initialized StateBox for release 4.12.100 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.100.yaml
+    2026-10-12T07:21:30Z: INFO: Loaded state from _releases/4.12/statebox/4.12.100.yaml (SHA: 9e3e50f9)
+    2026-10-12T07:21:30Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-10-12T07:21:35Z: INFO: Triggered image consistency check Prow job: 0c7f5e02-f8c3-48f2-bbcf-79edc3ea6e7c
+    2026-10-12T07:21:35Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2109547835862028288
+    2026-10-12T07:21:37Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: check-cve-tracker-bug crashes in elliott (ART-side bug, not a CVE finding).
     elliottlib/shipment_utils.py:243 get_bug_ids_from_open_shipment_mrs scans ALL
