@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.57
 created_at: '2026-10-12T08:16:57Z'
-updated_at: '2026-10-12T14:01:25Z'
+updated_at: '2026-10-12T14:03:22Z'
 metadata:
   jira_ticket: ART-24471
   advisory_ids:
@@ -94,4 +94,15 @@ tasks:
     confidence). Release lead manually re-triggered all 3 upgrade jobs (gcp-ipi, azure-ipi-fips,
     aws-ipi) after the signature was published; all 3 passed (SUCCESS) confirming
     no product issue. Waived and accepted by release lead.'
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-12T14:02:39Z'
+  completed_at: '2026-10-12T14:03:21Z'
+  result: |-
+    2026-10-12T14:02:39Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-12T14:02:39Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.18.57
+    2026-10-12T14:02:40Z: INFO: Image Digest: sha256:7a0078ddb04d84aace3976582be4c7b6b3bf095c8e899a7459d3c61ec8bfe5c0
+    2026-10-12T14:02:40Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=7a0078ddb04d84aace3976582be4c7b6b3bf095c8e899a7459d3c61ec8bfe5c0/signature-1
+    2026-10-12T14:03:21Z: INFO: Signature check PASSED
+    2026-10-12T14:03:21Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
