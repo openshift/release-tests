@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.57
 created_at: '2026-10-12T08:16:57Z'
-updated_at: '2026-10-12T11:28:09Z'
+updated_at: '2026-10-12T14:01:25Z'
 metadata:
   jira_ticket: ART-24471
   advisory_ids:
@@ -81,4 +81,17 @@ tasks:
     timeout) - classic infra/flaky failures, no consistent product defect pattern.
     AI recommendation: RECOMMEND ACCEPT (High confidence). Waived and accepted by
     release lead.'
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-12T14:01:25Z'
+  completed_at: '2026-10-12T14:01:25Z'
+  result: 'Promoted build 4.18.57: canonical test-result file shows accepted=false
+    due to 2/3 jobs failing BO3 (automated-release-stable-4.18-upgrade-from-stable-4.17-aws-ipi-f999,
+    automated-release-stable-4.18-upgrade-from-stable-4.18-azure-ipi-fips-f999), all
+    3 attempts each. Root cause: SignatureValidationFailed pulling the 4.18.57 release
+    image - signature not yet published when jobs ran at promotion time (pipeline
+    timing issue), not a product defect. AI recommendation: RECOMMEND ACCEPT (High
+    confidence). Release lead manually re-triggered all 3 upgrade jobs (gcp-ipi, azure-ipi-fips,
+    aws-ipi) after the signature was published; all 3 passed (SUCCESS) confirming
+    no product issue. Waived and accepted by release lead.'
 issues: []
