@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.57
 created_at: '2026-10-12T08:16:57Z'
-updated_at: '2026-10-12T11:16:53Z'
+updated_at: '2026-10-12T11:28:09Z'
 metadata:
   jira_ticket: ART-24471
   advisory_ids:
@@ -69,4 +69,16 @@ tasks:
     2026-10-12T11:16:52Z: INFO: Completed image health check. Scanned 855 images, found 0 unhealthy
     2026-10-12T11:16:52Z: INFO: Added image health summary to MR 955
     2026-10-12T11:16:52Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-10-12T11:28:09Z'
+  completed_at: '2026-10-12T11:28:09Z'
+  result: 'Candidate build 4.18.0-0.nightly-2026-10-07-202409: accepted=false, 2/6
+    jobs failed BO3 (automated-release-azure-ipi-fips-f999, automated-release-gcp-ipi-f999).
+    Waivable: each attempt failed for a different unrelated reason (azure-destroy-dns
+    teardown step, API server i/o timeout during FIPS check, operator subscription
+    timing for observability-operator/compliance-operator, VolumeSnapshot readiness
+    timeout) - classic infra/flaky failures, no consistent product defect pattern.
+    AI recommendation: RECOMMEND ACCEPT (High confidence). Waived and accepted by
+    release lead.'
 issues: []
