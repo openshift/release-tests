@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.100
 created_at: '2026-10-07T15:00:06Z'
-updated_at: '2026-10-13T08:19:44Z'
+updated_at: '2026-10-13T08:20:54Z'
 metadata:
   jira_ticket: ART-24430
   advisory_ids:
@@ -46,15 +46,16 @@ tasks:
     2026-10-12T07:18:53Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
-  started_at: '2026-10-12T07:21:29Z'
+  started_at: '2026-10-13T08:20:34Z'
   completed_at: null
   result: |-
-    2026-10-12T07:21:29Z: INFO: Initialized StateBox for release 4.12.100 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.100.yaml
-    2026-10-12T07:21:30Z: INFO: Loaded state from _releases/4.12/statebox/4.12.100.yaml (SHA: 9e3e50f9)
-    2026-10-12T07:21:30Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-10-12T07:21:35Z: INFO: Triggered image consistency check Prow job: 0c7f5e02-f8c3-48f2-bbcf-79edc3ea6e7c
-    2026-10-12T07:21:35Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2109547835862028288
-    2026-10-12T07:21:37Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-13T08:20:34Z: INFO: Initialized StateBox for release 4.12.100 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.100.yaml
+    2026-10-13T08:20:35Z: INFO: Loaded state from _releases/4.12/statebox/4.12.100.yaml (SHA: 98be5161)
+    2026-10-13T08:20:35Z: INFO: Prow job 0c7f5e02-f8c3-48f2-bbcf-79edc3ea6e7c ended with state '', re-triggering
+    2026-10-13T08:20:35Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-10-13T08:20:50Z: INFO: Triggered image consistency check Prow job: 8ef19c81-17c4-42eb-887a-ff17c6031a64
+    2026-10-13T08:20:50Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2109925155219181568
+    2026-10-13T08:20:53Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
   status: Pass
   started_at: '2026-10-12T07:21:42Z'
