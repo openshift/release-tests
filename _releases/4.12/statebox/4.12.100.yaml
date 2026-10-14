@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.100
 created_at: '2026-10-07T15:00:06Z'
-updated_at: '2026-10-14T18:26:08Z'
+updated_at: '2026-10-14T18:35:45Z'
 metadata:
   jira_ticket: ART-24430
   advisory_ids:
@@ -118,6 +118,25 @@ tasks:
     - GCP: PR bumping cucushift-installer-check-gcp-machine-type from_image 4.15 -> 5.1, mirroring merged PR #86224 (commit 783ed419, 2026-10-01) which made the identical change to the disktype/disksize siblings. Under review.
     - Azure: openshift/release#85750 (--kind Storage -> StorageV2), opened 2026-09-23, all checks green, awaiting /lgtm + /approve. Under review.
     Expect both gaps closed for 4.12.101.
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-10-14T18:35:23Z'
+  completed_at: null
+  result: |-
+    2026-10-14T18:35:23Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-10-14T18:35:26Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-10-14T18:35:26Z: INFO: RHCOS nvr is rhcos-x86_64-412.86.202609271242-0
+    2026-10-14T18:35:26Z: INFO: The commit metadata is kernel-4.18.0-372.219.1.el8_6
+    2026-10-14T18:35:26Z: INFO: Tags of this build is [{'arches': '', 'id': 85369, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-8.6.0-z-candidate', 'perm': 'rhel8-gate', 'perm_id': 65}, {'arches': '', 'id': 106214, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.12-rhel-8-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}]
+    2026-10-14T18:35:27Z: INFO: Successfully approved MR 935
+    2026-10-14T18:35:27Z: INFO: Successfully added QE approval to MR 935
+    2026-10-14T18:35:29Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:77316
+    2026-10-14T18:35:42Z: INFO: The metadata url is not accessible
+    2026-10-14T18:35:42Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-10-14T18:35:42Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-10-14T18:35:42Z: INFO: Background metadata checker process started (PID: 878459) - running independently after parent exit
+    2026-10-14T18:35:42Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.12_20261014_143542.log
+    2026-10-14T18:35:43Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: check-cve-tracker-bug crashes in elliott (ART-side bug, not a CVE finding).
     elliottlib/shipment_utils.py:243 get_bug_ids_from_open_shipment_mrs scans ALL
