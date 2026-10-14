@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.100
 created_at: '2026-10-07T15:00:06Z'
-updated_at: '2026-10-14T17:57:24Z'
+updated_at: '2026-10-14T17:58:33Z'
 metadata:
   jira_ticket: ART-24430
   advisory_ids:
@@ -93,6 +93,30 @@ tasks:
     (2) gcloud/Python 3.6 in cucushift-installer-check-gcp-machine-type, 6/6 attempts on both GCP jobs. PRE-phase step pinned to ocp/4.15:upi-installer (RHEL8/Py3.6) whose gcloud was updated to reject Py3.6; dies in 9-22s at the first 'gcloud auth list'. Cluster installed fine (33-38m) but the test phase never started.
 
     Informational only - candidate build is superseded by promoted 4.12.100 and does not gate per workflow spec. Verified NOT related to the REGIONAL_INTERNAL_LB_BACKEND_SERVICES quota incident that blocked 4.19/4.20: 0 QUOTA_EXCEEDED across all 12 attempts examined, and 4.12 uses the isolated gcp-sustaining-autorelease-412 profile, not gcp-autorelease-qe.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-14T17:58:33Z'
+  completed_at: '2026-10-14T17:58:33Z'
+  result: |-
+    Promoted build 4.12.100 (amd64): aggregated=true, accepted=false. 3/3 registry 'stable' jobs ran (correct count). WAIVED by release lead 2026-10-14 with documented caveats. No product defects found; all failures are CI tooling, each root-caused from job logs.
+
+    RESULTS
+    - upgrade-from-stable-4.12-aws-ipi: PASS. Full coverage - cucushift-upgrade-toimage 1h17m47s plus pre/post health checks and OTA checks, all 25 steps green.
+    - upgrade-from-stable-4.12-gcp-ipi-custom-type: FAIL 0/3. cucushift-installer-check-gcp-machine-type (PRE phase) dies in ~22s on 'gcloud failed to load... Python 3.6', because the shared step ref is pinned to ocp/4.15:upi-installer (RHEL8/Py3.6) whose gcloud dropped Py3.6 support. Cluster installed cleanly (38m41s), nodes ready, multiarch validated - only the machine-type ASSERTION failed, but being pre-phase it aborted the upgrade test.
+    - upgrade-from-stable-4.12-azure-upi: FAIL 0/3. upi-install-azure dies after ~7m with 18x '(AccountKindNotSupported) Account Kind Storage is not supported' - Azure retired the GPv1 '--kind Storage' account kind and the shared step still hardcodes it. Cluster never installed, so zero Azure coverage.
+
+    WHY WAIVABLE
+    - GCP: the substantive lost coverage was RECOVERED out-of-band. Cluster bot 'test upgrade 4.12.99 4.12.100 gcp' PASSED (reported by release lead 2026-10-14), independently validating the GCP upgrade path. Only the custom-4-16384 machine-type assertion remains unverified - a config assertion about node sizing, not product behaviour, and custom-4-16384 (4 vCPU/16GB) is the same class as default GCP sizing.
+    - Azure: PRECEDENTED, not a new loss. Identical signature on 4.12.99 (2026-09-24), which shipped live (MR merged, rpm+rhcos SHIPPED_LIVE). GCP by contrast was green on 4.12.99 with a full 1h15m55s upgrade, so GCP was the only regression this cycle.
+    - Both are shared step-registry bugs affecting all streams, not 4.12 code.
+
+    EVIDENCE THE DIAGNOSIS IS CORRECT
+    Same-day A/B on 2026-10-07, same GCP project and service account, identical gcloud call sequence, only the image differs: check-gcp-machine-type on 4.15 = fatal Py3.6; check-gcp-disktype on 5.1 = Exit code 0, all nodes matched. 4.13.72 passes the same chain only because it uses gcp-ipi (no node types set), so the step logs 'Nothing to do, skip.' and never calls gcloud; its azure job is azure-ipi-fips (IPI), so it never runs upi-install-azure.
+
+    REMEDIATION IN FLIGHT (neither merged at approval time)
+    - GCP: PR bumping cucushift-installer-check-gcp-machine-type from_image 4.15 -> 5.1, mirroring merged PR #86224 (commit 783ed419, 2026-10-01) which made the identical change to the disktype/disksize siblings. Under review.
+    - Azure: openshift/release#85750 (--kind Storage -> StorageV2), opened 2026-09-23, all checks green, awaiting /lgtm + /approve. Under review.
+    Expect both gaps closed for 4.12.101.
 issues:
 - issue: check-cve-tracker-bug crashes in elliott (ART-side bug, not a CVE finding).
     elliottlib/shipment_utils.py:243 get_bug_ids_from_open_shipment_mrs scans ALL
