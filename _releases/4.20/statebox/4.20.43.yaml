@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.43
 created_at: '2026-10-15T16:00:18Z'
-updated_at: '2026-10-16T07:28:25Z'
+updated_at: '2026-10-16T07:29:13Z'
 metadata:
   jira_ticket: ART-24711
   advisory_ids:
@@ -16,8 +16,9 @@ issues:
 - issue: Kerberos ticket expired - blocking all Errata Tool operations (take-ownership,
     check-cve-tracker-bug, etc.)
   reported_at: '2026-10-16T07:28:25Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: False alarm - Kerberos ticket is valid and Errata Tool API access works.
+    The real issue is advisory status (RPM advisory 174721 is DROPPED_NO_SHIP)
   blocker: true
   related_tasks:
   - take-ownership
@@ -25,3 +26,4 @@ issues:
   - check-rhcos-security-alerts
   - push-to-cdn-staging
   - change-advisory-status
+  resolved_at: '2026-10-16T07:29:13Z'
