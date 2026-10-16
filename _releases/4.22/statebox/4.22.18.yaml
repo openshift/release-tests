@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.18
 created_at: '2026-10-08T17:00:12Z'
-updated_at: '2026-10-16T09:24:40Z'
+updated_at: '2026-10-16T11:55:41Z'
 metadata:
   jira_ticket: ART-24477
   advisory_ids:
@@ -45,17 +45,21 @@ tasks:
     2026-10-16T09:23:48Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-10-16T09:23:48Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-10-16T09:24:08Z'
-  completed_at: null
+  completed_at: '2026-10-16T11:55:39Z'
   result: |-
-    2026-10-16T09:24:08Z: INFO: Initialized StateBox for release 4.22.18 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.18.yaml
-    2026-10-16T09:24:09Z: INFO: Loaded state from _releases/4.22/statebox/4.22.18.yaml (SHA: 121e16d2)
-    2026-10-16T09:24:09Z: INFO: Prow job c473b49f-f691-4fa3-a3cb-a73a078f77ef ended with state '', re-triggering
-    2026-10-16T09:24:09Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-10-16T09:24:14Z: INFO: Triggered image consistency check Prow job: 25966c28-859c-49b1-9823-a9cd6d402bb8
-    2026-10-16T09:24:14Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2111028312649240576
-    2026-10-16T09:24:17Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-16T11:46:23Z: INFO: Initialized StateBox for release 4.22.18 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.18.yaml
+    2026-10-16T11:46:23Z: INFO: Checking image consistency check Prow job status for job ID: 25966c28-859c-49b1-9823-a9cd6d402bb8
+    2026-10-16T11:46:23Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2111028312649240576
+    2026-10-16T11:46:23Z: INFO: Starting image health check for shipment MR 959
+    2026-10-16T11:46:23Z: INFO: Stage release succeeded (verified by label)
+    2026-10-16T11:46:23Z: INFO: Processing MR 959
+    2026-10-16T11:46:26Z: INFO: Found 840 images to check
+    2026-10-16T11:52:06Z: WARNING: Failed to check freshness for image: Failed to query Pyxis API: HTTPSConnectionPool(host='catalog.stage.redhat.com', port=443): Read timed out. (read timeout=30)
+    2026-10-16T11:55:39Z: INFO: Completed image health check. Scanned 839 images, found 0 unhealthy
+    2026-10-16T11:55:39Z: INFO: Added image health summary to MR 959
+    2026-10-16T11:55:39Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-10-16T09:24:31Z'
