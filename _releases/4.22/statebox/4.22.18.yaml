@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.18
 created_at: '2026-10-08T17:00:12Z'
-updated_at: '2026-10-16T12:07:49Z'
+updated_at: '2026-10-16T12:08:15Z'
 metadata:
   jira_ticket: ART-24477
   advisory_ids:
@@ -93,4 +93,14 @@ tasks:
     2026-10-16T12:06:54Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=909845d984190b49c97182be33f3919446fa2bdb44fd362046e45a98c55f3c53/signature-1
     2026-10-16T12:07:48Z: INFO: Signature check PASSED
     2026-10-16T12:07:48Z: INFO: task [Image Signed Check] status is changed to [Pass]
-issues: []
+issues:
+- issue: 'change-advisory-status failed: Kerberos authentication issue with Errata
+    Tool API ("Pigeon crap. Did it forget to run kinit?"). Kerberos ticket appears
+    valid (expires 19:39), but Errata Tool API rejecting authentication. May require
+    kinit refresh or Errata Tool service may be experiencing issues.'
+  reported_at: '2026-10-16T12:08:15Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
