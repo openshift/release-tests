@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.70
 created_at: '2026-10-14T21:00:11Z'
-updated_at: '2026-10-16T09:29:58Z'
+updated_at: '2026-10-16T09:36:15Z'
 metadata:
   jira_ticket: ART-24691
   advisory_ids:
@@ -22,4 +22,15 @@ tasks:
     2026-10-16T09:29:55Z: INFO: Processing MR 986 for Jira issues
     2026-10-16T09:29:57Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-10-16T09:29:57Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: take-ownership
+  status: Pass
+  started_at: '2026-10-16T09:35:55Z'
+  completed_at: '2026-10-16T09:36:14Z'
+  result: |-
+    2026-10-16T09:35:55Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-10-16T09:36:08Z: INFO: QA Owner of advisory 174650 is updated to [EMAIL_REDACTED]
+    2026-10-16T09:36:09Z: INFO: QA Owner of advisory 174651 is updated to [EMAIL_REDACTED]
+    2026-10-16T09:36:10Z: INFO: Added QE release lead comment to MR 986
+    2026-10-16T09:36:14Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-16T09:36:14Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues: []
