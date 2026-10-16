@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.43
 created_at: '2026-10-15T16:00:18Z'
-updated_at: '2026-10-16T07:38:43Z'
+updated_at: '2026-10-16T12:22:24Z'
 metadata:
   jira_ticket: ART-24711
   advisory_ids:
@@ -45,3 +45,12 @@ issues:
   - push-to-cdn-staging
   - change-advisory-status
   resolved_at: '2026-10-16T07:38:21Z'
+- issue: take-ownership fails because errata_tool library cannot initialize DROPPED_NO_SHIP
+    advisory 174721 - command will always fail until advisory is undropped or workflow
+    is modified to skip RPM advisory operations
+  reported_at: '2026-10-16T12:22:24Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - take-ownership
