@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.43
 created_at: '2026-10-15T16:00:18Z'
-updated_at: '2026-10-16T12:25:48Z'
+updated_at: '2026-10-16T12:26:15Z'
 metadata:
   jira_ticket: ART-24711
   advisory_ids:
@@ -36,6 +36,19 @@ tasks:
     2026-10-16T12:25:44Z: INFO: Triggered image consistency check Prow job: 23f57d41-9258-44a5-b29a-9f9f9540fad0
     2026-10-16T12:25:44Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2111071102502440960
     2026-10-16T12:25:46Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-10-16T12:26:05Z'
+  completed_at: null
+  result: |-
+    2026-10-16T12:26:05Z: INFO: Initialized StateBox for release 4.20.43 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.43.yaml
+    2026-10-16T12:26:05Z: INFO: Triggering stage testing Prow job
+    2026-10-16T12:26:06Z: INFO: Loaded state from _releases/4.20/statebox/4.20.43.yaml (SHA: 2a32998e)
+    2026-10-16T12:26:06Z: INFO: Stage release succeeded (verified by label)
+    2026-10-16T12:26:06Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-10-16T12:26:11Z: INFO: Triggered stage testing Prow job: e0e261bc-ed72-47ae-8d3c-e410be661cad
+    2026-10-16T12:26:11Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-stage-testing-e2e-aws-ipi/2111071201504792576
+    2026-10-16T12:26:13Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: Kerberos ticket expired - blocking all Errata Tool operations (take-ownership,
     check-cve-tracker-bug, etc.)
