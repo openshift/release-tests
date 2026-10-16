@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.52
 created_at: '2026-10-15T14:00:13Z'
-updated_at: '2026-10-16T09:24:17Z'
+updated_at: '2026-10-16T09:24:44Z'
 metadata:
   jira_ticket: ART-24706
   advisory_ids:
@@ -92,4 +92,12 @@ tasks:
     2026-10-16T09:23:35Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=acb954a5270202f5bc8aa69caa74021ffccf8caf0d468dcf509c3a7068944670/signature-1
     2026-10-16T09:24:15Z: INFO: Signature check PASSED
     2026-10-16T09:24:15Z: INFO: task [Image Signed Check] status is changed to [Pass]
-issues: []
+issues:
+- issue: Koji database outage during advisory status change - transient infrastructure
+    issue, will retry automatically
+  reported_at: '2026-10-16T09:24:41Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - change-advisory-status
