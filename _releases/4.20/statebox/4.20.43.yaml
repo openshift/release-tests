@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.43
 created_at: '2026-10-15T16:00:18Z'
-updated_at: '2026-10-15T16:00:18Z'
+updated_at: '2026-10-16T07:28:25Z'
 metadata:
   jira_ticket: ART-24711
   advisory_ids:
@@ -12,4 +12,16 @@ metadata:
     x86_64: 4.20.0-0.nightly-2026-10-14-162503
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/993
 tasks: []
-issues: []
+issues:
+- issue: Kerberos ticket expired - blocking all Errata Tool operations (take-ownership,
+    check-cve-tracker-bug, etc.)
+  reported_at: '2026-10-16T07:28:25Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - take-ownership
+  - check-cve-tracker-bug
+  - check-rhcos-security-alerts
+  - push-to-cdn-staging
+  - change-advisory-status
