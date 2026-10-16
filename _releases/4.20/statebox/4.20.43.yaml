@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.43
 created_at: '2026-10-15T16:00:18Z'
-updated_at: '2026-10-16T12:22:24Z'
+updated_at: '2026-10-16T12:24:20Z'
 metadata:
   jira_ticket: ART-24711
   advisory_ids:
@@ -18,6 +18,13 @@ tasks:
   completed_at: '2026-10-16T07:38:43Z'
   result: Failed due to RPM advisory 174721 in DROPPED_NO_SHIP status - user confirmed
     to proceed anyway
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-16T12:24:20Z'
+  completed_at: '2026-10-16T12:24:20Z'
+  result: 'All blocking tests passed BO3 verification. Test results: 3/3 jobs successful
+    (aws-ipi upgrade from 4.19, azure-ipi-fips upgrade from 4.20, gcp-ipi upgrade
+    from 4.20). Build phase: Accepted. aggregated=true, accepted=true.'
 issues:
 - issue: Kerberos ticket expired - blocking all Errata Tool operations (take-ownership,
     check-cve-tracker-bug, etc.)
