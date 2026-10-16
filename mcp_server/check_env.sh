@@ -59,7 +59,10 @@ echo "Checking controller/agent environment variables..."
 echo "(These are not required for OAR CLI, but needed for separate components)"
 echo
 
-check_optional "GITHUB_TOKEN" "Release detector, job controller"
+check_optional "GITHUB_APP_WRITER_ID" "StateBox, job controller, release discovery"
+check_optional "GITHUB_APP_WRITER_PRIVATE_KEY" "StateBox, job controller, release discovery"
+check_optional "GITHUB_APP_READER_ID" "Jira notificator, job CLI (openshift/release)"
+check_optional "GITHUB_APP_READER_PRIVATE_KEY" "Jira notificator, job CLI (openshift/release)"
 check_optional "APITOKEN" "Prow/Gangway job triggering"
 check_optional "GCS_CRED_FILE" "GCS test result storage"
 
