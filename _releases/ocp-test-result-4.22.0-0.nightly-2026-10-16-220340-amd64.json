@@ -68,13 +68,58 @@
           "jobStartTime": "2026-10-17T08:31:05Z",
           "jobID": "616d6c1a-c0af-4b9e-bb89-4084b7531fde",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2111374427710033920",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-10-17T11:25:15Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 33
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-10-17T08:31:05Z",
           "jobID": "0d208560-c200-4bea-b429-ce063ed8791d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-azure-ipi-fips-f999/2111374428666335232",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-10-17T11:21:06Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 33,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -194,5 +239,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-10-16-220340",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-10-16-220340"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
