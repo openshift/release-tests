@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.39
 created_at: '2026-10-16T14:00:14Z'
-updated_at: '2026-10-17T10:20:27Z'
+updated_at: '2026-10-17T11:01:08Z'
 metadata:
   jira_ticket: ART-24733
   advisory_ids:
@@ -63,6 +63,15 @@ tasks:
     2026-10-17T10:20:25Z: INFO: Completed image health check. Scanned 836 images, found 0 unhealthy
     2026-10-17T10:20:25Z: INFO: Added image health summary to MR 1001
     2026-10-17T10:20:25Z: INFO: task [Image Consistency Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-17T11:01:08Z'
+  completed_at: '2026-10-17T11:01:08Z'
+  result: 'All blocking tests passed BO3 verification for promoted build 4.21.39.
+    Test summary: 3 jobs total (3 upgrade tests), all passed on first attempt with
+    no retries required. Jobs: upgrade-from-4.20 on AWS (success), upgrade-from-4.21
+    on Azure (success), upgrade-from-4.21 on GCP (success). accepted: true, aggregated:
+    true.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 174786'
   reported_at: '2026-10-16T14:02:33Z'
