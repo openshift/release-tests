@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.19
 created_at: '2026-10-16T16:00:18Z'
-updated_at: '2026-10-19T09:41:43Z'
+updated_at: '2026-10-19T09:42:03Z'
 metadata:
   jira_ticket: ART-24710
   advisory_ids:
@@ -84,6 +84,18 @@ tasks:
     - Azure FIPS 4.22→4.22 self-upgrade: success
     - GCP 4.22→4.22 self-upgrade: success
     No test failures detected. Build 4.22.19 ready for final approval.
+- name: push-to-cdn-staging
+  status: In Progress
+  started_at: '2026-10-19T09:41:57Z'
+  completed_at: null
+  result: |-
+    2026-10-19T09:41:57Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-10-19T09:42:01Z: INFO: checking push job status for advisory 174732 ...
+    2026-10-19T09:42:01Z: INFO: no push job found for advisory 174732
+    2026-10-19T09:42:01Z: INFO: advisory 174732 has blocking advisory []
+    2026-10-19T09:42:02Z: INFO: push job for advisory 174732 is triggered
+    2026-10-19T09:42:02Z: INFO: checking push job status for advisory 174733 ...
+    2026-10-19T09:42:02Z: INFO: push job for target <cdn_stage> is COMPLETE
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 174732'
   reported_at: '2026-10-17T10:03:21Z'
