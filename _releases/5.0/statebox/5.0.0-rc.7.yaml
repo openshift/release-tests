@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.7
 created_at: '2026-10-19T09:37:02Z'
-updated_at: '2026-10-19T11:17:17Z'
+updated_at: '2026-10-19T12:03:09Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -96,4 +96,15 @@ tasks:
     6. OCP-59384/59674 — Observability Operator subscription timing (GCP only, attempt 1 only): Operator readiness timing issue. Pass rate: 93.9%. Known issue OCPQE-29745. Classification: Flaky (waivable).
 
     RECOMMENDATION: 5 of 6 failures are waivable (known bugs, stale expectations, flaky tests). OCP-44910 (CSI discard on AWS) needs further investigation as potential product regression. Promoted build (rc.7) is fully green — all upgrade tests passed.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-19T12:03:04Z'
+  completed_at: '2026-10-19T12:03:07Z'
+  result: |-
+    2026-10-19T12:03:04Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-19T12:03:04Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/5-stable/release/5.0.0-rc.7
+    2026-10-19T12:03:06Z: INFO: Image Digest: sha256:d86593b04acdcce3a07c8d20757ccf44571aec502f1a50f7d8f2fe28f0b6a852
+    2026-10-19T12:03:06Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=d86593b04acdcce3a07c8d20757ccf44571aec502f1a50f7d8f2fe28f0b6a852/signature-1
+    2026-10-19T12:03:07Z: INFO: Signature check PASSED
+    2026-10-19T12:03:07Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
