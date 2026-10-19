@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0-rc.7
 created_at: '2026-10-19T09:37:02Z'
-updated_at: '2026-10-19T10:36:08Z'
+updated_at: '2026-10-19T11:17:08Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -55,4 +55,17 @@ tasks:
     2026-10-19T10:36:06Z: INFO: Checking stage testing Prow job status for job ID: 3759b6f6-140a-4f71-9792-ad6169747a7f
     2026-10-19T10:36:06Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2112097347063255040
     2026-10-19T10:36:06Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-19T11:17:08Z'
+  completed_at: '2026-10-19T11:17:08Z'
+  result: |-
+    Promoted build 5.0.0-rc.7 (x86_64) — QE verification: ACCEPTED (accepted: true, aggregated: true)
+
+    All 3 blocking upgrade test jobs passed on first attempt, no retries needed:
+    - stable-5.0-upgrade-from-stable-4.22-aws-ipi: SUCCESS
+    - stable-5.0-upgrade-from-stable-5.0-azure-ipi-fips: SUCCESS
+    - stable-5.0-upgrade-from-stable-5.0-gcp-ipi: SUCCESS
+
+    Build is fully green. No issues detected.
 issues: []
