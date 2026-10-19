@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.70
 created_at: '2026-10-14T21:00:11Z'
-updated_at: '2026-10-16T09:45:41Z'
+updated_at: '2026-10-19T05:43:20Z'
 metadata:
   jira_ticket: ART-24691
   advisory_ids:
@@ -34,19 +34,16 @@ tasks:
     2026-10-16T09:36:14Z: INFO: sent slack message to <#team-qe-release>
     2026-10-16T09:36:14Z: INFO: task [Take Ownership] status is changed to [Pass]
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-10-16T09:39:04Z'
-  completed_at: null
+  completed_at: '2026-10-19T05:43:19Z'
   result: |-
-    2026-10-16T09:39:04Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-10-16T09:39:11Z: INFO: checking push job status for advisory 174650 ...
-    2026-10-16T09:39:11Z: INFO: no push job found for advisory 174650
-    2026-10-16T09:39:11Z: INFO: advisory 174650 has blocking advisory []
-    2026-10-16T09:39:12Z: INFO: push job for advisory 174650 is triggered
-    2026-10-16T09:39:13Z: INFO: checking push job status for advisory 174651 ...
-    2026-10-16T09:39:13Z: INFO: no push job found for advisory 174651
-    2026-10-16T09:39:13Z: INFO: advisory 174651 has blocking advisory []
-    2026-10-16T09:39:13Z: INFO: push job for advisory 174651 is triggered
+    2026-10-19T05:43:12Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-10-19T05:43:18Z: INFO: checking push job status for advisory 174650 ...
+    2026-10-19T05:43:18Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-19T05:43:19Z: INFO: checking push job status for advisory 174651 ...
+    2026-10-19T05:43:19Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-19T05:43:19Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
   started_at: '2026-10-16T09:39:24Z'
