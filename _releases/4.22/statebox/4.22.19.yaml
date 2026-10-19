@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.19
 created_at: '2026-10-16T16:00:18Z'
-updated_at: '2026-10-19T09:42:17Z'
+updated_at: '2026-10-19T10:11:23Z'
 metadata:
   jira_ticket: ART-24710
   advisory_ids:
@@ -85,15 +85,16 @@ tasks:
     - GCP 4.22→4.22 self-upgrade: success
     No test failures detected. Build 4.22.19 ready for final approval.
 - name: push-to-cdn-staging
-  status: In Progress
+  status: Pass
   started_at: '2026-10-19T09:42:12Z'
-  completed_at: null
+  completed_at: '2026-10-19T10:11:21Z'
   result: |-
-    2026-10-19T09:42:12Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
-    2026-10-19T09:42:15Z: INFO: checking push job status for advisory 174732 ...
-    2026-10-19T09:42:15Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
-    2026-10-19T09:42:15Z: INFO: checking push job status for advisory 174733 ...
-    2026-10-19T09:42:15Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-19T10:11:18Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-10-19T10:11:21Z: INFO: checking push job status for advisory 174732 ...
+    2026-10-19T10:11:21Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-19T10:11:21Z: INFO: checking push job status for advisory 174733 ...
+    2026-10-19T10:11:21Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-19T10:11:21Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 174732'
   reported_at: '2026-10-17T10:03:21Z'
