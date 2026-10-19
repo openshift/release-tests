@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.19
 created_at: '2026-10-16T16:00:18Z'
-updated_at: '2026-10-19T07:21:35Z'
+updated_at: '2026-10-19T07:22:17Z'
 metadata:
   jira_ticket: ART-24710
   advisory_ids:
@@ -73,6 +73,17 @@ tasks:
     2026-10-19T07:21:31Z: INFO: Triggered stage testing Prow job: 4ec56e86-c447-4283-9453-e89cff5c87cf
     2026-10-19T07:21:31Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2112081731921121280
     2026-10-19T07:21:33Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-19T07:22:17Z'
+  completed_at: '2026-10-19T07:22:17Z'
+  result: |-
+    All blocking tests passed BO3 verification. Test result JSON shows accepted=true, aggregated=true.
+    All 3 upgrade tests passed on first attempt:
+    - AWS 4.21→4.22 upgrade: success
+    - Azure FIPS 4.22→4.22 self-upgrade: success
+    - GCP 4.22→4.22 self-upgrade: success
+    No test failures detected. Build 4.22.19 ready for final approval.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 174732'
   reported_at: '2026-10-17T10:03:21Z'
