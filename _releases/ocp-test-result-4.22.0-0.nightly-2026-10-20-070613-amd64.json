@@ -157,7 +157,32 @@
           "jobStartTime": "2026-10-20T23:32:18Z",
           "jobID": "b20b4b73-afbe-46f6-9e55-6c31adee4c39",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-gcp-ipi-f999/2112688390125129728",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-10-21T02:43:31Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 30,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-10-20T23:32:23Z",
@@ -235,5 +260,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.22.0-0.nightly-2026-10-20-070613",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.22.0-0.nightly-2026-10-20-070613"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
