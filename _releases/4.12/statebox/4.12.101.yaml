@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.101
 created_at: '2026-10-21T14:00:07Z'
-updated_at: '2026-10-21T14:00:07Z'
+updated_at: '2026-10-22T13:29:45Z'
 metadata:
   jira_ticket: ART-24781
   advisory_ids:
@@ -11,5 +11,16 @@ metadata:
   candidate_builds:
     x86_64: 4.12.0-0.nightly-2026-10-19-204851
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/1015
-tasks: []
+tasks:
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-10-22T13:29:38Z'
+  completed_at: '2026-10-22T13:29:44Z'
+  result: |-
+    2026-10-22T13:29:38Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-10-22T13:29:44Z: INFO: checking push job status for advisory 175010 ...
+    2026-10-22T13:29:44Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-22T13:29:44Z: INFO: checking push job status for advisory 175012 ...
+    2026-10-22T13:29:44Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-22T13:29:44Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues: []
