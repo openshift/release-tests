@@ -82,13 +82,51 @@
           "jobStartTime": "2026-10-22T02:31:39Z",
           "jobID": "a893f934-5ef1-4ee4-bc2c-1e655a64cda9",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2113095913609105408",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-10-22T05:02:36Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 51,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-10-22T02:31:45Z",
           "jobID": "27c203ba-7a56-4dbb-a37c-bbdd22d1ea28",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-automated-release-gcp-ipi-custom-type-f999/2113095935423680512",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-10-22T04:59:38Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 51,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 7,
+              "failingScenarios": [
+                "[sig-networking] SDN metallb Author:asood-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation",
+                "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+                "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -135,5 +173,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.12.0-0.nightly-2026-10-21-165409",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.12.0-0.nightly-2026-10-21-165409"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
