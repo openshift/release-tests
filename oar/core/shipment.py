@@ -1501,12 +1501,15 @@ class ShipmentData:
     def check_cve_tracker_bug(self):
         """
         Call elliott cmd to check if any new CVE tracker bug found for shipment
-        
+
+        In Konflux flow, shipment data only contains image-related CVE bugs.
+        rpm and rhcos CVE bugs are checked separately via AdvisoryManager against RHSA advisories.
+
         Raises:
             ShipmentDataException: error when invoke elliott cmd
 
         Returns:
-            list: CVE tracker bugs not found in shipment yamls
+            list: CVE tracker bugs not found in shipment yamls (excludes rpm/rhcos bugs)
         """
         cmd = [
             "elliott",
@@ -1536,17 +1539,19 @@ class ShipmentData:
         if result:
             logger.debug(result)
             json_obj = json.loads(result)
-            
+
             # Get all jira issues from shipment yamls
             shipment_jira_issues = self.get_jira_issues()
-            
-            # Iterate through all values in the JSON output (each value is a list of bugs)
-            for trackers in json_obj.values():
-                if isinstance(trackers, list):
-                    for tracker in trackers:
-                        # add it to missed bug list if it is not found in shipment yamls
-                        if tracker not in shipment_jira_issues:
-                            logger.info(f"Missed CVE tracker bug {tracker} is not found in shipment data")
-                            cve_tracker_bugs.append(tracker)
+
+            # IMPORTANT: In Konflux flow, shipment yamls only contain IMAGE bugs.
+            # rpm and rhcos bugs are in RHSA advisories (checked by AdvisoryManager).
+            # Only check "image" key from elliott output to avoid false positives.
+            image_trackers = json_obj.get("image", [])
+            if isinstance(image_trackers, list):
+                for tracker in image_trackers:
+                    # add it to missed bug list if it is not found in shipment yamls
+                    if tracker not in shipment_jira_issues:
+                        logger.info(f"Missed CVE tracker bug {tracker} is not found in shipment data")
+                        cve_tracker_bugs.append(tracker)
 
         return cve_tracker_bugs
