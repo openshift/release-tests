@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.44
 created_at: '2026-10-25T23:00:14Z'
-updated_at: '2026-10-26T14:49:37Z'
+updated_at: '2026-10-26T14:56:11Z'
 metadata:
   jira_ticket: ART-24824
   advisory_ids:
@@ -52,16 +52,21 @@ tasks:
     2026-10-26T14:49:35Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-10-26T14:49:35Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-10-26T13:43:10Z'
-  completed_at: null
+  completed_at: '2026-10-26T14:56:09Z'
   result: |-
-    2026-10-26T13:43:10Z: INFO: Initialized StateBox for release 4.20.44 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.44.yaml
-    2026-10-26T13:43:11Z: INFO: Loaded state from _releases/4.20/statebox/4.20.44.yaml (SHA: 9bc19f26)
-    2026-10-26T13:43:11Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-10-26T13:43:16Z: INFO: Triggered image consistency check Prow job: 2030c927-2b61-4ce5-b2cd-6d1f051f62e9
-    2026-10-26T13:43:16Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2114714620722679808
-    2026-10-26T13:43:18Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-26T14:50:01Z: INFO: Initialized StateBox for release 4.20.44 at openshift/release-tests/z-stream/_releases/4.20/statebox/4.20.44.yaml
+    2026-10-26T14:50:01Z: INFO: Checking image consistency check Prow job status for job ID: 2030c927-2b61-4ce5-b2cd-6d1f051f62e9
+    2026-10-26T14:50:01Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2114714620722679808
+    2026-10-26T14:50:01Z: INFO: Starting image health check for shipment MR 1066
+    2026-10-26T14:50:01Z: INFO: Stage release succeeded (verified by label)
+    2026-10-26T14:50:01Z: INFO: Processing MR 1066
+    2026-10-26T14:50:04Z: INFO: Found 831 images to check
+    2026-10-26T14:53:15Z: WARNING: Failed to check freshness for image: Failed to query Pyxis API: HTTPSConnectionPool(host='catalog.stage.redhat.com', port=443): Max retries exceeded with url: /api/containers/v1/images?filter=image_id==sha256:9e4dd577fe3e41bcdc33179b86de4442fa4f5e33f5946c246a204603939ad793&page_size=100&page=0 (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f2ba3888860>: Failed to establish a new connection: [Errno -2] Name or service not known')))
+    2026-10-26T14:56:09Z: INFO: Completed image health check. Scanned 830 images, found 0 unhealthy
+    2026-10-26T14:56:09Z: INFO: Added image health summary to MR 1066
+    2026-10-26T14:56:09Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-10-26T13:53:44Z'
