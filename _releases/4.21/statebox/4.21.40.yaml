@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.40
 created_at: '2026-10-25T22:00:15Z'
-updated_at: '2026-10-26T17:01:20Z'
+updated_at: '2026-10-26T17:35:22Z'
 metadata:
   jira_ticket: ART-24827
   advisory_ids:
@@ -87,6 +87,14 @@ tasks:
     paths validated (4.20→4.21.40, 4.21→4.21.40). Multi-cloud platforms tested (AWS,
     GCP, Azure FIPS). No retries required. Test result file: ocp-test-result-4.21.40-amd64.json.
     Recommendation: ACCEPT build for release. Confidence: High.'
+- name: analyze-candidate-build
+  status: In Progress
+  started_at: '2026-10-26T17:35:22Z'
+  completed_at: null
+  result: 'Initial test runs failed due to incorrect pullspec format (used quay.io
+    instead of registry.ci.openshift.org). New job runs triggered with correct pullspec:
+    75637f42-51f3-42ce-8532-f3e9d8ef906f, 38ab44c4-b273-4b16-bc8b-655fc67f23b6. Awaiting
+    test results.'
 issues:
 - issue: Blocking secalert in advisory RHSA-2026:89232-07. E-mail sent to secalert@redhat.com
     for resolution.
