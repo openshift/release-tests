@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.20
 created_at: '2026-10-25T21:00:15Z'
-updated_at: '2026-10-26T14:15:56Z'
+updated_at: '2026-10-26T14:31:06Z'
 metadata:
   jira_ticket: ART-24823
   advisory_ids:
@@ -77,6 +77,13 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build 4.22.20 accepted: true.
     Test jobs: (1) AWS IPI upgrade from 4.21 - success, (2) Azure IPI FIPS upgrade
     from 4.22 - success, (3) GCP IPI upgrade from 4.22 - success. No retries needed.'
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-10-26T14:31:06Z'
+  completed_at: '2026-10-26T14:31:06Z'
+  result: All 6 blocking tests passed BO3 verification. AWS IPI had transient failure
+    on OLM v1 test (failed run 1 and retry 2, but retry 1 succeeded - flaky test).
+    All other jobs passed on first attempt. Build meets BO3 criteria.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 175386'
   reported_at: '2026-10-26T03:30:20Z'
