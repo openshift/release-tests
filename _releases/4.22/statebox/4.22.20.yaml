@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.20
 created_at: '2026-10-25T21:00:15Z'
-updated_at: '2026-10-26T13:40:08Z'
+updated_at: '2026-10-26T13:40:25Z'
 metadata:
   jira_ticket: ART-24823
   advisory_ids:
@@ -63,6 +63,19 @@ tasks:
     2026-10-26T13:40:04Z: INFO: Triggered image consistency check Prow job: e9f15bde-e1ec-476b-89cd-28fad8321986
     2026-10-26T13:40:04Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2114713826694795264
     2026-10-26T13:40:06Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-10-26T13:40:15Z'
+  completed_at: null
+  result: |-
+    2026-10-26T13:40:15Z: INFO: Initialized StateBox for release 4.22.20 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.20.yaml
+    2026-10-26T13:40:15Z: INFO: Triggering stage testing Prow job
+    2026-10-26T13:40:16Z: INFO: Loaded state from _releases/4.22/statebox/4.22.20.yaml (SHA: 41aff99f)
+    2026-10-26T13:40:16Z: INFO: Stage release succeeded (verified by label)
+    2026-10-26T13:40:16Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-10-26T13:40:21Z: INFO: Triggered stage testing Prow job: 100dff8e-340a-4c78-962b-99d0e3daa9d9
+    2026-10-26T13:40:21Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2114713887617060864
+    2026-10-26T13:40:24Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 175386'
   reported_at: '2026-10-26T03:30:20Z'
