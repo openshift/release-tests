@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.53
 created_at: '2026-10-25T16:00:12Z'
-updated_at: '2026-10-26T17:01:57Z'
+updated_at: '2026-10-26T17:35:00Z'
 metadata:
   jira_ticket: ART-24825
   advisory_ids:
@@ -92,6 +92,14 @@ tasks:
     2026-10-26T16:16:26Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=ceea7abb1ba4451655fafa0b68f575fe08027b9d31a2c69b2d11480252b8a2f9/signature-1
     2026-10-26T16:16:26Z: INFO: Signature check PASSED
     2026-10-26T16:16:26Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: In Progress
+  started_at: '2026-10-26T17:35:00Z'
+  completed_at: null
+  result: 'Initial test runs failed due to incorrect pullspec format (used quay.io
+    instead of registry.ci.openshift.org). New job runs triggered with correct pullspec:
+    922e7328-0b1a-49a0-a842-b54fb96ca120, 7ab0d9e6-127f-4b13-9716-387cfbcad925. Awaiting
+    test results.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 175392'
   reported_at: '2026-10-26T03:43:53Z'
