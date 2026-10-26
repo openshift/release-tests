@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.20
 created_at: '2026-10-25T21:00:15Z'
-updated_at: '2026-10-26T13:41:36Z'
+updated_at: '2026-10-26T14:14:54Z'
 metadata:
   jira_ticket: ART-24823
   advisory_ids:
@@ -72,6 +72,13 @@ tasks:
     2026-10-26T13:41:34Z: INFO: Checking stage testing Prow job status for job ID: 100dff8e-340a-4c78-962b-99d0e3daa9d9
     2026-10-26T13:41:34Z: INFO: Job state: pending, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2114713887617060864
     2026-10-26T13:41:34Z: INFO: task [Stage Testing] status is changed to [In Progress]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-26T14:14:54Z'
+  completed_at: '2026-10-26T14:14:54Z'
+  result: 'All blocking tests passed BO3 verification. Build 4.22.20 accepted: true.
+    Test jobs: (1) AWS IPI upgrade from 4.21 - success, (2) Azure IPI FIPS upgrade
+    from 4.22 - success, (3) GCP IPI upgrade from 4.22 - success. No retries needed.'
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 175386'
   reported_at: '2026-10-26T03:30:20Z'
