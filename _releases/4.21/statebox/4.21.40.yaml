@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.40
 created_at: '2026-10-25T22:00:15Z'
-updated_at: '2026-10-26T14:58:49Z'
+updated_at: '2026-10-26T17:01:20Z'
 metadata:
   jira_ticket: ART-24827
   advisory_ids:
@@ -87,4 +87,12 @@ tasks:
     paths validated (4.20→4.21.40, 4.21→4.21.40). Multi-cloud platforms tested (AWS,
     GCP, Azure FIPS). No retries required. Test result file: ocp-test-result-4.21.40-amd64.json.
     Recommendation: ACCEPT build for release. Confidence: High.'
-issues: []
+issues:
+- issue: Blocking secalert in advisory RHSA-2026:89232-07. E-mail sent to secalert@redhat.com
+    for resolution.
+  reported_at: '2026-10-26T17:01:20Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
