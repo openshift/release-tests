@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.77
 created_at: '2026-10-26T15:00:09Z'
-updated_at: '2026-10-27T12:23:23Z'
+updated_at: '2026-10-27T13:07:03Z'
 metadata:
   jira_ticket: ART-24831
   advisory_ids:
@@ -124,6 +124,17 @@ tasks:
     \ blocking issues\n- All upgrade paths work correctly\n- No regressions detected\n\
     - Build already accepted by Release Controller\n\nRECOMMENDATION: PROCEED TO FINAL\
     \ APPROVAL\n- All gates passed\n- Build ready for image-signed-check and change-advisory-status"
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-27T13:06:20Z'
+  completed_at: '2026-10-27T13:07:01Z'
+  result: |-
+    2026-10-27T13:06:20Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-27T13:06:20Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.14.77
+    2026-10-27T13:06:21Z: INFO: Image Digest: sha256:37f1faf5a14324a24756dd53c07e91e51616110aa5535b0c54471a43a8cf14fa
+    2026-10-27T13:06:21Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=37f1faf5a14324a24756dd53c07e91e51616110aa5535b0c54471a43a8cf14fa/signature-1
+    2026-10-27T13:07:01Z: INFO: Signature check PASSED
+    2026-10-27T13:07:01Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
