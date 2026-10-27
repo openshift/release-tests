@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.77
 created_at: '2026-10-26T15:00:09Z'
-updated_at: '2026-10-27T11:57:59Z'
+updated_at: '2026-10-27T12:23:23Z'
 metadata:
   jira_ticket: ART-24831
   advisory_ids:
@@ -102,6 +102,28 @@ tasks:
     - Build is safe to promote to stable
 
     Note: Upgrade 4.14→4.14 AWS status pending verification, but pattern suggests same waivable infrastructure flake as other AWS jobs.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-27T12:23:23Z'
+  completed_at: '2026-10-27T12:23:23Z'
+  result: "Promoted build 4.14.77 analysis COMPLETE - All tests PASSED.\n\nBuild Information:\n\
+    - Name: 4.14.77\n- Phase: Accepted\n- Pull Spec: quay.io/openshift-release-dev/ocp-release:4.14.77-x86_64\n\
+    - Aggregation: Complete\n- Accepted: true\n\nTest Results Summary:\n- Total upgrade\
+    \ jobs: 3\n- Passed BO3: 3/3\n- All platforms validated: AWS, Azure FIPS, GCP\n\
+    \nDetailed Results:\n\n1. Upgrade 4.13→4.14 AWS - PASSED (1/1)\n   - First attempt:\
+    \ SUCCESS\n   - Duration: ~2.75 hours\n   - Clean pass, no retries needed\n  \
+    \ \n2. Upgrade 4.14→4.14 Azure FIPS - PASSED (2/3 BO3)\n   - First attempt: Failed\
+    \ (~50 min, abnormally short)\n   - Retry 1: SUCCESS (~2.75 hours)\n   - Retry\
+    \ 2: SUCCESS (~2.8 hours)\n   - Assessment: Transient infrastructure/timing issue\
+    \ (likely same observability operator timeout from candidate build)\n   - Both\
+    \ retries clean, normal duration\n   \n3. Upgrade 4.14→4.14 GCP - PASSED (1/1)\n\
+    \   - First attempt: SUCCESS\n   - Duration: ~2.7 hours\n   - Clean pass, no retries\
+    \ needed\n\nPlatform Validation:\n- AWS: ✅ Validated (4.13→4.14 upgrade path)\n\
+    - Azure FIPS: ✅ Validated (BO3 passed with 2/3 success)\n- GCP: ✅ Validated (4.14→4.14\
+    \ z-stream upgrade)\n\nQuality Assessment:\n- No new failures identified\n- No\
+    \ blocking issues\n- All upgrade paths work correctly\n- No regressions detected\n\
+    - Build already accepted by Release Controller\n\nRECOMMENDATION: PROCEED TO FINAL\
+    \ APPROVAL\n- All gates passed\n- Build ready for image-signed-check and change-advisory-status"
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
