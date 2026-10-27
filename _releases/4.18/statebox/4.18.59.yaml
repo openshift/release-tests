@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.59
 created_at: '2026-10-26T06:00:22Z'
-updated_at: '2026-10-26T15:35:34Z'
+updated_at: '2026-10-27T07:15:45Z'
 metadata:
   jira_ticket: ART-24829
   advisory_ids:
@@ -59,4 +59,12 @@ tasks:
     2026-10-26T15:35:33Z: INFO: Checking stage testing Prow job status for job ID: e56de635-2c54-496b-8a09-dc1cd4b5136c
     2026-10-26T15:35:33Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-stage-testing-e2e-aws-ipi/2114711932253507584
     2026-10-26T15:35:33Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-27T07:15:45Z'
+  completed_at: '2026-10-27T07:15:45Z'
+  result: 'AWS jobs failed due to expired credentials but once the credentials were
+    replaced, they passed. Failed job: stable-4.18-upgrade-from-stable-4.17-aws-ipi-f999
+    — passed on rerun (Prow ID: 2114748892795899904). All other promoted build tests
+    passed. Waivable failures accepted by release lead.'
 issues: []
