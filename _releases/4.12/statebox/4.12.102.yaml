@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.102
 created_at: '2026-10-26T18:00:07Z'
-updated_at: '2026-10-27T07:29:41Z'
+updated_at: '2026-10-27T07:30:41Z'
 metadata:
   jira_ticket: ART-24839
   advisory_ids:
@@ -56,6 +56,17 @@ tasks:
     2026-10-27T07:29:39Z: INFO: checking push job status for advisory 175487 ...
     2026-10-27T07:29:39Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-10-27T07:29:39Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-10-27T07:30:31Z'
+  completed_at: null
+  result: |-
+    2026-10-27T07:30:31Z: INFO: Initialized StateBox for release 4.12.102 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.102.yaml
+    2026-10-27T07:30:32Z: INFO: Loaded state from _releases/4.12/statebox/4.12.102.yaml (SHA: d4ed2177)
+    2026-10-27T07:30:32Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-10-27T07:30:37Z: INFO: Triggered image consistency check Prow job: 813a29ee-ad56-4236-bb0f-0bd08b0b7ac8
+    2026-10-27T07:30:37Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2114983234432405504
+    2026-10-27T07:30:39Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 2 missed CVE tracker bugs in shipments
