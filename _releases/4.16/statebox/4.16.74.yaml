@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.74
 created_at: '2026-10-26T06:00:09Z'
-updated_at: '2026-10-27T09:59:50Z'
+updated_at: '2026-10-27T10:18:30Z'
 metadata:
   jira_ticket: ART-24828
   advisory_ids:
@@ -81,4 +81,21 @@ tasks:
     (4) 2x GCP lanes passed first try.
 
     Corroboration: the PROMOTED build is aggregated=true accepted=true, with its azure-ipi-fips lane failing once (install timeout at 59m with zero operators Degraded/Unavailable, only etcd mid revision-rollout, plus http2 client connection lost) then passing both retries on the identical payload.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-27T10:18:30Z'
+  completed_at: '2026-10-27T10:18:30Z'
+  result: |-
+    Promoted build 4.16.74: aggregated=true, accepted=true. Gate check PASSED.
+
+    All 3 QE blocking lanes green, and the lane count matches 4.16.70/.71/.72/.73 exactly (same 3 jobs), so no lanes were silently dropped at trigger time - accepted=true is genuine, not a false positive from a missing job.
+      - stable-4.16-upgrade-from-stable-4.15-aws-ipi-f999: success (first try, on the freshly rotated aws-sustaining-autorelease-412 credential - the rotation at 2026-10-26 14:31Z landed before promotion, so this lane was never exposed to the expired key)
+      - stable-4.16-upgrade-from-stable-4.16-azure-ipi-fips-f999: failure, success, success (BO3 satisfied)
+      - stable-4.16-upgrade-from-stable-4.16-gcp-ipi-f999: success (first try)
+
+    The single azure failure (build 2114785150381330432, 18:24:05Z-19:54:54Z) was NOT a product defect: ipi-install-install timed out after 59m13s in the pre phase with ZERO operators Degraded and ZERO Available=False - the only outstanding condition was "etcd Progressing is True with NodeInstaller: 1 node is at revision 7; 2 nodes are at revision 8", i.e. a routine static-pod revision rollout that had not settled, plus "http2: client connection lost" on the installer's API connection. No tests ran (no testResultSummary). Both retries then passed on the identical payload (3h15m and 3h00m), which a genuine install defect would not do.
+
+    SEPARATE ART GATE (not QE-owned): the release-controller blocking job `upgrade` (e2e-aws-ovn-upgrade, shared CI AWS pool) failed 3x on 2026-10-26 (08:39, 12:07, 15:39Z), each in the test phase after ~2h12m. 4.16.74 was consequently Rejected, then manually force-accepted by ART (Scott Dodson) with an explicit recorded risk acceptance: unresolved etcd latency ([sig-etcd] excessive "took too long" - 10,094 and 11,425 vs a 10,000 threshold), kubelet TargetDown, and upgrade API-availability risk, accepted to deliver critical CVE fixes on the basis that deterioration relative to historical 4.16.z was not demonstrated. Upgrades themselves completed successfully in every attempt. Noted here for the audit trail; this gate is ART's, not QE's.
+
+    Cross-cutting observation: elevated etcd latency appeared independently in four lanes across three clouds this cycle (ART's threshold test, candidate azure-fips, candidate aws-ipi re-run, promoted azure-fips install). Systemic to the 4.16.z test environment rather than per-run noise, and formally risk-accepted by ART - but not proven harmless. First place to look if anything surfaces post-ship.
 issues: []
