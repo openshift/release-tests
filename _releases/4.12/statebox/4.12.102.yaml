@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.102
 created_at: '2026-10-26T18:00:07Z'
-updated_at: '2026-10-27T09:02:46Z'
+updated_at: '2026-10-27T09:02:54Z'
 metadata:
   jira_ticket: ART-24839
   advisory_ids:
@@ -72,18 +72,14 @@ tasks:
     2026-10-27T09:02:45Z: INFO: Added image health summary to MR 1077
     2026-10-27T09:02:45Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-10-27T07:30:56Z'
-  completed_at: null
+  completed_at: '2026-10-27T09:02:53Z'
   result: |-
-    2026-10-27T07:30:56Z: INFO: Initialized StateBox for release 4.12.102 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.102.yaml
-    2026-10-27T07:30:56Z: INFO: Triggering stage testing Prow job
-    2026-10-27T07:30:56Z: INFO: Loaded state from _releases/4.12/statebox/4.12.102.yaml (SHA: 16df1fdc)
-    2026-10-27T07:30:56Z: INFO: Stage release succeeded (verified by label)
-    2026-10-27T07:30:56Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-10-27T07:31:02Z: INFO: Triggered stage testing Prow job: 6450267e-1316-48f3-9719-60144bd3f316
-    2026-10-27T07:31:02Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-stage-testing-e2e-aws-ipi/2114983338329509888
-    2026-10-27T07:31:04Z: INFO: sent slack message to <#team-qe-release>
+    2026-10-27T09:02:53Z: INFO: Initialized StateBox for release 4.12.102 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.102.yaml
+    2026-10-27T09:02:53Z: INFO: Checking stage testing Prow job status for job ID: 6450267e-1316-48f3-9719-60144bd3f316
+    2026-10-27T09:02:53Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-stage-testing-e2e-aws-ipi/2114983338329509888
+    2026-10-27T09:02:53Z: INFO: task [Stage Testing] status is changed to [Pass]
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-10-27T07:32:30Z'
