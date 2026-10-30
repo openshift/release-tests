@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T17:02:21Z'
+updated_at: '2026-10-30T17:38:48Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -92,6 +92,25 @@ tasks:
     Secondary failure: cucushift-e2e OCP-14522 (node affinity Gt) failed on first attempt, passed on retry - ordinary flake, not blocking.
 
     All other 5 blocking jobs passed on first attempt (aws-ipi, gcp-ipi, aws-ipi-disruptive, upgrade-from-stable-4.21-gcp-ipi, nightly-upgrade-from-stable-4.22-aws-ipi).
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-10-30T17:38:48Z'
+  completed_at: '2026-10-30T17:38:48Z'
+  result: |-
+    PASS on real green results - no waiver used. Final state of ocp-test-result-4.22.21-amd64.json: aggregated=true, accepted=true. All 3 blocking jobs pass BO3.
+
+    - upgrade-from-stable-4.21-aws-ipi: 1st success
+    - upgrade-from-stable-4.22-azure-ipi-fips: 1st failure, retries 5ebb42fc success + 6b8ecf29 success (2/2, threshold 2) PASS
+    - upgrade-from-stable-4.22-gcp-ipi: 1st failure, retry 709ea623 success (1/1, threshold 1) PASS
+
+    History: build initially showed accepted=false. Zero e2e test failures - all failures were infrastructure:
+    1. azure-fips 1st attempt: Azure VM master-2 stuck in a long-running provisioning PUT with no error returned (masters 0/1 up in ~4min); installer hit its 20-minute control-plane timeout.
+    2. azure-fips retry2 (ffba9bcc): Prow pod ipi-conf-telemetry Evicted - node DiskPressure, died 36s in.
+    3. gcp 1st attempt: Prow pods Evicted - node DiskPressure.
+
+    Resolution: rather than waive, re-ran the azure-fips upgrade job via `job run --upgrade_to quay.io/openshift-release-dev/ocp-release:4.22.21-x86_64`. New run 6b8ecf29 PASSED 12:30:14Z. Swapped it in for the DiskPressure-evicted retry ffba9bcc via jobctl update-retried-job-run, which also popped aggregated/accepted; the aggregator recomputed at 17:39Z and set accepted=true.
+
+    GCP was never actually failing - the BO3 threshold is round((len(retriedJobs)+1.1)/2) over retries only, so its single passing retry already cleared a threshold of 1. Its re-run 05ab6af7 (also SUCCESS) was surplus.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 176031'
   reported_at: '2026-10-30T07:23:16Z'
