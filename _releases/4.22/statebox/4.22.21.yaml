@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T09:36:57Z'
+updated_at: '2026-10-30T09:42:53Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -104,3 +104,19 @@ issues:
   related_tasks:
   - push-to-cdn-staging
   resolved_at: '2026-10-30T09:06:07Z'
+- issue: 'Re-runs triggered 2026-10-30 for the 2 blocking jobs that failed BO3 on
+    infra (not test failures). New runs: GCP upgrade 05ab6af7-2eb5-454a-bf48-60793dfe5da0,
+    Azure-FIPS upgrade 6b8ecf29-7803-48a4-acf2-9ce325d14e80. Triggered via `job run
+    --upgrade_to quay.io/openshift-release-dev/ocp-release:4.22.21-x86_64`. WARNING:
+    do NOT use MCP job_run for these upgrade jobs - it sets RELEASE_IMAGE_LATEST instead
+    of RELEASE_IMAGE_TARGET, running a fresh install rather than the upgrade. Prior
+    BO3: GCP 1 pass/2 (free slot, a pass gives 2/3); Azure-FIPS 1 pass/3 (exhausted
+    - needs jobctl_update_retried_job_run to replace evicted retry ffba9bcc-a84d-410c-afb9-e9e8d8da30c7).
+    Root causes: Azure master-2 VM provisioning stall, CI node DiskPressure evictions
+    2026-10-29.'
+  reported_at: '2026-10-30T09:42:53Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-promoted-build
