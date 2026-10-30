@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.54
 created_at: '2026-10-30T17:00:14Z'
-updated_at: '2026-10-30T17:09:44Z'
+updated_at: '2026-10-30T17:15:36Z'
 metadata:
   jira_ticket: ART-25046
   advisory_ids:
@@ -41,4 +41,20 @@ tasks:
     2026-10-30T17:09:43Z: INFO: checking push job status for advisory 176024 ...
     2026-10-30T17:09:43Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-10-30T17:09:43Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-10-30T17:15:36Z'
+  completed_at: '2026-10-30T17:15:36Z'
+  result: |-
+    Candidate build 4.19.0-0.nightly-2026-10-28-161657 (amd64): aggregated=true, accepted=false. 2 of 6 blocking jobs failed BO3 (each: first failure, then 1 success + 1 failure over 2 retries; threshold 2/2). WAIVED by release lead [EMAIL_REDACTED] on AI recommendation ACCEPT (high confidence).
+
+    Root cause: all 4 failed attempts died BEFORE any test executed. No JUnit/testResultSummary artifacts exist for any failed attempt, and there are zero test failures anywhere in the build.
+
+    1) azure-ipi-fips-f999 attempt 1 (job 2115631060225101824): step fips-check-fips-or-die pod ContainerFailed after 36s, right after project create; install + cluster-health steps had passed. Transient - retry 1 (job 2115664582788780032) ran the full suite clean (openshift-extended-test 107/0 failures, cucushift-e2e 20/0, supplementary 1/0).
+    2) azure-ipi-fips-f999 attempt 3 (job 2115664604309753856): never provisioned a cluster. Lease acquisition failed - "failed to acquire lease for azure-autorelease-qe-quota-slice: resources not found", capacity 0 free / 7 leased. CI quota exhaustion.
+    3) + 4) stable-4.19-upgrade-from-stable-4.18-gcp-ipi-f999 attempts 1 and 3 (jobs 2115631124251152384, 2115647875902869504): both failed in ipi-install-install after ~50s with identical Google Cloud service-side error during installer Platform Quota Check: "failed to list quota/allocation/usage timeseries: rpc error: code = Internal desc = Internal error encountered. Please retry after a few seconds." Install never started, hence all subsequent gather-* steps failed with DNS "no such host" on the cluster API. Retry 1 (job 2115647854377701376) installed and completed successfully.
+
+    Contributing factor: the BO3 mechanism launches both retries in parallel (adjacent job IDs, same timestamp). On Azure, retry 1 consumed the last quota slice and retry 2 found 0 free - self-inflicted CI capacity contention, not a payload signal.
+
+    Assessment: 0 product bugs, 0 regressions, 0 test failures. All failures are infrastructure (CI lease exhaustion, transient pod failure, GCP monitoring API internal error whose own message advises retry). Both affected jobs passed cleanly whenever they obtained a working cluster.
 issues: []
