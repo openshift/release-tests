@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T10:22:01Z'
+updated_at: '2026-10-30T10:22:17Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -144,3 +144,19 @@ issues:
   blocker: false
   related_tasks:
   - analyze-promoted-build
+- issue: 'stage-testing Prow job ce2ef720-f63d-4b20-a822-5df30946590d FAILED 2026-10-30
+    on CI infrastructure, not product. Pod e2e-aws-ipi-ipi-install-rbac stayed pending
+    >1h: kubelet on node ip-10-28-64-62.us-east-2.compute.internal could not create
+    the pod sandbox (rpc error DeadlineExceeded, 9x at 10:13Z, 5x at 09:49Z with RST_STREAM
+    CANCEL). Died in the pre phase before any cluster install or test ran. Re-triggered
+    as dc0d36f4-c37d-459f-bc08-4d7868ab0478. NOTE: this is the third distinct CI build-farm
+    infra failure on this release - DiskPressure evictions on 2026-10-29 took out
+    the azure-fips and gcp blocking job attempts, and now sandbox-create timeouts
+    on 2026-10-30. Build farm health looks degraded; if the retry fails the same way,
+    escalate to the DPTP/test-platform team rather than retrying again.'
+  reported_at: '2026-10-30T10:22:17Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - stage-testing
