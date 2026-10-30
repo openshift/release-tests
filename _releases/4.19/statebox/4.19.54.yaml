@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.54
 created_at: '2026-10-30T17:00:14Z'
-updated_at: '2026-10-30T17:09:08Z'
+updated_at: '2026-10-30T17:09:44Z'
 metadata:
   jira_ticket: ART-25046
   advisory_ids:
@@ -32,4 +32,13 @@ tasks:
     2026-10-30T17:09:04Z: INFO: Processing MR 1101 for Jira issues
     2026-10-30T17:09:07Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-10-30T17:09:07Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-10-30T17:09:40Z'
+  completed_at: '2026-10-30T17:09:43Z'
+  result: |-
+    2026-10-30T17:09:40Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-10-30T17:09:43Z: INFO: checking push job status for advisory 176024 ...
+    2026-10-30T17:09:43Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-10-30T17:09:43Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues: []
