@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T17:38:48Z'
+updated_at: '2026-10-30T17:38:59Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -156,11 +156,16 @@ issues:
     so it is otherwise skipped (controller.py:841). All original failures were infra,
     zero e2e test failures.'
   reported_at: '2026-10-30T10:04:25Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: RESOLVED 2026-10-30T17:39Z. Plan executed successfully. Azure re-run
+    6b8ecf29 PASSED 12:30:14Z; swapped in for evicted retry ffba9bcc via jobctl update-retried-job-run
+    at 17:03Z; aggregator recomputed at 17:39Z. Result file now aggregated=true, accepted=true
+    with all 3 blocking jobs passing BO3. Gate closed on real green results, no waiver
+    needed. analyze-promoted-build marked Pass.
   blocker: false
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-10-30T17:38:59Z'
 - issue: 'stage-testing Prow job ce2ef720-f63d-4b20-a822-5df30946590d FAILED 2026-10-30
     on CI infrastructure, not product. Pod e2e-aws-ipi-ipi-install-rbac stayed pending
     >1h: kubelet on node ip-10-28-64-62.us-east-2.compute.internal could not create
