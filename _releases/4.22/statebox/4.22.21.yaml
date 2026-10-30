@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T09:42:53Z'
+updated_at: '2026-10-30T10:04:12Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -115,8 +115,14 @@ issues:
     Root causes: Azure master-2 VM provisioning stall, CI node DiskPressure evictions
     2026-10-29.'
   reported_at: '2026-10-30T09:42:53Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: SUPERSEDED - BO3 math in this note was wrong. Correct rule (controller.py:710)
+    is round((len(retriedJobs)+1.1)/2) over retries only, not a flat 2-of-3. GCP has
+    1 retry which PASSED -> threshold 1 -> already PASSING; its re-run 05ab6af7 was
+    unnecessary and can be ignored. Only azure-ipi-fips fails (1 success across 2
+    retries, needs 2) and is the sole cause of accepted=false. See replacement note
+    for the corrected plan.
   blocker: false
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-10-30T10:04:12Z'
