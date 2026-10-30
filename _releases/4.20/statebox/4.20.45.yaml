@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.45
 created_at: '2026-10-29T23:00:13Z'
-updated_at: '2026-10-30T11:07:48Z'
+updated_at: '2026-10-30T11:09:25Z'
 metadata:
   jira_ticket: ART-25038
   advisory_ids:
@@ -81,4 +81,15 @@ tasks:
     EVIDENCE OF NON-PRODUCT NATURE: containers never started so zero product code ran; testResultSummary is null on all three attempts; both failures are in the pre/setup phase before the upgrade under test began; the successful retry (run 2116056790952054784, 2h59m) completed the full 4.19->4.20 AWS upgrade on this payload.
 
     FOLLOW-UP: report node ip-10-28-64-62.us-east-2.compute.internal to DPTP/test-platform - its CRI-O/kubelet cannot create pod sandboxes and it will keep poisoning jobs until drained.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-30T11:08:57Z'
+  completed_at: '2026-10-30T11:09:23Z'
+  result: |-
+    2026-10-30T11:08:57Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-30T11:08:57Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.20.45
+    2026-10-30T11:08:58Z: INFO: Image Digest: sha256:2284b7d032a2bcc021cb277d6bde2d413b7adb1a1bee84b322e6db758da53939
+    2026-10-30T11:08:58Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=2284b7d032a2bcc021cb277d6bde2d413b7adb1a1bee84b322e6db758da53939/signature-1
+    2026-10-30T11:09:23Z: INFO: Signature check PASSED
+    2026-10-30T11:09:23Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
