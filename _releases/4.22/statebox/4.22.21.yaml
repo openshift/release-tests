@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T11:07:52Z'
+updated_at: '2026-10-30T11:09:00Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -174,8 +174,14 @@ issues:
     and is NOT related to the stage-testing failure, which was an OpenShift CI build-farm
     kubelet sandbox-create timeout on AWS us-east-2 - different system entirely.'
   reported_at: '2026-10-30T10:26:28Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: RESOLVED 2026-10-30. Retry Pub task 1044119 completed cleanly - CLOSED
+    at 10:30:25Z, advisory 176031 push status COMPLETE. Both 176031 and 176032 now
+    COMPLETE for cdn_stage; task push-to-cdn-staging marked Pass at 11:07:51Z. The
+    clean retry on the same worker (openshift-worker-mpp) with no content changes
+    confirms the first failure was a transient infrastructure interruption, consistent
+    with the Errata/Pub maintenance window hypothesis. No advisory content issue.
   blocker: false
   related_tasks:
   - push-to-cdn-staging
+  resolved_at: '2026-10-30T11:09:00Z'
