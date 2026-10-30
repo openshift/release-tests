@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T10:23:10Z'
+updated_at: '2026-10-30T10:26:28Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -164,3 +164,20 @@ issues:
   blocker: false
   related_tasks:
   - stage-testing
+- issue: 'push-to-cdn-staging: first push for advisory 176031 (RHSA-2026:92328) FAILED
+    because Pub task 1044103 ended in state INTERRUPTED - not a content or validation
+    error. Ran 09:09:08-09:13:58Z on worker openshift-worker-mpp, killed mid-flight.
+    Release lead flagged an "Errata Tool Scheduled Maintenance for Production | 2026-10-30
+    01:00:00 UTC" notice as the likely cause; INTERRUPTED is consistent with maintenance
+    or a worker recycle, though the 8h gap between the 01:00Z window start and the
+    09:09Z task means attribution is unconfirmed (window may have run long, been rolling,
+    or the worker recycled post-maintenance). Auto-retried at 10:19:51Z as Pub task
+    1044119, currently OPEN on the same worker. NOTE: this is Errata/Pub infrastructure
+    and is NOT related to the stage-testing failure, which was an OpenShift CI build-farm
+    kubelet sandbox-create timeout on AWS us-east-2 - different system entirely.'
+  reported_at: '2026-10-30T10:26:28Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - push-to-cdn-staging
