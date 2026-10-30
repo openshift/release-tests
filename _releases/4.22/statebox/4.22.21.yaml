@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T10:21:10Z'
+updated_at: '2026-10-30T10:22:01Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -65,14 +65,18 @@ tasks:
     2026-10-30T09:08:31Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2116095081101398016
     2026-10-30T09:08:33Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
-  status: Fail
-  started_at: '2026-10-30T09:08:40Z'
-  completed_at: '2026-10-30T10:21:09Z'
+  status: In Progress
+  started_at: '2026-10-30T10:21:52Z'
+  completed_at: null
   result: |-
-    2026-10-30T10:21:09Z: INFO: Initialized StateBox for release 4.22.21 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.21.yaml
-    2026-10-30T10:21:09Z: INFO: Checking stage testing Prow job status for job ID: ce2ef720-f63d-4b20-a822-5df30946590d
-    2026-10-30T10:21:09Z: INFO: Job state: failure, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2116095170649788416
-    2026-10-30T10:21:09Z: INFO: task [Stage Testing] status is changed to [Fail]
+    2026-10-30T10:21:52Z: INFO: Initialized StateBox for release 4.22.21 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.21.yaml
+    2026-10-30T10:21:52Z: INFO: Triggering stage testing Prow job
+    2026-10-30T10:21:52Z: INFO: Loaded state from _releases/4.22/statebox/4.22.21.yaml (SHA: 0a958554)
+    2026-10-30T10:21:52Z: INFO: Stage release succeeded (verified by label)
+    2026-10-30T10:21:52Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-10-30T10:21:58Z: INFO: Triggered stage testing Prow job: dc0d36f4-c37d-459f-bc08-4d7868ab0478
+    2026-10-30T10:21:58Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2116113562597330944
+    2026-10-30T10:22:00Z: INFO: sent slack message to <#team-qe-release>
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-10-30T09:36:57Z'
