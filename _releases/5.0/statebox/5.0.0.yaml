@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.0
 created_at: '2026-10-29T18:00:15Z'
-updated_at: '2026-10-30T08:15:52Z'
+updated_at: '2026-10-30T08:29:41Z'
 metadata:
   jira_ticket: ART-14755
   advisory_ids:
@@ -50,6 +50,15 @@ tasks:
     2026-10-30T08:15:49Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
     2026-10-30T08:15:50Z: INFO: checking push job status for advisory 169393 ...
     2026-10-30T08:15:50Z: INFO: push job for target <cdn_stage> is WAITING_ON_PUB
+- name: stage-testing
+  status: Pass
+  started_at: '2026-10-30T08:29:38Z'
+  completed_at: '2026-10-30T08:29:39Z'
+  result: |-
+    2026-10-30T08:29:38Z: INFO: Initialized StateBox for release 5.0.0 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.0.yaml
+    2026-10-30T08:29:38Z: INFO: Checking stage testing Prow job status for job ID: 8d9eb0ce-9bbe-479d-8c42-a29afc81937c
+    2026-10-30T08:29:39Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2115879801838374912
+    2026-10-30T08:29:39Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 168422'
   reported_at: '2026-10-29T18:33:22Z'
