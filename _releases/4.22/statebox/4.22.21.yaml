@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T10:04:12Z'
+updated_at: '2026-10-30T10:04:25Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -126,3 +126,20 @@ issues:
   related_tasks:
   - analyze-promoted-build
   resolved_at: '2026-10-30T10:04:12Z'
+- issue: 'CORRECTED plan for accepted=false. BO3 rule is round((len(retriedJobs)+1.1)/2)
+    over retries only (controller.py:710), NOT a flat 2-of-3. GCP: 1 retry, passed,
+    threshold 1 -> ALREADY PASSING, no action needed (re-run 05ab6af7-2eb5-454a-bf48-60793dfe5da0
+    was unnecessary, ignore it). AZURE-FIPS is the sole failure: 1 success across
+    2 retries, threshold 2. Fix: when re-run 6b8ecf29-7803-48a4-acf2-9ce325d14e80
+    passes, run jobctl update-retried-job-run to replace DiskPressure-evicted retry
+    ffba9bcc-a84d-410c-afb9-e9e8d8da30c7 with it -> 2 successes/2 retries -> accepted
+    flips true. That call also pops aggregated/accepted so the aggregator reprocesses
+    (controller.py:992). Requires a running aggregator - the file is aggregated:true
+    so it is otherwise skipped (controller.py:841). All original failures were infra,
+    zero e2e test failures.'
+  reported_at: '2026-10-30T10:04:25Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-promoted-build
