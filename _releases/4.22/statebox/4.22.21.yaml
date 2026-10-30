@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-10-30T17:39:04Z'
+updated_at: '2026-10-30T17:39:58Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -111,6 +111,17 @@ tasks:
     Resolution: rather than waive, re-ran the azure-fips upgrade job via `job run --upgrade_to quay.io/openshift-release-dev/ocp-release:4.22.21-x86_64`. New run 6b8ecf29 PASSED 12:30:14Z. Swapped it in for the DiskPressure-evicted retry ffba9bcc via jobctl update-retried-job-run, which also popped aggregated/accepted; the aggregator recomputed at 17:39Z and set accepted=true.
 
     GCP was never actually failing - the BO3 threshold is round((len(retriedJobs)+1.1)/2) over retries only, so its single passing retry already cleared a threshold of 1. Its re-run 05ab6af7 (also SUCCESS) was surplus.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-10-30T17:39:16Z'
+  completed_at: '2026-10-30T17:39:56Z'
+  result: |-
+    2026-10-30T17:39:16Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-10-30T17:39:16Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.22.21
+    2026-10-30T17:39:18Z: INFO: Image Digest: sha256:828fa71fe839d280cd731271d04917c5a5ca7f7ce49dd68e3eb1a5d37f9f7f02
+    2026-10-30T17:39:18Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=828fa71fe839d280cd731271d04917c5a5ca7f7ce49dd68e3eb1a5d37f9f7f02/signature-1
+    2026-10-30T17:39:56Z: INFO: Signature check PASSED
+    2026-10-30T17:39:56Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 176031'
   reported_at: '2026-10-30T07:23:16Z'
