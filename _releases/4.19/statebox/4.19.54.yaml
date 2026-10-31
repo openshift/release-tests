@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.54
 created_at: '2026-10-30T17:00:14Z'
-updated_at: '2026-10-31T12:59:17Z'
+updated_at: '2026-10-31T13:00:05Z'
 metadata:
   jira_ticket: ART-25046
   advisory_ids:
@@ -77,17 +77,18 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-10-31T02:25:30Z'
-  completed_at: '2026-10-31T12:59:17Z'
+  completed_at: '2026-10-31T13:00:03Z'
   result: |-
-    Image consistency check PASSED. Prow job cc2cf98e-9aec-4d1c-9e0e-cff2b048d7b8 (build 2116356079582449664) completed successfully.
-
-    Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2116356079582449664
-
-    Evidence (read directly from GCS, since the oar status-check command could not complete - see note below):
-    - finished.json: {"passed": true, "result": "SUCCESS", "pod": "cc2cf98e-9aec-4d1c-9e0e-cff2b048d7b8"}
-    - Build log: step image-consistency-check-release-qe-tests-image-consistency-check succeeded after 5m21s; phase test succeeded; "Reporting job state 'succeeded'". Total runtime 24m0s. No image inconsistencies reported.
-
-    Status set by AI (release lead session) via oar_update_task_status rather than by the normal oar image-consistency-check -i <job-id> path. Reason: two consecutive invocations of that command hung with no output and were aborted by the MCP client's 300s idle timeout, so the task was left stranded in "In Progress" despite the Prow job having finished successfully at 02:50 UTC. The Pass determination is based on the authoritative Prow artifacts above, not on inference.
+    2026-10-31T12:53:44Z: INFO: Initialized StateBox for release 4.19.54 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.54.yaml
+    2026-10-31T12:53:44Z: INFO: Checking image consistency check Prow job status for job ID: cc2cf98e-9aec-4d1c-9e0e-cff2b048d7b8
+    2026-10-31T12:53:44Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2116356079582449664
+    2026-10-31T12:53:44Z: INFO: Starting image health check for shipment MR 1101
+    2026-10-31T12:53:44Z: INFO: Stage release succeeded (verified by label)
+    2026-10-31T12:53:44Z: INFO: Processing MR 1101
+    2026-10-31T12:53:48Z: INFO: Found 833 images to check
+    2026-10-31T13:00:02Z: INFO: Completed image health check. Scanned 833 images, found 0 unhealthy
+    2026-10-31T13:00:03Z: INFO: Added image health summary to MR 1101
+    2026-10-31T13:00:03Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-10-31T02:25:49Z'
