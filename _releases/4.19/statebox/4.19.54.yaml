@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.54
 created_at: '2026-10-30T17:00:14Z'
-updated_at: '2026-10-31T02:24:21Z'
+updated_at: '2026-10-31T02:25:39Z'
 metadata:
   jira_ticket: ART-25046
   advisory_ids:
@@ -74,4 +74,15 @@ tasks:
     Notably, the gcp-ipi and azure-ipi-fips jobs that hit infrastructure failures on the candidate build (see analyze-candidate-build) both passed first-try here, confirming those were transient CI/cloud issues rather than payload defects.
 
     Gate check: PASSED. Proceeding to async tasks (image-consistency-check, stage-testing).
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-10-31T02:25:30Z'
+  completed_at: null
+  result: |-
+    2026-10-31T02:25:30Z: INFO: Initialized StateBox for release 4.19.54 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.54.yaml
+    2026-10-31T02:25:31Z: INFO: Loaded state from _releases/4.19/statebox/4.19.54.yaml (SHA: c2cffd7f)
+    2026-10-31T02:25:31Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-10-31T02:25:36Z: INFO: Triggered image consistency check Prow job: cc2cf98e-9aec-4d1c-9e0e-cff2b048d7b8
+    2026-10-31T02:25:36Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2116356079582449664
+    2026-10-31T02:25:38Z: INFO: sent slack message to <#team-qe-release>
 issues: []
