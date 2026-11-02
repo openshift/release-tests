@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.45
 created_at: '2026-10-29T23:00:13Z'
-updated_at: '2026-10-30T11:09:25Z'
+updated_at: '2026-11-02T06:44:57Z'
 metadata:
   jira_ticket: ART-25038
   advisory_ids:
@@ -92,4 +92,28 @@ tasks:
     2026-10-30T11:08:58Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=2284b7d032a2bcc021cb277d6bde2d413b7adb1a1bee84b322e6db758da53939/signature-1
     2026-10-30T11:09:23Z: INFO: Signature check PASSED
     2026-10-30T11:09:23Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-10-30T10:10:48Z'
+  completed_at: '2026-10-30T10:10:48Z'
+  result: |-
+    Waivable CI infrastructure failures accepted by release lead ([EMAIL_REDACTED]); confirmed by a clean manual re-run.
+
+    Candidate build 4.20.0-0.nightly-2026-10-28-174721 aggregated with accepted=false. 5 of 6 blocking jobs passed first attempt (aws-ipi, aws-ipi-disruptive, gcp-ipi, azure-ipi-fips, upgrade-from-stable-4.20-aws-ipi). The sole BO3 failure was periodic-ci-openshift-openshift-tests-private-release-4.20-automated-release-stable-4.20-upgrade-from-stable-4.19-gcp-ipi-f999: first=failure, retries=[success, failure]; threshold round((2+1.1)/2)=2, successes=1.
+
+    ROOT CAUSE - GCP CI service-project IAM policy exhaustion, not a product defect. Both failed attempts aborted identically during installer pre-provisioning:
+      "failed during pre-provisioning: failed to add worker roles: failed to set IAM policy:
+       googleapi: Error 400: The number of members in the policy (1,503) is larger than the
+       maximum allowed size 1,500., badRequest" / Installer exit code 4
+    - attempt 1 (run 2115601467858489344): 19m20s, died at install
+    - attempt 3 (run 2115617509045440512): 16m33s, died at install
+    The cascading "dial tcp: lookup api.ci-op-*: no such host" errors in later teardown steps are downstream symptoms of a cluster that was never created.
+
+    EVIDENCE OF NON-PRODUCT NATURE: cluster install never completed so zero product tests ran; testResultSummary is null on all attempts and no failing scenario appears anywhere in the file; the successful retry (run 2115617487469940736, 2h49m) completed the full 4.19->4.20 GCP upgrade on this payload.
+
+    CONFIRMATION: manual re-run triggered 2026-10-30T10:10:48Z via `job run <job> --upgrade_to registry.ci.openshift.org/ocp/release:4.20.0-0.nightly-2026-10-28-174721` (CLI used because MCP job_run sets RELEASE_IMAGE_LATEST, wrong for upgrade jobs; verified pod_spec_options showed RELEASE_IMAGE_TARGET). Gangway id a1e10790-0087-4df2-a8f5-e7d0975c73b0, Prow run 2116110564743712768. Result: passed=true, SUCCESS, completed ~2026-10-30T14:24Z. Same job and payload passing cleanly on a healthy node confirms the earlier failures were environmental.
+
+    NOTE: the result file still shows accepted=false - the aggregator skips builds already marked aggregated=true, so this manual re-run was never folded in. Cosmetic only; this task is informational and does not gate the release (analyze-promoted-build is the gate and passed separately).
+
+    FOLLOW-UP: GCP CI project IAM policy at 1,503/1,500 members needs pruning by test-platform; it will keep failing GCP installs until addressed.
 issues: []
