@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.45
 created_at: '2026-10-29T23:00:13Z'
-updated_at: '2026-11-02T06:44:57Z'
+updated_at: '2026-11-02T14:27:28Z'
 metadata:
   jira_ticket: ART-25038
   advisory_ids:
@@ -116,4 +116,22 @@ tasks:
     NOTE: the result file still shows accepted=false - the aggregator skips builds already marked aggregated=true, so this manual re-run was never folded in. Cosmetic only; this task is informational and does not gate the release (analyze-promoted-build is the gate and passed separately).
 
     FOLLOW-UP: GCP CI project IAM policy at 1,503/1,500 members needs pruning by test-platform; it will keep failing GCP installs until addressed.
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-11-02T14:27:17Z'
+  completed_at: null
+  result: |-
+    2026-11-02T14:27:17Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-11-02T14:27:23Z: INFO: RHCOS nvr is rhcos-x86_64-4.20.9.6.202610281336-0
+    2026-11-02T14:27:23Z: INFO: The commit metadata is kernel-5.14.0-570.152.1.el9_6
+    2026-11-02T14:27:23Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 147773, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 147776, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-9.6.0-z-candidate', 'perm': 'rhel9-gate', 'perm_id': 81}, {'arches': '', 'id': 154306, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 154307, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.19-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 163377, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 163378, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.20-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 171957, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 171958, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.21-rhel-9-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 203855, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:91492-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 203965, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:89229-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 204010, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:89332-released', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 204013, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHBA-2026:89649-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-11-02T14:27:24Z: INFO: Successfully approved MR 1102
+    2026-11-02T14:27:24Z: INFO: Successfully added QE approval to MR 1102
+    2026-11-02T14:27:25Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:92283
+    2026-11-02T14:27:26Z: INFO: The metadata url is not accessible
+    2026-11-02T14:27:26Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-11-02T14:27:26Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-11-02T14:27:26Z: INFO: Background metadata checker process started (PID: 33651) - running independently after parent exit
+    2026-11-02T14:27:26Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.20_20261102_092726.log
+    2026-11-02T14:27:26Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues: []
