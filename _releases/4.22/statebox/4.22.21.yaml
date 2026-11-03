@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-11-03T08:17:03Z'
+updated_at: '2026-11-03T08:20:39Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -381,8 +381,19 @@ issues:
     WAITING_ON_PUB. Next: wait for 628004 COMPLETE, then move 176031 to REL_PREP.
     176032 is clear to move but held until 176031 completes.'
   reported_at: '2026-11-03T08:17:03Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'RESOLVED 2026-11-03T08:19Z. Re-triggered cdn_stage push job 628004
+    went WAITING_ON_PUB -> COMPLETE at 08:19:08Z, clearing the "Staging push jobs
+    not complete" blocker. Release lead then moved both advisories QE->REL_PREP manually
+    in the Errata UI: 176031 at 08:18:59Z, 176032 at 08:19:13Z. Both now show status=REL_PREP,
+    rhnqa=1, qa_complete=1. The transition log again recorded "TPS not complete (optional)
+    / TPS RHNQA not complete (optional)", reconfirming TPS/RHNQA are not gating and
+    the failed staging push was the sole blocker. Shipment MR 1103 verified approved
+    (2/2 required, approvers pruan + konflux bot) with labels stage-release-success,
+    stage-testing-success, verify-release-success; merge_status can_be_merged. All
+    QE-side work for 4.22.21 is complete; remaining steps (merge MR 1103, run prod-release
+    pipeline) are ART''s.'
   blocker: true
   related_tasks:
   - change-advisory-status
+  resolved_at: '2026-11-03T08:20:39Z'
