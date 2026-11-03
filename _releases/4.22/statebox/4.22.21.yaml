@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-11-03T07:57:23Z'
+updated_at: '2026-11-03T08:06:49Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -340,3 +340,21 @@ issues:
   related_tasks:
   - push-to-cdn-staging
   resolved_at: '2026-10-30T11:09:00Z'
+- issue: 'change-advisory-status failed 2026-11-03T07:57:23Z - NOT a timeout. Scheduler
+    check #35 found the metadata URL accessible at 07:57:19Z, then Errata rejected
+    the QE->REL_PREP transition on rpm advisory 176031 within 4s. Root cause: ART
+    respun/reworked 176031 on 2026-11-02, after QE completed push-to-cdn-staging on
+    10-30. That day: RHEL-10 builds removed (09:17Z), OCPBUGS-132542 removed (10:06Z),
+    all CdnQA TPS jobs rescheduled (10:19Z), bug 2556068/CVE-2026-111943 removed (10:34Z),
+    type changed RHSA->RHBA (10:38Z), 9 builds dropped and state bounced NEW_FILES->QE
+    (10:42Z). The respin reset the CDN QA sign-off: 176031 now has rhnqa=0, qa_complete=0,
+    pushcount=0, whereas sibling rhcos 176032 has rhnqa=1 and shipped 4.22.20 rpm
+    advisory 175386 has rhnqa=1/qa_complete=1. (TPS NOT_STARTED is a red herring -
+    175386 shows that too.) Fix: re-run push-to-cdn-staging (advisory.py:149 only
+    skips pushes completed since the last respin), then re-run change-advisory-status.'
+  reported_at: '2026-11-03T08:06:49Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
