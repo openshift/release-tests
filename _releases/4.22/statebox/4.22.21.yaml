@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-11-03T08:11:12Z'
+updated_at: '2026-11-03T08:17:03Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -368,3 +368,21 @@ issues:
   related_tasks:
   - change-advisory-status
   resolved_at: '2026-11-03T08:11:12Z'
+- issue: 'CONFIRMED cause of change-advisory-status failure 2026-11-03T07:57:23Z:
+    Errata blocked QE->REL_PREP on rpm advisory 176031 with "Staging push jobs not
+    complete" - verified manually in the Errata UI by the release lead. 176031 had
+    cdn_stage push job 627428 in FAILED state (alongside 627445 COMPLETE); a FAILED
+    stage push counts as incomplete and blocks the transition. Trigger: ART''s 2026-11-02
+    respin (RHEL-10 builds removed, CVE-2026-111943 dropped, RHSA->RHBA, NEW_FILES->QE)
+    invalidated QE''s Oct-30 stage push. Two earlier hypotheses are RETRACTED: rhnqa=0
+    is not a blocker (4.22.20 advisory 175386 moved to REL_PREP logging "TPS RHNQA
+    not complete (optional)"), and VM Kerberos expiry was speculation. Fix: release
+    lead clicked Push Now on 176031 ~08:15Z; new cdn_stage push job 628004 created,
+    WAITING_ON_PUB. Next: wait for 628004 COMPLETE, then move 176031 to REL_PREP.
+    176032 is clear to move but held until 176031 completes.'
+  reported_at: '2026-11-03T08:17:03Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
