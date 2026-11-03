@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.21
 created_at: '2026-10-29T13:00:12Z'
-updated_at: '2026-11-03T08:06:49Z'
+updated_at: '2026-11-03T08:11:12Z'
 metadata:
   jira_ticket: ART-25029
   advisory_ids:
@@ -353,8 +353,18 @@ issues:
     175386 shows that too.) Fix: re-run push-to-cdn-staging (advisory.py:149 only
     skips pushes completed since the last respin), then re-run change-advisory-status.'
   reported_at: '2026-11-03T08:06:49Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'WITHDRAWN - the rhnqa=0 root cause in this note is WRONG, do not act
+    on it. Refuted by 4.22.20 rpm advisory 175386, which Errata moved QE->REL_PREP
+    on 2026-10-27T15:44:09Z while explicitly logging "TPS not complete (optional)
+    / TPS RHNQA not complete (optional)" - and did so 41 min after a respin that rescheduled
+    all its CdnQA jobs. TPS and RHNQA are optional for this transition, so a CDN re-push
+    of 176031 is NOT required and would not unblock anything. The original inference
+    compared a SHIPPED_LIVE advisory against a QE one and mistook post-shipment QA
+    flags for preconditions. The timeline facts in the note (scheduler succeeded at
+    check #35, Errata rejected within 4s, ART respin on 11-02) remain accurate; only
+    the cause is wrong. See replacement issue for the corrected hypothesis.'
   blocker: true
   related_tasks:
   - change-advisory-status
+  resolved_at: '2026-11-03T08:11:12Z'
