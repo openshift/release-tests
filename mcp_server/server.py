@@ -671,6 +671,23 @@ async def oar_check_cve_tracker_bug(release: str, notify: bool = False) -> str:
 
 
 @mcp.tool()
+async def oar_check_blocking_sec_alerts(release: str) -> str:
+    """
+    Check for blocking security alerts across all RHSA advisories.
+
+    WRITE OPERATION: Creates blocking issue in StateBox when alerts are found.
+
+    Args:
+        release: Z-stream release version (e.g., "4.19.1")
+
+    Returns:
+        Blocking security alert check results
+    """
+    result = await invoke_oar_command_async(release, "check-blocking-sec-alerts", [])
+    return format_result(result)
+
+
+@mcp.tool()
 async def oar_image_signed_check(release: str) -> str:
     """
     Check if release images are properly signed.
