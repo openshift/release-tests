@@ -39,7 +39,35 @@
           "jobStartTime": "2026-11-05T02:30:00Z",
           "jobID": "04707c37-d1d1-4bd9-bb6c-eb6773fabbce",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-automated-release-aws-ipi-f999/2118168925161132032",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-11-05T07:31:54Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 113,
+              "failures": 5,
+              "errors": 0,
+              "skipped": 23,
+              "failingScenarios": [
+                "[sig-networking] SDN infw Author:anusaxen-High-61481-LEVEL0-StagerunBoth-Ingress Node Firewall Operator Installation ",
+                "[sig-networking] SDN metallb Author:asood-NonHyperShiftHOST-LEVEL0-StagerunBoth-High-43074-MetalLB-Operator installation [Serial]",
+                "[sig-networking] SDN nmstate-operator installation Author:qiowang-LEVEL0-StagerunBoth-Critical-47088-NMState Operator installation ",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server",
+                "[sig-operators] OLM v1 oprun should Author:jiazha-LEVEL0-ROSA-OSD_CCS-ARO-NonHyperShiftHOST-ConnectedOnly-Critical-80458-clustercatalog get x509 error since it cannot get the custom CA automatically [Serial]"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 20,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-11-05T02:30:05Z",
