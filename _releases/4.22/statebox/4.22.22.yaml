@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.22
 created_at: '2026-11-05T08:00:15Z'
-updated_at: '2026-11-05T12:17:49Z'
+updated_at: '2026-11-05T13:25:25Z'
 metadata:
   jira_ticket: ART-25290
   advisory_ids:
@@ -58,14 +58,18 @@ tasks:
     2026-11-05T12:16:06Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2118316415059496960
     2026-11-05T12:16:08Z: INFO: sent slack message to <#team-qe-release>
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-11-05T12:17:40Z'
-  completed_at: null
+  completed_at: '2026-11-05T13:25:24Z'
   result: |-
-    2026-11-05T12:17:40Z: INFO: Initialized StateBox for release 4.22.22 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.22.yaml
-    2026-11-05T12:17:41Z: INFO: Loaded state from _releases/4.22/statebox/4.22.22.yaml (SHA: 47975542)
-    2026-11-05T12:17:41Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-11-05T12:17:46Z: INFO: Triggered image consistency check Prow job: ddfbe9bd-5465-4c32-a237-eb7d977c633e
-    2026-11-05T12:17:46Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118316835899183104
-    2026-11-05T12:17:48Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-05T13:14:43Z: INFO: Initialized StateBox for release 4.22.22 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.22.yaml
+    2026-11-05T13:14:43Z: INFO: Checking image consistency check Prow job status for job ID: ddfbe9bd-5465-4c32-a237-eb7d977c633e
+    2026-11-05T13:14:43Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118316835899183104
+    2026-11-05T13:14:43Z: INFO: Starting image health check for shipment MR 1131
+    2026-11-05T13:14:43Z: INFO: Stage release succeeded (verified by label)
+    2026-11-05T13:14:43Z: INFO: Processing MR 1131
+    2026-11-05T13:14:47Z: INFO: Found 840 images to check
+    2026-11-05T13:25:23Z: INFO: Completed image health check. Scanned 840 images, found 0 unhealthy
+    2026-11-05T13:25:24Z: INFO: Added image health summary to MR 1131
+    2026-11-05T13:25:24Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 issues: []
