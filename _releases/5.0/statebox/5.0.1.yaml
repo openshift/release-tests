@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.1
 created_at: '2026-11-04T22:00:14Z'
-updated_at: '2026-11-05T12:36:36Z'
+updated_at: '2026-11-05T12:39:11Z'
 metadata:
   jira_ticket: ART-25100
   advisory_ids:
@@ -166,6 +166,25 @@ tasks:
     Initial: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-4.22-gcp-ipi-f999/2117714830612762624
     periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-5.0-aws-ipi-f999
     Initial: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-5.0-aws-ipi-f999/2117714854453186560
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-11-05T12:38:36Z'
+  completed_at: null
+  result: |-
+    2026-11-05T12:38:36Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-11-05T12:38:58Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-11-05T12:39:00Z: INFO: RHCOS nvr is rhcos-x86_64-5.0.10.2.202611022203-0
+    2026-11-05T12:39:01Z: INFO: The commit metadata is kernel-6.12.0-211.73.1.el10_2
+    2026-11-05T12:39:02Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 168665, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhivos-2.0-z-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 168666, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhivos-2.0-z-pending', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 170024, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-10.2-z', 'perm': 'trusted', 'perm_id': 6}, {'arches': '', 'id': 170027, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-10.2-z-candidate', 'perm': 'rhel10-gate', 'perm_id': 100}, {'arches': '', 'id': 176446, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179416, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.0-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 196789, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.1-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 204878, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'RHSA-2026:93911-released', 'perm': 'trusted', 'perm_id': 6}]
+    2026-11-05T12:39:05Z: INFO: Successfully approved MR 1127
+    2026-11-05T12:39:05Z: INFO: Successfully added QE approval to MR 1127
+    2026-11-05T12:39:07Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:94538
+    2026-11-05T12:39:08Z: INFO: The metadata url is not accessible
+    2026-11-05T12:39:08Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-11-05T12:39:08Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-11-05T12:39:08Z: INFO: Background metadata checker process started (PID: 22084) - running independently after parent exit
+    2026-11-05T12:39:08Z: INFO: Process output redirected to: /var/folders/q2/dyjmfgns1kz25_f0fmbd9rmr0000gn/T/oar_logs/metadata_checker_5.0_20261105_133908.log
+    2026-11-05T12:39:09Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 176450'
   reported_at: '2026-11-05T07:02:36Z'
