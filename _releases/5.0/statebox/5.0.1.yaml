@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.1
 created_at: '2026-11-04T22:00:14Z'
-updated_at: '2026-11-05T11:35:23Z'
+updated_at: '2026-11-05T12:29:58Z'
 metadata:
   jira_ticket: ART-25100
   advisory_ids:
@@ -86,6 +86,36 @@ tasks:
     2026-11-05T08:23:39Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=a43b861d912fad275f7c1c76cae38c2b5a33f4f1245807b376fe59707d3ef98a/signature-1
     2026-11-05T08:23:40Z: INFO: Signature check PASSED
     2026-11-05T08:23:40Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-05T12:29:58Z'
+  completed_at: '2026-11-05T12:29:58Z'
+  result: |
+    Promoted build 5.0.1 (amd64 / x86_64): PASS.
+    Payload: quay.io/openshift-release-dev/ocp-release:5.0.1-x86_64
+    Digest: sha256:a43b861d912fad275f7c1c76cae38c2b5a33f4f1245807b376fe59707d3ef98a
+    Release controller phase: Accepted. QE results: aggregated=true, accepted=true.
+    All 3 required QE stable upgrade jobs passed, including Azure FIPS after two successful reruns. No pending or unresolved failed required QE job.
+    QE evidence: https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-5.0.1-amd64.json
+
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-4.22-aws-ipi-f999
+    Initial run: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-4.22-aws-ipi-f999/2118199822111477760
+
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-5.0-azure-ipi-fips-f999
+    Initial run: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-5.0-azure-ipi-fips-f999/2118199843972190208
+    Rerun 1: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-5.0-azure-ipi-fips-f999/2118272841055997952
+    Rerun 2: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-5.0-azure-ipi-fips-f999/2118272874488795136
+
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-5.0-gcp-ipi-f999
+    Initial run: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-stable-5.0-upgrade-from-stable-5.0-gcp-ipi-f999/2118199885181227008
+
+    Additional release-controller checks (informing jobs): 13/14 succeeded; aws-ovn-serial-1of2 succeeded after retry.
+    One informing job remains failed: hypershift-ovn-conformance-5.0. Both attempts timed out waiting 30 minutes for HostedCluster Available during the create-hostedcluster pre-step, before conformance tests started. Underlying cause is not established; this is not evidence that all informing checks passed. This job is outside the required QE stable job set and does not change the successful QE acceptance result.
+    HyperShift initial run: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-hypershift-release-5.0-periodics-e2e-aws-ovn-conformance/2118090999178727424
+    HyperShift retry: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-hypershift-release-5.0-periodics-e2e-aws-ovn-conformance/2118099759406256128
+    Release controller: https://amd64.ocp.releases.ci.openshift.org/releasetag/5.0.1
+    All 4 reported release-controller upgrade runs succeeded (3 from 5.0.0 and 1 from 4.22.0-0.nightly-2026-11-04-004149).
+    Scope: promoted amd64 build and its recorded required QE stable jobs; this is the build architecture listed in release metadata.
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 176450'
   reported_at: '2026-11-05T07:02:36Z'
