@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.1
 created_at: '2026-11-04T22:00:14Z'
-updated_at: '2026-11-05T12:29:58Z'
+updated_at: '2026-11-05T12:36:36Z'
 metadata:
   jira_ticket: ART-25100
   advisory_ids:
@@ -116,6 +116,56 @@ tasks:
     Release controller: https://amd64.ocp.releases.ci.openshift.org/releasetag/5.0.1
     All 4 reported release-controller upgrade runs succeeded (3 from 5.0.0 and 1 from 4.22.0-0.nightly-2026-11-04-004149).
     Scope: promoted amd64 build and its recorded required QE stable jobs; this is the build architecture listed in release metadata.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-11-05T12:36:36Z'
+  completed_at: '2026-11-05T12:36:36Z'
+  result: |
+    Candidate build for release 5.0.1: 5.0.0-0.nightly-2026-11-03-123514 (amd64 / x86_64).
+    Analysis outcome: PASS — manually accepted by the release owner with known failures accounted for. The release owner explicitly confirmed manual promotion in this review.
+    This records the manual acceptance decision; it does not claim that the failed nightly tests passed or that every linked fix is merged.
+    Release controller: Accepted; all 12 blocking jobs succeeded. Informing jobs: 46 succeeded, 22 failed; async jobs: 1 succeeded. The detailed issue accounting below covers the QE report, not every informing job.
+    QE report flags at review: manual_promotion=true, accepted=false, aggregated=false. Manual promotion is an override; automated QE acceptance remains false.
+    QE job outcomes: 3/6 job definitions succeeded (AWS disruptive and both upgrade jobs). AWS IPI, Azure IPI FIPS and GCP IPI each failed initially and on both retries (9 failed runs total). All recorded runs have completion timestamps.
+    Across the initial and retry QE reports there are exactly 7 unique failing scenarios: 27649, 55223, 61481, 43074, 47088, 74948, 75492. Scenario 44910 does not occur in this report. Other reported scenarios passed or were skipped.
+
+    Known-failure disposition supplied by the release owner from the prior review (ticket assignments and fix states below are user-provided, not independently revalidated in this update):
+    - 47088 (NMState), 61481 (Ingress Node Firewall), 43074 (MetalLB): attributed in the prior review to art-images-share. Fix tracked in openshift/release PR #88381, open and awaiting nightly validation. The release owner confirms these three operator installations passed in the separate stage-testing run on promoted 5.0.1; this is supporting evidence on the promoted payload, not a passing rerun of this candidate.
+    - 27649: OCPQE-32098; reported as unassigned and unfixed.
+    - 55223: OCPBUGS-109582; reported as Verified, with cherry-pick #1590 not yet merged (repository not specified in the supplied review).
+    - 74948: OCPBUGS-132871; reported as assigned and unfixed.
+    - 75492: OCPQE-32101; test fix #30098 reported as not yet merged (repository not specified in the supplied review).
+    All failures in the QE report are accounted for by the supplied known-issue mapping and operator-installation diagnosis. Manual acceptance is based on the release owner decision; pending fixes and the lack of a validating nightly run remain explicit.
+
+    Evidence:
+    https://github.com/openshift/release-tests/blob/record/_releases/ocp-test-result-5.0.0-0.nightly-2026-11-03-123514-amd64.json
+    https://amd64.ocp.releases.ci.openshift.org/releasetag/5.0.0-0.nightly-2026-11-03-123514
+    https://github.com/openshift/release/pull/88381
+    https://redhat.atlassian.net/browse/OCPQE-32098
+    https://redhat.atlassian.net/browse/OCPBUGS-109582
+    https://redhat.atlassian.net/browse/OCPBUGS-132871
+    https://redhat.atlassian.net/browse/OCPQE-32101
+    Stage-testing evidence already recorded as Pass in this release StateBox: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2118099490803027968
+
+    Recorded QE runs:
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999
+    Initial: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2117714765533941760
+    Retry 1: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2117761921926041600
+    Retry 2: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-f999/2117761943556067328
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999
+    Initial: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999/2117714766448300032
+    Retry 1: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999/2117762006688731136
+    Retry 2: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-azure-ipi-fips-f999/2117762028603969536
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999
+    Initial: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2117714787885387776
+    Retry 1: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2117778357851525120
+    Retry 2: failure; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-gcp-ipi-f999/2117778379397664768
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-disruptive-f999
+    Initial: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-aws-ipi-disruptive-f999/2117714809255366656
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-4.22-gcp-ipi-f999
+    Initial: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-4.22-gcp-ipi-f999/2117714830612762624
+    periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-5.0-aws-ipi-f999
+    Initial: success; https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-automated-release-nightly-5.0-upgrade-from-stable-5.0-aws-ipi-f999/2117714854453186560
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 176450'
   reported_at: '2026-11-05T07:02:36Z'
