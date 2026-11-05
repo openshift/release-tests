@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.22
 created_at: '2026-11-05T08:00:15Z'
-updated_at: '2026-11-05T09:24:37Z'
+updated_at: '2026-11-05T12:16:09Z'
 metadata:
   jira_ticket: ART-25290
   advisory_ids:
@@ -44,4 +44,17 @@ tasks:
     2026-11-05T09:24:36Z: INFO: checking push job status for advisory 176602 ...
     2026-11-05T09:24:36Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-05T09:24:36Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-11-05T12:16:00Z'
+  completed_at: null
+  result: |-
+    2026-11-05T12:16:00Z: INFO: Initialized StateBox for release 4.22.22 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.22.yaml
+    2026-11-05T12:16:00Z: INFO: Triggering stage testing Prow job
+    2026-11-05T12:16:00Z: INFO: Loaded state from _releases/4.22/statebox/4.22.22.yaml (SHA: 3a3fe11b)
+    2026-11-05T12:16:00Z: INFO: Stage release succeeded (verified by label)
+    2026-11-05T12:16:00Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-11-05T12:16:06Z: INFO: Triggered stage testing Prow job: dc508d4d-9597-42da-9a1e-50982cbc44df
+    2026-11-05T12:16:06Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2118316415059496960
+    2026-11-05T12:16:08Z: INFO: sent slack message to <#team-qe-release>
 issues: []
