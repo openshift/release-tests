@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.75
 created_at: '2026-11-05T11:00:11Z'
-updated_at: '2026-11-06T10:14:08Z'
+updated_at: '2026-11-06T10:14:26Z'
 metadata:
   jira_ticket: ART-25286
   advisory_ids:
@@ -111,4 +111,15 @@ tasks:
     The aws first-attempt failure was CI infrastructure with no product signal: the job died in the pre phase before the cluster was installed, with pod "aws-ipi-f999-ipi-conf-aws-usage-info" pending more than 1h and kubelet reporting "Failed to create pod sandbox: DeadlineExceeded" / "stream terminated by RST_STREAM". Both retries passed cleanly. Same pattern as 4.16.74, where azure failed first and both retries passed.
 
     No openshift-extended-test suite runs in the stable-build job set (upgrade-only, pass/fail), so the candidate-build operator-install trio is not present here. Gate check PASSED.
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-11-06T10:14:22Z'
+  completed_at: '2026-11-06T10:14:24Z'
+  result: |-
+    2026-11-06T10:14:22Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-11-06T10:14:22Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.16.75
+    2026-11-06T10:14:24Z: INFO: Image Digest: sha256:4eda35319bd4f1cf62676d74e2ca48c772e55114f81c373fc09d01f75f83b4ce
+    2026-11-06T10:14:24Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=4eda35319bd4f1cf62676d74e2ca48c772e55114f81c373fc09d01f75f83b4ce/signature-1
+    2026-11-06T10:14:24Z: INFO: Signature check PASSED
+    2026-11-06T10:14:24Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
