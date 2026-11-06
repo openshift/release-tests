@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.42
 created_at: '2026-11-06T10:00:23Z'
-updated_at: '2026-11-06T10:34:21Z'
+updated_at: '2026-11-06T14:02:25Z'
 metadata:
   jira_ticket: ART-25336
   advisory_ids:
@@ -41,6 +41,16 @@ tasks:
     2026-11-06T10:34:20Z: INFO: checking push job status for advisory 176622 ...
     2026-11-06T10:34:20Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-06T10:34:20Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-11-06T14:02:25Z'
+  completed_at: '2026-11-06T14:02:25Z'
+  result: 'Candidate build analysis deferred. Test failures detected (3 networking
+    operator installation tests failed consistently across platforms). Analysis suggests
+    likely test automation bug (100% failure consistency, scoped to operator installation
+    only). Cannot confirm due to GCS credential issues. Decision: Proceed to promotion
+    phase, re-evaluate with promoted build tests. Build: 4.21.0-0.nightly-2026-11-04-230437,
+    accepted: false'
 issues:
 - issue: 'take-ownership failed with network error: Connection aborted during advisory
     update. RPM advisory 176621 owner updated, but RHCOS advisory 176622 may need
