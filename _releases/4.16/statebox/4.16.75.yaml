@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.75
 created_at: '2026-11-05T11:00:11Z'
-updated_at: '2026-11-06T10:13:26Z'
+updated_at: '2026-11-06T10:13:58Z'
 metadata:
   jira_ticket: ART-25286
   advisory_ids:
@@ -98,4 +98,17 @@ tasks:
     NO GATE IMPACT - the stable-build QE blocking suite is upgrade-only (3 jobs, no openshift-extended-test), so these tests are not part of the 4.16.75 promoted-build gate.
 
     DECISION - tdavid owns the fix (openshift/release#88381 proposed then withdrawn pending a decision on using the staging catalog) and confirmed in #forum-ocp-art that this does not block release approval if other checks pass. Precedent: 4.22.22 shipped on the same candidate-build failure with no analysis task recorded. Waived by release lead [EMAIL_REDACTED].
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-06T10:13:58Z'
+  completed_at: '2026-11-06T10:13:58Z'
+  result: |-
+    Promoted build 4.16.75 test results aggregated=true, accepted=true. All 3 QE blocking upgrade jobs passed BO3:
+    - stable-4.16-upgrade-from-stable-4.15-aws-ipi: failure, success, success (2/3 - PASS)
+    - stable-4.16-upgrade-from-stable-4.16-azure-ipi-fips: success (1/1 - PASS)
+    - stable-4.16-upgrade-from-stable-4.16-gcp-ipi: success (1/1 - PASS)
+
+    The aws first-attempt failure was CI infrastructure with no product signal: the job died in the pre phase before the cluster was installed, with pod "aws-ipi-f999-ipi-conf-aws-usage-info" pending more than 1h and kubelet reporting "Failed to create pod sandbox: DeadlineExceeded" / "stream terminated by RST_STREAM". Both retries passed cleanly. Same pattern as 4.16.74, where azure failed first and both retries passed.
+
+    No openshift-extended-test suite runs in the stable-build job set (upgrade-only, pass/fail), so the candidate-build operator-install trio is not present here. Gate check PASSED.
 issues: []
