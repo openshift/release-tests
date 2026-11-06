@@ -14,13 +14,46 @@
           "jobStartTime": "2026-11-06T00:23:58Z",
           "jobID": "27f61e63-ada7-4bb9-80f9-849af99378c5",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2118499599013384192",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-11-06T03:03:58Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 67,
+              "failures": 1,
+              "errors": 0,
+              "skipped": 14,
+              "failingScenarios": [
+                "[sig-operators] OLM for an end user handle within a namespace Author:bandrade-LEVEL0-Critical-41026-OCS should only one installplan generated when creating subscription"
+              ]
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-11-06T00:24:04Z",
           "jobID": "d9bc1b4d-34fa-4873-a170-c929ea429fbc",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.13-automated-release-aws-ipi-f999/2118499625127120896",
-          "jobState": "pending"
+          "jobState": "success",
+          "jobCompletionTime": "2026-11-06T02:48:57Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 67,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 15
+            },
+            "cucushift-e2e": {
+              "total": 24,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -102,5 +135,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release:4.13.0-0.nightly-2026-11-05-144742",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/4.13.0-0.nightly-2026-11-05-144742"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
