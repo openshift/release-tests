@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.16.75
 created_at: '2026-11-05T11:00:11Z'
-updated_at: '2026-11-06T10:27:14Z'
+updated_at: '2026-11-06T10:39:42Z'
 metadata:
   jira_ticket: ART-25286
   advisory_ids:
@@ -47,20 +47,30 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-11-06T10:26:36Z'
-  completed_at: '2026-11-06T06:54:05Z'
+  completed_at: '2026-11-06T10:39:40Z'
   result: |-
-    Prow job 75534e3e-e7a4-47cb-9c92-ef08ce4d341c state=success, completed 2026-11-06T06:54:05Z.
-    URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118594541014487040
-
-    CONSISTENCY CHECK PASSED: "Checked 186 payload images" / "All payload images are consistent with images in shipment." Every image in quay.io/openshift-release-dev/ocp-release:4.16.75-x86_64 matched a component in shipment MR 1128.
-
-    CAVEAT - the supplementary image HEALTH scan returned no data. It logged "Found 0 images to check" / "Scanned 0 images, found 0 unhealthy" after all three stage advisory fetches failed:
-      https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/{173824,173889,173914}/advisory.yaml
-    Each returns HTTP 404 (GitLab HTML "Not Found"), which yaml.safe_load reports as "mapping values are not allowed here". oar/core/shipment.py:1205 swallows the exception and leaves the image list empty, so the bot posted a clean-looking "Images scanned: 0 / Unhealthy: 0 / Health info missed: 0" to MR 1128.
-
-    This is specific to MR 1128 - comparable releases got real scans from the same code path: 4.18.60 (MR 1126) scanned 855 images, 4.22.22 (MR 1131) scanned 840. Open question for ART: why MR 1128's stage advisories do not resolve. Not a release blocker; the payload-vs-shipment consistency check above is unaffected and passed.
-
-    NOTE: a re-run attempt at 2026-11-06T10:26 short-circuited on the "Image consistency check already passed, skipping" guard, which downgraded this task to In Progress without doing any work. Status restored here; the Prow job result above remains valid.
+    2026-11-06T10:39:38Z: INFO: Initialized StateBox for release 4.16.75 at openshift/release-tests/z-stream/_releases/4.16/statebox/4.16.75.yaml
+    2026-11-06T10:39:38Z: INFO: Checking image consistency check Prow job status for job ID: 75534e3e-e7a4-47cb-9c92-ef08ce4d341c
+    2026-11-06T10:39:38Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118594541014487040
+    2026-11-06T10:39:38Z: INFO: Starting image health check for shipment MR 1128
+    2026-11-06T10:39:38Z: INFO: Stage release succeeded (verified by label)
+    2026-11-06T10:39:38Z: INFO: Processing MR 1128
+    2026-11-06T10:39:39Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/173824/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 9, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-06T10:39:39Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/173889/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 9, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-06T10:39:40Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/173914/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 9, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-06T10:39:40Z: INFO: Found 0 images to check
+    2026-11-06T10:39:40Z: INFO: Completed image health check. Scanned 0 images, found 0 unhealthy
+    2026-11-06T10:39:40Z: INFO: Added image health summary to MR 1128
+    2026-11-06T10:39:40Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: Pass
   started_at: '2026-11-06T09:04:43Z'
