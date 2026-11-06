@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.55
 created_at: '2026-11-06T10:00:14Z'
-updated_at: '2026-11-06T21:07:58Z'
+updated_at: '2026-11-06T21:27:44Z'
 metadata:
   jira_ticket: ART-25338
   advisory_ids:
@@ -76,14 +76,32 @@ tasks:
     2026-11-06T20:18:13Z: INFO: Process output redirected to: /tmp/oar_logs/metadata_checker_4.19_20261106_151813.log
     2026-11-06T20:18:13Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-11-06T21:07:56Z'
-  completed_at: null
+  completed_at: '2026-11-06T21:27:43Z'
   result: |-
-    2026-11-06T21:07:56Z: INFO: Initialized StateBox for release 4.19.55 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.55.yaml
-    2026-11-06T21:07:56Z: INFO: Checking image consistency check Prow job status for job ID: f8db4f33-6150-4bfb-8afe-9454999636a2
-    2026-11-06T21:07:57Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118805401326587904
-    2026-11-06T21:07:57Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-06T21:27:41Z: INFO: Initialized StateBox for release 4.19.55 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.55.yaml
+    2026-11-06T21:27:41Z: INFO: Checking image consistency check Prow job status for job ID: f8db4f33-6150-4bfb-8afe-9454999636a2
+    2026-11-06T21:27:41Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118805401326587904
+    2026-11-06T21:27:41Z: INFO: Starting image health check for shipment MR 1150
+    2026-11-06T21:27:41Z: INFO: Stage release succeeded (verified by label)
+    2026-11-06T21:27:41Z: INFO: Processing MR 1150
+    2026-11-06T21:27:42Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/174624/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 22, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-06T21:27:42Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/175280/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 22, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-06T21:27:43Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/175365/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 22, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-06T21:27:43Z: INFO: Found 0 images to check
+    2026-11-06T21:27:43Z: INFO: Completed image health check. Scanned 0 images, found 0 unhealthy
+    2026-11-06T21:27:43Z: INFO: Added image health summary to MR 1150
+    2026-11-06T21:27:43Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: analyze-promoted-build
   status: Pass
   started_at: '2026-11-06T20:43:03Z'
