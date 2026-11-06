@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.103
 created_at: '2026-11-06T11:00:06Z'
-updated_at: '2026-11-06T20:30:49Z'
+updated_at: '2026-11-06T20:33:25Z'
 metadata:
   jira_ticket: ART-25337
   advisory_ids:
@@ -61,4 +61,15 @@ tasks:
   result: Prow job 92aba0ec-e6f8-485b-a4dd-9386471447b5 (aws-ipi) completed SUCCESS
     (passed=true, prowjob state=success). Verified via authenticated gcloud storage
     (qe-private-deck).
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-11-06T20:33:23Z'
+  completed_at: '2026-11-06T20:33:24Z'
+  result: |-
+    2026-11-06T20:33:23Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-11-06T20:33:23Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.12.103
+    2026-11-06T20:33:24Z: INFO: Image Digest: sha256:8d31fe41fbd8e2065d676840f79ed9287dbdb5630e39c9a7a9b87d7ba874307e
+    2026-11-06T20:33:24Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=8d31fe41fbd8e2065d676840f79ed9287dbdb5630e39c9a7a9b87d7ba874307e/signature-1
+    2026-11-06T20:33:24Z: INFO: Signature check PASSED
+    2026-11-06T20:33:24Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues: []
