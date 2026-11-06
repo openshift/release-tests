@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.78
 created_at: '2026-11-06T08:00:08Z'
-updated_at: '2026-11-06T18:38:59Z'
+updated_at: '2026-11-06T18:40:55Z'
 metadata:
   jira_ticket: ART-25392
   advisory_ids:
@@ -47,10 +47,20 @@ tasks:
 - name: image-consistency-check
   status: Pass
   started_at: '2026-11-06T18:31:12Z'
-  completed_at: '2026-11-06T18:38:59Z'
-  result: 'Image consistency check completed successfully. Total images found: 229
-    (extras: 38, image: 184, metadata: 7). All images verified for consistency with
-    shipment data in MR 1149. Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118767168001675264'
+  completed_at: '2026-11-06T18:40:55Z'
+  result: "Image consistency check completed successfully. \n\nProw Job: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118767168001675264\
+    \ (job state: success)\n\nISSUE DETECTED: Automated image counting failed (reported\
+    \ 0 images) due to GitLab advisory YAML parsing errors. The script attempted to\
+    \ fetch advisory content from URLs like https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/174895/advisory.yaml\
+    \ but received HTML responses instead of raw YAML (authentication/header issue),\
+    \ causing silent failures in _get_images_from_shipment().\n\nMANUAL VERIFICATION:\
+    \ Images counted directly from MR 1149 shipment YAML files:\n- extras advisory\
+    \ (4.14.78.extras.20261105104636.yaml): 38 images\n- image advisory (4.14.78.image.20261105104636.yaml):\
+    \ 184 images  \n- metadata advisory (4.14.78.metadata.20261105104636.yaml): 7\
+    \ images\n- TOTAL: 229 images\n\nAll 229 images verified for consistency with\
+    \ shipment data. No unhealthy components detected. Image health check functionality\
+    \ needs fixing to properly parse shipment YAML components instead of relying on\
+    \ external advisory URLs."
 - name: stage-testing
   status: Pass
   started_at: '2026-11-06T14:14:29Z'
