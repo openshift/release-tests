@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.42
 created_at: '2026-11-06T10:00:23Z'
-updated_at: '2026-11-06T10:34:00Z'
+updated_at: '2026-11-06T10:34:21Z'
 metadata:
   jira_ticket: ART-25336
   advisory_ids:
@@ -30,6 +30,17 @@ tasks:
   result: CVE coverage verified. OCPBUGS-135018 properly covered by RHCOS advisory
     176622 (separate from Konflux shipment). This is expected for Konflux releases
     with RHCOS CVEs.
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-11-06T10:34:05Z'
+  completed_at: '2026-11-06T10:34:20Z'
+  result: |-
+    2026-11-06T10:34:05Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-11-06T10:34:20Z: INFO: checking push job status for advisory 176621 ...
+    2026-11-06T10:34:20Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-06T10:34:20Z: INFO: checking push job status for advisory 176622 ...
+    2026-11-06T10:34:20Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-06T10:34:20Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: 'take-ownership failed with network error: Connection aborted during advisory
     update. RPM advisory 176621 owner updated, but RHCOS advisory 176622 may need
