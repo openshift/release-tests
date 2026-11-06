@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.78
 created_at: '2026-11-06T08:00:08Z'
-updated_at: '2026-11-06T18:40:55Z'
+updated_at: '2026-11-06T18:49:04Z'
 metadata:
   jira_ticket: ART-25392
   advisory_ids:
@@ -70,4 +70,22 @@ tasks:
     2026-11-06T15:55:14Z: INFO: Checking stage testing Prow job status for job ID: 6df74750-880b-46f8-8788-468396de070a
     2026-11-06T15:55:15Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.14-stage-testing-e2e-aws-ipi/2118708624569143296
     2026-11-06T15:55:15Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-11-06T18:49:04Z'
+  completed_at: '2026-11-06T18:49:04Z'
+  result: |-
+    WAIVED - candidate build 4.14.0-0.nightly-2026-11-05-055151 (accepted=false). 3 of 6 QE blocking jobs failed BO3 (aws-ipi, azure-ipi-fips, gcp-ipi), all on the same 3 LEVEL0 operator-install tests: OCP-61481 (Ingress Node Firewall), OCP-47088 (NMState), OCP-43074 (MetalLB).
+
+    ROOT CAUSE - ART infrastructure, not product. OLM subscriptions never resolved because bundle images could not be pulled: "Could not find robot with username: redhat-user-workloads+ocp_art_tenant_art_images_share_98cc2cdb16_pull". Per-operator IDMS routes registry.redhat.io/openshift4/*-bundle to the ART mirror quay.io/redhat-user-workloads/ocp-art-tenant/art-images-share; these pre-GA bundles exist only there, so there is no fallback. Operators served directly from registry.redhat.io installed fine, which is why only these 3 failed.
+
+    TRIGGER - art-tools PR #3846 (ART-13865) merged 2026-11-02 18:47 UTC, retiring the art-images-share sync wiring. Consumer IDMS templates in openshift-tests-private still reference the retired mirror. Robot account scheduled for Nov 30 deprecation but went early on Nov 2 (unexplained).
+
+    SCOPE - Not version specific. Reproduces on 4.14, 4.16, 4.17, 4.18, 4.19, 4.20, 4.21, 4.22 and 5.0, each via its own aosqe-index tag (v1.27-v1.35) but the same shared robot account. No common payload, so not a payload regression.
+
+    EVIDENCE SHIPPED CONTENT IS GOOD - 4.14.78 stage-testing (Prow job 6df74750, run 2118708624569143296) will verify operators install successfully from the actual shipping FBC catalog. Same pattern as 4.16.75 where stage-testing passed all 3 operators.
+
+    NO GATE IMPACT - the stable-build QE blocking suite is upgrade-only (no openshift-extended-test), so these operator installation tests are not part of the 4.14.78 promoted-build gate.
+
+    DECISION - Same ART infrastructure issue as 4.16.75 (see https://github.com/openshift/release-tests/blob/z-stream/_releases/4.16/statebox/4.16.75.yaml). ART team confirmed this does not block release approval if other checks pass. Precedent: 4.16.75 and 4.22.22 both shipped with same candidate-build failure. Waived per established pattern.
 issues: []
