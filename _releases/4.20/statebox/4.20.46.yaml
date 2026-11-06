@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.46
 created_at: '2026-11-06T00:00:15Z'
-updated_at: '2026-11-06T10:11:49Z'
+updated_at: '2026-11-06T10:15:19Z'
 metadata:
   jira_ticket: ART-25291
   advisory_ids:
@@ -30,6 +30,17 @@ tasks:
   result: CVE tracker bug OCPBUGS-135017 correctly attached to RHCOS advisory 176618
     (RHSA-2026:95377). Not expected in Konflux shipment MR 1134 per design. Verified
     coverage through Errata advisory.
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-11-06T10:15:13Z'
+  completed_at: '2026-11-06T10:15:17Z'
+  result: |-
+    2026-11-06T10:15:13Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-11-06T10:15:17Z: INFO: checking push job status for advisory 176617 ...
+    2026-11-06T10:15:17Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-06T10:15:17Z: INFO: checking push job status for advisory 176618 ...
+    2026-11-06T10:15:17Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-06T10:15:17Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
