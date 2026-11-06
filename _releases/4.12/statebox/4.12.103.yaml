@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.103
 created_at: '2026-11-06T11:00:06Z'
-updated_at: '2026-11-06T20:30:33Z'
+updated_at: '2026-11-06T20:30:49Z'
 metadata:
   jira_ticket: ART-25337
   advisory_ids:
@@ -55,16 +55,10 @@ tasks:
   result: Prow job 21f14e27-d1a3-44dc-a096-81f3a5286e09 completed SUCCESS (passed=true).
     Verified via GCS finished.json.
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-11-06T19:04:35Z'
-  completed_at: null
-  result: |-
-    2026-11-06T19:04:35Z: INFO: Initialized StateBox for release 4.12.103 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.103.yaml
-    2026-11-06T19:04:35Z: INFO: Triggering stage testing Prow job
-    2026-11-06T19:04:36Z: INFO: Loaded state from _releases/4.12/statebox/4.12.103.yaml (SHA: 0eb15182)
-    2026-11-06T19:04:36Z: INFO: Stage release succeeded (verified by label)
-    2026-11-06T19:04:36Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-11-06T19:04:41Z: INFO: Triggered stage testing Prow job: 92aba0ec-e6f8-485b-a4dd-9386471447b5
-    2026-11-06T19:04:41Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.12-stage-testing-e2e-aws-ipi/2118781632260345856
-    2026-11-06T19:04:43Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-11-06T20:30:49Z'
+  result: Prow job 92aba0ec-e6f8-485b-a4dd-9386471447b5 (aws-ipi) completed SUCCESS
+    (passed=true, prowjob state=success). Verified via authenticated gcloud storage
+    (qe-private-deck).
 issues: []
