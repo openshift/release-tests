@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.46
 created_at: '2026-11-06T00:00:15Z'
-updated_at: '2026-11-06T00:00:15Z'
+updated_at: '2026-11-06T08:36:11Z'
 metadata:
   jira_ticket: ART-25291
   advisory_ids:
@@ -11,5 +11,16 @@ metadata:
   candidate_builds:
     x86_64: 4.20.0-0.nightly-2026-11-04-221745
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/1134
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-11-06T08:35:51Z'
+  completed_at: '2026-11-06T08:36:09Z'
+  result: |-
+    2026-11-06T08:35:51Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-11-06T08:36:04Z: INFO: QA Owner of advisory 176617 is updated to [EMAIL_REDACTED]
+    2026-11-06T08:36:06Z: INFO: QA Owner of advisory 176618 is updated to [EMAIL_REDACTED]
+    2026-11-06T08:36:06Z: INFO: Added QE release lead comment to MR 1134
+    2026-11-06T08:36:09Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-06T08:36:09Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues: []
