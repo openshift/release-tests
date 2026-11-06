@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.14.78
 created_at: '2026-11-06T08:00:08Z'
-updated_at: '2026-11-06T18:49:04Z'
+updated_at: '2026-11-06T18:51:00Z'
 metadata:
   jira_ticket: ART-25392
   advisory_ids:
@@ -88,4 +88,17 @@ tasks:
     NO GATE IMPACT - the stable-build QE blocking suite is upgrade-only (no openshift-extended-test), so these operator installation tests are not part of the 4.14.78 promoted-build gate.
 
     DECISION - Same ART infrastructure issue as 4.16.75 (see https://github.com/openshift/release-tests/blob/z-stream/_releases/4.16/statebox/4.16.75.yaml). ART team confirmed this does not block release approval if other checks pass. Precedent: 4.16.75 and 4.22.22 both shipped with same candidate-build failure. Waived per established pattern.
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-06T18:51:00Z'
+  completed_at: '2026-11-06T18:51:00Z'
+  result: |-
+    Promoted build 4.14.78 test results: aggregated=true, accepted=true. All 3 QE blocking upgrade jobs passed BO3 on first attempt:
+    - stable-4.14-upgrade-from-stable-4.13-aws-ipi: success (1/1 - PASS)
+    - stable-4.14-upgrade-from-stable-4.14-azure-ipi-fips: success (1/1 - PASS)
+    - stable-4.14-upgrade-from-stable-4.14-gcp-ipi: success (1/1 - PASS)
+
+    No failures detected. All jobs completed successfully without requiring retries.
+
+    The stable-build QE blocking suite is upgrade-only (no openshift-extended-test), so the candidate-build operator-install failures (OCP-61481, OCP-47088, OCP-43074) are not present in this test set. Gate check PASSED.
 issues: []
