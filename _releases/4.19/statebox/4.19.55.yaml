@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.55
 created_at: '2026-11-06T10:00:14Z'
-updated_at: '2026-11-06T13:57:20Z'
+updated_at: '2026-11-06T18:25:11Z'
 metadata:
   jira_ticket: ART-25338
   advisory_ids:
@@ -37,6 +37,15 @@ tasks:
     2026-11-06T13:57:19Z: INFO: checking push job status for advisory 176679 ...
     2026-11-06T13:57:19Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-06T13:57:19Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: stage-testing
+  status: Pass
+  started_at: '2026-11-06T18:25:08Z'
+  completed_at: '2026-11-06T18:25:09Z'
+  result: |-
+    2026-11-06T18:25:08Z: INFO: Initialized StateBox for release 4.19.55 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.55.yaml
+    2026-11-06T18:25:08Z: INFO: Checking stage testing Prow job status for job ID: 487f04d4-c8c4-4ffa-bcbd-adf469a2c7b5
+    2026-11-06T18:25:09Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi/2118703465424228352
+    2026-11-06T18:25:09Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
