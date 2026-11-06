@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.42
 created_at: '2026-11-06T10:00:23Z'
-updated_at: '2026-11-06T18:03:49Z'
+updated_at: '2026-11-06T18:04:15Z'
 metadata:
   jira_ticket: ART-25336
   advisory_ids:
@@ -58,6 +58,17 @@ tasks:
   result: 'All blocking tests passed BO3 verification. Build: 4.21.42, accepted: true,
     aggregated: true. Test results: AWS upgrade 4.20→4.21 (success), Azure FIPS upgrade
     4.21→4.21 (success), GCP upgrade 4.21→4.21 (success)'
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-11-06T18:04:06Z'
+  completed_at: null
+  result: |-
+    2026-11-06T18:04:06Z: INFO: Initialized StateBox for release 4.21.42 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.42.yaml
+    2026-11-06T18:04:07Z: INFO: Loaded state from _releases/4.21/statebox/4.21.42.yaml (SHA: c89d138b)
+    2026-11-06T18:04:07Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-06T18:04:12Z: INFO: Triggered image consistency check Prow job: e21eca61-fcc6-421a-9e58-b81dd176ed21
+    2026-11-06T18:04:12Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2118766409189167104
+    2026-11-06T18:04:14Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'take-ownership failed with network error: Connection aborted during advisory
     update. RPM advisory 176621 owner updated, but RHCOS advisory 176622 may need
