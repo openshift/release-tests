@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.60
 created_at: '2026-11-09T18:00:11Z'
-updated_at: '2026-11-09T19:22:25Z'
+updated_at: '2026-11-09T19:38:36Z'
 metadata:
   jira_ticket: ART-25422
   advisory_ids:
@@ -42,6 +42,17 @@ tasks:
     2026-11-09T18:50:45Z: INFO: Updated state file _releases/4.17/statebox/4.17.60.yaml (attempt 1)
     2026-11-09T18:50:46Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
     2026-11-09T18:50:46Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-11-09T19:38:27Z'
+  completed_at: '2026-11-09T19:38:34Z'
+  result: |-
+    2026-11-09T19:38:27Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-11-09T19:38:34Z: INFO: checking push job status for advisory 176884 ...
+    2026-11-09T19:38:34Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-09T19:38:34Z: INFO: checking push job status for advisory 176885 ...
+    2026-11-09T19:38:34Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-09T19:38:34Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
