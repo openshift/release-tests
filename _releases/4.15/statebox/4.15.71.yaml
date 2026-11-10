@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.15.71
 created_at: '2026-11-09T01:00:11Z'
-updated_at: '2026-11-10T05:47:27Z'
+updated_at: '2026-11-10T05:50:15Z'
 metadata:
   jira_ticket: ART-25404
   advisory_ids:
@@ -75,4 +75,17 @@ tasks:
     2026-11-10T05:47:23Z: INFO: Triggered stage testing Prow job: ddd81c77-585a-4eb8-a014-985b2a95e616
     2026-11-10T05:47:23Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.15-stage-testing-e2e-aws-ipi/2120030544728166400
     2026-11-10T05:47:26Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-11-10T05:50:15Z'
+  completed_at: '2026-11-10T05:50:15Z'
+  result: 'Candidate build 4.15.0-0.nightly-2026-11-05-180759: accepted=false. 3 of
+    6 jobs failed BO3 (aws-ipi, gcp-ipi, azure-ipi-fips). Consistent cross-platform
+    failures (all 3 platforms, all 3 attempts) on operator-install tests: OCP-61481
+    Ingress Node Firewall Operator, OCP-43074 MetalLB Operator, OCP-47088 NMState
+    Operator. Azure-only OCP-59384/59674 (monitoring) and OCP-13532 (toleration) were
+    first-run-only flakes that passed on retry. WAIVED by release lead [EMAIL_REDACTED]:
+    known issue observed across all releases per Slack https://redhat-internal.slack.com/archives/CB95J6R4N/p1793813706483249
+    (operator catalog/index-image availability, not a payload regression). Promoted
+    build 4.15.71 passed all tests with accepted=true, confirming payload is clean.'
 issues: []
