@@ -1388,6 +1388,7 @@ class ShipmentData:
         """
         unhealthy_components = []
         total_scanned = 0
+        failed_scans = 0
         
         logger.info(f"Starting image health check for shipment MR {self._mr.get_id()}")
 
@@ -1431,12 +1432,17 @@ class ShipmentData:
                         })
                 except Exception as e:
                     logger.warning(f"Failed to check freshness for image: {str(e)}")
+                    failed_scans += 1
                     continue
         except Exception as e:
             raise ShipmentDataException(f"Failed to check shipment image health: {e}") from e
 
         if not total_scanned:
             raise ShipmentDataException("No images scanned; image health was not checked")
+        if failed_scans:
+            raise ShipmentDataException(
+                f"Image health check incomplete: {failed_scans} of {len(images)} images could not be scanned"
+            )
         logger.info(f"Completed image health check. Scanned {total_scanned} images, found {len(unhealthy_components)} unhealthy")
         return ImageHealthData(
             total_scanned=total_scanned,

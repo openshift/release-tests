@@ -778,6 +778,22 @@ class TestShipmentImageHealth(unittest.TestCase):
         self.assertEqual(health_data.unhealthy_components[1]["name"], "test-component2")
         self.assertEqual(health_data.unhealthy_components[1]["grade"], "F")
 
+        for failed_index in (0, 1):
+            with self.subTest(failed_index=failed_index):
+                mock_pyxis.reset_mock()
+                responses = [
+                    ([{"start_date": "2025-02-01T00:00:00Z", "grade": "A"}], None),
+                    ([{"start_date": "2025-02-01T00:00:00Z", "grade": "A"}], None),
+                ]
+                responses[failed_index] = RuntimeError("Pyxis unavailable")
+                mock_pyxis.side_effect = responses
+
+                with self.assertRaisesRegex(
+                    ShipmentDataException, "Image health check incomplete: 1 of 2 images could not be scanned"
+                ):
+                    self.shipment.check_component_image_health()
+                self.assertEqual(mock_pyxis.call_count, 2)
+
     @patch('oar.core.shipment.ShipmentData.check_component_image_health')
     def test_generate_image_health_summary(self, mock_check):
         """Test summary generation from health check data"""
