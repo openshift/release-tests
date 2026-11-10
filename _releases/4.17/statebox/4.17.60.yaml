@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.60
 created_at: '2026-11-09T18:00:11Z'
-updated_at: '2026-11-09T21:10:56Z'
+updated_at: '2026-11-10T06:12:33Z'
 metadata:
   jira_ticket: ART-25422
   advisory_ids:
@@ -43,6 +43,13 @@ tasks:
     2026-11-09T19:38:34Z: INFO: checking push job status for advisory 176885 ...
     2026-11-09T19:38:34Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-09T19:38:34Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-10T06:12:33Z'
+  completed_at: '2026-11-10T06:12:33Z'
+  result: Promoted build 4.17.60 test result (ocp-test-result-4.17.60-amd64.json)
+    shows aggregated=true, accepted=true. All blocking tests passed BO3 verification.
+    Gate check PASSED.
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
