@@ -1,3 +1,4 @@
+import json
 import unittest
 import gitlab
 import os
@@ -679,6 +680,36 @@ class TestShipmentData(unittest.TestCase):
         sd = ShipmentData(cs)
         missed_trackers = sd.check_cve_tracker_bug()
         self.assertTrue(len(missed_trackers) == 0)
+
+
+class TestShipmentCVETrackers(unittest.TestCase):
+    @patch("oar.core.shipment.ShipmentData._initialize_mr")
+    @patch("oar.core.shipment.get_elliott_env", return_value={})
+    @patch("oar.core.shipment.subprocess.Popen")
+    def test_check_cve_tracker_bug_categories(self, mock_popen, mock_env, mock_mr):
+        """Check shipment categories while leaving RPM/RHCOS to advisories."""
+        config = MagicMock()
+        config.release = "4.14.77"
+        shipment = ShipmentData(config)
+        mock_mr.return_value.get_jira_issues.return_value = [
+            "OCPBUGS-1000", "OCPBUGS-2000", "OCPBUGS-3000"
+        ]
+        mock_popen.return_value.returncode = 0
+        mock_popen.return_value.communicate.return_value = (
+            json.dumps({
+                "image": ["OCPBUGS-1000", "OCPBUGS-1001"],
+                "extras": ["OCPBUGS-2000", "OCPBUGS-2001"],
+                "metadata": ["OCPBUGS-3000", "OCPBUGS-3001"],
+                "rpm": ["OCPBUGS-132434"],
+                "rhcos": ["OCPBUGS-132739"],
+            }).encode("utf-8"),
+            b"",
+        )
+
+        self.assertEqual(
+            shipment.check_cve_tracker_bug(),
+            ["OCPBUGS-1001", "OCPBUGS-2001", "OCPBUGS-3001"],
+        )
 
 
 class TestShipmentDataMergedMR(unittest.TestCase):

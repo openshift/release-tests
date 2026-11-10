@@ -1502,7 +1502,7 @@ class ShipmentData:
         """
         Call elliott cmd to check if any new CVE tracker bug found for shipment
 
-        In Konflux flow, shipment data only contains image-related CVE bugs.
+        In Konflux flow, image, extras and metadata CVE bugs are checked against shipment data.
         rpm and rhcos CVE bugs are checked separately via AdvisoryManager against RHSA advisories.
 
         Raises:
@@ -1543,15 +1543,14 @@ class ShipmentData:
             # Get all jira issues from shipment yamls
             shipment_jira_issues = self.get_jira_issues()
 
-            # IMPORTANT: In Konflux flow, shipment yamls only contain IMAGE bugs.
-            # rpm and rhcos bugs are in RHSA advisories (checked by AdvisoryManager).
-            # Only check "image" key from elliott output to avoid false positives.
-            image_trackers = json_obj.get("image", [])
-            if isinstance(image_trackers, list):
-                for tracker in image_trackers:
-                    # add it to missed bug list if it is not found in shipment yamls
-                    if tracker not in shipment_jira_issues:
-                        logger.info(f"Missed CVE tracker bug {tracker} is not found in shipment data")
-                        cve_tracker_bugs.append(tracker)
+            # RPM/RHCOS trackers are checked against RHSA advisories by AdvisoryManager.
+            for kind in ("image", "extras", "metadata"):
+                trackers = json_obj.get(kind, [])
+                if isinstance(trackers, list):
+                    for tracker in trackers:
+                        # add it to missed bug list if it is not found in shipment yamls
+                        if tracker not in shipment_jira_issues:
+                            logger.info(f"Missed CVE tracker bug {tracker} is not found in shipment data")
+                            cve_tracker_bugs.append(tracker)
 
         return cve_tracker_bugs
