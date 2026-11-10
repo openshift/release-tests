@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.60
 created_at: '2026-11-09T18:00:11Z'
-updated_at: '2026-11-10T06:12:33Z'
+updated_at: '2026-11-10T06:12:55Z'
 metadata:
   jira_ticket: ART-25422
   advisory_ids:
@@ -50,6 +50,17 @@ tasks:
   result: Promoted build 4.17.60 test result (ocp-test-result-4.17.60-amd64.json)
     shows aggregated=true, accepted=true. All blocking tests passed BO3 verification.
     Gate check PASSED.
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-11-10T06:12:45Z'
+  completed_at: null
+  result: |-
+    2026-11-10T06:12:45Z: INFO: Initialized StateBox for release 4.17.60 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.60.yaml
+    2026-11-10T06:12:46Z: INFO: Loaded state from _releases/4.17/statebox/4.17.60.yaml (SHA: 51ccc9de)
+    2026-11-10T06:12:46Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-10T06:12:51Z: INFO: Triggered image consistency check Prow job: a8b9765d-570c-4e19-babc-5a9ef21604a3
+    2026-11-10T06:12:51Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2120036954400624640
+    2026-11-10T06:12:53Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
