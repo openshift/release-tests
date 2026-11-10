@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.17.60
 created_at: '2026-11-09T18:00:11Z'
-updated_at: '2026-11-10T07:31:26Z'
+updated_at: '2026-11-10T07:31:32Z'
 metadata:
   jira_ticket: ART-25422
   advisory_ids:
@@ -79,17 +79,13 @@ tasks:
     2026-11-10T07:31:25Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
-  started_at: '2026-11-10T06:13:00Z'
+  started_at: '2026-11-10T07:31:31Z'
   completed_at: null
   result: |-
-    2026-11-10T06:13:00Z: INFO: Initialized StateBox for release 4.17.60 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.60.yaml
-    2026-11-10T06:13:00Z: INFO: Triggering stage testing Prow job
-    2026-11-10T06:13:00Z: INFO: Loaded state from _releases/4.17/statebox/4.17.60.yaml (SHA: 55eb19af)
-    2026-11-10T06:13:00Z: INFO: Stage release succeeded (verified by label)
-    2026-11-10T06:13:00Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-11-10T06:13:06Z: INFO: Triggered stage testing Prow job: 00ebff9f-88ae-4a41-9610-10548bb58e3f
-    2026-11-10T06:13:06Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-stage-testing-e2e-aws-ipi/2120037014068793344
-    2026-11-10T06:13:08Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-10T07:31:31Z: INFO: Initialized StateBox for release 4.17.60 at openshift/release-tests/z-stream/_releases/4.17/statebox/4.17.60.yaml
+    2026-11-10T07:31:31Z: INFO: Checking stage testing Prow job status for job ID: 00ebff9f-88ae-4a41-9610-10548bb58e3f
+    2026-11-10T07:31:31Z: INFO: Job state: pending, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-stage-testing-e2e-aws-ipi/2120037014068793344
+    2026-11-10T07:31:31Z: INFO: task [Stage Testing] status is changed to [In Progress]
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-11-10T06:16:12Z'
