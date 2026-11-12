@@ -2,6 +2,7 @@ import json
 import unittest
 import gitlab
 import os
+import yaml
 from unittest.mock import MagicMock, patch
 from oar.core.shipment import GitLabMergeRequest, ShipmentData, GitLabServer, ImageHealthData
 from oar.core.exceptions import (
@@ -763,18 +764,31 @@ class TestShipmentImageHealth(unittest.TestCase):
         self.mock_config.get_shipment_mr.return_value = "https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/427"
         # Don't mock the token - let it be retrieved from environment
         self.mock_config.get_gitlab_token.return_value = os.getenv('GITLAB_TOKEN')
-        self.shipment = ShipmentData(self.mock_config)
+        with patch('oar.core.shipment.GitLabMergeRequest'):
+            self.shipment = ShipmentData(self.mock_config)
+        self.shipment._mr.gitlab_url = self.mock_config.get_gitlab_url()
 
+    @patch('oar.core.shipment.requests.get')
     @patch('oar.core.shipment.ShipmentData.is_stage_release_success', return_value=True)
     @patch('oar.core.shipment.ShipmentData._query_pyxis_vulnerabilities')
     @patch('oar.core.shipment.ShipmentData._query_pyxis_freshness')
-    @patch('oar.core.shipment.ShipmentData._get_images_from_shipment')
-    def test_check_component_image_health(self, mock_components, mock_pyxis, mock_vulns, mock_stage):
-        """Test checking container image health status"""
-        mock_components.return_value = [
+    def test_check_component_image_health(self, mock_pyxis, mock_vulns, mock_stage, mock_get):
+        """Check image health using authenticated advisory file reads."""
+        images = [
             {"component": "test-component1", "containerImage": "test1@sha256:123", "architecture": "amd64"},
             {"component": "test-component2", "containerImage": "test2@sha256:456", "architecture": "arm64"}
         ]
+        mr = self.shipment._mr
+        mr.get_all_files.return_value = ["image.yaml", "catalog.fbc.yaml"]
+        mr.get_file_content.return_value = yaml.safe_dump({
+            "shipment": {"environments": {"stage": {"advisory": {
+                "internal_url": "https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/123/advisory.yaml"
+            }}}}
+        })
+        project = mr.gl.projects.get.return_value
+        project.files.get.return_value.decode.return_value = yaml.safe_dump({
+            "spec": {"content": {"images": images}}
+        }).encode("utf-8")
         mock_pyxis.side_effect = [
             ([{"start_date": "2025-01-01T00:00:00Z", "grade": "A"}, {"start_date": "2025-02-01T00:00:00Z", "grade": "C"}], "/v1/images/id/abc/vulnerabilities"),
             ([{"start_date": "2025-02-01T00:00:00Z", "grade": "F"}], "/v1/images/id/def/vulnerabilities"),
@@ -783,6 +797,10 @@ class TestShipmentImageHealth(unittest.TestCase):
 
         health_data = self.shipment.check_component_image_health()
 
+        mr.gl.projects.get.assert_called_once_with("rhtap-release/advisories")
+        project.files.get.assert_called_once_with(file_path="data/advisories/123/advisory.yaml", ref="main")
+        mr.get_file_content.assert_called_once_with("image.yaml")
+        mock_get.assert_not_called()
         self.assertEqual(health_data.total_scanned, 2)
         self.assertEqual(health_data.unhealthy_count, 2)
         self.assertEqual(len(health_data.unhealthy_components), 2)
@@ -790,6 +808,22 @@ class TestShipmentImageHealth(unittest.TestCase):
         self.assertEqual(health_data.unhealthy_components[0]["grade"], "C")
         self.assertEqual(health_data.unhealthy_components[1]["name"], "test-component2")
         self.assertEqual(health_data.unhealthy_components[1]["grade"], "F")
+
+        for failed_index in (0, 1):
+            with self.subTest(failed_index=failed_index):
+                mock_pyxis.reset_mock()
+                responses = [
+                    ([{"start_date": "2025-02-01T00:00:00Z", "grade": "A"}], None),
+                    ([{"start_date": "2025-02-01T00:00:00Z", "grade": "A"}], None),
+                ]
+                responses[failed_index] = RuntimeError("Pyxis unavailable")
+                mock_pyxis.side_effect = responses
+
+                with self.assertRaisesRegex(
+                    ShipmentDataException, "Image health check incomplete: 1 of 2 images could not be scanned"
+                ):
+                    self.shipment.check_component_image_health()
+                self.assertEqual(mock_pyxis.call_count, 2)
 
     @patch('oar.core.shipment.ShipmentData.check_component_image_health')
     def test_generate_image_health_summary(self, mock_check):
@@ -830,7 +864,7 @@ class TestShipmentImageHealth(unittest.TestCase):
             self.assertIsInstance(health_data.total_scanned, int)
             self.assertIsInstance(health_data.unhealthy_count, int)
             self.assertIsInstance(health_data.unhealthy_components, list)
-            self.assertGreaterEqual(health_data.total_scanned, 0)
+            self.assertGreater(health_data.total_scanned, 0)
             self.assertGreaterEqual(health_data.unhealthy_count, 0)
             self.assertLessEqual(health_data.unhealthy_count, health_data.total_scanned)
 
@@ -860,7 +894,7 @@ class TestShipmentImageHealth(unittest.TestCase):
             print(f"\nImage health summary for MR {mr_id}:\n{summary}")
 
             self.assertIsInstance(health_data.total_scanned, int)
-            self.assertGreaterEqual(health_data.total_scanned, 0)
+            self.assertGreater(health_data.total_scanned, 0)
             self.assertIn("Images scanned", summary)
             self.assertIn("Unhealthy components detected", summary)
 

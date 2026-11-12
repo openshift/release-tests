@@ -6,6 +6,7 @@ import time
 import json
 import subprocess
 from datetime import datetime, timezone
+from urllib.parse import unquote, urlparse
 from gitlab import Gitlab
 from gitlab.exceptions import (
     GitlabError,
@@ -1169,6 +1170,49 @@ class ShipmentData:
         
         return modified_content
 
+    def _fetch_advisory_images(self, advisory_url: str, mr: GitLabMergeRequest) -> list:
+        """Read advisory images without relying on anonymous GitLab access."""
+        parsed = urlparse(advisory_url)
+        gitlab_host = urlparse(mr.gitlab_url).netloc
+        allowed_hosts = {gitlab_host, "errata.devel.redhat.com", "errata.stage.engineering.redhat.com"}
+        if parsed.scheme != "https" or parsed.netloc not in allowed_hosts:
+            raise ShipmentDataException(f"Advisory URL not allowed: {advisory_url}")
+
+        if parsed.netloc == gitlab_host:
+            project_path, separator, raw_path = parsed.path.strip("/").partition("/-/raw/")
+            ref, _, file_path = raw_path.partition("/")
+            if not separator or not project_path or not ref or not file_path:
+                raise ShipmentDataException(f"Invalid GitLab advisory raw URL: {advisory_url}")
+            try:
+                project = mr.gl.projects.get(unquote(project_path))
+                advisory_file = project.files.get(file_path=unquote(file_path), ref=unquote(ref))
+                text = advisory_file.decode().decode("utf-8")
+            except GitlabError as exc:
+                raise ShipmentDataException(
+                    f"Cannot read advisory {advisory_url} via GitLab API (HTTP {exc.response_code}); "
+                    f"verify the configured GitLab token has repository read access to {project_path}"
+                ) from exc
+        else:
+            response = requests.get(advisory_url, timeout=30, allow_redirects=False)
+            response.raise_for_status()
+            if response.status_code != 200:
+                raise ShipmentDataException(f"Unexpected HTTP {response.status_code} reading advisory {advisory_url}")
+            text = response.text
+
+        data = yaml.safe_load(text)
+        if not isinstance(data, dict) or not isinstance(data.get("spec"), dict):
+            raise ShipmentDataException(f"Advisory {advisory_url} must be a YAML mapping with spec")
+        content = data["spec"].get("content")
+        if not isinstance(content, dict):
+            raise ShipmentDataException(f"Advisory {advisory_url} must contain a content mapping")
+        images = content.get("images", [])
+        if not isinstance(images, list) or any(
+            not isinstance(image, dict) or not isinstance(image.get("containerImage"), str) or not image["containerImage"]
+            for image in images
+        ):
+            raise ShipmentDataException(f"Advisory {advisory_url} must contain an images list with containerImage values")
+        return images
+
     def _get_images_from_shipment(self, mr: GitLabMergeRequest) -> list:
         """Extract container images from advisories referenced in shipment YAML files.
         
@@ -1180,39 +1224,34 @@ class ShipmentData:
                   each containing containerImage, component, and architecture fields
                   
         Raises:
-            ShipmentDataException: If unable to process shipment files or fetch advisories
+            ShipmentDataException: If an advisory fails to load or no images are found
             
         Note:
             Skips files containing ".fbc." in their path
         """
         images = []
+        failures = []
         try:
             yaml_files = mr.get_all_files()
             for file_path in yaml_files:
-                # Skip files containing ".fbc." in their path
                 if ".fbc." in file_path.lower():
                     continue
-                    
                 try:
-                    content = mr.get_file_content(file_path)
-                    data = yaml.safe_load(content)
-                    
-                    # Get advisory URL and images
+                    data = yaml.safe_load(mr.get_file_content(file_path))
+                    if not isinstance(data, dict):
+                        raise ShipmentDataException("Shipment file must be a YAML mapping")
                     advisory_url = glom(data, 'shipment.environments.stage.advisory.internal_url', default=None)
                     if advisory_url:
-                        try:
-                            # Fetch advisory content and extract images
-                            advisory_content = yaml.safe_load(requests.get(advisory_url).text)
-                            images.extend(glom(advisory_content, 'spec.content.images', default=[]))
-                        except Exception as e:
-                            logger.warning(f"Failed to process advisory {advisory_url}: {str(e)}")
-                            continue
-                            
-                except Exception as e:
-                    logger.warning(f"Failed to process file {file_path}: {str(e)}")
-                    continue
-        except Exception as e:
-            raise ShipmentDataException(f"Failed to get images from shipment: {str(e)}")
+                        images.extend(self._fetch_advisory_images(advisory_url, mr))
+                except Exception as exc:
+                    logger.warning("Failed to process shipment file %s: %s", file_path, exc)
+                    failures.append(f"{file_path}: {exc}")
+        except Exception as exc:
+            raise ShipmentDataException(f"Failed to get images from shipment: {exc}") from exc
+        if failures:
+            raise ShipmentDataException(f"Failed to read shipment advisories: {'; '.join(failures)}")
+        if not images:
+            raise ShipmentDataException("No images found in shipment advisories; image health was not checked")
         return images
 
     def _get_image_digest(self, pull_spec: str) -> str:
@@ -1349,6 +1388,7 @@ class ShipmentData:
         """
         unhealthy_components = []
         total_scanned = 0
+        failed_scans = 0
         
         logger.info(f"Starting image health check for shipment MR {self._mr.get_id()}")
 
@@ -1392,10 +1432,17 @@ class ShipmentData:
                         })
                 except Exception as e:
                     logger.warning(f"Failed to check freshness for image: {str(e)}")
+                    failed_scans += 1
                     continue
         except Exception as e:
-            logger.error(f"Failed to process MR {self._mr.get_id()}: {str(e)}")
-                
+            raise ShipmentDataException(f"Failed to check shipment image health: {e}") from e
+
+        if not total_scanned:
+            raise ShipmentDataException("No images scanned; image health was not checked")
+        if failed_scans:
+            raise ShipmentDataException(
+                f"Image health check incomplete: {failed_scans} of {len(images)} images could not be scanned"
+            )
         logger.info(f"Completed image health check. Scanned {total_scanned} images, found {len(unhealthy_components)} unhealthy")
         return ImageHealthData(
             total_scanned=total_scanned,
