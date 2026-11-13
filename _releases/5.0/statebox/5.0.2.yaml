@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.2
 created_at: '2026-11-12T14:00:14Z'
-updated_at: '2026-11-13T11:42:21Z'
+updated_at: '2026-11-13T11:44:30Z'
 metadata:
   jira_ticket: ART-25790
   advisory_ids:
@@ -52,16 +52,32 @@ tasks:
     2026-11-13T09:31:07Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-13T09:31:07Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-11-13T09:43:50Z'
-  completed_at: null
+  completed_at: '2026-11-13T11:44:29Z'
   result: |-
-    2026-11-13T09:43:50Z: INFO: Initialized StateBox for release 5.0.2 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.2.yaml
-    2026-11-13T09:43:51Z: INFO: Loaded state from _releases/5.0/statebox/5.0.2.yaml (SHA: 91d87c6f)
-    2026-11-13T09:43:51Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-11-13T09:43:56Z: INFO: Triggered image consistency check Prow job: 38f0b9d8-2a7f-4d78-ba32-247bf7a336b0
-    2026-11-13T09:43:56Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2121177245375533056
-    2026-11-13T09:43:59Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-13T11:44:25Z: INFO: Initialized StateBox for release 5.0.2 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.2.yaml
+    2026-11-13T11:44:25Z: INFO: Checking image consistency check Prow job status for job ID: 38f0b9d8-2a7f-4d78-ba32-247bf7a336b0
+    2026-11-13T11:44:25Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2121177245375533056
+    2026-11-13T11:44:25Z: INFO: Starting image health check for shipment MR 1197
+    2026-11-13T11:44:25Z: INFO: Stage release succeeded (verified by label)
+    2026-11-13T11:44:25Z: INFO: Processing MR 1197
+    2026-11-13T11:44:26Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/179342/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 22, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-13T11:44:27Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/179396/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 22, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-13T11:44:29Z: WARNING: Failed to process advisory https://gitlab.cee.redhat.com/rhtap-release/advisories/-/raw/main/data/advisories/ocp-art-tenant/2026/179445/advisory.yaml: mapping values are not allowed here
+      in "<unicode string>", line 22, column 45:
+         ... atchMedia('(prefers-color-scheme: dark)').matches) {
+                                             ^
+    2026-11-13T11:44:29Z: INFO: Found 0 images to check
+    2026-11-13T11:44:29Z: INFO: Completed image health check. Scanned 0 images, found 0 unhealthy
+    2026-11-13T11:44:29Z: INFO: Added image health summary to MR 1197
+    2026-11-13T11:44:29Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-11-13T09:44:07Z'
