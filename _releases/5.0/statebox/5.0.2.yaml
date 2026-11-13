@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.2
 created_at: '2026-11-12T14:00:14Z'
-updated_at: '2026-11-13T09:31:09Z'
+updated_at: '2026-11-13T09:44:00Z'
 metadata:
   jira_ticket: ART-25790
   advisory_ids:
@@ -51,6 +51,17 @@ tasks:
     2026-11-13T09:31:07Z: INFO: checking push job status for advisory 177206 ...
     2026-11-13T09:31:07Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-13T09:31:07Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-11-13T09:43:50Z'
+  completed_at: null
+  result: |-
+    2026-11-13T09:43:50Z: INFO: Initialized StateBox for release 5.0.2 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.2.yaml
+    2026-11-13T09:43:51Z: INFO: Loaded state from _releases/5.0/statebox/5.0.2.yaml (SHA: 91d87c6f)
+    2026-11-13T09:43:51Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-13T09:43:56Z: INFO: Triggered image consistency check Prow job: 38f0b9d8-2a7f-4d78-ba32-247bf7a336b0
+    2026-11-13T09:43:56Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2121177245375533056
+    2026-11-13T09:43:59Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'Advisories in abnormal state (NEW_FILES instead of QE): 177205'
   reported_at: '2026-11-12T14:04:03Z'
