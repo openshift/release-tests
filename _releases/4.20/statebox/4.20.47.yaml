@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.47
 created_at: '2026-11-12T22:00:12Z'
-updated_at: '2026-11-16T17:13:49Z'
+updated_at: '2026-11-16T17:58:00Z'
 metadata:
   jira_ticket: ART-25808
   advisory_ids:
@@ -78,6 +78,15 @@ tasks:
     2026-11-13T11:46:49Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=0ef127b2abf5b186fe7ce159a0dc41b0e5b127a1fcce3332b42298b3cc9c0b2f/signature-1
     2026-11-13T11:46:49Z: INFO: Signature check PASSED
     2026-11-13T11:46:49Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-11-16T17:58:00Z'
+  completed_at: '2026-11-16T17:58:00Z'
+  result: Build 4.20.0-0.nightly-2026-11-11-125558 promoted manually. Rerun job failures
+    are not product bugs - aws-load-balancer-operator and external-dns-operator packages
+    missing from stage FBC catalog (quay.io/openshift-art/stage-fbc-fragments:ocp-4.20).
+    OLM cannot resolve subscriptions, causing test timeouts. This is a test infrastructure
+    issue, not a product regression.
 issues:
 - issue: Release tombstoned - Konflux invalidated builds produced before 2026-11-16.
     Z-streams prepared last week are no longer valid.
