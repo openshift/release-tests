@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.2
 created_at: '2026-11-12T14:00:14Z'
-updated_at: '2026-11-16T11:54:58Z'
+updated_at: '2026-11-16T11:56:29Z'
 metadata:
   jira_ticket: ART-25790
   advisory_ids:
@@ -52,14 +52,16 @@ tasks:
     2026-11-13T09:31:07Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-13T09:31:07Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: Fail
-  started_at: '2026-11-16T10:56:14Z'
-  completed_at: '2026-11-16T11:54:57Z'
+  status: In Progress
+  started_at: '2026-11-16T11:56:20Z'
+  completed_at: null
   result: |-
-    2026-11-16T11:54:57Z: INFO: Initialized StateBox for release 5.0.2 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.2.yaml
-    2026-11-16T11:54:57Z: INFO: Checking image consistency check Prow job status for job ID: 63a918be-4b87-4d5f-b9b1-f664a8bf3a8d
-    2026-11-16T11:54:57Z: INFO: Job state: failure, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2122282633692975104
-    2026-11-16T11:54:57Z: INFO: task [Image Consistency Check] status is changed to [Fail]
+    2026-11-16T11:56:20Z: INFO: Initialized StateBox for release 5.0.2 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.2.yaml
+    2026-11-16T11:56:21Z: INFO: Loaded state from _releases/5.0/statebox/5.0.2.yaml (SHA: 78644fce)
+    2026-11-16T11:56:21Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-16T11:56:26Z: INFO: Triggered image consistency check Prow job: 1554968f-e9e4-4c21-b4a7-fd6ff0e66dc6
+    2026-11-16T11:56:26Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2122297758026043392
+    2026-11-16T11:56:28Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
   status: Pass
   started_at: '2026-11-13T09:44:07Z'
