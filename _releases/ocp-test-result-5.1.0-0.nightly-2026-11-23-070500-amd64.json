@@ -58,13 +58,52 @@
           "jobStartTime": "2026-11-23T18:45:55Z",
           "jobID": "e6de86f0-fc6d-41b8-a20a-230f4c5d3e8d",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.1-automated-release-azure-ipi-fips-f999/2124937505852624896",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-11-23T21:54:44Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 3,
+              "errors": 0,
+              "skipped": 32,
+              "failingScenarios": [
+                "[sig-isc] Security_and_Compliance Compliance_Operator The Compliance Operator automates compliance check for OpenShift and CoreOS Author:pdhamdhe-LEVEL0-NonHyperShiftHOST-ARO-ConnectedOnly-Critical-27649-The ComplianceSuite reports the scan result as Compliant or Non-Compliant [Slow]",
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server",
+                "[sig-operators] OLM v1 oprun should Author:kuiwang-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-75492-cluster extension can not be installed with wrong sa or insufficient permission sa"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         },
         {
           "jobStartTime": "2026-11-23T18:46:00Z",
           "jobID": "9a03b58c-b05e-49f8-9550-cfb503b8ae34",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.1-automated-release-azure-ipi-fips-f999/2124937527428124672",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-11-23T21:49:42Z",
+          "testResultSummary": {
+            "openshift-extended-test": {
+              "total": 102,
+              "failures": 2,
+              "errors": 0,
+              "skipped": 32,
+              "failingScenarios": [
+                "[sig-operators] OLM v1 opeco should Author:xzha-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-High-74948-catalog offer the operator content through https server",
+                "[sig-operators] OLM v1 oprun should Author:kuiwang-LEVEL0-ROSA-OSD_CCS-ARO-ConnectedOnly-NonHyperShiftHOST-OSD_CCS-Medium-75492-cluster extension can not be installed with wrong sa or insufficient permission sa"
+              ]
+            },
+            "openshift-extended-test-supplementary": {
+              "total": 1,
+              "failures": 0,
+              "errors": 0,
+              "skipped": 0
+            }
+          }
         }
       ]
     },
@@ -178,5 +217,7 @@
     "phase": "Accepted",
     "pullSpec": "registry.ci.openshift.org/ocp/release-5:5.1.0-0.nightly-2026-11-23-070500",
     "downloadURL": "https://openshift-release-artifacts.apps.ci.l2s4.p1.openshiftapps.com/5.1.0-0.nightly-2026-11-23-070500"
-  }
+  },
+  "aggregated": true,
+  "accepted": false
 }
