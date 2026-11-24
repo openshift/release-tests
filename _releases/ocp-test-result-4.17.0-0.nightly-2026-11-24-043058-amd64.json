@@ -32,9 +32,46 @@
         "jobStartTime": "2026-11-24T10:22:08Z",
         "jobID": "022c2905-df7d-441d-a027-83597fc0a792",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2125173111186788352",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-11-24T14:10:24Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 100,
+            "failures": 1,
+            "errors": 0,
+            "skipped": 27,
+            "failingScenarios": [
+              "[sig-oap] OAP cert-manager Author:yuewu-ROSA-ARO-OSD_CCS-ConnectedOnly-LEVEL0-Medium-73293-Certificates with duplicate secretName should not cause flood of re-issuance attempt"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 22,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-11-24T14:27:41Z",
+          "jobID": "4af65d03-8e3e-49fb-8e31-6065deb01d7f",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2125234906232524800",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-11-24T14:27:46Z",
+          "jobID": "156af3ea-8f7e-443a-acb7-d1866ae79ca8",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-azure-ipi-fips-f999/2125234927971602432",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.17-automated-release-stable-4.17-upgrade-from-stable-4.17-aws-ipi-f999",
