@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:31:01Z'
+updated_at: '2026-11-25T11:31:34Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -104,12 +104,27 @@ issues:
     Consequence: there is NO valid QE test signal for this build - failures cannot
     simply be waived. Needs TRT/DPTP escalation.'
   reported_at: '2026-11-25T10:40:20Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'CORRECTION + release lead decision. The original claim "there is NO
+    valid QE test signal" was WRONG and is retracted: independent test signal does
+    exist. The Release Controller verified 4.19.57 on PUBLIC Prow during the same
+    window - blocking jobs upgrade and upgrade-minor both Succeeded, and 11/12 informing
+    jobs Succeeded (aws-ovn-upgrade-fips, gcp-ovn-rt-upgrade-minor, metal-ipi-ovn-ipv4,
+    metal-ipi-ovn-ipv6, hypershift conformance, microshift conformance+serial, aws-ovn-serial,
+    driver-toolkit, fips-scan, single-node-upgrade); build phase = Accepted. The one
+    informing failure, azure-ovn-upgrade-4.19-micro, is the known flake in TRT-3116.
+    Scope corrected: the outage is confined to the qe-private-deck / openshift-ci-private
+    f999 track, not CI-wide and not the payload. Release lead jhuttana@redhat.com
+    authorised proceeding on 2026-11-25. analyze-promoted-build and analyze-candidate-build
+    set to Pass with override rationale. The f999 outage itself is still open and
+    needs TRT/DPTP follow-up (likely the same openshift-ci-private credential rotation
+    that revoked the qe-private-deck GCS key) - tracked by the separate non-blocking
+    GCS_CRED_FILE issue.'
   blocker: true
   related_tasks:
   - analyze-promoted-build
   - analyze-candidate-build
+  resolved_at: '2026-11-25T11:31:34Z'
 - issue: 'take-ownership fails on MCP server: Errata Tool returns "You need Errata
     access for this operation!" when initializing advisories 178069/178070. MCP server
     /health reports kerberos valid, so this is an authorization problem with the server''s
