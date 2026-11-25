@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:31:45Z'
+updated_at: '2026-11-25T11:44:57Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -194,3 +194,21 @@ issues:
   blocker: false
   related_tasks:
   - check-cve-tracker-bug
+- issue: 'HARD PREREQUISITE: VM Errata access must be fixed before this release can
+    reach REL_PREP. Per release lead direction (2026-11-25) ALL execution must happen
+    on the VM; the local-CLI workaround used earlier for take-ownership and push-to-cdn-staging
+    is no longer permitted. Remaining required tasks image-signed-check and change-advisory-status
+    are both Errata-backed and cannot run until the MCP host authenticates as an authorized
+    principal. Confirmed via klist on the host: Default principal "errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM"
+    is a Kerberos SERVICE principal, not a user/bot, and its embedded hostname does
+    not match the current MCP host (10.2.133.37) - keytab inherited from a decommissioned
+    VM. Tickets also showed Expires 11/25/2026 09:34:32 (likely already expired).
+    Fix: kinit as a bot principal provisioned in Errata, renewing from that keytab,
+    OR repoint MCP to the replacement VM. Must be done before ~2026-Dec-01, when change-advisory-status
+    needs to run.'
+  reported_at: '2026-11-25T11:44:57Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - change-advisory-status
