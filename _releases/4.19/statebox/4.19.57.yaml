@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:29:26Z'
+updated_at: '2026-11-25T11:30:42Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -140,4 +140,22 @@ issues:
   blocker: false
   related_tasks:
   - take-ownership
+  - check-cve-tracker-bug
+- issue: 'check-cve-tracker-bug COULD NOT BE PERFORMED on either execution path -
+    CVE tracker coverage for 4.19.57 is UNVERIFIED. (1) Via MCP server: elliott runs
+    but Errata Tool returns 403 Forbidden for the host principal errata/vm-10-0-76-71...@IPA.REDHAT.COM.
+    (2) Via local OAR CLI: two independent blockers - the local GitHub App Writer
+    key no longer matches app 3607234 (GitHub 401 "A JSON web token could not be decoded",
+    so StateBox cannot be constructed), and running elliott directly crashes on local
+    Python 3.14 with "RuntimeError: There is no current event loop in thread ''MainThread''"
+    (elliott is not yet Python 3.14 compatible; MCP host runs 3.12). Workflow spec
+    treats this task as always-passing/non-blocking, so it is recorded non-blocking
+    - but note NO CVE tracker verification was actually done for this release. Remediation:
+    fix Errata access on the MCP host, then re-run `oar -r 4.19.57 check-cve-tracker-bug`
+    there.'
+  reported_at: '2026-11-25T11:30:42Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
   - check-cve-tracker-bug
