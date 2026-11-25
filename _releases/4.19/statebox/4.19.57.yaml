@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:31:34Z'
+updated_at: '2026-11-25T11:31:45Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -133,11 +133,20 @@ issues:
     and /178070), so the advisories are fine. Blocks take-ownership and likely any
     other Errata-backed OAR command run through the MCP server.'
   reported_at: '2026-11-25T10:40:30Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Worked around by running the command on the local OAR CLI, where the
+    user''s Kerberos principal does have Errata access. Ownership is complete and
+    independently verified: advisories 178069 and 178070 both show assigned_to=jhuttana@redhat.com
+    via the Errata API, the QE release lead comment is on shipment MR 1236, and QE
+    Jira subtasks were reassigned. take-ownership is now Pass. NOTE: the underlying
+    MCP server defect is NOT fixed - it is tracked by the separate non-blocking issue
+    recording the root cause (MCP host authenticates to Errata as machine principal
+    errata/vm-10-0-76-71...@IPA.REDHAT.COM, which gets 403). Errata-backed commands
+    must keep using the local CLI until that is fixed.'
   blocker: true
   related_tasks:
   - take-ownership
+  resolved_at: '2026-11-25T11:31:45Z'
 - issue: 'GCS_CRED_FILE service account key revoked: qe-private-deck@openshift-ci-private.iam.gserviceaccount.com
     (key id 17217e8b0c5bb44dc734da9959c074e91449dba8) fails token refresh with "invalid_grant:
     Invalid JWT Signature". Blocks reading Prow job artifacts from gs://qe-private-deck,
