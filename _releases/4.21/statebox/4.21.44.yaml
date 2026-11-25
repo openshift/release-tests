@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-25T14:40:20Z'
+updated_at: '2026-11-25T14:40:43Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -11,7 +11,20 @@ metadata:
   candidate_builds:
     x86_64: 4.21.0-0.nightly-2026-11-24-093421
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/1237
-tasks: []
+tasks:
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-11-25T14:40:31Z'
+  completed_at: null
+  result: |-
+    2026-11-25T14:40:31Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-25T14:40:31Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-25T14:40:33Z: INFO: Initialized StateBox for release 4.21.44 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.44.yaml
+    2026-11-25T14:40:34Z: INFO: Loaded state from _releases/4.21/statebox/4.21.44.yaml (SHA: c6d78f2a)
+    2026-11-25T14:40:34Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-25T14:40:39Z: INFO: Triggered image consistency check Prow job: 0e69cab1-0c02-4fc7-96cf-0746723190d1
+    2026-11-25T14:40:39Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125600596168806400
+    2026-11-25T14:40:41Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: 'MCP server host lacks Errata authorization. The server (vm-10-0-76-71.hosted.upshift.rdu2.redhat.com)
     authenticates to Errata Tool as host service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
