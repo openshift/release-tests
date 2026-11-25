@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T13:22:07Z'
+updated_at: '2026-11-25T13:25:09Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -54,18 +54,25 @@ tasks:
     is expired. Ownership transfer itself is complete and verified; only the Slack
     announcement was not sent.'
 - name: image-consistency-check
-  status: Pass
-  started_at: '2026-11-25T11:28:51Z'
-  completed_at: '2026-11-25T13:22:07Z'
-  result: 'PASSED. Prow job e60422ea-1c2f-47c8-8d5c-75f08954835f completed successfully.
-    Verified directly from the public Prow GCS artifact finished.json: {"passed":
-    true, "result": "SUCCESS", "pod": "e60422ea-1c2f-47c8-8d5c-75f08954835f", "work-namespace":
-    "ci-op-t7zjvh7j"}. Started 11:29:08Z, finished ~11:42Z (~13 min, well under the
-    usual 90-120 min). Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125552396137402368
-    . Status was set here manually because the MCP status query (oar_image_consistency_check
-    with job_id) hung and was aborted at the 300s idle timeout - a known issue with
-    MCP job-status polling, unrelated to the job result. This job runs on PUBLIC Prow,
-    so it is unaffected by the qe-private-deck outage.'
+  status: In Progress
+  started_at: '2026-11-25T13:25:09Z'
+  completed_at: null
+  result: 'CORRECTION - previous "Pass" was premature and is retracted. Only HALF
+    the acceptance criteria is verified. (1) VERIFIED: the Prow job passed. Job e60422ea-1c2f-47c8-8d5c-75f08954835f,
+    step release-qe-tests-image-consistency-check finished.json = {"passed": true,
+    "result": "SUCCESS"}; log confirms "Checked 185 payload images / All payload images
+    are consistent with images in shipment." (2) NOT DONE: cmd_image_consistency_check.check_job_status()
+    only marks Pass when job_state==success AND ImageHealthOperator.check_image_health()
+    returns True. In Konflux flow that call runs ShipmentData.check_component_image_health()
+    (container grade A/B check), then add_image_health_summary_comment() to post a
+    health summary on the shipment MR, and passes only if unhealthy_count==0. None
+    of this ran - the MCP status query hung and was aborted at the 300s idle timeout
+    before reaching it. Confirmed independently: MR 1236 has NO image health summary
+    comment (latest notes are 11:25/11:26Z "QE Release Lead is @jhuttana" from take-ownership;
+    the Prow job ran 11:37-11:42Z) and no pipelines from 2026-11-25. TO COMPLETE:
+    run on the VM `oar -r 4.19.57 image-consistency-check -i e60422ea-1c2f-47c8-8d5c-75f08954835f`.
+    Note it is slow (grades for ~185 components), which is why it exceeds the MCP
+    timeout - run it directly on the host, not via MCP.'
 - name: stage-testing
   status: In Progress
   started_at: '2026-11-25T13:19:51Z'
