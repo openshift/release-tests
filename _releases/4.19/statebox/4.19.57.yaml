@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T13:20:02Z'
+updated_at: '2026-11-25T13:20:34Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -236,3 +236,19 @@ issues:
   blocker: true
   related_tasks:
   - change-advisory-status
+- issue: 'stage-testing first attempt aborted at startup. Prow job d506611b-3c45-4ba6-bca9-ca4bb29778a7
+    went FAILURE 12 seconds after creation (11:29:31Z -> 11:29:43Z), confirmed via
+    Gangway. That is a startup/scheduling abort, not a test result - for comparison
+    4.19.56 ran stage-testing for 1h45m and passed. Logs could not be inspected because
+    the job runs on qe-private-deck and the GCS service account key is revoked. Re-triggered
+    at 13:19:59Z as job 4af182bc-6b08-46b2-bb5a-83522ec4d32d, which survived past
+    the 12s mark (still PENDING at 13:20:33Z). Possibly related to the wider qe-private-deck/openshift-ci-private
+    problems, though the signature differs from the f999 jobs (those ran 3+ hours
+    before failing). Watch for recurrence: if the retry also aborts in ~12s, treat
+    as systematic infrastructure failure and escalate rather than retrying again.'
+  reported_at: '2026-11-25T13:20:34Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - stage-testing
