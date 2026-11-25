@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:33:51Z'
+updated_at: '2026-11-25T16:38:47Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -339,3 +339,23 @@ issues:
   related_tasks:
   - stage-testing
   resolved_at: '2026-11-25T16:33:51Z'
+- issue: 'CONFIRMED: the f999 blocking jobs failed NO test. After the qe-private-deck
+    GCS key rotation (~16:24Z, 2026-11-25) restored artifact reads, per-step finished.json
+    shows the only failing step is the post-test send-results-to-reportportal, which
+    runs `gcloud auth` + `gsutil rsync` against gs://qe-private-deck and was broken
+    by the revoked key. gcp-ipi-f999 (2125575262207741952): ipi-install-install, check-operators,
+    upgrade-prehealthcheck, ota-preupgrade, upgrade-toimage, upgrade-healthcheck,
+    ota-postupgrade all SUCCESS. azure-ipi-fips-f999 (2125575239449448448): all 36
+    steps enumerated, only send-results-to-reportportal passed=false. So 4.19.57 now
+    has DIRECT QE green signal (install+upgrade+post-upgrade health on GCP and Azure-FIPS),
+    not just public-Prow inference - the earlier override is vindicated and "no valid
+    QE test signal" is retracted. Not a payload or harness defect; a DPTP credential
+    matter. Fresh f999 round auto-triggered ~16:33Z post-rotation should now report
+    cleanly.'
+  reported_at: '2026-11-25T16:38:47Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-promoted-build
+  - analyze-candidate-build
