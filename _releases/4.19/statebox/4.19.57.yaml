@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:23:44Z'
+updated_at: '2026-11-25T11:27:18Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -40,6 +40,19 @@ tasks:
     for full evidence). Candidate analysis is informational and does not gate the
     release; the promoted build 4.19.57 was independently verified green by the Release
     Controller on public Prow. Proceeding.
+- name: take-ownership
+  status: Pass
+  started_at: '2026-11-25T11:27:18Z'
+  completed_at: '2026-11-25T11:27:18Z'
+  result: 'Completed via local OAR CLI (MCP server blocked by Errata 403 - see root-cause
+    issue). Verified: QA owner of advisories 178069 and 178070 updated to [EMAIL_REDACTED]
+    (confirmed independently via Errata API: assigned_to=[EMAIL_REDACTED] on both);
+    QE release lead comment added to shipment MR 1236; QE Jira subtasks reassigned
+    (step completed before the failure point). No abnormal advisories detected. Command
+    exited non-zero ONLY at the final Slack announcement: slack_sdk invalid_auth on
+    usergroups.list while resolving group "4.19-qe-leads" - the local SLACK_BOT_TOKEN
+    is expired. Ownership transfer itself is complete and verified; only the Slack
+    announcement was not sent.'
 issues:
 - issue: 'CI-wide blocking-test outage since 2026-11-24: 100% failure rate (9/9 attempts)
     on all 3 blocking jobs for promoted build 4.19.57 (upgrade-from-4.18-aws-ipi,
