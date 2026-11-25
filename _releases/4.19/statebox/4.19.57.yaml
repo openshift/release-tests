@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:08:14Z'
+updated_at: '2026-11-25T16:18:13Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -263,8 +263,22 @@ issues:
     before failing). Watch for recurrence: if the retry also aborts in ~12s, treat
     as systematic infrastructure failure and escalate rather than retrying again.'
   reported_at: '2026-11-25T13:20:34Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Tripwire evaluated and did NOT fire - do not escalate on this basis.
+    Retry job 4af182bc-6b08-46b2-bb5a-83522ec4d32d ran a FULL execution, not a repeat
+    12s abort. Confirmed via Gangway /v1/executions: create_time 2026-11-25T13:20:07Z,
+    completion_time 2026-11-25T15:22:15Z = 2h02m08s runtime, job_status FAILURE. For
+    contrast attempt 1 d506611b was re-confirmed at 11:29:31Z -> 11:29:43Z = 12s exactly.
+    4.19.56 ran 1h45m and passed, so attempt 2''s duration is in the normal band for
+    a real run. CONCLUSION: attempt 1''s startup abort was transient and is closed;
+    attempt 2 is a genuine stage-testing execution that got far enough to produce
+    test results, so its failure requires test-level root-cause analysis rather than
+    infrastructure escalation. NOTE the duration does partially resemble the f999
+    late-failure signature (those ran 3+ hours in the same qe-private-deck cluster
+    during the ongoing openshift-ci-private credential outage), so a late infra failure
+    is not yet excluded - log inspection is required to tell these apart. Follow-up
+    tracked as a separate blocking issue.'
   blocker: false
   related_tasks:
   - stage-testing
+  resolved_at: '2026-11-25T16:18:13Z'
