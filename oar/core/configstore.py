@@ -78,8 +78,6 @@ class ConfigStore:
         # Optional variables for specific OAR commands
         optional_vars = {
             ENV_VAR_SLACK_APP_TOKEN: "Optional for Slack socket mode",
-            ENV_JENKINS_USER: "Optional for legacy Jenkins job operations (JenkinsHelper)",
-            ENV_JENKINS_TOKEN: "Optional for legacy Jenkins job operations (JenkinsHelper)",
         }
 
         # Check required variables
