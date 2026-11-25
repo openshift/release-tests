@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-25T14:41:01Z'
+updated_at: '2026-11-25T14:45:54Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -40,6 +40,17 @@ tasks:
     2026-11-25T14:40:57Z: INFO: Triggered stage testing Prow job: f05d5b15-8fe7-4f52-b183-b7e4f39f4cdc
     2026-11-25T14:40:57Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.21-stage-testing-e2e-aws-ipi/2125600672932958208
     2026-11-25T14:41:00Z: INFO: sent slack message to <#team-qe-release>
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-11-25T14:44:51Z'
+  completed_at: '2026-11-25T14:45:50Z'
+  result: |-
+    2026-11-25T14:44:51Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-11-25T14:45:49Z: INFO: checking push job status for advisory 178067 ...
+    2026-11-25T14:45:49Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-25T14:45:50Z: INFO: checking push job status for advisory 178068 ...
+    2026-11-25T14:45:50Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-25T14:45:50Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: 'MCP server host lacks Errata authorization. The server (vm-10-0-76-71.hosted.upshift.rdu2.redhat.com)
     authenticates to Errata Tool as host service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
