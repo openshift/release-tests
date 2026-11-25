@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:21:50Z'
+updated_at: '2026-11-25T11:23:44Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -83,3 +83,20 @@ issues:
   blocker: false
   related_tasks:
   - analyze-promoted-build
+- issue: 'ROOT CAUSE of MCP Errata failures: the MCP server authenticates to Errata
+    Tool as the host/machine principal "errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM"
+    (from the host keytab), not as a user/bot account. Errata returns 403 Forbidden:
+    "User ''errata/vm-10-0-76-71...'' does not have access." The /health endpoint
+    reports kerberos "valid" because it only runs `klist -s`, which proves a TGT exists
+    but says nothing about Errata authorization - so health is green while every Errata
+    call 403s. Blast radius: ALL Errata-backed OAR commands via MCP (take-ownership,
+    check-cve-tracker-bug, push-to-cdn-staging, image-signed-check, change-advisory-status).
+    Fix: kinit on the MCP host as a principal that has Errata access, or grant Errata
+    access to the machine principal.'
+  reported_at: '2026-11-25T11:23:44Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - take-ownership
+  - check-cve-tracker-bug
