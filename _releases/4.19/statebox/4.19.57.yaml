@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:38:47Z'
+updated_at: '2026-11-25T16:40:28Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -359,3 +359,21 @@ issues:
   related_tasks:
   - analyze-promoted-build
   - analyze-candidate-build
+- issue: 'UNPROVEN PREREQUISITE for change-advisory-status: Errata QA role on the
+    MCP host principal. Errata READS from the MCP host now work (check-cve-tracker-bug
+    ran end to end 15:37-15:40Z; oar_is_release_shipped returns live advisory states),
+    which is why the earlier hard blocker was downgraded. But a successful read does
+    NOT exercise the QA role, and change-advisory-status needs it to move advisories
+    178069/178070 from QE to REL_PREP. Errata service account (user 3006771) was disabled
+    with its QA role marked inactive; re-enabling the account restores reads, but
+    the QA role must be reactivated separately. Filed because the earlier downgrade
+    claimed this was "tracked by a new non-blocking issue" that was never actually
+    created. ACTION: confirm the QA role is active before ~2026-Dec-01 (change-advisory-status
+    runs 1 day before the 2026-Dec-02 release). If still inactive it will fail at
+    the transition AFTER approving the shipment MR and starting its 2-day checker.'
+  reported_at: '2026-11-25T16:40:28Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - change-advisory-status
