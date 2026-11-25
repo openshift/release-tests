@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:18:13Z'
+updated_at: '2026-11-25T16:18:44Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -282,3 +282,22 @@ issues:
   related_tasks:
   - stage-testing
   resolved_at: '2026-11-25T16:18:13Z'
+- issue: 'stage-testing FAILED on a full 2h execution - sole remaining gate on 4.19.57.
+    Prow job 4af182bc-6b08-46b2-bb5a-83522ec4d32d, FAILURE, 2026-11-25T13:20:07Z ->
+    15:22:15Z (2h02m08s per Gangway) = genuine run, not attempt 1''s 12s abort. Root
+    cause UNKNOWN: logs live in gs://qe-private-deck, the qe-private-deck service
+    account key is revoked (invalid_grant), and jhuttana@redhat.com has NO IAM on
+    that bucket (403 at prefix level, verified post-reauth; same account reads public
+    prow bucket fine). Two open hypotheses, indistinguishable without logs: (a) real
+    stage-test/product failure, (b) the f999 late-failure mode in this same cluster
+    during the unrepaired openshift-ci-private credential rotation. Unblock cheapest-first:
+    (1) open the deck job_url in a browser with SSO and report the failed step; (2)
+    rotate the qe-private-deck GCS key (OCPERT-370 class); (3) grant jhuttana read
+    IAM. Slack: release 2026-Dec-02, change-advisory-status ~Dec-01, so ~6 days; a
+    blind retrigger costs ~2h.'
+  reported_at: '2026-11-25T16:18:44Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - stage-testing
