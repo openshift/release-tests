@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-25T16:44:10Z'
+updated_at: '2026-11-25T16:44:17Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -62,6 +62,28 @@ tasks:
     2026-11-25T14:58:39Z: INFO: Added QE release lead comment to MR 1237
     2026-11-25T14:58:46Z: INFO: sent slack message to <#team-qe-release>
     2026-11-25T14:58:46Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Fail
+  started_at: '2026-11-25T16:42:11Z'
+  completed_at: '2026-11-25T16:44:16Z'
+  result: |-
+    2026-11-25T16:42:11Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-25T16:42:11Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-25T16:42:13Z: INFO: Initialized StateBox for release 4.21.44 at openshift/release-tests/z-stream/_releases/4.21/statebox/4.21.44.yaml
+    2026-11-25T16:42:13Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-11-25T16:43:13Z: INFO: CVE tracker bug OCPBUGS-104203 is not found in RHSA advisories
+    2026-11-25T16:44:07Z: INFO: Processing MR 1237 for Jira issues
+    2026-11-25T16:44:09Z: INFO: Found 1 missed CVE tracker bugs in advisories: ['OCPBUGS-104203']
+    2026-11-25T16:44:10Z: INFO: Loaded state from _releases/4.21/statebox/4.21.44.yaml (SHA: e98bd9d5)
+    2026-11-25T16:44:10Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 1 missed CVE tracker bugs in advisories
+
+    Missed CVE tracker bugs:
+    - OCPBUGS-104203
+
+    2026-11-25T16:44:14Z: INFO: Updated state file _releases/4.21/statebox/4.21.44.yaml (attempt 1)
+    2026-11-25T16:44:14Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
+    2026-11-25T16:44:16Z: INFO: sent slack message to <#forum-ocp-release>
+    2026-11-25T16:44:16Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
 issues:
 - issue: 'MCP server host lacks Errata authorization. The server (vm-10-0-76-71.hosted.upshift.rdu2.redhat.com)
     authenticates to Errata Tool as host service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
