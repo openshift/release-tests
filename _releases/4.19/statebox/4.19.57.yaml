@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T10:40:30Z'
+updated_at: '2026-11-25T10:40:49Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -43,3 +43,15 @@ issues:
   blocker: true
   related_tasks:
   - take-ownership
+- issue: 'GCS_CRED_FILE service account key revoked: qe-private-deck@openshift-ci-private.iam.gserviceaccount.com
+    (key id 17217e8b0c5bb44dc734da9959c074e91449dba8) fails token refresh with "invalid_grant:
+    Invalid JWT Signature". Blocks reading Prow job artifacts from gs://qe-private-deck,
+    so root-cause analysis of failed blocking jobs cannot be done locally. Same failure
+    class as OCPERT-370 (previous rotation, resolved 2026-05-15) - key needs rotating
+    again.'
+  reported_at: '2026-11-25T10:40:49Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-promoted-build
