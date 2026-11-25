@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:30:42Z'
+updated_at: '2026-11-25T11:31:01Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -81,6 +81,17 @@ tasks:
     2026-11-25T11:29:22Z: INFO: Triggered stage testing Prow job: d506611b-3c45-4ba6-bca9-ca4bb29778a7
     2026-11-25T11:29:22Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi/2125552459530113024
     2026-11-25T11:29:25Z: INFO: sent slack message to <#team-qe-release>
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-11-25T11:30:54Z'
+  completed_at: '2026-11-25T11:30:54Z'
+  result: 'Completed via local OAR CLI at 2026-11-25T11:30:54Z (MCP path blocked by
+    Errata 403). Push jobs for target cdn_stage are COMPLETE on both advisories: 178069
+    and 178070. Command logged "task [Push to CDN Staging] status is changed to [Pass]"
+    and exited 0. The command''s own StateBox write failed locally ("Failed to initialize
+    GitHub App Writer (GithubException)" - stale local app key), so this status was
+    synced via MCP instead. No failed cdn_stage push job, so this will not block the
+    later QE -> REL_PREP transition.'
 issues:
 - issue: 'CI-wide blocking-test outage since 2026-11-24: 100% failure rate (9/9 attempts)
     on all 3 blocking jobs for promoted build 4.19.57 (upgrade-from-4.18-aws-ipi,
