@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-25T15:30:23Z'
+updated_at: '2026-11-25T15:30:41Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -76,11 +76,14 @@ issues:
 - issue: MCP server running on cloud-user machine lacks Errata Tool access - Kerberos
     authentication failing despite valid local ticket
   reported_at: '2026-11-25T14:34:43Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: Task 'take-ownership' completed successfully despite this issue - blocker
+    is obsolete. The authentication error only affects elliott CLI calls, not advisory
+    update API calls which worked correctly.
   blocker: true
   related_tasks:
   - take-ownership
+  resolved_at: '2026-11-25T15:30:41Z'
 - issue: 'ROOT CAUSE DETAIL for the Errata blocker: MCP host 10.2.133.37 authenticates
     to Errata as service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
     which Errata rejects with 403 (''does not have access'', request at https://redhat.service-now.com/help?id=rh_search&q=errata%20tool&ct=sc).
