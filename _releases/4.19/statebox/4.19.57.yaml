@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T12:21:37Z'
+updated_at: '2026-11-25T13:16:28Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -180,12 +180,25 @@ issues:
     Fix: kinit on the MCP host as a principal that has Errata access, or grant Errata
     access to the machine principal.'
   reported_at: '2026-11-25T11:23:44Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'CORRECTED DIAGNOSIS (not yet fixed - request pending). The earlier
+    claim that errata/vm-10-0-76-71...@IPA.REDHAT.COM was "a machine principal never
+    provisioned in Errata" was WRONG. It IS a properly registered Errata service account
+    - user profile https://errata.engineering.redhat.com/user/3006771 - which has
+    been DISABLED, with its QA role marked inactive. That is why Errata returns "does
+    not have access" (known but deactivated account) rather than rejecting an unknown
+    principal, and why Kerberos auth itself succeeds end to end (the same principal
+    authenticates to Brew fine). No new bot account or keytab is required; the existing
+    account simply needs re-enabling. Release lead raised a request to re-enable the
+    account and reactivate its QA role. IMPORTANT: the QA role specifically must be
+    reactivated, not just the account - change-advisory-status needs it to move advisories
+    QE -> REL_PREP. Both the MCP host and the replacement VM share this principal,
+    so re-enabling fixes both at once.'
   blocker: false
   related_tasks:
   - take-ownership
   - check-cve-tracker-bug
+  resolved_at: '2026-11-25T13:16:28Z'
 - issue: 'check-cve-tracker-bug COULD NOT BE PERFORMED on either execution path -
     CVE tracker coverage for 4.19.57 is UNVERIFIED. (1) Via MCP server: elliott runs
     but Errata Tool returns 403 Forbidden for the host principal errata/vm-10-0-76-71...@IPA.REDHAT.COM.
