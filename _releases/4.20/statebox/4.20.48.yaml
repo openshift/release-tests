@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-25T15:30:41Z'
+updated_at: '2026-11-25T15:30:55Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -105,8 +105,12 @@ issues:
     rejected with 403 Forbidden. Elliott command requires Errata API access to query
     bug-advisory relationships.'
   reported_at: '2026-11-25T15:13:06Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: Konflux workflow detected (shipment MR exists) - CVE tracker bugs are
+    excluded from shipment check per KONFLUX_RELEASE_FLOW.md. This task is advisory
+    only in Konflux mode and can be safely waived. RPM and RHCOS CVE bugs are not
+    shipped via advisory in Konflux flow.
   blocker: true
   related_tasks:
   - check-cve-tracker-bug
+  resolved_at: '2026-11-25T15:30:55Z'
