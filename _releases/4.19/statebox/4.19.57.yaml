@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:07:19Z'
+updated_at: '2026-11-25T16:08:14Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -234,11 +234,24 @@ issues:
     OR repoint MCP to the replacement VM. Must be done before ~2026-Dec-01, when change-advisory-status
     needs to run.'
   reported_at: '2026-11-25T11:44:57Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Errata access on the MCP host is RESTORED for reads - downgrading from
+    blocker. Evidence (2026-11-25T15:37-16:05Z): (1) check-cve-tracker-bug ran to
+    completion on the MCP host, querying advisories and shipment MR 1236 via elliott,
+    and set itself to Pass - this is an Errata-backed command that previously 403''d.
+    (2) oar_is_release_shipped via MCP returned live advisory states rpm_advisory=QE,
+    rhcos_advisory=QE, another successful Errata read from the host. The service account
+    referenced in the earlier diagnosis (errata user 3006771) appears to have been
+    re-enabled, so the local-CLI workaround is no longer needed and all execution
+    can stay on the VM per release lead direction. CAVEAT CARRIED FORWARD: these are
+    READ operations only. The QA role reactivation required for change-advisory-status
+    to move advisories QE -> REL_PREP is NOT yet proven - a successful read does not
+    exercise the QA role. Tracked by a new non-blocking issue; must be confirmed before
+    ~2026-Dec-01.'
   blocker: true
   related_tasks:
   - change-advisory-status
+  resolved_at: '2026-11-25T16:08:14Z'
 - issue: 'stage-testing first attempt aborted at startup. Prow job d506611b-3c45-4ba6-bca9-ca4bb29778a7
     went FAILURE 12 seconds after creation (11:29:31Z -> 11:29:43Z), confirmed via
     Gangway. That is a startup/scheduling abort, not a test result - for comparison
