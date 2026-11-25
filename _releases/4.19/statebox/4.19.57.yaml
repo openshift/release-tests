@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:18:44Z'
+updated_at: '2026-11-25T16:33:17Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -162,11 +162,21 @@ issues:
     class as OCPERT-370 (previous rotation, resolved 2026-05-15) - key needs rotating
     again.'
   reported_at: '2026-11-25T10:40:49Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'RESOLVED 2026-11-25T16:35Z. The qe-private-deck@openshift-ci-private.iam.gserviceaccount.com
+    key has been rotated; the new key file at $GCS_CRED_FILE (mtime 2026-11-25 ~16:24Z)
+    authenticates successfully. Verified by activating the fresh key in an isolated
+    CLOUDSDK_CONFIG and listing gs://qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.19-stage-testing-e2e-aws-ipi/2125580293589962752/
+    - returned build-log.txt, finished.json, prowjob.json and artifacts/ with no error.
+    The previous "invalid_grant: Invalid JWT Signature" is gone. NOTE: a stale activated
+    credential remains cached in the default ~/.config/gcloud store, so plain `gcloud
+    storage` as the service account still fails until `gcloud auth activate-service-account
+    --key-file=$GCS_CRED_FILE` is re-run against the default config. This rotation
+    directly unblocked root-cause analysis of the stage-testing failure.'
   blocker: false
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-11-25T16:33:17Z'
 - issue: 'ROOT CAUSE of MCP Errata failures: the MCP server authenticates to Errata
     Tool as the host/machine principal "errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM"
     (from the host keytab), not as a user/bot account. Errata returns 403 Forbidden:
