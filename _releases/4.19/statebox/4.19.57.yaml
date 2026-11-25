@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T16:33:32Z'
+updated_at: '2026-11-25T16:33:51Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -310,8 +310,32 @@ issues:
     IAM. Slack: release 2026-Dec-02, change-advisory-status ~Dec-01, so ~6 days; a
     blind retrigger costs ~2h.'
   reported_at: '2026-11-25T16:18:44Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'ROOT CAUSE IDENTIFIED AND RETRIGGERED 2026-11-25T16:33Z. Both prior
+    hypotheses are WRONG - it was neither (a) a real stage-test/product failure nor
+    (b) the f999 qe-private-deck late-failure mode. The GCS key was rotated at ~16:24Z,
+    which restored access to gs://qe-private-deck and let the build log be read directly.
+    Verdict: Boskos LEASE EXHAUSTION. Exact log sequence from job 4af182bc / build
+    2125580293589962752: 13:20:38Z-13:22:11Z imported release 4.19.57 (187 images)
+    successfully; 13:22:11Z "Acquiring leases for test e2e-aws-ipi: [aws-autorelease-qe-quota-slice]";
+    then a silent 2h wait; 15:22:11Z "error: Failed to acquire resource, current capacity:
+    0 free, 7 leased"; "Ran for 2h1m54s"; "could not run steps: step e2e-aws-ipi failed:
+    failed to acquire lease for aws-autorelease-qe-quota-slice: resources not found";
+    "Reporting job state failed with reason executing_graph:step_failed:utilizing_lease:acquiring_lease".
+    KEY POINT: the 2h duration was the lease-acquisition TIMEOUT, not test execution
+    - no cluster was ever installed and ZERO tests ran, so this carries no negative
+    signal about the 4.19.57 payload. The whole aws-autorelease-qe-quota-slice pool
+    (7 slots) was saturated by concurrent autorelease jobs. This also fully explains
+    the earlier confusion where a ~2h runtime resembled the f999 signature. ACTION
+    TAKEN: stage-testing re-triggered as Prow job c2ea4b4d-6d56-4ba6-8946-0b53601f6c1a
+    (build 2125628988972863488) at 16:33:28Z; stage-release label re-verified as succeeded
+    before trigger. This retrigger is NOT blind - it is the correct remedy for transient
+    quota contention. WATCH FOR: if this attempt also dies at almost exactly 2h with
+    the same acquiring_lease reason, the quota pool is persistently saturated and
+    the fix is to escalate to DPTP for aws-autorelease-qe-quota-slice capacity rather
+    than retrying a third time. Release date 2026-Dec-02 and change-advisory-status
+    ~Dec-01 leave ~6 days of slack.'
   blocker: true
   related_tasks:
   - stage-testing
+  resolved_at: '2026-11-25T16:33:51Z'
