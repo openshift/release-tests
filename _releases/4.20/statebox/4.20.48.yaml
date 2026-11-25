@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-25T15:30:55Z'
+updated_at: '2026-11-25T15:31:07Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -62,6 +62,13 @@ tasks:
     2026-11-25T14:53:31Z: INFO: Added QE release lead comment to MR 1234
     2026-11-25T14:53:39Z: INFO: sent slack message to <#team-qe-release>
     2026-11-25T14:53:39Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-11-25T15:31:07Z'
+  completed_at: '2026-11-25T15:31:07Z'
+  result: 'WAIVED: Konflux workflow - CVE tracker bugs excluded from shipment (see
+    KONFLUX_RELEASE_FLOW.md). MCP server Errata auth error does not block release.
+    RPM/RHCOS CVE bugs not shipped via advisory in Konflux flow.'
 issues:
 - issue: Kerberos authentication required for Errata Tool access - You need Errata
     access for this operation!
