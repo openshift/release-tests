@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-25T14:40:14Z'
+updated_at: '2026-11-25T14:44:00Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -40,6 +40,17 @@ tasks:
     2026-11-25T14:40:11Z: INFO: Triggered stage testing Prow job: df6d23e2-aa51-43e5-938e-b65a2ae9ecea
     2026-11-25T14:40:11Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.20-stage-testing-e2e-aws-ipi/2125600479596515328
     2026-11-25T14:40:13Z: INFO: sent slack message to <#team-qe-release>
+- name: push-to-cdn-staging
+  status: Pass
+  started_at: '2026-11-25T14:43:10Z'
+  completed_at: '2026-11-25T14:43:56Z'
+  result: |-
+    2026-11-25T14:43:10Z: INFO: task [Push to CDN Staging] status is changed to [In Progress]
+    2026-11-25T14:43:55Z: INFO: checking push job status for advisory 178046 ...
+    2026-11-25T14:43:55Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-25T14:43:56Z: INFO: checking push job status for advisory 178047 ...
+    2026-11-25T14:43:56Z: INFO: push job for target <cdn_stage> is COMPLETE
+    2026-11-25T14:43:56Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 issues:
 - issue: Kerberos authentication required for Errata Tool access - You need Errata
     access for this operation!
