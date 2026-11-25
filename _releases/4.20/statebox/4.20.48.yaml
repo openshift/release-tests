@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-25T14:34:43Z'
+updated_at: '2026-11-25T14:38:29Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -31,3 +31,19 @@ issues:
   blocker: true
   related_tasks:
   - take-ownership
+- issue: 'ROOT CAUSE DETAIL for the Errata blocker: MCP host 10.2.133.37 authenticates
+    to Errata as service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
+    which Errata rejects with 403 (''does not have access'', request at https://redhat.service-now.com/help?id=rh_search&q=errata%20tool&ct=sc).
+    Advisories 178046/178047 return HTTP 200 with the release lead''s own user ticket,
+    so advisories and user access are fine - only the MCP host principal is wrong.
+    Fix: on the MCP host as cloud-user, kinit a user principal with Errata access
+    and point the server process KRB5CCNAME at that cache. Caveat: /health reports
+    kerberos ''valid'' because it only checks a TGT exists, not which principal, so
+    health is not a reliable signal for this failure.'
+  reported_at: '2026-11-25T14:38:29Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - take-ownership
+  - check-cve-tracker-bug
