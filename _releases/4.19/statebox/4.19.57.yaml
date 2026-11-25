@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T13:20:34Z'
+updated_at: '2026-11-25T13:22:07Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -54,18 +54,18 @@ tasks:
     is expired. Ownership transfer itself is complete and verified; only the Slack
     announcement was not sent.'
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-11-25T11:28:51Z'
-  completed_at: null
-  result: |-
-    2026-11-25T11:28:51Z: WARNING: Optional environment variable not set: JENKINS_USER
-    2026-11-25T11:28:51Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
-    2026-11-25T11:28:53Z: INFO: Initialized StateBox for release 4.19.57 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.57.yaml
-    2026-11-25T11:28:54Z: INFO: Loaded state from _releases/4.19/statebox/4.19.57.yaml (SHA: 85094238)
-    2026-11-25T11:28:54Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-11-25T11:29:04Z: INFO: Triggered image consistency check Prow job: e60422ea-1c2f-47c8-8d5c-75f08954835f
-    2026-11-25T11:29:04Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125552396137402368
-    2026-11-25T11:29:06Z: INFO: sent slack message to <#team-qe-release>
+  completed_at: '2026-11-25T13:22:07Z'
+  result: 'PASSED. Prow job e60422ea-1c2f-47c8-8d5c-75f08954835f completed successfully.
+    Verified directly from the public Prow GCS artifact finished.json: {"passed":
+    true, "result": "SUCCESS", "pod": "e60422ea-1c2f-47c8-8d5c-75f08954835f", "work-namespace":
+    "ci-op-t7zjvh7j"}. Started 11:29:08Z, finished ~11:42Z (~13 min, well under the
+    usual 90-120 min). Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125552396137402368
+    . Status was set here manually because the MCP status query (oar_image_consistency_check
+    with job_id) hung and was aborted at the 300s idle timeout - a known issue with
+    MCP job-status polling, unrelated to the job result. This job runs on PUBLIC Prow,
+    so it is unaffected by the qe-private-deck outage.'
 - name: stage-testing
   status: In Progress
   started_at: '2026-11-25T13:19:51Z'
