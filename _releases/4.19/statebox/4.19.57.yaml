@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-25T11:44:57Z'
+updated_at: '2026-11-25T12:21:37Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -92,6 +92,16 @@ tasks:
     GitHub App Writer (GithubException)" - stale local app key), so this status was
     synced via MCP instead. No failed cdn_stage push job, so this will not block the
     later QE -> REL_PREP transition.'
+- name: check-cve-tracker-bug
+  status: Pass
+  started_at: '2026-11-25T12:18:27Z'
+  completed_at: '2026-11-25T12:21:35Z'
+  result: |-
+    2026-11-25T12:18:27Z: INFO: Initialized StateBox for release 4.19.57 at openshift/release-tests/z-stream/_releases/4.19/statebox/4.19.57.yaml
+    2026-11-25T12:18:27Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-11-25T12:21:29Z: INFO: Processing MR 1236 for Jira issues
+    2026-11-25T12:21:35Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2026-11-25T12:21:35Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 issues:
 - issue: 'CI-wide blocking-test outage since 2026-11-24: 100% failure rate (9/9 attempts)
     on all 3 blocking jobs for promoted build 4.19.57 (upgrade-from-4.18-aws-ipi,
