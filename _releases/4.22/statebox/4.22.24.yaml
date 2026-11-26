@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.24
 created_at: '2026-11-25T18:00:16Z'
-updated_at: '2026-11-26T05:09:43Z'
+updated_at: '2026-11-26T05:09:58Z'
 metadata:
   jira_ticket: ART-26580
   advisory_ids:
@@ -89,6 +89,21 @@ tasks:
     2026-11-26T00:05:51Z: INFO: Triggered stage testing Prow job: edcea5a4-18e6-4494-925c-ba0911dbc911
     2026-11-26T00:05:51Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2125742831657029632
     2026-11-26T00:05:52Z: INFO: sent slack message to <#team-qe-release>
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-26T05:09:58Z'
+  completed_at: '2026-11-26T05:09:58Z'
+  result: 'WAIVED - no product failures. Promoted build 4.22.24 ran 3 QE blocking
+    jobs (stable-4.22-upgrade-from-stable-4.21-aws-ipi-f999, stable-4.22-upgrade-from-stable-4.22-azure-ipi-fips-f999,
+    stable-4.22-upgrade-from-stable-4.22-gcp-ipi-f999), all upgrade-only. Per-step
+    verification of first runs plus completed BO3 retries: the ONLY failing step in
+    every run is send-results-to-reportportal. ipi-install-install, cucushift-ota-preupgrade/postupgrade,
+    cucushift-upgrade-toimage/healthcheck/prehealthcheck, cucushift-installer-check-operators/fips/capability,
+    nodes-readiness, multiarch-validate-nodes all SUCCESS. Root cause of the job-level
+    FAILURE is the in-cluster datarouter secret gcs_sa_openshift-ci-private holding
+    the GCS key rotated 2026-11-25, so ''gcloud auth activate-service-account'' fails
+    all 10 retries. Deterministic, so BO3 can never pass until DPTP refreshes it.
+    Waived by release lead [EMAIL_REDACTED] on 2026-11-26.'
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
