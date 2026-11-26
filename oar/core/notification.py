@@ -818,7 +818,7 @@ class MessageHelper:
             self.cs.get_slack_user_group_from_contact_by_id("art")
         )
 
-        message = f"Hello {gid}, Found new CVE tracker bugs not attached on advisories, could you take a look, thanks\n"
+        message = f"Hello {gid}, Found new CVE tracker bugs not attached on [{self.cs.release}] advisories/shipments, could you take a look, thanks\n"
         for bug in cve_tracker_bugs:
             message += self._to_link(util.get_jira_link(bug), bug) + " "
         message += "\n"
