@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-26T09:26:06Z'
+updated_at: '2026-11-26T13:23:37Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -77,25 +77,26 @@ tasks:
     2026-11-26T09:25:34Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-11-26T09:25:34Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: analyze-promoted-build
-  status: In Progress
+  status: Pass
   started_at: '2026-11-26T04:58:48Z'
-  completed_at: null
+  completed_at: '2026-11-26T13:23:37Z'
   result: |-
-    AI analysis 2026-11-26. aggregated=true, accepted=false. Root cause is 100% infrastructure; zero product failures found across all 9 runs.
+    PASS ON DOCUMENTED WAIVER - decided by release lead (jhuttana) 2026-11-26.
 
-    Mode A - Boskos lease exhaustion: runs died at exactly 7200s with 'failed to acquire lease for "<cloud>-autorelease-qe-quota-slice": resources not found'. Zero tests executed.
-    Mode B - send-results-to-reportportal failed after 10x retry of 'gcloud auth activate-service-account --key-file /var/run/datarouter/gcs_sa_openshift-ci-private' (revoked datarouter GCS key, separate secret from release-tests-sa). Tests had already run and passed.
+    Original state: aggregated=true, accepted=false. Two infra failure modes, zero product failures:
+    (A) Boskos lease exhaustion - runs died at exactly 7200s with 'failed to acquire lease for "<cloud>-autorelease-qe-quota-slice": resources not found'; zero tests executed.
+    (B) send-results-to-reportportal - Data Router was SHUT DOWN 2026-11-18 (RHIDP-18186); DNO ReportPortal sunset 2026-11-27. The step still runs 'gcloud auth activate-service-account --key-file /var/run/datarouter/gcs_sa_openshift-ci-private', retries 10x/2min, then fails the pod after ~23min. Not best-effort, so the whole job is marked FAILURE with all tests green. Affects every automated-release f999 job on 4.18/4.19/4.20/4.21, both clouds. Filed OCPQE-32124 (Bug, Critical) to remove the step. The credential will never be restored - the service is decommissioned.
 
-    Per blocking job:
-    - stable-4.21-upgrade-from-stable-4.20-aws-ipi-f999: first+retry1+retry2 all lease-starved. ZERO test coverage. AWS 4.20->4.21 upgrade path unverified.
-    - stable-4.21-upgrade-from-stable-4.21-azure-ipi-fips-f999: all 3 runs executed, 71/71 tests passed each (35 cucushift-upgrade-rhel-worker + 36 cucushift-upgrade-toimage). Job red only from reportportal.
-    - stable-4.21-upgrade-from-stable-4.21-gcp-ipi-f999: first run executed, 71/71 passed; retry1+retry2 lease-starved.
+    Gap closure: the AWS 4.20->4.21 upgrade job originally had ZERO test coverage (all 3 runs lease-starved), so the build was NOT waived on absence of data. Boskos recovered, and 4 re-runs were triggered 2026-11-26 09:38-09:39Z via 'job run --upgrade_to quay.io/openshift-release-dev/ocp-release:4.21.44-x86_64'.
 
-    Decision by release lead (jhuttana): DO NOT WAIVE. Re-run the lease-starved runs to obtain real coverage for the AWS 4.20->4.21 upgrade path, rather than accepting on absence of data.
+    Final evidence - every blocking job now has at least one fully green execution:
+    - stable-4.21-upgrade-from-stable-4.20-aws-ipi-f999: re-run 2125886880154128384 = 73 tests, 0 failures, 0 errors (cucushift-upgrade-rhel-worker 35, cucushift-upgrade-toimage 37, aws-deprovision-verification 1). Previously-missing coverage now obtained and green.
+    - stable-4.21-upgrade-from-stable-4.21-gcp-ipi-f999: re-runs 2125887147096412160 and 2125887155082366976 = 71 tests each, 0 failures.
+    - stable-4.21-upgrade-from-stable-4.21-azure-ipi-fips-f999: 3 original runs, 71 tests each, 0 failures.
 
-    Boskos pools have since recovered - 4.20 autorelease job acquired us-east-1--aws-autorelease-qe-quota-slice-4 at 2026-11-26T01:35Z. The datarouter GCS key remains revoked, so re-runs are expected to pass tests but still be marked FAILURE by the reportportal step; those reportportal-only failures will need waiving separately.
+    In every run the sole failing step per finished.json is send-results-to-reportportal. No product defect found anywhere.
 
-    Task left In Progress pending re-run.
+    Action: jobctl promote-test-results --build 4.21.44 executed, setting manual_promotion=true so the aggregator applies release.openshift.io/qe_state=Accepted to the releasepayload. accepted stays false in the result file because the aggregator derives it from job state, which is poisoned by the dead reportportal step; the manual promotion is the designed bypass for exactly this case.
 - name: image-signed-check
   status: Pass
   started_at: '2026-11-26T06:18:37Z'
