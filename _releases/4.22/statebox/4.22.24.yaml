@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.24
 created_at: '2026-11-25T18:00:16Z'
-updated_at: '2026-11-26T08:59:29Z'
+updated_at: '2026-11-26T09:02:01Z'
 metadata:
   jira_ticket: ART-26580
   advisory_ids:
@@ -27,13 +27,15 @@ tasks:
 - name: check-cve-tracker-bug
   status: Pass
   started_at: '2026-11-25T18:15:13Z'
-  completed_at: '2026-11-26T08:19:22Z'
+  completed_at: '2026-11-26T09:01:55Z'
   result: |-
-    2026-11-26T08:17:26Z: INFO: Initialized StateBox for release 4.22.24 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.24.yaml
-    2026-11-26T08:17:26Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
-    2026-11-26T08:19:20Z: INFO: Processing MR 1252 for Jira issues
-    2026-11-26T08:19:22Z: INFO: no new CVE tracker bug found in either advisories or shipments
-    2026-11-26T08:19:22Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+    2026-11-26T08:59:36Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T08:59:36Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T08:59:37Z: INFO: Initialized StateBox for release 4.22.24 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.24.yaml
+    2026-11-26T08:59:37Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-11-26T09:01:53Z: INFO: Processing MR 1252 for Jira issues
+    2026-11-26T09:01:55Z: INFO: no new CVE tracker bug found in either advisories or shipments
+    2026-11-26T09:01:55Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
 - name: push-to-cdn-staging
   status: Pass
   started_at: '2026-11-25T18:17:51Z'
