@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-26T09:52:03Z'
+updated_at: '2026-11-26T09:52:22Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -101,6 +101,27 @@ tasks:
     ACCEPTED COVERAGE GAP: 4.20.48 validated on AWS and Azure only. GCP has zero coverage - absent evidence rather than a waived failure. Release lead accepted this knowingly. Mitigating: GCP job was the narrowest hop (4.20.47 to 4.20.48); the wider 4.19 to 4.20 upgrade passed on AWS and the same-stream upgrade passed on Azure with FIPS.
 
     Corroborating green signals: stage-testing SUCCESS on AWS, image-consistency-check 0/831 unhealthy, image-signed-check PASSED against mirror, no missed CVE trackers.
+- name: analyze-candidate-build
+  status: Pass
+  started_at: '2026-11-26T09:52:22Z'
+  completed_at: '2026-11-26T09:52:22Z'
+  result: |-
+    WAIVED by release lead. Candidate build 4.20.0-0.nightly-2026-11-23-232904, aggregated=true accepted=false. Informational track - does not gate approval.
+
+    9 of 18 runs were Boskos lease exhaustion ("0 free, 7 leased", 121-122min, zero tests executed).
+
+    Three distinct real test failures, all tagged LEVEL0, none a product bug:
+    - OCP-51189 Component_ALBO "Install aws-load-balancer-operator and controller [Serial]" - failed 3/3 on aws-ipi-f999
+    - OCP-48138 Component_ExtDNS "Support External DNS on AWS platform" - failed 3/3 on aws-ipi-f999
+    - OCP-79770 OLM v1 "metrics are collected by default" - failed 1/3 on azure-ipi-fips, did not recur
+
+    ROOT CAUSE for 51189/48138: the job logged "====> SKIP_QE_APP_REGISTRY=true, skipping deploy qe catalogsource". The QE catalog source was never deployed, so OLM had no catalog to resolve the ALBO and external-dns-operator bundles from. Both failed identically with "subscription <operator> is not correct status" after a 3-minute poll, with 0 events in the test namespace. Both are layered add-on operators with their own release cadence, not part of the OCP 4.20.48 payload. This is a CI job-configuration defect, not a product defect, and will recur on every candidate build until SKIP_QE_APP_REGISTRY is corrected.
+
+    Otherwise green: openshift-extended-test 113/115 passing, cucushift-e2e 20/20, openshift-extended-test-supplementary 1/1.
+
+    Note: these LEVEL0 failures exist only in the candidate's fresh-install jobs. The stable build 4.20.48's three blocking jobs are all upgrade jobs and do not run the ALBO/ExtDNS suites, so this failure surface does not overlap the gating build. See analyze-promoted-build.
+
+    ACTION OUTSTANDING (non-blocking): raise SKIP_QE_APP_REGISTRY catalog config with CI config owners.
 issues:
 - issue: Kerberos authentication required for Errata Tool access - You need Errata
     access for this operation!
