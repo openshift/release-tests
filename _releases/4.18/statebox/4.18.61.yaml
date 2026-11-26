@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T11:56:16Z'
+updated_at: '2026-11-26T11:56:30Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -129,3 +129,16 @@ issues:
   blocker: true
   related_tasks:
   - analyze-promoted-build
+- issue: 'Automation: oar image-consistency-check status query hangs. Calling it with
+    job_id ebbad08c-273f-4508-857c-c2e65b1342ae produced no output for 300s and was
+    aborted twice, leaving the task stuck at In Progress in StateBox. The underlying
+    Prow job actually SUCCEEDED - finished.json at test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125901705563344896
+    reports result=SUCCESS, passed=true. So this is a status-reporting/timeout defect
+    in the tool, not a job failure. StateBox status for image-consistency-check needs
+    to be reconciled to Pass once the tool can complete.'
+  reported_at: '2026-11-26T11:56:30Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - image-consistency-check
