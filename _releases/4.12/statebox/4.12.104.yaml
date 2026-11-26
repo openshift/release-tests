@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.104
 created_at: '2026-11-25T13:01:45Z'
-updated_at: '2026-11-26T09:18:03Z'
+updated_at: '2026-11-26T09:18:08Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -25,6 +25,27 @@ tasks:
     2026-11-26T09:13:11Z: INFO: Added QE release lead comment to MR 1255
     2026-11-26T09:13:14Z: INFO: sent slack message to <#team-qe-release>
     2026-11-26T09:13:14Z: INFO: task [Take Ownership] status is changed to [Pass]
+- name: check-cve-tracker-bug
+  status: Fail
+  started_at: '2026-11-26T09:15:58Z'
+  completed_at: '2026-11-26T09:18:07Z'
+  result: |-
+    2026-11-26T09:15:58Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T09:15:58Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T09:15:59Z: INFO: Initialized StateBox for release 4.12.104 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.104.yaml
+    2026-11-26T09:15:59Z: INFO: task [Check CVE Tracker Bug] status is changed to [In Progress]
+    2026-11-26T09:17:03Z: INFO: CVE tracker bug OCPBUGS-99892 is not found in RHSA advisories
+    2026-11-26T09:18:01Z: INFO: Processing MR 1255 for Jira issues
+    2026-11-26T09:18:02Z: INFO: Found 1 missed CVE tracker bugs in advisories: ['OCPBUGS-99892']
+    2026-11-26T09:18:03Z: INFO: Loaded state from _releases/4.12/statebox/4.12.104.yaml (SHA: 07972f43)
+    2026-11-26T09:18:03Z: INFO: Added blocking (tasks: check-cve-tracker-bug) issue: Found 1 missed CVE tracker bugs in advisories
+
+    Missed CVE tracker bugs:
+    - OCPBUGS-99892
+
+    2026-11-26T09:18:06Z: INFO: Updated state file _releases/4.12/statebox/4.12.104.yaml (attempt 1)
+    2026-11-26T09:18:07Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
+    2026-11-26T09:18:07Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in advisories
