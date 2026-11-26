@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T11:20:05Z'
+updated_at: '2026-11-26T11:20:25Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -94,15 +94,16 @@ tasks:
     ASSESSMENT: RECOMMEND ACCEPT (waivable - QE CI infrastructure failure). Confidence: Medium-High. Awaiting release lead decision.
 - name: analyze-candidate-build
   status: In Progress
-  started_at: '2026-11-26T10:39:02Z'
+  started_at: '2026-11-26T11:20:25Z'
   completed_at: null
-  result: 'Candidate build 4.18.0-0.nightly-2026-11-24-160912: aggregated=true, accepted=false.
-    ALL 6 QE blocking jobs failed 0/3 BO3 attempts (18/18 attempts failed) across
-    aws-ipi, azure-ipi-fips, gcp-ipi, aws-ipi-disruptive, upgrade-from-stable-4.17-gcp-ipi,
-    upgrade-from-stable-4.18-aws-ipi. Every attempt has an EMPTY testResultSummary
-    {} - no JUnit artifacts, so jobs failed before producing test results. Total failure
-    across all platforms and all job variants (install, disruptive, upgrade) points
-    to systemic QE CI infrastructure failure rather than a product regression. BLOCKED
-    on root-cause confirmation: Prow artifacts unreadable (GCS_CRED_FILE unset, gcloud
-    reauthentication required).'
+  result: |-
+    REVISED ANALYSIS (2026-11-26, supersedes earlier note). Candidate build 4.18.0-0.nightly-2026-11-24-160912: aggregated=true, accepted=false. All 6 QE blocking jobs failed 0/3 BO3 (18/18 attempts) across aws-ipi, azure-ipi-fips, gcp-ipi, aws-ipi-disruptive, upgrade-from-stable-4.17-gcp-ipi, upgrade-from-stable-4.18-aws-ipi. Zero JUnit artifacts on any attempt.
+
+    CORRECTION to prior note: missing testResultSummary is not on its own proof of early job death (passing z-streams also lack the field). For FAILED jobs it does indicate no JUnit was produced - baseline validated against 4.19 nightly 2026-11-24-024702 where 4/6 failed jobs DO carry summaries.
+
+    Shares the same signature as the promoted build 4.18.61 and as two other unrelated z-streams (4.12.104, 4.19.57) whose jobs ran 2026-11-25 - all 100% failure, zero JUnit, all platforms. Points to QE CI infrastructure rather than a 4.18 product regression.
+
+    LIMITATION: Prow artifacts unreadable (GCS_CRED_FILE unset; [EMAIL_REDACTED] gets 403 on gs://qe-private-deck). Root cause inferred, not log-confirmed.
+
+    ASSESSMENT: RECOMMEND ACCEPT (waivable - QE CI infrastructure failure). Informational only; does not gate the pipeline. Awaiting release lead decision.
 issues: []
