@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-26T09:25:35Z'
+updated_at: '2026-11-26T09:25:52Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -130,8 +130,13 @@ issues:
     Missed CVE tracker bugs:
     - OCPBUGS-104203
   reported_at: '2026-11-25T16:44:10Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'ART attached OCPBUGS-104203 (CVE-2026-33814, ose-aws-ecr-image-credential-provider)
+    to RPM advisory 178067 on 2026-11-26. It is an rpm component, so it belongs on
+    the rpm advisory rather than the shipment MR. Advisory respun RHBA-2026:102910-02
+    -> -03 at 08:28Z. Re-ran check-cve-tracker-bug at 09:25Z: "no new CVE tracker
+    bug found in either advisories or shipments", task Fail -> Pass.'
   blocker: true
   related_tasks:
   - check-cve-tracker-bug
+  resolved_at: '2026-11-26T09:25:52Z'
