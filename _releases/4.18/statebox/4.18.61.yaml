@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T11:56:30Z'
+updated_at: '2026-11-26T17:49:57Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -68,16 +68,16 @@ tasks:
     2026-11-26T11:26:51Z: INFO: Added image health summary to MR 1254
     2026-11-26T11:26:51Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: In Progress
+  status: Fail
   started_at: '2026-11-26T11:14:08Z'
-  completed_at: null
+  completed_at: '2026-11-26T17:49:55Z'
   result: |-
-    2026-11-26T11:14:08Z: WARNING: Optional environment variable not set: JENKINS_USER
-    2026-11-26T11:14:08Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
-    2026-11-26T11:14:09Z: INFO: Initialized StateBox for release 4.18.61 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.61.yaml
-    2026-11-26T11:14:09Z: INFO: Checking stage testing Prow job status for job ID: 13c9bdaf-6007-4cbc-ba70-0437d8a20658
-    2026-11-26T11:14:09Z: INFO: Job state: pending, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-stage-testing-e2e-aws-ipi/2125901763750924288
-    2026-11-26T11:14:09Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-11-26T17:49:54Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T17:49:54Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T17:49:55Z: INFO: Initialized StateBox for release 4.18.61 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.61.yaml
+    2026-11-26T17:49:55Z: INFO: Checking stage testing Prow job status for job ID: 13c9bdaf-6007-4cbc-ba70-0437d8a20658
+    2026-11-26T17:49:55Z: INFO: Job state: failure, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-stage-testing-e2e-aws-ipi/2125901763750924288
+    2026-11-26T17:49:55Z: INFO: task [Stage Testing] status is changed to [Fail]
 - name: analyze-promoted-build
   status: In Progress
   started_at: '2026-11-26T11:55:58Z'
