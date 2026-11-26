@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-26T09:03:02Z'
+updated_at: '2026-11-26T09:05:35Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -64,20 +64,16 @@ tasks:
     2026-11-26T06:14:51Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125835696999501824
     2026-11-26T06:14:53Z: INFO: sent slack message to <#team-qe-release>
 - name: stage-testing
-  status: In Progress
+  status: Pass
   started_at: '2026-11-26T06:14:59Z'
-  completed_at: null
+  completed_at: '2026-11-26T09:05:34Z'
   result: |-
-    2026-11-26T06:14:59Z: WARNING: Optional environment variable not set: JENKINS_USER
-    2026-11-26T06:14:59Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
-    2026-11-26T06:15:00Z: INFO: Initialized StateBox for release 5.0.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.3.yaml
-    2026-11-26T06:15:00Z: INFO: Triggering stage testing Prow job
-    2026-11-26T06:15:01Z: INFO: Loaded state from _releases/5.0/statebox/5.0.3.yaml (SHA: 383b30df)
-    2026-11-26T06:15:01Z: INFO: Stage release succeeded (verified by label)
-    2026-11-26T06:15:01Z: INFO: task [Stage Testing] status is changed to [In Progress]
-    2026-11-26T06:15:06Z: INFO: Triggered stage testing Prow job: c6f91f1d-e7c8-45ed-95aa-660302ddcca6
-    2026-11-26T06:15:06Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2125835758945177600
-    2026-11-26T06:15:08Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-26T09:05:32Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T09:05:32Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T09:05:34Z: INFO: Initialized StateBox for release 5.0.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.3.yaml
+    2026-11-26T09:05:34Z: INFO: Checking stage testing Prow job status for job ID: c6f91f1d-e7c8-45ed-95aa-660302ddcca6
+    2026-11-26T09:05:34Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2125835758945177600
+    2026-11-26T09:05:34Z: INFO: task [Stage Testing] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
