@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T11:20:25Z'
+updated_at: '2026-11-26T11:23:13Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -51,18 +51,22 @@ tasks:
     2026-11-26T10:36:40Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-26T10:36:40Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-11-26T10:36:46Z'
-  completed_at: null
+  completed_at: '2026-11-26T11:23:12Z'
   result: |-
-    2026-11-26T10:36:46Z: WARNING: Optional environment variable not set: JENKINS_USER
-    2026-11-26T10:36:46Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
-    2026-11-26T10:36:47Z: INFO: Initialized StateBox for release 4.18.61 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.61.yaml
-    2026-11-26T10:36:48Z: INFO: Loaded state from _releases/4.18/statebox/4.18.61.yaml (SHA: 1fabbc93)
-    2026-11-26T10:36:48Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-11-26T10:37:08Z: INFO: Triggered image consistency check Prow job: ebbad08c-273f-4508-857c-c2e65b1342ae
-    2026-11-26T10:37:08Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125901705563344896
-    2026-11-26T10:37:10Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-26T11:12:08Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T11:12:08Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T11:12:09Z: INFO: Initialized StateBox for release 4.18.61 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.61.yaml
+    2026-11-26T11:12:09Z: INFO: Checking image consistency check Prow job status for job ID: ebbad08c-273f-4508-857c-c2e65b1342ae
+    2026-11-26T11:12:09Z: INFO: Job state: success, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125901705563344896
+    2026-11-26T11:12:09Z: INFO: Starting image health check for shipment MR 1254
+    2026-11-26T11:12:09Z: INFO: Stage release succeeded (verified by label)
+    2026-11-26T11:12:09Z: INFO: Processing MR 1254
+    2026-11-26T11:12:14Z: INFO: Found 855 images to check
+    2026-11-26T11:23:11Z: INFO: Completed image health check. Scanned 855 images, found 0 unhealthy
+    2026-11-26T11:23:12Z: INFO: Added image health summary to MR 1254
+    2026-11-26T11:23:12Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
   status: In Progress
   started_at: '2026-11-26T11:14:08Z'
