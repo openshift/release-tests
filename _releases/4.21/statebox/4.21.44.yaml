@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-26T00:38:46Z'
+updated_at: '2026-11-26T04:58:48Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -84,6 +84,26 @@ tasks:
     2026-11-25T16:44:14Z: INFO: Created blocking issue in StateBox for 1 CVE tracker bugs
     2026-11-25T16:44:16Z: INFO: sent slack message to <#forum-ocp-release>
     2026-11-25T16:44:16Z: INFO: task [Check CVE Tracker Bug] status is changed to [Fail]
+- name: analyze-promoted-build
+  status: In Progress
+  started_at: '2026-11-26T04:58:48Z'
+  completed_at: null
+  result: |-
+    AI analysis 2026-11-26. aggregated=true, accepted=false. Root cause is 100% infrastructure; zero product failures found across all 9 runs.
+
+    Mode A - Boskos lease exhaustion: runs died at exactly 7200s with 'failed to acquire lease for "<cloud>-autorelease-qe-quota-slice": resources not found'. Zero tests executed.
+    Mode B - send-results-to-reportportal failed after 10x retry of 'gcloud auth activate-service-account --key-file /var/run/datarouter/gcs_sa_openshift-ci-private' (revoked datarouter GCS key, separate secret from release-tests-sa). Tests had already run and passed.
+
+    Per blocking job:
+    - stable-4.21-upgrade-from-stable-4.20-aws-ipi-f999: first+retry1+retry2 all lease-starved. ZERO test coverage. AWS 4.20->4.21 upgrade path unverified.
+    - stable-4.21-upgrade-from-stable-4.21-azure-ipi-fips-f999: all 3 runs executed, 71/71 tests passed each (35 cucushift-upgrade-rhel-worker + 36 cucushift-upgrade-toimage). Job red only from reportportal.
+    - stable-4.21-upgrade-from-stable-4.21-gcp-ipi-f999: first run executed, 71/71 passed; retry1+retry2 lease-starved.
+
+    Decision by release lead (jhuttana): DO NOT WAIVE. Re-run the lease-starved runs to obtain real coverage for the AWS 4.20->4.21 upgrade path, rather than accepting on absence of data.
+
+    Boskos pools have since recovered - 4.20 autorelease job acquired us-east-1--aws-autorelease-qe-quota-slice-4 at 2026-11-26T01:35Z. The datarouter GCS key remains revoked, so re-runs are expected to pass tests but still be marked FAILURE by the reportportal step; those reportportal-only failures will need waiving separately.
+
+    Task left In Progress pending re-run.
 issues:
 - issue: 'MCP server host lacks Errata authorization. The server (vm-10-0-76-71.hosted.upshift.rdu2.redhat.com)
     authenticates to Errata Tool as host service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
