@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.24
 created_at: '2026-11-25T18:00:16Z'
-updated_at: '2026-11-26T00:05:32Z'
+updated_at: '2026-11-26T00:05:54Z'
 metadata:
   jira_ticket: ART-26580
   advisory_ids:
@@ -72,6 +72,21 @@ tasks:
     2026-11-26T00:05:29Z: INFO: Triggered image consistency check Prow job: 74ab89ae-2a13-4d3d-9446-ce6767c54e6f
     2026-11-26T00:05:29Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125742741764706304
     2026-11-26T00:05:31Z: INFO: sent slack message to <#team-qe-release>
+- name: stage-testing
+  status: In Progress
+  started_at: '2026-11-26T00:05:43Z'
+  completed_at: null
+  result: |-
+    2026-11-26T00:05:43Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T00:05:43Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T00:05:45Z: INFO: Initialized StateBox for release 4.22.24 at openshift/release-tests/z-stream/_releases/4.22/statebox/4.22.24.yaml
+    2026-11-26T00:05:45Z: INFO: Triggering stage testing Prow job
+    2026-11-26T00:05:45Z: INFO: Loaded state from _releases/4.22/statebox/4.22.24.yaml (SHA: 6574a0bf)
+    2026-11-26T00:05:45Z: INFO: Stage release succeeded (verified by label)
+    2026-11-26T00:05:45Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-11-26T00:05:51Z: INFO: Triggered stage testing Prow job: edcea5a4-18e6-4494-925c-ba0911dbc911
+    2026-11-26T00:05:51Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.22-stage-testing-e2e-aws-ipi/2125742831657029632
+    2026-11-26T00:05:52Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
