@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.104
 created_at: '2026-11-25T13:01:45Z'
-updated_at: '2026-11-26T18:07:36Z'
+updated_at: '2026-11-26T18:07:59Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -86,3 +86,15 @@ issues:
   related_tasks:
   - check-cve-tracker-bug
   resolved_at: '2026-11-26T11:57:05Z'
+- issue: 'stage-testing failed 3 consecutive times with identical root cause: AWS
+    IPI install bootstrap never completed because the cluster API hostname on sustaining-aws-412.devcluster.openshift.com
+    never resolved via DNS (dial tcp: lookup ... no such host). Job IDs: 89c6112e-84e8-42a9-b1a8-3fe8918aa2ec,
+    6c14e617-375e-4119-ae79-83ff075704a3, 8a48dcac-1da0-4ee5-aa3b-1d307f8a5e01. Likely
+    a persistent infra/DNS issue in the sustaining-aws-412 CI AWS pool, not a flaky
+    test. Needs escalation to infra/platform team owning that environment.'
+  reported_at: '2026-11-26T18:07:59Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - stage-testing
