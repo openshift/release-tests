@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T17:49:57Z'
+updated_at: '2026-11-26T17:50:26Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -137,8 +137,18 @@ issues:
     in the tool, not a job failure. StateBox status for image-consistency-check needs
     to be reconciled to Pass once the tool can complete.'
   reported_at: '2026-11-26T11:56:30Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Not a defect - correcting the earlier diagnosis. The tool completed
+    normally server-side at 2026-11-26T11:26:51Z and set image-consistency-check to
+    Pass (scanned 855 images in MR 1254, 0 unhealthy). The apparent hang was the MCP
+    *client* aborting at its 300s idle timeout while the tool was legitimately busy
+    with the ~6-minute image scan; the server kept working and wrote the result. No
+    reconciliation was needed. Operational note for future releases: image-consistency-check
+    routinely exceeds the 300s MCP idle timeout on large payloads, so the client-side
+    abort is expected and is NOT a job failure - re-read StateBox rather than re-triggering
+    the job. Raising CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT or a per-server timeout would
+    avoid the misleading abort.'
   blocker: false
   related_tasks:
   - image-consistency-check
+  resolved_at: '2026-11-26T17:50:26Z'
