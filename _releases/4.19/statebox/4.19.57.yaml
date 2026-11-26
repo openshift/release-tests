@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.19.57
 created_at: '2026-11-25T10:34:27Z'
-updated_at: '2026-11-26T00:24:40Z'
+updated_at: '2026-11-26T06:17:40Z'
 metadata:
   jira_ticket: ART-26540
   advisory_ids:
@@ -98,6 +98,17 @@ tasks:
     2026-11-25T15:40:10Z: INFO: Processing MR 1236 for Jira issues
     2026-11-25T15:40:14Z: INFO: no new CVE tracker bug found in either advisories or shipments
     2026-11-25T15:40:14Z: INFO: task [Check CVE Tracker Bug] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-11-26T06:17:36Z'
+  completed_at: '2026-11-26T06:17:38Z'
+  result: |-
+    2026-11-26T06:17:36Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-11-26T06:17:36Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/4-stable/release/4.19.57
+    2026-11-26T06:17:38Z: INFO: Image Digest: sha256:660d97f279a1a40b9932cc769a80386e23410f30a9ed474f91a59cb35cb9a226
+    2026-11-26T06:17:38Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=660d97f279a1a40b9932cc769a80386e23410f30a9ed474f91a59cb35cb9a226/signature-1
+    2026-11-26T06:17:38Z: INFO: Signature check PASSED
+    2026-11-26T06:17:38Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: 'CI-wide blocking-test outage since 2026-11-24: 100% failure rate (9/9 attempts)
     on all 3 blocking jobs for promoted build 4.19.57 (upgrade-from-4.18-aws-ipi,
