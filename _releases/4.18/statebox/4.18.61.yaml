@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T11:14:11Z'
+updated_at: '2026-11-26T11:20:05Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -76,19 +76,22 @@ tasks:
     2026-11-26T11:14:09Z: INFO: task [Stage Testing] status is changed to [In Progress]
 - name: analyze-promoted-build
   status: In Progress
-  started_at: '2026-11-26T10:38:53Z'
+  started_at: '2026-11-26T11:20:05Z'
   completed_at: null
-  result: 'Test result file ocp-test-result-4.18.61-amd64.json: aggregated=true, accepted=false.
-    ALL 3 QE blocking jobs failed 0/3 BO3 attempts (9/9 attempts failed): upgrade-from-stable-4.17-aws-ipi,
-    upgrade-from-stable-4.18-azure-ipi-fips, upgrade-from-stable-4.18-gcp-ipi. Every
-    attempt has an EMPTY testResultSummary {} - no JUnit artifacts produced, indicating
-    jobs died before/during the test phase rather than failing individual test cases.
-    Same pattern seen on candidate build (18/18 attempts, 6 jobs, all empty). Counter-evidence
-    that payload is healthy: Release Controller blocking jobs for 4.18.61 (upgrade,
-    upgrade-minor) both Succeeded. Hypothesis: systemic QE CI infrastructure/job-template
-    failure, NOT a product regression. BLOCKED on root-cause confirmation: cannot
-    read Prow artifacts - GCS_CRED_FILE unset and gcloud needs reauthentication; qe-private-deck
-    requires login. Awaiting log access + release lead decision.'
+  result: |-
+    REVISED ANALYSIS (2026-11-26, supersedes earlier note). 4.18.61: aggregated=true, accepted=false. All 3 QE blocking jobs failed 0/3 BO3 (9/9 attempts): upgrade-from-stable-4.17-aws-ipi, upgrade-from-stable-4.18-azure-ipi-fips, upgrade-from-stable-4.18-gcp-ipi. Zero JUnit artifacts on any attempt.
+
+    CORRECTION to prior note: absence of testResultSummary is NOT by itself evidence of early job death - passing z-streams (4.15.69, 4.17.57, 4.20.30) also lack it. Validated baseline: among FAILED jobs the field IS populated when JUnit is produced (e.g. 4.19 nightly 2026-11-24-024702 has 4/6 failed jobs with summaries). So for failed jobs, absence does indicate no JUnit was produced.
+
+    PRIMARY EVIDENCE - cross-release temporal correlation: three independent z-streams whose jobs all ran on 2026-11-25 failed 100% with zero JUnit across aws/azure/gcp: 4.12.104 (3/3 fail), 4.18.61 (3/3 fail), 4.19.57 (3/3 fail). Every z-stream whose jobs ran earlier passed 100%: 4.15.69 (Sep), 4.17.57 (Aug), 4.20.30 (Jul). Three different minor versions with different upgrade paths failing totally on the same day is an infrastructure signature, not three simultaneous product regressions.
+
+    COUNTER-EVIDENCE that payload is healthy: Release Controller blocking jobs for 4.18.61 (upgrade, upgrade-minor) both Succeeded - these run on public Prow and exercise the real upgrade path. Failures are confined to the qe-private-deck job fleet.
+
+    NUANCE: job runtimes were long (aws ~48-67min, gcp ~57min, azure-fips 3h12m-3h33m), so jobs were not dying instantly at setup; consistent with install/upgrade phase completing or partially completing and the test phase never producing JUnit.
+
+    LIMITATION: root cause NOT confirmed from logs. GCS_CRED_FILE unset and personal account [EMAIL_REDACTED] has no storage.objects.get on gs://qe-private-deck (403); qe-private-deck web UI returns 403 unauthenticated. Recommendation is inference from the above, not log-confirmed.
+
+    ASSESSMENT: RECOMMEND ACCEPT (waivable - QE CI infrastructure failure). Confidence: Medium-High. Awaiting release lead decision.
 - name: analyze-candidate-build
   status: In Progress
   started_at: '2026-11-26T10:39:02Z'
