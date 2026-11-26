@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.104
 created_at: '2026-11-25T13:01:45Z'
-updated_at: '2026-11-26T12:07:36Z'
+updated_at: '2026-11-26T12:24:57Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -46,17 +46,15 @@ tasks:
     2026-11-26T11:59:13Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
   status: In Progress
-  started_at: '2026-11-26T12:05:55Z'
+  started_at: '2026-11-26T12:24:54Z'
   completed_at: null
   result: |-
-    2026-11-26T12:05:55Z: WARNING: Optional environment variable not set: JENKINS_USER
-    2026-11-26T12:05:55Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
-    2026-11-26T12:05:57Z: INFO: Initialized StateBox for release 4.12.104 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.104.yaml
-    2026-11-26T12:05:58Z: INFO: Loaded state from _releases/4.12/statebox/4.12.104.yaml (SHA: 2df14b3f)
-    2026-11-26T12:05:58Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
-    2026-11-26T12:06:03Z: INFO: Triggered image consistency check Prow job: 1eedc29a-f3bd-41fe-886b-cc822ae94eec
-    2026-11-26T12:06:03Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125924079104954368
-    2026-11-26T12:06:05Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-26T12:24:54Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T12:24:54Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T12:24:55Z: INFO: Initialized StateBox for release 4.12.104 at openshift/release-tests/z-stream/_releases/4.12/statebox/4.12.104.yaml
+    2026-11-26T12:24:55Z: INFO: Checking image consistency check Prow job status for job ID: 1eedc29a-f3bd-41fe-886b-cc822ae94eec
+    2026-11-26T12:24:56Z: INFO: Job state: pending, URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125924079104954368
+    2026-11-26T12:24:56Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
 - name: stage-testing
   status: In Progress
   started_at: '2026-11-26T12:07:26Z'
