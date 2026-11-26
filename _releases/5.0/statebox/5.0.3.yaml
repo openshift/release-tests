@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-26T09:08:35Z'
+updated_at: '2026-11-26T13:23:33Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -69,6 +69,17 @@ tasks:
     2026-11-26T09:05:34Z: INFO: Checking stage testing Prow job status for job ID: c6f91f1d-e7c8-45ed-95aa-660302ddcca6
     2026-11-26T09:05:34Z: INFO: Job state: success, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-5.0-stage-testing-e2e-aws-ipi/2125835758945177600
     2026-11-26T09:05:34Z: INFO: task [Stage Testing] status is changed to [Pass]
+- name: image-signed-check
+  status: Pass
+  started_at: '2026-11-26T13:23:29Z'
+  completed_at: '2026-11-26T13:23:32Z'
+  result: |-
+    2026-11-26T13:23:29Z: INFO: task [Image Signed Check] status is changed to [In Progress]
+    2026-11-26T13:23:29Z: INFO: Getting digest from https://amd64.ocp.releases.ci.openshift.org/api/v1/releasestream/5-stable/release/5.0.3
+    2026-11-26T13:23:32Z: INFO: Image Digest: sha256:253759753452443017f2f4510959ff1125d4ff58db485d71d949b7e58402e9d4
+    2026-11-26T13:23:32Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=253759753452443017f2f4510959ff1125d4ff58db485d71d949b7e58402e9d4/signature-1
+    2026-11-26T13:23:32Z: INFO: Signature check PASSED
+    2026-11-26T13:23:32Z: INFO: task [Image Signed Check] status is changed to [Pass]
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
