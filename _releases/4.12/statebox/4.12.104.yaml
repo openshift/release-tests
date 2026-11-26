@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.12.104
 created_at: '2026-11-25T13:01:45Z'
-updated_at: '2026-11-25T13:01:45Z'
+updated_at: '2026-11-26T09:13:16Z'
 metadata:
   jira_ticket: ART-0
   advisory_ids:
@@ -11,5 +11,18 @@ metadata:
   candidate_builds:
     x86_64: 4.12.0-0.nightly-2026-11-25-074700
   shipment_mr: https://gitlab.cee.redhat.com/hybrid-platforms/art/ocp-shipment-data/-/merge_requests/1255
-tasks: []
+tasks:
+- name: take-ownership
+  status: Pass
+  started_at: '2026-11-26T09:13:01Z'
+  completed_at: '2026-11-26T09:13:14Z'
+  result: |-
+    2026-11-26T09:13:01Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T09:13:01Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T09:13:01Z: INFO: task [Take Ownership] status is changed to [In Progress]
+    2026-11-26T09:13:08Z: INFO: QA Owner of advisory 178151 is updated to [EMAIL_REDACTED]
+    2026-11-26T09:13:11Z: INFO: QA Owner of advisory 178152 is updated to [EMAIL_REDACTED]
+    2026-11-26T09:13:11Z: INFO: Added QE release lead comment to MR 1255
+    2026-11-26T09:13:14Z: INFO: sent slack message to <#team-qe-release>
+    2026-11-26T09:13:14Z: INFO: task [Take Ownership] status is changed to [Pass]
 issues: []
