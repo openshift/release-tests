@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.20.48
 created_at: '2026-11-25T11:14:57Z'
-updated_at: '2026-11-26T06:18:18Z'
+updated_at: '2026-11-26T09:52:03Z'
 metadata:
   jira_ticket: ART-26541
   advisory_ids:
@@ -81,6 +81,26 @@ tasks:
     2026-11-26T06:18:16Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=eaa33a86db199feb8acae3a310e82b56c16fe303da00d5d897dce68b7c6acf1f/signature-1
     2026-11-26T06:18:16Z: INFO: Signature check PASSED
     2026-11-26T06:18:16Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-26T09:52:03Z'
+  completed_at: '2026-11-26T09:52:03Z'
+  result: |-
+    WAIVED by release lead; manual_promotion label applied 2026-11-26T09:51Z via jobctl_promote_test_results.
+
+    accepted=false driven entirely by infrastructure, zero product defects and zero test failures across all 9 runs.
+
+    Per-job evidence (from GCS step artifacts; JSON carried no testResultSummary):
+    - upgrade-from-4.19-aws-ipi attempt1 (2125577148818264064): ONLY send-results-to-reportportal failed. Install, upgrade, cucushift-ota-pre/postupgrade, upgrade-healthcheck, check-operators, check-fips all SUCCESS. Genuinely green.
+    - upgrade-from-4.20-azure-ipi-fips attempt1 (2125577151150297088): same pattern, reportportal only. Genuinely green.
+    - upgrade-from-4.20-gcp-ipi attempt1 (2125577173799538688): ipi-install-install exit 6 + reportportal. Root cause "machine-api Degraded: minimum worker replica count (2) not yet met: current running replicas 1" - one of two workers never provisioned; monitoring/image-registry/autoscaler degraded downstream. Log shows "progressing towards operator: 4.20.47", i.e. failed on the BASELINE install before the upgrade, so the 4.20.48 payload was never deployed in that run. GCP target_pools quota warning present.
+    - All 6 retries: Boskos lease exhaustion, "0 free, 7 leased", 121-122min, 1 step artifact, zero tests executed.
+
+    reportportal root cause: gcloud auth activate-service-account against /var/run/datarouter/gcs_sa_openshift-ci-private failed 10 retries - datarouter GCS service-account key rotated 2026-11-25. Post-step only; cannot affect test outcomes, only flips job verdict.
+
+    ACCEPTED COVERAGE GAP: 4.20.48 validated on AWS and Azure only. GCP has zero coverage - absent evidence rather than a waived failure. Release lead accepted this knowingly. Mitigating: GCP job was the narrowest hop (4.20.47 to 4.20.48); the wider 4.19 to 4.20 upgrade passed on AWS and the same-stream upgrade passed on Azure with FIPS.
+
+    Corroborating green signals: stage-testing SUCCESS on AWS, image-consistency-check 0/831 unhealthy, image-signed-check PASSED against mirror, no missed CVE trackers.
 issues:
 - issue: Kerberos authentication required for Errata Tool access - You need Errata
     access for this operation!
