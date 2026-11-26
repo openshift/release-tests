@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.24
 created_at: '2026-11-25T18:00:16Z'
-updated_at: '2026-11-26T09:02:14Z'
+updated_at: '2026-11-26T13:23:25Z'
 metadata:
   jira_ticket: ART-26580
   advisory_ids:
@@ -147,12 +147,23 @@ issues:
     on reporting alone. Action: DPTP to refresh the datarouter secret; waive on per-step
     verification.'
   reported_at: '2026-11-26T00:37:45Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'CORRECTION to the original root cause: this is NOT a credential rotation
+    and there is nothing for DPTP to refresh. Data Router was shut down with immediate
+    effect on 2026-11-18 (RHIDP-18186); DNO-hosted ReportPortal sunsets 2026-11-27
+    and KONFLUX-13145 closed with no replacement bridge. RHDH removed their send-data-router
+    steps but explicitly left "steps owned by other teams" behind, and openshift-tests-private''s
+    send-results-to-reportportal is one of those orphans. Confirmed 2026-11-26 that
+    every automated-release-*-f999 job on 4.18/4.19/4.20/4.21 now fails at this step
+    with all tests green, so accepted can never be true for any active z-stream until
+    the step is removed. Tracked in OCPQE-32124 (Bug, Critical). Reportportal-only
+    failures are permanently expected and waivable on per-step verification; do not
+    wait for a key rotation or re-trigger.'
   blocker: false
   related_tasks:
   - analyze-candidate-build
   - analyze-promoted-build
+  resolved_at: '2026-11-26T13:23:25Z'
 - issue: 'LEVEL0 regression, NOT waivable: OCP-74948 "[sig-operators] OLM v1 opeco
     should catalog offer the operator content through https server" fails 6 of 9 runs
     on candidate 4.22.0-0.nightly-2026-11-25-112849, across all 3 platforms (aws 2/3,
