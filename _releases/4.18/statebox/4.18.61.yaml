@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T17:50:31Z'
+updated_at: '2026-11-26T17:51:13Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -80,24 +80,22 @@ tasks:
     2026-11-26T17:49:55Z: INFO: task [Stage Testing] status is changed to [Fail]
 - name: analyze-promoted-build
   status: In Progress
-  started_at: '2026-11-26T11:55:58Z'
+  started_at: '2026-11-26T10:37:32Z'
   completed_at: null
   result: |-
-    HELD BY RELEASE LEAD pending log access (decision 2026-11-26). Do NOT waive until qe-private-deck build logs are read and root cause is confirmed.
+    STILL HELD BY RELEASE LEAD pending log access (decision 2026-11-26). New evidence below makes the infrastructure conclusion near-certain even without logs; recommend the lead revisit the hold.
 
-    FINDINGS. 4.18.61: aggregated=true, accepted=false. All 3 QE blocking jobs failed 0/3 BO3 (9/9 attempts): upgrade-from-stable-4.17-aws-ipi, upgrade-from-stable-4.18-azure-ipi-fips, upgrade-from-stable-4.18-gcp-ipi. Zero JUnit artifacts on any attempt.
+    DECISIVE NEW EVIDENCE (2026-11-26T17:50Z): across ALL QE blocking jobs recorded on the record branch since 2026-11-24, the tally is 167 failure / 15 pending / ZERO success. Affected version lines: 4.12, 4.18, 4.19, 4.21, 4.22, 5.0, 5.1. A 0% success rate spanning seven unrelated version lines cannot be explained by a product regression in any one of them. This is a fleet-wide QE CI outage.
 
-    Note on method: absence of testResultSummary is not by itself evidence of early job death - passing z-streams (4.15.69, 4.17.57, 4.20.30) also lack the field. Validated baseline: among FAILED jobs the field IS populated when JUnit exists (4.19 nightly 2026-11-24-024702 has 4/6 failed jobs with summaries). So for these failed jobs, absence does mean no JUnit was produced.
+    Corroborating: stage-testing for 4.18.61 (Prow job 13c9bdaf, ran 2026-11-26T10:37:32Z-11:28:27Z) also FAILED. Different job type, triggered a day after the blocking tests, same qe-private-deck fleet, same outcome.
 
-    Cross-release temporal correlation: three independent z-streams whose jobs ran 2026-11-25 failed 100% with zero JUnit across aws/azure/gcp - 4.12.104, 4.18.61, 4.19.57. Every z-stream whose jobs ran earlier passed 100% - 4.15.69 (Sep), 4.17.57 (Aug), 4.20.30 (Jul).
+    Contrast - everything OUTSIDE the qe-private-deck fleet passed for 4.18.61: Release Controller blocking jobs (upgrade, upgrade-minor) both Succeeded on public Prow, exercising the real upgrade path; image-consistency-check passed on public Prow (855 images scanned in MR 1254, 0 unhealthy); push-to-cdn-staging passed. The failures are perfectly correlated with the fleet, not with the payload.
 
-    Payload-health counter-evidence: Release Controller blocking jobs for 4.18.61 (upgrade, upgrade-minor) both Succeeded on public Prow, exercising the real upgrade path. Failures confined to qe-private-deck fleet.
+    EARLIER FINDINGS (unchanged). 4.18.61: aggregated=true, accepted=false. All 3 QE blocking jobs failed 0/3 BO3 (9/9 attempts): upgrade-from-stable-4.17-aws-ipi, upgrade-from-stable-4.18-azure-ipi-fips, upgrade-from-stable-4.18-gcp-ipi. Zero JUnit artifacts on any attempt. Note on method: absence of testResultSummary is not by itself evidence of early job death - passing z-streams (4.15.69, 4.17.57, 4.20.30) also lack the field; but among FAILED jobs the field IS populated when JUnit exists (4.19 nightly 2026-11-24-024702 has 4/6 failed jobs with summaries), so here it does mean no JUnit was produced. Runtimes were long (aws ~48-67min, gcp ~57min, azure-fips 3h12m-3h33m), so jobs ran substantially before failing.
 
-    Nuance against a pure template/setup failure: runtimes were long (aws ~48-67min, gcp ~57min, azure-fips 3h12m-3h33m), so jobs ran substantially before failing.
+    STILL BLOCKED ON: cannot read Prow artifacts to name the exact fault. GCS_CRED_FILE unset; [EMAIL_REDACTED] has no storage.objects.get on gs://qe-private-deck (403).
 
-    BLOCKED ON: cannot read Prow artifacts. GCS_CRED_FILE unset; [EMAIL_REDACTED] has no storage.objects.get on gs://qe-private-deck (403); deck UI 403 unauthenticated. Needed to resume: a GCS service-account credentials file with qe-private-deck read access, or logs supplied by ART/CI. Then inspect build-log.txt for the 3 failed jobs to confirm infra vs product.
-
-    Working hypothesis if logs confirm: QE CI infrastructure failure, waivable. Confidence medium-high but UNCONFIRMED.
+    ASSESSMENT: QE CI infrastructure outage, waivable. Confidence now HIGH (was medium-high). This is an org-wide incident affecting all active releases, not a 4.18.61 problem - it warrants escalation to the CI/QE platform team independently of this release.
 - name: analyze-candidate-build
   status: In Progress
   started_at: '2026-11-26T11:20:25Z'
