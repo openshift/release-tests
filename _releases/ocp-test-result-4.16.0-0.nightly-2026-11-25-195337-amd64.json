@@ -32,9 +32,70 @@
         "jobStartTime": "2026-11-26T11:26:34Z",
         "jobID": "d5f123ab-c8e3-485b-b450-4ba2df8d9ad9",
         "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2125914105314283520",
-        "jobState": "pending"
+        "jobState": "failure",
+        "jobCompletionTime": "2026-11-26T15:12:19Z",
+        "testResultSummary": {
+          "openshift-extended-test": {
+            "total": 102,
+            "failures": 21,
+            "errors": 0,
+            "skipped": 25,
+            "failingScenarios": [
+              "[sig-auth] Authentication Author:dmukherj-WRS-ConnectedOnly-LEVEL0-High-47941-V-BR.06-User should not be allowed to create privileged ephemeral container without required privileges",
+              "[sig-storage] STORAGE ARO-Author:wduan-LEVEL0-High-50918-[Azure-File-CSI-Driver] support nfs file share protocol",
+              "[sig-storage] STORAGE Author:rdeore-LEVEL0-Critical-61425-[LVMS] [Filesystem] [WaitForFirstConsumer] PVC resize on LVM cluster beyond thinpool size, but within over-provisioning limit",
+              "[sig-storage] STORAGE NonHyperShiftHOST-ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44907-[CSI-Driver] [Dynamic PV] [Retain reclaimPolicy] [Static PV] volumes could be re-used after the pvc/pv deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Critical-48723-[CSI-Driver] [Snapshot] [block] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:chaoyang-LEVEL0-Medium-27733-[CSI-Driver] [Snapshot] [Retain deletionPolicy] [Pre-provision] could re-used snapshotcontent after the snapshot/snapshotcontent deletion",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-Critical-24485-[CSI-Driver] [Dynamic PV] [Filesystem default] volumes should store data and allow exec of files",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44903-[CSI-Driver] [Dynamic PV] [ext4] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:pewang-LEVEL0-High-44904-[CSI-Driver] [Dynamic PV] [xfs] volumes should store data and allow exec of files on the volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-Critical-64157-[CSI-Driver] [Dynamic PV] [Filesystem default] ReadWriteOncePod volume will succeed mounting when consumed by a single pod on a node, and will fail to mount when consumed by second pod",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:rdeore-LEVEL0-High-51424-[NFS] [Daemonset] could provide RWX access mode volume",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:ropatil-LEVEL0-High-49478-[CSI-Driver] [Statefulset] [block volume] volumes should store data",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-44905-[CSI-Driver] [Dynamic PV] [block volume] volumes should store data",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46358-[CSI-Driver] [CSI Clone] Clone a pvc with filesystem VolumeMode",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-46813-[CSI-Driver][CSI Clone] Clone a pvc with Raw Block VolumeMode",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47930-[CSI-Driver] [Snapshot] [Filesystem ext4] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-47931-[CSI-Driver] [Snapshot] [Filesystem xfs] provisioning should provision storage with snapshot data source and restore it successfully",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-50202-[CSI-Driver][Dynamic PV][Block] topology should provision a volume and schedule a pod with AllowedTopologies",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-Critical-52743-[Storageclass] OCP Cluster should have no more than one default storageclass defined, PVC without specifying storagclass should succeed while only one default storageclass present",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-ARO-Author:wduan-LEVEL0-High-44910-[CSI-Driver] [Dynamic PV] [Filesystem default] support mountOptions",
+              "[sig-storage] STORAGE ROSA-OSD_CCS-Author:pewang-LEVEL0-High-56080-[Local-ephemeral-storage] [emptyDir] with sizeLimit should work on Pod level"
+            ]
+          },
+          "cucushift-e2e": {
+            "total": 22,
+            "failures": 2,
+            "errors": 0,
+            "skipped": 0,
+            "failingScenarios": [
+              "OCP-11244:Authentication Sync ldap group to openshift group with paging from ldap server",
+              "OCP-28633:SDN Dynamic IP address assignment with Whereabouts"
+            ]
+          },
+          "openshift-extended-test-supplementary": {
+            "total": 1,
+            "failures": 0,
+            "errors": 0,
+            "skipped": 0
+          }
+        }
       },
-      "retriedJobs": []
+      "retriedJobs": [
+        {
+          "jobStartTime": "2026-11-26T15:28:37Z",
+          "jobID": "a61a831e-1a5b-43d8-9811-fc3fa1b5412a",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2125975016112656384",
+          "jobState": "pending"
+        },
+        {
+          "jobStartTime": "2026-11-26T15:28:42Z",
+          "jobID": "bf0fcdf4-2e6a-4951-857d-7eb13c0b5488",
+          "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-azure-ipi-fips-f999/2125975037956591616",
+          "jobState": "pending"
+        }
+      ]
     },
     {
       "jobName": "periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-gcp-ipi-f999",
@@ -135,7 +196,8 @@
           "jobStartTime": "2026-11-26T13:31:39Z",
           "jobID": "4d6648ae-2672-4eb6-b7f3-5d15a656c513",
           "jobURL": "https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.16-automated-release-stable-4.16-upgrade-from-stable-4.16-aws-ipi-f999/2125945580529127424",
-          "jobState": "pending"
+          "jobState": "failure",
+          "jobCompletionTime": "2026-11-26T14:38:03Z"
         }
       ]
     }
