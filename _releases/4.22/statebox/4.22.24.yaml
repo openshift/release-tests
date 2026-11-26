@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.22.24
 created_at: '2026-11-25T18:00:16Z'
-updated_at: '2026-11-26T08:19:23Z'
+updated_at: '2026-11-26T08:59:29Z'
 metadata:
   jira_ticket: ART-26580
   advisory_ids:
@@ -124,11 +124,15 @@ issues:
     Missed CVE tracker bugs:
     - OCPBUGS-129260
   reported_at: '2026-11-25T18:17:20Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Resolved 2026-11-26: release lead jhuttana@redhat.com confirmed ART
+    added OCPBUGS-129260 (CVE-2026-84304, ose-kube-rbac-proxy-rhel9) to shipment MR
+    1252. Re-running check-cve-tracker-bug to verify, and re-triggering push-to-cdn-staging
+    so staging picks up the updated advisory content.'
   blocker: true
   related_tasks:
   - check-cve-tracker-bug
+  resolved_at: '2026-11-26T08:59:29Z'
 - issue: 'Infra (non-blocking, QE signal unaffected): f999 jobs report FAILURE only
     because send-results-to-reportportal cannot auth. ''gcloud auth activate-service-account
     --key-file /var/run/datarouter/gcs_sa_openshift-ci-private'' fails all 10 retries
