@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-26T04:59:50Z'
+updated_at: '2026-11-26T06:14:54Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -60,6 +60,19 @@ tasks:
     2026-11-26T00:17:42Z: INFO: checking push job status for advisory 178050 ...
     2026-11-26T00:17:42Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-26T00:17:42Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
+- name: image-consistency-check
+  status: In Progress
+  started_at: '2026-11-26T06:14:44Z'
+  completed_at: null
+  result: |-
+    2026-11-26T06:14:44Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-26T06:14:44Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-26T06:14:45Z: INFO: Initialized StateBox for release 5.0.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.3.yaml
+    2026-11-26T06:14:46Z: INFO: Loaded state from _releases/5.0/statebox/5.0.3.yaml (SHA: 53ffdf7d)
+    2026-11-26T06:14:46Z: INFO: task [Image Consistency Check] status is changed to [In Progress]
+    2026-11-26T06:14:51Z: INFO: Triggered image consistency check Prow job: 253c6726-bd89-4a19-b024-3b1e7cdacafd
+    2026-11-26T06:14:51Z: INFO: Prow job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125835696999501824
+    2026-11-26T06:14:53Z: INFO: sent slack message to <#team-qe-release>
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
