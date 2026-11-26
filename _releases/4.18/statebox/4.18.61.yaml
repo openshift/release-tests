@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T11:55:58Z'
+updated_at: '2026-11-26T11:56:16Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -112,4 +112,20 @@ tasks:
     LIMITATION: Prow artifacts unreadable (GCS_CRED_FILE unset; [EMAIL_REDACTED] gets 403 on gs://qe-private-deck). Root cause inferred, not log-confirmed.
 
     ASSESSMENT: RECOMMEND ACCEPT (waivable - QE CI infrastructure failure). Informational only; does not gate the pipeline. Awaiting release lead decision.
-issues: []
+issues:
+- issue: 'Build test analysis held pending Prow log access: all 3 QE blocking jobs
+    failed 0/3 BO3 with zero JUnit artifacts. Root cause cannot be confirmed because
+    GCS_CRED_FILE is unset and the release lead''s account gets HTTP 403 on gs://qe-private-deck
+    (no storage.objects.get); the qe-private-deck web UI also returns 403 unauthenticated.
+    Evidence so far points to a QE CI infrastructure failure on 2026-11-25 (4.12.104,
+    4.18.61 and 4.19.57 all failed 100% across aws/azure/gcp that day, while Release
+    Controller upgrade and upgrade-minor jobs for 4.18.61 both Succeeded on public
+    Prow). To unblock: obtain a GCS service-account credentials file with qe-private-deck
+    read access, or have ART/CI supply build-log.txt for the 3 failed jobs, then confirm
+    infra vs product regression before waiving.'
+  reported_at: '2026-11-26T11:56:16Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - analyze-promoted-build
