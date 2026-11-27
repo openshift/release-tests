@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-26T17:51:13Z'
+updated_at: '2026-11-27T09:58:24Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -80,22 +80,24 @@ tasks:
     2026-11-26T17:49:55Z: INFO: task [Stage Testing] status is changed to [Fail]
 - name: analyze-promoted-build
   status: In Progress
-  started_at: '2026-11-26T10:37:32Z'
+  started_at: '2026-11-27T09:39:59Z'
   completed_at: null
   result: |-
-    STILL HELD BY RELEASE LEAD pending log access (decision 2026-11-26). New evidence below makes the infrastructure conclusion near-certain even without logs; recommend the lead revisit the hold.
+    STILL HELD BY RELEASE LEAD pending log access (decision 2026-11-26). No change in the release's own state; the blocking condition is external.
 
-    DECISIVE NEW EVIDENCE (2026-11-26T17:50Z): across ALL QE blocking jobs recorded on the record branch since 2026-11-24, the tally is 167 failure / 15 pending / ZERO success. Affected version lines: 4.12, 4.18, 4.19, 4.21, 4.22, 5.0, 5.1. A 0% success rate spanning seven unrelated version lines cannot be explained by a product regression in any one of them. This is a fleet-wide QE CI outage.
+    DAY-4 UPDATE (2026-11-27T09:45Z): the QE CI outage continues and has NOT recovered. Zero successful QE blocking jobs anywhere on the record branch since 2026-11-24 - verified across every recorded release. Jobs started today 2026-11-27: 60 failure, 3 error, 22 pending, 0 success. The aggregator itself is healthy (record branch last updated 2026-11-27T09:39:59Z) and jobs are still being scheduled, so this is not a scheduling or aggregation stall - the jobs run and fail. A new z-stream 4.16.76 entered the same state today (3 jobs pending as of 09:29Z).
 
-    Corroborating: stage-testing for 4.18.61 (Prow job 13c9bdaf, ran 2026-11-26T10:37:32Z-11:28:27Z) also FAILED. Different job type, triggered a day after the blocking tests, same qe-private-deck fleet, same outcome.
+    Cumulative evidence for an infrastructure cause rather than a product regression: a 0% success rate sustained over four days across version lines 4.12, 4.16, 4.18, 4.19, 4.21, 4.22, 5.0 and 5.1. No single product regression can span eight unrelated lines.
 
-    Contrast - everything OUTSIDE the qe-private-deck fleet passed for 4.18.61: Release Controller blocking jobs (upgrade, upgrade-minor) both Succeeded on public Prow, exercising the real upgrade path; image-consistency-check passed on public Prow (855 images scanned in MR 1254, 0 unhealthy); push-to-cdn-staging passed. The failures are perfectly correlated with the fleet, not with the payload.
+    Contrast - everything 4.18.61 ran OUTSIDE the qe-private-deck fleet passed: Release Controller blocking jobs (upgrade, upgrade-minor) Succeeded on public Prow, exercising the real upgrade path; image-consistency-check passed on public Prow (855 images in MR 1254, 0 unhealthy); push-to-cdn-staging passed. Failures correlate perfectly with the fleet, not the payload.
 
-    EARLIER FINDINGS (unchanged). 4.18.61: aggregated=true, accepted=false. All 3 QE blocking jobs failed 0/3 BO3 (9/9 attempts): upgrade-from-stable-4.17-aws-ipi, upgrade-from-stable-4.18-azure-ipi-fips, upgrade-from-stable-4.18-gcp-ipi. Zero JUnit artifacts on any attempt. Note on method: absence of testResultSummary is not by itself evidence of early job death - passing z-streams (4.15.69, 4.17.57, 4.20.30) also lack the field; but among FAILED jobs the field IS populated when JUnit exists (4.19 nightly 2026-11-24-024702 has 4/6 failed jobs with summaries), so here it does mean no JUnit was produced. Runtimes were long (aws ~48-67min, gcp ~57min, azure-fips 3h12m-3h33m), so jobs ran substantially before failing.
+    EARLIER FINDINGS (unchanged). 4.18.61: aggregated=true, accepted=false. All 3 QE blocking jobs failed 0/3 BO3 (9/9 attempts): upgrade-from-stable-4.17-aws-ipi, upgrade-from-stable-4.18-azure-ipi-fips, upgrade-from-stable-4.18-gcp-ipi. Zero JUnit artifacts on any attempt. Method note: absence of testResultSummary is not by itself evidence of early job death - passing z-streams (4.15.69, 4.17.57, 4.20.30) also lack the field; but among FAILED jobs it IS populated when JUnit exists (4.19 nightly 2026-11-24-024702 has 4/6 failed jobs with summaries), so here it does mean no JUnit was produced. Runtimes were long (aws ~48-67min, gcp ~57min, azure-fips 3h12m-3h33m).
 
-    STILL BLOCKED ON: cannot read Prow artifacts to name the exact fault. GCS_CRED_FILE unset; [EMAIL_REDACTED] has no storage.objects.get on gs://qe-private-deck (403).
+    STILL BLOCKED ON: log access. GCS_CRED_FILE remains unset; gcloud for [EMAIL_REDACTED] now additionally requires reauthentication, and that account has no storage.objects.get on gs://qe-private-deck regardless.
 
-    ASSESSMENT: QE CI infrastructure outage, waivable. Confidence now HIGH (was medium-high). This is an org-wide incident affecting all active releases, not a 4.18.61 problem - it warrants escalation to the CI/QE platform team independently of this release.
+    SCHEDULE RISK: release date 2026-Dec-03. change-advisory-status should run ~2026-Dec-02, so roughly 5 days of slack remain. stage-testing must also be re-run and pass before final approval, and it cannot pass while the fleet is down - that re-run, not the analysis hold, is now the critical path.
+
+    ASSESSMENT: QE CI infrastructure outage, waivable. Confidence HIGH. Org-wide incident warranting escalation to the CI/QE platform team independently of this release.
 - name: analyze-candidate-build
   status: In Progress
   started_at: '2026-11-26T11:20:25Z'
