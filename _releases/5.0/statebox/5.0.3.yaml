@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-27T07:42:42Z'
+updated_at: '2026-11-27T07:49:43Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -51,13 +51,17 @@ tasks:
     2026-11-26T09:02:09Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-26T09:02:09Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: In Progress
+  status: Pass
   started_at: '2026-11-27T07:42:40Z'
-  completed_at: null
+  completed_at: '2026-11-26T09:08:43Z'
   result: |-
-    2026-11-27T07:42:40Z: INFO: Initialized StateBox for release 5.0.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.3.yaml
-    2026-11-27T07:42:41Z: INFO: Loaded state from _releases/5.0/statebox/5.0.3.yaml (SHA: a055374c)
-    2026-11-27T07:42:41Z: INFO: Image consistency check already passed, skipping
+    Prow job 253c6726-bd89-4a19-b024-3b1e7cdacafd completed SUCCESS on 2026-11-26 (verified from GCS finished.json: result=SUCCESS, passed=true, pod=253c6726-bd89-4a19-b024-3b1e7cdacafd). Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125835696999501824
+
+    Image health check also COMPLETED successfully: ImageHealthOperator.check_image_health() posted its summary comment to shipment MR 1235 at 2026-11-26T09:08:43Z - "Images scanned: 868. Unhealthy components detected: 0. Health info missed: 0." => unhealthy_count == 0 => healthy. The comment was posted after commit 88d7febb (OCPBUGS-136027 attached at 08:12), so it scanned current shipment content.
+
+    Status restored manually on 2026-11-27. Two tooling defects corrupted this task's state and MUST NOT be mistaken for a real failure:
+    (1) At 07:42:40 a trigger run (no -i) hit the "Image consistency check already passed, skipping" early return in cmd_image_consistency_check.trigger_job(). That path emits no "[status]" marker, so cli_result_callback fell through to its default and overwrote Pass -> In Progress, also wiping the stored Prow job ID from task.result.
+    (2) At 07:47:46 a status poll with the correct job ID failed because Gangway no longer serves that execution record (OAR saw HTTP 404; a direct GET returns HTTP 500 ~23h after the job ran, while the same-age stage-testing execution c6f91f1d still returns 200). check_job_status treats an unresolvable lookup as a hard Fail, so Pass -> Fail. Do not re-trigger: the job and the health check are both genuinely done.
 - name: stage-testing
   status: Pass
   started_at: '2026-11-26T06:14:59Z'
