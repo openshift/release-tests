@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-27T12:48:09Z'
+updated_at: '2026-11-27T12:49:02Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -178,3 +178,21 @@ issues:
   related_tasks:
   - stage-testing
   resolved_at: '2026-11-27T10:00:45Z'
+- issue: 'stage-testing re-run FAILED: Prow job 7befc735-4111-4bd1-be92-438913111723
+    ran 2026-11-27T10:00:33Z-10:48:02Z (~47.5 min). This was the re-trigger authorised
+    by the release lead after first attempt 13c9bdaf failed. NEW SIGNAL: failure is
+    deterministic, not transient - two runs a day apart failed at matched durations
+    (13c9bdaf ~51 min on 11-26, 7befc735 ~47.5 min on 11-27), pointing to one stage
+    failing consistently (install/stage-env timeout or unavailable shared dependency).
+    Still consistent with a fleet-wide cause (broken job template, expired credential,
+    unreachable stage registry) but not with intermittent capacity flakiness. Fleet
+    still 0% success: jobs started 11-27 are 79 failure / 3 error / 30 pending; no
+    success anywhere since 11-24. Root cause unconfirmed - logs on gs://qe-private-deck,
+    GCS_CRED_FILE unset. Do not re-trigger again until CI/QE platform confirms fleet
+    health. stage-testing is the critical path; release date 2026-Dec-03.'
+  reported_at: '2026-11-27T12:49:02Z'
+  resolved: false
+  resolution: null
+  blocker: true
+  related_tasks:
+  - stage-testing
