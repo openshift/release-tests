@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-27T11:35:58Z'
+updated_at: '2026-11-27T11:36:11Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -220,3 +220,21 @@ issues:
   related_tasks:
   - analyze-candidate-build
   resolved_at: '2026-11-27T11:35:47Z'
+- issue: 'OPEN: aws-autorelease-qe-quota-slice Boskos pool persistently saturated
+    - needs DPTP escalation. Job stable-4.21-upgrade-from-stable-4.21-aws-ipi-f999
+    has now failed lease acquisition 4 consecutive times on candidate nightly 4.21.0-0.nightly-2026-11-24-093421:
+    3 original BO3 attempts (2125578913814941696, 2125629869487296512, 2125629894653120512,
+    all ~122m, 2026-11-25) and the 2026-11-27 re-run (2126220577323618304, 122m),
+    every one ending ''failed to acquire lease for aws-autorelease-qe-quota-slice:
+    resources not found''. Zero tests have ever executed for this job on this nightly.
+    Guidance is that two consecutive lease failures means the pool is saturated and
+    the fix is a DPTP capacity request, not another retry - do not trigger a 5th attempt
+    without escalating first. Non-blocking for 4.21.44 (already promoted and QE-accepted;
+    candidate analysis is informational) but the same pool starved 12 of 18 attempts
+    on this build and will keep hurting future z-streams.'
+  reported_at: '2026-11-27T11:36:11Z'
+  resolved: false
+  resolution: null
+  blocker: false
+  related_tasks:
+  - analyze-candidate-build
