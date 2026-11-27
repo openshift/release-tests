@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-27T10:00:26Z'
+updated_at: '2026-11-27T10:00:45Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -167,8 +167,18 @@ issues:
     and GCS_CRED_FILE remains unset. Needs a re-trigger once CI is healthy; re-triggering
     before then will most likely fail again.'
   reported_at: '2026-11-26T17:50:31Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Superseded by a re-trigger at the release lead''s direction on 2026-11-27T10:00:23Z.
+    New Prow job 7befc735-4111-4bd1-be92-438913111723 (same job periodic-ci-openshift-openshift-tests-private-release-4.18-stage-testing-e2e-aws-ipi),
+    currently pending; stage-testing moved Fail -> In Progress. Note this closes the
+    record for the old job only - it does NOT mean the underlying condition cleared.
+    The QE CI fleet was still at 0% success as of 2026-11-27T09:45Z (60 failure /
+    3 error / 22 pending today, zero successes anywhere since 2026-11-24), and the
+    lead was advised the re-run would likely fail on that basis and chose to proceed.
+    Useful either way: a pass indicates the fleet has recovered, a failure adds a
+    dated data point to the outage. If it fails, open a fresh blocking issue against
+    stage-testing rather than reopening this one.'
   blocker: true
   related_tasks:
   - stage-testing
+  resolved_at: '2026-11-27T10:00:45Z'
