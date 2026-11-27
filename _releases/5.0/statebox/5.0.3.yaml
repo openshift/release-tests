@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-26T13:23:33Z'
+updated_at: '2026-11-27T06:11:19Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -80,6 +80,26 @@ tasks:
     2026-11-26T13:23:32Z: INFO: Comparing digest from url: https://mirror.openshift.com/pub/openshift-v4/signatures/openshift/release/sha256=253759753452443017f2f4510959ff1125d4ff58db485d71d949b7e58402e9d4/signature-1
     2026-11-26T13:23:32Z: INFO: Signature check PASSED
     2026-11-26T13:23:32Z: INFO: task [Image Signed Check] status is changed to [Pass]
+- name: analyze-promoted-build
+  status: Pass
+  started_at: '2026-11-27T06:11:19Z'
+  completed_at: '2026-11-27T06:11:19Z'
+  result: 'Waivable failures accepted by release lead on 2026-11-27. Test result file
+    ocp-test-result-5.0.3-amd64.json: aggregated=true, accepted=false; all 3 QE blocking
+    jobs failed BO3 (first + 2 retries each). Verified all 9 attempts directly from
+    GCS (junit_operator.xml + step junit): in 8 of 9 attempts the ONLY failing step
+    is send-results-to-reportportal in the post phase (datarouter GCS SA retry-loop
+    on ''gcloud auth activate-service-account'', pod died at 20m18s) - Data Router
+    was shut down 2026-11-18, tracked in OCPQE-32124. Tests in those attempts were
+    fully green (cucushift-upgrade-toimage 36/36, cucushift-upgrade-rhel-worker 35/35,
+    deprovision 1/1, 0 failures). The single genuine failure is azure-ipi-fips-f999
+    retry 2 (build 2125900052349063168, 254m): ''upgrade should succeed: overall''
+    + ''verify the cluster readiness and stability'' - clusterversion failing WorkloadNotAvailable,
+    deployment openshift-config-operator MinimumReplicasUnavailable / ProgressDeadlineExceeded.
+    Non-reproducible: the other two azure attempts upgraded clean on the same payload,
+    and aws/gcp were 3/3 green. On test content alone every job clears BO3 (aws 3/3,
+    gcp 3/3, azure 2/3); accepted=false is purely an artifact of the reportportal
+    post step, which cannot pass again.'
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
