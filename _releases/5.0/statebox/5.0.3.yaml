@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-27T06:11:19Z'
+updated_at: '2026-11-27T06:11:44Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -122,8 +122,16 @@ issues:
     on the 3 long-running f999 jobs despite all tests passing. Both will recur on
     5.0.3''s QE blocking tests unless fixed before the payload is Accepted.'
   reported_at: '2026-11-26T04:59:50Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Adjudicated 2026-11-27. The blocked_secret_collection / deploy-konflux-operator
+    abort did NOT recur on 5.0.3 - all 9 QE blocking attempts ran 180-254 minutes
+    (real test runs, not ~12s aborts). The reportportal risk DID materialise: send-results-to-reportportal
+    failed the post phase on 8 of 9 attempts (OCPQE-32124, Data Router shut down 2026-11-18),
+    which is the sole cause of accepted=false. Verified from GCS that the underlying
+    tests were green, and the release lead accepted the promoted build on that basis
+    - see the analyze-promoted-build task result for full evidence. No further action
+    on this release.'
   blocker: false
   related_tasks:
   - analyze-promoted-build
+  resolved_at: '2026-11-27T06:11:44Z'
