@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-27T11:36:11Z'
+updated_at: '2026-11-27T11:36:35Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -111,26 +111,26 @@ tasks:
 - name: analyze-candidate-build
   status: Pass
   started_at: '2026-11-27T07:34:32Z'
-  completed_at: '2026-11-27T07:34:32Z'
+  completed_at: '2026-11-27T11:36:35Z'
   result: |-
-    PASS ON DOCUMENTED WAIVER - decided by release lead 2026-11-27. Candidate build 4.21.0-0.nightly-2026-11-24-093421 (aggregated=true, accepted=false). All 18 attempts (6 blocking jobs x 3 BO3) failed; verified every one directly from GCS via junit_operator.xml plus per-step junit. Zero product defects found.
+    PASS ON DOCUMENTED WAIVER - decided by release lead 2026-11-27, UPDATED same day after coverage re-runs. Candidate build 4.21.0-0.nightly-2026-11-24-093421 (aggregated=true, accepted=false). All 18 original attempts (6 blocking jobs x 3 BO3) failed; every one verified directly from GCS via junit_operator.xml plus per-step junit. Zero product defects found.
 
     THREE FAILURE CATEGORIES:
-    (A) Boskos lease exhaustion - 12 of 18 attempts. 'failed to acquire lease for "<cloud>-autorelease-qe-quota-slice": resources not found', dying at ~122m. No steps ran, no tests executed. Pure CI infra.
-    (B) send-results-to-reportportal - 6 of 18 attempts, the sole job-failing step. Data Router shut down 2026-11-18 (RHIDP-18186); credential /var/run/datarouter/gcs_sa_openshift-ci-private is permanently dead. Tracked in OCPQE-32124. Tests underneath fully green.
-    (C) fips-check-node-scan - reports a junit failure in all 5 install-type runs, but the step's own finished.json is passed=true/SUCCESS so it never affected any job verdict. Substance: conmon-rs (/usr/bin/conmonrs) 'rust binary lacks a cargo-auditable manifest; bundled crypto cannot be ruled out', status=warning, overall 'Successful run with warnings'. The testcase asserts warnings-as-failure. Test-automation strictness, not a product defect - but it is a genuine FIPS-scan blind spot on a Rust binary and identical across aws/azure-fips/gcp because it is the same payload.
+    (A) Boskos lease exhaustion - 12 of 18 attempts. 'failed to acquire lease for "<cloud>-autorelease-qe-quota-slice": resources not found' at ~122m. No steps ran, no tests executed. Pure CI infra.
+    (B) send-results-to-reportportal - 6 of 18 attempts, the sole job-failing step. Data Router shut down 2026-11-18 (RHIDP-18186); credential /var/run/datarouter/gcs_sa_openshift-ci-private permanently dead. OCPQE-32124. Tests underneath fully green.
+    (C) fips-check-node-scan - junit failure in all 5 install-type runs, but the step's own finished.json is passed=true/SUCCESS so it never affected any job verdict. Substance: conmon-rs (/usr/bin/conmonrs) 'rust binary lacks a cargo-auditable manifest; bundled crypto cannot be ruled out', status=warning, overall 'Successful run with warnings'. Test-automation strictness, not a defect, and identical across clouds because it is the same payload.
 
-    COVERAGE OBTAINED:
+    COVERAGE, after the 2026-11-27 re-runs:
     - gcp-ipi-f999: 3 of 3 executed, green
     - aws-ipi-f999: 1 of 3 executed (2125629708073701376), green
     - azure-ipi-fips-f999: 1 of 3 executed (2125578819451490304), green
-    - stable-4.21-upgrade-from-stable-4.20-gcp-ipi-f999: 1 of 3 executed (2125578887562792960), 71 tests / 0 failures (cucushift-upgrade-rhel-worker 35, cucushift-upgrade-toimage 36)
+    - stable-4.21-upgrade-from-stable-4.20-gcp-ipi-f999: 1 of 3 executed (2125578887562792960), 71 tests / 0 failures
+    - aws-ipi-disruptive-f999: GAP CLOSED by re-run 2126219447331983360 (triggered 2026-11-27 07:39Z, ran 234m) - 10 tests / 0 failures / 0 errors / 5 skipped, reportportal-only job failure. CORRECTION: an earlier version of this result stated this job had no green run anywhere for 4.21.44; that is no longer true.
 
-    KNOWN GAP - WAIVED WITHOUT TEST DATA:
-    - aws-ipi-disruptive-f999: 0 of 3 attempts executed (all Boskos-starved). No test data for this nightly, and no equivalent green run elsewhere for 4.21.44 - the promoted-build job set was the three upgrade jobs only.
-    - stable-4.21-upgrade-from-stable-4.21-aws-ipi-f999: 0 of 3 attempts executed (all Boskos-starved). No test data for this nightly. Nearest coverage is the promoted build's stable-4.21-upgrade-from-stable-4.20-aws-ipi-f999 re-run 2125886880154128384 (73 tests / 0 failures), which is the same platform and upgrade family but a different source version.
+    REMAINING GAP - WAIVED WITHOUT TEST DATA:
+    - stable-4.21-upgrade-from-stable-4.21-aws-ipi-f999: zero executions in 4 consecutive attempts (3 original plus re-run 2126220577323618304 on 2026-11-27, all ~122m lease-starved). No test data for this nightly. Nearest coverage is the promoted build's stable-4.21-upgrade-from-stable-4.20-aws-ipi-f999 re-run 2125886880154128384 (73 tests / 0 failures) - same platform and upgrade family, different source version. The re-run used upgrade_to=nightly and upgrade_from=ocp-release:4.21.44-x86_64, verified identical to the original trigger's RELEASE_IMAGE_LATEST/TARGET, so the attempt was correctly configured; it simply never got a lease. Persistent pool saturation tracked in a separate open issue for DPTP escalation.
 
-    RATIONALE FOR WAIVING THE GAP: this candidate nightly is superseded. 4.21.44 is already promoted (phase Accepted), its promoted build was analysed and waived on 2026-11-26 with every blocking job having at least one fully green execution, and manual_promotion was applied so the releasepayload carries release.openshift.io/qe_state=Accepted. Candidate-build analysis is informational and does not gate the release. Re-running a superseded nightly was judged not worth several hours. This is a deliberate departure from the standard applied to the promoted build on 2026-11-26, where absence of data was explicitly NOT waived; recorded here so the difference is visible in audit.
+    RATIONALE FOR WAIVING THE REMAINING GAP: this candidate nightly is superseded. 4.21.44 is already promoted (phase Accepted), its promoted build was analysed and waived 2026-11-26 with every blocking job having at least one fully green execution, and manual_promotion was applied so the releasepayload carries release.openshift.io/qe_state=Accepted. Candidate-build analysis is informational and does not gate the release.
 issues:
 - issue: 'MCP server host lacks Errata authorization. The server (vm-10-0-76-71.hosted.upshift.rdu2.redhat.com)
     authenticates to Errata Tool as host service principal ''errata/vm-10-0-76-71.hosted.upshift.rdu2.redhat.com@IPA.REDHAT.COM'',
