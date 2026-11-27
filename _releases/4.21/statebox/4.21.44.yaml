@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.21.44
 created_at: '2026-11-25T10:44:24Z'
-updated_at: '2026-11-27T11:35:47Z'
+updated_at: '2026-11-27T11:35:58Z'
 metadata:
   jira_ticket: ART-26539
   advisory_ids:
@@ -179,11 +179,19 @@ issues:
     out'' (status=warning, step result SUCCESS) on every install run - a FIPS-scan
     blind spot, not a defect, possibly worth raising with ART.'
   reported_at: '2026-11-27T07:35:04Z'
-  resolved: false
-  resolution: null
+  resolved: true
+  resolution: 'Superseded 2026-11-27 by re-runs. aws-ipi-disruptive-f999 no longer
+    lacks coverage: re-run build 2126219447331983360 gave a real 234m execution with
+    10 tests / 0 failures / 5 skipped, reportportal-only job failure. The statement
+    in this issue that it had ''no green run anywhere for 4.21.44'' is now obsolete.
+    One gap remains - stable-4.21-upgrade-from-stable-4.21-aws-ipi-f999 was lease-starved
+    a 4th time and still has zero test data; tracked in a separate open issue for
+    DPTP escalation. The fips-check-node-scan conmon-rs observation recorded here
+    still stands.'
   blocker: false
   related_tasks:
   - analyze-candidate-build
+  resolved_at: '2026-11-27T11:35:58Z'
 - issue: 'Candidate coverage re-runs IN FLIGHT (cross-session tracking). Triggered
     2026-11-27 ~07:40Z on nightly 4.21.0-0.nightly-2026-11-24-093421 to close the
     two Boskos-starved gaps: (1) aws-ipi-disruptive-f999, job a2b10957-df2d-4d2d-a7f7-1ca4b9168079,
