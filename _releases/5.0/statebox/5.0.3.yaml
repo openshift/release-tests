@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-27T06:11:44Z'
+updated_at: '2026-11-27T07:42:42Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -51,13 +51,13 @@ tasks:
     2026-11-26T09:02:09Z: INFO: push job for target <cdn_stage> is COMPLETE
     2026-11-26T09:02:09Z: INFO: task [Push to CDN Staging] status is changed to [Pass]
 - name: image-consistency-check
-  status: Pass
-  started_at: '2026-11-26T06:14:44Z'
-  completed_at: '2026-11-26T09:08:33Z'
-  result: 'Prow job 253c6726-bd89-4a19-b024-3b1e7cdacafd completed SUCCESS (verified
-    directly from GCS finished.json: result=SUCCESS, passed=true). Job URL: https://prow.ci.openshift.org/view/gs/test-platform-results-public/logs/periodic-ci-openshift-release-tests-main-image-consistency-check/2125835696999501824
-    - Status set manually because the oar_image_consistency_check status poll hit
-    the MCP 300s idle timeout and aborted before writing to StateBox.'
+  status: In Progress
+  started_at: '2026-11-27T07:42:40Z'
+  completed_at: null
+  result: |-
+    2026-11-27T07:42:40Z: INFO: Initialized StateBox for release 5.0.3 at openshift/release-tests/z-stream/_releases/5.0/statebox/5.0.3.yaml
+    2026-11-27T07:42:41Z: INFO: Loaded state from _releases/5.0/statebox/5.0.3.yaml (SHA: a055374c)
+    2026-11-27T07:42:41Z: INFO: Image consistency check already passed, skipping
 - name: stage-testing
   status: Pass
   started_at: '2026-11-26T06:14:59Z'
