@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 4.18.61
 created_at: '2026-11-25T17:00:13Z'
-updated_at: '2026-11-27T09:58:24Z'
+updated_at: '2026-11-27T10:00:26Z'
 metadata:
   jira_ticket: ART-26581
   advisory_ids:
@@ -68,16 +68,20 @@ tasks:
     2026-11-26T11:26:51Z: INFO: Added image health summary to MR 1254
     2026-11-26T11:26:51Z: INFO: task [Image Consistency Check] status is changed to [Pass]
 - name: stage-testing
-  status: Fail
-  started_at: '2026-11-26T11:14:08Z'
-  completed_at: '2026-11-26T17:49:55Z'
+  status: In Progress
+  started_at: '2026-11-27T10:00:16Z'
+  completed_at: null
   result: |-
-    2026-11-26T17:49:54Z: WARNING: Optional environment variable not set: JENKINS_USER
-    2026-11-26T17:49:54Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
-    2026-11-26T17:49:55Z: INFO: Initialized StateBox for release 4.18.61 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.61.yaml
-    2026-11-26T17:49:55Z: INFO: Checking stage testing Prow job status for job ID: 13c9bdaf-6007-4cbc-ba70-0437d8a20658
-    2026-11-26T17:49:55Z: INFO: Job state: failure, URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-stage-testing-e2e-aws-ipi/2125901763750924288
-    2026-11-26T17:49:55Z: INFO: task [Stage Testing] status is changed to [Fail]
+    2026-11-27T10:00:16Z: WARNING: Optional environment variable not set: JENKINS_USER
+    2026-11-27T10:00:16Z: WARNING: Optional environment variable not set: JENKINS_TOKEN
+    2026-11-27T10:00:17Z: INFO: Initialized StateBox for release 4.18.61 at openshift/release-tests/z-stream/_releases/4.18/statebox/4.18.61.yaml
+    2026-11-27T10:00:17Z: INFO: Triggering stage testing Prow job
+    2026-11-27T10:00:18Z: INFO: Loaded state from _releases/4.18/statebox/4.18.61.yaml (SHA: 82b6d522)
+    2026-11-27T10:00:18Z: INFO: Stage release succeeded (verified by label)
+    2026-11-27T10:00:18Z: INFO: task [Stage Testing] status is changed to [In Progress]
+    2026-11-27T10:00:23Z: INFO: Triggered stage testing Prow job: 7befc735-4111-4bd1-be92-438913111723
+    2026-11-27T10:00:23Z: INFO: Prow job URL: https://qe-private-deck-ci.apps.ci.l2s4.p1.openshiftapps.com/view/gs/qe-private-deck/logs/periodic-ci-openshift-openshift-tests-private-release-4.18-stage-testing-e2e-aws-ipi/2126254843990380544
+    2026-11-27T10:00:25Z: INFO: sent slack message to <#team-qe-release>
 - name: analyze-promoted-build
   status: In Progress
   started_at: '2026-11-27T09:39:59Z'
