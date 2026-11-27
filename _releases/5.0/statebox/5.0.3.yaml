@@ -1,7 +1,7 @@
 schema_version: '1.0'
 release: 5.0.3
 created_at: '2026-11-25T19:00:18Z'
-updated_at: '2026-11-27T07:49:43Z'
+updated_at: '2026-11-27T16:02:57Z'
 metadata:
   jira_ticket: ART-26543
   advisory_ids:
@@ -104,6 +104,25 @@ tasks:
     and aws/gcp were 3/3 green. On test content alone every job clears BO3 (aws 3/3,
     gcp 3/3, azure 2/3); accepted=false is purely an artifact of the reportportal
     post step, which cannot pass again.'
+- name: change-advisory-status
+  status: In Progress
+  started_at: '2026-11-27T16:02:18Z'
+  completed_at: null
+  result: |-
+    2026-11-27T16:02:18Z: INFO: task [Change Advisory Status] status is changed to [In Progress]
+    2026-11-27T16:02:47Z: INFO: rpm advisory does not have RHCOS build, skip checking kernel tag
+    2026-11-27T16:02:48Z: INFO: RHCOS nvr is rhcos-x86_64-5.0.10.2.202611250648-0
+    2026-11-27T16:02:50Z: INFO: The commit metadata is kernel-6.12.0-211.77.1.el10_2
+    2026-11-27T16:02:50Z: INFO: Tags of this build is [{'arches': '', 'id': 121309, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'early-kernel-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 168665, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhivos-2.0-z-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 168666, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhivos-2.0-z-pending', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 170027, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhel-10.2-z-candidate', 'perm': 'rhel10-gate', 'perm_id': 100}, {'arches': '', 'id': 176446, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-4.22-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 179416, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.0-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 196789, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.1-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': '', 'id': 206453, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'rhaos-5.2-rhel-10-candidate', 'perm': None, 'perm_id': None}, {'arches': 'aarch64 ppc64le x86_64 s390x', 'id': 207313, 'locked': False, 'maven_include_all': False, 'maven_support': False, 'name': 'kpatch-kernel-6.12.0-211.77.1.el10_2-build', 'perm': 'admin', 'perm_id': 1}]
+    2026-11-27T16:02:51Z: INFO: Successfully approved MR 1235
+    2026-11-27T16:02:51Z: INFO: Successfully added QE approval to MR 1235
+    2026-11-27T16:02:53Z: INFO: Checking accessiblity of metadata url https://access.redhat.com/errata/RHSA-2026:102899
+    2026-11-27T16:02:54Z: INFO: The metadata url is not accessible
+    2026-11-27T16:02:54Z: INFO: Payload metadata URL not accessible immediately, scheduling background check...
+    2026-11-27T16:02:54Z: INFO: Environment for background process - OAR_SLACK_CHANNEL: None, OAR_SLACK_THREAD: None
+    2026-11-27T16:02:54Z: INFO: Background metadata checker process started (PID: 29111) - running independently after parent exit
+    2026-11-27T16:02:54Z: INFO: Process output redirected to: /var/folders/q2/dyjmfgns1kz25_f0fmbd9rmr0000gn/T/oar_logs/metadata_checker_5.0_20261127_170254.log
+    2026-11-27T16:02:54Z: INFO: Background metadata checker process started. Task status will be updated when metadata URL becomes accessible.
 issues:
 - issue: |
     Found 1 missed CVE tracker bugs in shipments
